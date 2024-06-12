@@ -1,7 +1,7 @@
 import { Pali } from "../main.mjs";
 import should from "should";
 
-typeof describe === "function" && describe("TESTTESTpali", function () {
+typeof describe === "function" && describe("pali", function () {
   it("default constructor", () => {
     let pali = new Pali();
 

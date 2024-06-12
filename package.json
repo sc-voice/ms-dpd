@@ -28,5 +28,8 @@
     "eslint": "^9.4.0",
     "mocha": "^10.4.0",
     "should": "^13.2.3"
+  },
+  "dependencies": {
+    "shrink-string": "^3.1.9"
   }
 }
