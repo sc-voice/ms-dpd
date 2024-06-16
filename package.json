@@ -9,7 +9,8 @@
     "schedule-action": "scripts/schedule-action",
     "test": "npm run test:verbose",
     "test:test": "mocha --config test/mocha-config.json",
-    "test:verbose": "mocha --inline-diffs"
+    "test:verbose": "mocha --inline-diffs",
+    "version": "scripts/version"
   },
   "repository": {
     "type": "git",
