@@ -1,5 +1,5 @@
 import { DBG } from './defines.mjs';
-import { default as Compress } from "./compress.mjs"
+import { default as Compress } from "./compress.mjs";
 
 export default class Dictionary {
   static #create = false;
@@ -22,8 +22,7 @@ export default class Dictionary {
       } = opts;
       Dictionary.#create = true;
       if (dpd == null) {
-        let dpdPath = `../data/dpd-${lang}.mjs`;
-        dbg && console.log(msg, '[1]loading', dpdPath);
+        let dpdPath = `../data/dpd-en.mjs`;
         let dpdImport = await import(dpdPath);
         dpd = dpdImport.DPD;
         let keys = Object.keys(dpd);

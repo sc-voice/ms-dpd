@@ -1,0 +1,22 @@
+#!/bin/bash
+SCRIPT=$0
+DIRNAME=`dirname $SCRIPT`
+node - <<'JS' $DIRNAME $*
+let [ SCRIPT, DASH, DIRNAME, ...args] = process.argv;
+(async function() {
+  const path = (await import('path'));
+  const fs = (await import('fs'));
+  const { promises: fsp } = fs;
+  const { fileURLToPath } = (await import('url'));
+  const { default:Dictionary } = (await import(
+    `${DIRNAME}/../src/dictionary.mjs`));
+
+  let dict =  await Dictionary.create();
+  for (let i=0; i<args.length; i++) {
+    let entry = args[i];
+    let info = await dict.lookup(entry);
+    console.log(entry);
+    console.log(info);
+  }
+})()
+JS

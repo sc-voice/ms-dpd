@@ -4,6 +4,7 @@
   "description": "Pali Javascript library",
   "main": "index.js",
   "module": "main.mjs",
+  "type": "module",
   "scripts": {
     "schedule-action": "scripts/schedule-action",
     "test": "npm run test:verbose",
