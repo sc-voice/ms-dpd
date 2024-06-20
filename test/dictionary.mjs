@@ -8,7 +8,7 @@ import should from "should";
 import { default as Dictionary } from '../src/dictionary.mjs';
 
 typeof describe === "function" && 
-  describe("TESTTESTdictionary", function () 
+  describe("dictionary", function () 
 {
   it("default ctor", async() => {
     let eCaught;
@@ -23,18 +23,34 @@ typeof describe === "function" &&
     let dict = await Dictionary.create();
     should(dict.lang).equal('en');
     should(dict.dpd.__metadata.license).match(/digitalpalidictionary/);
+    should(dict.dpdTexts.length).equal(49757);
   });
-  it("lookup()", async()=>{
+  it("TESTTESTentryOf()", async()=>{
     let dict = await Dictionary.create();
 
     // Entry
-    let dhamma = await dict.lookup("dhamma");
+    let dhamma = await dict.entryOf("dhamma");
     let { definition } = dhamma;
     //console.log(definition);
 
     // No entry
     should(definition[0]).match(/nature; character/);
-    let asdf = await dict.lookup("asdf");
+    let asdf = await dict.entryOf("asdf");
     should(asdf).equal(null);
+  });
+  it("lookup()", async()=>{
+    let dict = await Dictionary.create();
+
+    let dhamma = await dict.lookup("dhamma");
+    should(dhamma.key).equal("dhamma");
+    //console.log(dhamma);
+    let dhammo = await dict.lookup("dhammo");
+    should(dhammo.key).equal("dhammo");
+    should.deepEqual(
+      dhamma.definition.slice(0,11),
+      dhammo.definition.slice(0,11));
+    should.deepEqual(
+      dhamma.definition.slice(12),
+      dhammo.definition.slice(11));
   });
 });

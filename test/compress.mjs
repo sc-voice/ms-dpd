@@ -31,4 +31,35 @@ typeof describe === "function" && describe("compress", function () {
     should(abaddho.length).equal(192);
     //should(abaddhoz.length).equal(216);
   });
+  it("TESTTESTlinesCompress()", async ()=>{
+    let cmprs = new Compress();
+    let lines = [
+      "abbrev. <b>Vibhaṅga Aṭṭhakathā</b>",
+      "abbrev. <b>abbreviation of Cambodia;",
+      "abbrev. <b>abbreviation of Cūḷaniddesa;",
+      "abbrev. <b>abbreviation of Khuddaka (pāṭha)</b>",
+      "abbrev. <b>abbreviation of Majjhima (Nikāya)</b>",
+    ];
+    let lc = await cmprs.linesCompress(lines);
+    should.deepEqual(lc, [
+      "abbrev. <b>Vibhaṅga Aṭṭhakathā</b>",
+      "11|abbreviation of Cambodia;",
+      "28|ūḷaniddesa;",
+      "27|Khuddaka (pāṭha)</b>",
+      "27|Majjhima (Nikāya)</b>",
+    ]);
+  });
+  it("TESTTESTlinesDecompress()", async ()=>{
+    let cmprs = new Compress();
+    let lines = [
+      "abbrev. <b>Vibhaṅga Aṭṭhakathā</b>",
+      "abbrev. <b>abbreviation of Cambodia;",
+      "abbrev. <b>abbreviation of Cūḷaniddesa;",
+      "abbrev. <b>abbreviation of Khuddaka (pāṭha)</b>",
+      "abbrev. <b>abbreviation of Majjhima (Nikāya)</b>",
+    ];
+    let lc = await cmprs.linesCompress(lines);
+    let ld = await cmprs.linesDecompress(lc);
+    should.deepEqual(ld, lines);
+  });
 });
