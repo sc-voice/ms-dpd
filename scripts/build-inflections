@@ -1,43 +1,68 @@
 #!/bin/bash
 SCRIPT=$0
 DIRNAME=`dirname $SCRIPT`
-node - <<'JS' $DIRNAME $*
-let [ SCRIPT, DASH, DIRNAME, ...args] = process.argv;
+node - <<'JS' $DIRNAME $SCRIPT $*
+let [ NODE, DASH, DIRNAME, SCRIPT, ...args] = process.argv;
 (async function() {
   const path = (await import('path'));
   const fs = (await import('fs'));
   const { promises: fsp } = fs;
   const { fileURLToPath } = (await import('url'));
-  const srcPath = `${DIRNAME}/../src/inflections.csv`;
+  const msg = `${path.basename(SCRIPT)}:`;
 
+  // load inflection CSV
+  let inflections = [];
+  const srcPath = `${DIRNAME}/../src/inflections.csv`;
   let srcData = await fsp.readFile(srcPath);
   let srcLines = srcData.toString().trim().split('\n');
   let keys = srcLines[0].split(' , ');
-  let inflections = [];
-
   for (let i=1; i<srcLines.length; i++) {
     let line = srcLines[i].split(' , ');
     let entry = {};
     for (let j=0; j<keys.length; j++) {
       let key = keys[j];
       let value = /\//.test(line[j]) ? line[j].split('/') : line[j];
+      switch (key) {
+        case "infCase": {
+          value = value.toLowerCase(); // match DPD
+        } break;
+      }
       entry[key] = /---*/.test(value) ? null : value;
     }
     inflections.push(entry);
   }
-  console.log(srcLines, keys, inflections);
 
-  /*
-  const { default:Dictionary } = (await import(
-    `${DIRNAME}/../src/dictionary.mjs`));
-
-  let dict =  await Dictionary.create();
-  for (let i=0; i<args.length; i++) {
-    let entry = args[i];
-    let info = await dict.lookup(entry);
-    console.log(entry);
-    console.log(info);
+  // Extract word stem
+  if (0) { // stems removed manually from inflections.csv
+    let stem = null;
+    for (let i=inflections.length; --i>=0; ) {
+      let inf = inflections[i];
+      let { infCase, singular, plural } = inf;
+      if (infCase === "voc") {
+        stem = singular instanceof Array ? singular[0] : singular;
+        stem = stem.substring(0, stem.length-1);
+      }
+      if (stem == null) {
+        throw new Error(`${msg} vocative singular? @inflections[${i}]`);
+      }
+      if (singular) {
+        inf.singular = singular instanceof Array
+          ? singular.map(s=>s.replace(stem, "-"))
+          : singular.replace(stem, "-");
+      }
+      if (plural) {
+        inf.plural = plural instanceof Array
+          ? plural.map(s=>s.replace(stem, "-"))
+          : plural.replace(stem, "-");
+      }
+    }
   }
-  */
+
+  // Save OCBS inflection rules
+  let infJSON = JSON.stringify(inflections, null, 2);
+  infJSON = 'export default INFLECTIONS=' + infJSON;
+  const dstPath = `${DIRNAME}/../data/inflections-ocbs.mjs`;
+  await fs.promises.writeFile(dstPath, infJSON);
+  console.log(msg, dstPath);
 })()
 JS

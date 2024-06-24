@@ -25,7 +25,7 @@ typeof describe === "function" &&
     should(dict.dpd.__metadata.license).match(/digitalpalidictionary/);
     should(dict.dpdTexts.length).equal(49757);
   });
-  it("TESTTESTentryOf()", async()=>{
+  it("entryOf()", async()=>{
     let dict = await Dictionary.create();
 
     // Entry

@@ -1,5 +1,6 @@
 export const DBG = {
   DICTIONARY: 0,
+  SANKEY: true,
 }
 
 export const CASE = {

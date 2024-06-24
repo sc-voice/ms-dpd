@@ -1,25 +1,67 @@
-ending , gender , case , singular , plural
--a/ā , masc. , Nom , dhammo , dhammā
--a/ā , masc. , Acc , dhammaṃ , dhamme
--a/ā , masc. , Instr , dhammena , dhammehi
--a/ā , masc. , Dat , dhammāya , -----
--a/ā , masc. , Abl , dhammā/dhammasmā/dhammamhā , dhammehi
--a/ā , masc. , Gen , dhammassa , dhammānaṃ
--a/ā , masc. , Loc , dhamme/dhammasmiṃ/dhammamhi , dhammesu
--a/ā , masc. , Voc , dhamma , dhammā 
--a/ā , nt. , Nom , yānaṃ , yānāni (yānā)
--a/ā , nt. , Acc , yānaṃ , yānāni (yānā)
--a/ā , nt. , Instr , yānena , yānehi
--a/ā , nt. , Dat , yānāya , -----
--a/ā , nt. , Abl , yānā/yānasmā/yānamhā , yānehi
--a/ā , nt. , Gen , yānassa , yānānaṃ
--a/ā , nt. , Loc , yāne/yānasmiṃ/yānamhi , yānesu
--a/ā , nt. , Voc , yāna , yānāni (yānā)
--a/ā , fem. , Nom , kathā , kathā/kathāyo
--a/ā , fem. , Acc , kathaṃ , kathā/kathāyo
--a/ā , fem. , Instr , kathāya , kathāhi
--a/ā , fem. , Dat , kathāya , -----
--a/ā , fem. , Abl , kathāya , kathāhi
--a/ā , fem. , Gen , kathāya , kathānaṃ
--a/ā , fem. , Loc , kathāya/kathāyaṃ , kathāsu
--a/ā , fem. , Voc , kathe , kathā/kathāyo 
+ending , gender , infCase , singular , plural
+-a/ā , masc. , Nom , -o , -ā
+-a/ā , masc. , Acc , -aṃ , -e
+-a/ā , masc. , Instr , -ena , -ehi
+-a/ā , masc. , Dat , -āya , -----
+-a/ā , masc. , Abl , -ā/-asmā/-amhā , -ehi
+-a/ā , masc. , Gen , -assa , -ānaṃ
+-a/ā , masc. , Loc , -e/-asmiṃ/-amhi , -esu
+-a/ā , masc. , Voc , -a , -ā 
+-a/ā , nt. , Nom , -aṃ , -āni (-ā)
+-a/ā , nt. , Acc , -aṃ , -āni (-ā)
+-a/ā , nt. , Instr , -ena , -ehi
+-a/ā , nt. , Dat , -āya , -----
+-a/ā , nt. , Abl , -ā/-asmā/-amhā , -ehi
+-a/ā , nt. , Gen , -assa , -ānaṃ
+-a/ā , nt. , Loc , -e/-asmiṃ/-amhi , -esu
+-a/ā , nt. , Voc , -a , -āni (-ā)
+-a/ā , fem. , Nom , -ā , -ā/-āyo
+-a/ā , fem. , Acc , -aṃ , -ā/-āyo
+-a/ā , fem. , Instr , -āya , -āhi
+-a/ā , fem. , Dat , -āya , -----
+-a/ā , fem. , Abl , -āya , -āhi
+-a/ā , fem. , Gen , -āya , -ānaṃ
+-a/ā , fem. , Loc , -āya/-āyaṃ , -āsu
+-a/ā , fem. , Voc , -e , -ā/-āyo 
+-i/ī , fem. , Nom , -ī  , -ī/-iyo
+-i/ī , fem. , Acc,  -iṃ  , -ī/-iyo
+-i/ī , fem. , Instr,  -iyā , -īhi
+-i/ī , fem. , Abl , -iyā , -īhi
+-i/ī , fem. , Gen , -iyā , -īnaṃ
+-i/ī , fem. , Loc , -iyā/-iyaṃ , -īsu
+-i/ī , fem. , Voc , -i , -ī/-iyo 
+-i/ī , masc. , Nom , -i , -ayo/-ī
+-i/ī , masc. , Acc , -iṃ , -ayo/-ī
+-i/ī , masc. , Instr , -inā , -īhi/-ihi
+-i/ī , masc. , Abl , -inā/-ismā/-imhā , -īhi/-ihi
+-i/ī , masc. , Gen , -ino/-issa , -īnaṃ/-inaṃ
+-i/ī , masc. , Loc , -ismiṃ/-imhi , -īsu/-isu
+-i/ī , masc. , Voc , -i , -ayo/-ī
+-i/ī , nt. , Nom , -i/-iṃ , -ayo/-ī
+-i/ī , nt. , Acc , -i/-iṃ , -ayo/-ī
+-i/ī , nt. , Instr , -inā , -īhi/-ihi
+-i/ī , nt. , Abl , -inā/-ismā/-imhā , -īhi/-ihi
+-i/ī , nt. , Gen , -ino/-issa , -īnaṃ/-inaṃ
+-i/ī , nt. , Loc , -ismiṃ/-imhi , -īsu/-isu
+-i/ī , nt. , Voc , -i , -ayo/-ī
+-u/ū , masc. , Nom , -u , -avo/-ū
+-u/ū , masc. , Acc , -uṃ , -avo/-ū
+-u/ū , masc. , Instr,  -unā , -ūhi
+-u/ū , masc. , Abl , -unā/-usmā/-umhā , -ūhi
+-u/ū , masc. , Gen , -uno/-ussa , -ūnaṃ
+-u/ū , masc. , Loc , -usmiṃ/-umhi , -ūsu
+-u/ū , masc. , Voc , -u , -avo/-u/-ave 
+-u/ū , fem. , Nom , -u , -ū/-uyo
+-u/ū , fem. , Acc , -uṃ , -ū/-uyo
+-u/ū , fem. , Instr , -uyā , -ūhi
+-u/ū , fem. , Abl , -uyā , -ūhi
+-u/ū , fem. , Gen , -uyā , -ūnaṃ
+-u/ū , fem. , Loc , -uyā/-uyaṃ , -ūsu
+-u/ū , fem. , Voc , -u , -ū/-uyo 
+-u/ū , nt. , Nom , -u/-uṃ , -ūni/-ū
+-u/ū , nt. , Acc , -u/-uṃ , -ūni/-ū
+-u/ū , nt. , Instr , -unā , -ūhi
+-u/ū , nt. , Abl , -unā/-usmā/-umhā , -ūhi
+-u/ū , nt. , Gen , -uno/-ussa , -ūnaṃ
+-u/ū , nt. , Loc , -usmiṃ/-umhi , -ūsu
+-u/ū , nt. , Voc , -u/-uṃ , -ūni/-u 

@@ -31,7 +31,7 @@ typeof describe === "function" && describe("compress", function () {
     should(abaddho.length).equal(192);
     //should(abaddhoz.length).equal(216);
   });
-  it("TESTTESTlinesCompress()", async ()=>{
+  it("linesCompress()", async ()=>{
     let cmprs = new Compress();
     let lines = [
       "abbrev. <b>Vibhaṅga Aṭṭhakathā</b>",
@@ -49,7 +49,7 @@ typeof describe === "function" && describe("compress", function () {
       "27|Majjhima (Nikāya)</b>",
     ]);
   });
-  it("TESTTESTlinesDecompress()", async ()=>{
+  it("linesDecompress()", async ()=>{
     let cmprs = new Compress();
     let lines = [
       "abbrev. <b>Vibhaṅga Aṭṭhakathā</b>",
