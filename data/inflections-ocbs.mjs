@@ -1,4 +1,4 @@
-export default INFLECTIONS=[
+export const INFLECTIONS=[
   {
     "ending": [
       "-a",
@@ -85,7 +85,7 @@ export default INFLECTIONS=[
     "gender": "masc.",
     "infCase": "voc",
     "singular": "-a",
-    "plural": "-ā "
+    "plural": "-ā"
   },
   {
     "ending": [
@@ -264,7 +264,7 @@ export default INFLECTIONS=[
     "singular": "-e",
     "plural": [
       "-ā",
-      "-āyo "
+      "-āyo"
     ]
   },
   {
@@ -274,7 +274,7 @@ export default INFLECTIONS=[
     ],
     "gender": "fem.",
     "infCase": "nom",
-    "singular": "-ī ",
+    "singular": "-ī",
     "plural": [
       "-ī",
       "-iyo"
@@ -286,7 +286,7 @@ export default INFLECTIONS=[
       "ī"
     ],
     "gender": "fem.",
-    "infCase": "acc,  -iṃ ",
+    "infCase": "acc,  -iṃ",
     "singular": [
       "-ī",
       "-iyo"
@@ -344,7 +344,7 @@ export default INFLECTIONS=[
     "singular": "-i",
     "plural": [
       "-ī",
-      "-iyo "
+      "-iyo"
     ]
   },
   {
@@ -641,7 +641,7 @@ export default INFLECTIONS=[
     "plural": [
       "-avo",
       "-u",
-      "-ave "
+      "-ave"
     ]
   },
   {
@@ -723,7 +723,7 @@ export default INFLECTIONS=[
     "singular": "-u",
     "plural": [
       "-ū",
-      "-uyo "
+      "-uyo"
     ]
   },
   {

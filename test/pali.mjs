@@ -66,7 +66,7 @@ typeof describe === "function" && describe("pali", function () {
     test('icchati iñjati icchā iṭṭha', 'icchati icchā iñjati iṭṭha');
     test('sīla siṅgāla sikhā sīta', 'sikhā siṅgāla sīla sīta');
   });
-  it("TESTTESTcompare endings()", ()=>{
+  it("compare endings()", ()=>{
     let pali = new Pali();
     let endings = [
       '-iṃ', 
@@ -87,5 +87,22 @@ typeof describe === "function" && describe("pali", function () {
       '-ī',
       '-īhi',
     ]);
+  });
+  it("INFLECTIONS", ()=>{
+    let inf = Pali.INFLECTIONS;
+    should.deepEqual(inf[0], {
+      "ending": [
+        "-a",
+        "ā"
+      ],
+      "gender": "masc.",
+      "infCase": "nom",
+      "singular": "-o",
+      "plural": "-ā"
+    });
+  });
+  it("TESTTESTendings", ()=>{
+    let ends = Pali.ENDINGS;
+    should(ends.length).equal(59);
   });
 });

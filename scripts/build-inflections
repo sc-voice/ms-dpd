@@ -21,7 +21,9 @@ let [ NODE, DASH, DIRNAME, SCRIPT, ...args] = process.argv;
     let entry = {};
     for (let j=0; j<keys.length; j++) {
       let key = keys[j];
-      let value = /\//.test(line[j]) ? line[j].split('/') : line[j];
+      let value = /\//.test(line[j]) 
+        ? line[j].split('/').map(lp=>lp.trim())
+        : line[j] && line[j].trim();
       switch (key) {
         case "infCase": {
           value = value.toLowerCase(); // match DPD
@@ -60,7 +62,7 @@ let [ NODE, DASH, DIRNAME, SCRIPT, ...args] = process.argv;
 
   // Save OCBS inflection rules
   let infJSON = JSON.stringify(inflections, null, 2);
-  infJSON = 'export default INFLECTIONS=' + infJSON;
+  infJSON = 'export const INFLECTIONS=' + infJSON;
   const dstPath = `${DIRNAME}/../data/inflections-ocbs.mjs`;
   await fs.promises.writeFile(dstPath, infJSON);
   console.log(msg, dstPath);

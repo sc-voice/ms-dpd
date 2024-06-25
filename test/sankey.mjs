@@ -5,7 +5,7 @@ import {
 import should from "should";
 
 typeof describe === "function" && 
-  describe("TESTTESTsankey", function () 
+  describe("sankey", function () 
 {
   it("default constructor", () => {
     let sk = new Sankey();

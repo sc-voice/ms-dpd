@@ -1,4 +1,7 @@
+import { INFLECTIONS } from '../data/inflections-ocbs.mjs';
+
 export default class Pali {
+  static #ENDINGS;
   static #OCBS_ALPHABET = [
     'a', 'ā', 'i', 'ī', 'u', 'ū', 'e', 'o', 'ṃ',
     'k', 'kh', 'g', 'gh', 
@@ -50,6 +53,10 @@ export default class Pali {
   constructor(opts={}) {
   }
 
+  static get INFLECTIONS() {
+    return INFLECTIONS;
+  }
+
   static get OCBS_ALPHABET() {
     return Pali.#OCBS_ALPHABET;
   }
@@ -67,8 +74,8 @@ export default class Pali {
 
   static get ROMAN_ORDER() {
     if (Pali.#ROMAN_ORDER == null) {
-      let alphabet = Pali.#OCBS_ALPHABET;
-      Pali.#ROMAN_ORDER = Pali.#ROMAN_ALPHABET.reduce((a,c,i)=>{
+      let alphabet = ['-', ...Pali.#ROMAN_ALPHABET];
+      Pali.#ROMAN_ORDER = alphabet.reduce((a,c,i)=>{
         a[c] = i;
         return a;
       }, {});
@@ -116,8 +123,27 @@ export default class Pali {
     return cmp;
   }
 
-  reverse(s) {
-    let chars = s.split('').reverse();
-    return chars.join('');
+  static get ENDINGS() {
+    if (Pali.#ENDINGS == null) {
+      let endMap = Pali.INFLECTIONS.reduce((a,inf)=>{
+        let { singular, plural } = inf;
+        if (singular instanceof Array) {
+          singular.forEach(s=>{a[s] = 1});
+        } else {
+          a[singular] = 1;
+        }
+        if (plural instanceof Array) {
+          plural.forEach(s=>{a[s] = 1});
+        } else {
+          a[plural] = 1;
+        }
+        return a;
+      }, {});
+      delete endMap.undefined; // for '-----' entries
+      delete endMap.null; // 
+      Pali.#ENDINGS = Object.keys(endMap).sort(Pali.compareRoman);
+    }
+    return Pali.#ENDINGS;
   }
+
 }

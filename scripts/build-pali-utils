@@ -1,0 +1,29 @@
+#!/bin/bash
+SCRIPT=$0
+DIRNAME=`dirname $SCRIPT`
+node - <<'JS' $DIRNAME $SCRIPT $*
+let [ NODE, DASH, DIRNAME, SCRIPT, ...args] = process.argv;
+(async function() {
+  const path = (await import('path'));
+  const fs = (await import('fs'));
+  const { promises: fsp } = fs;
+  const { fileURLToPath } = (await import('url'));
+  const msg = `${path.basename(SCRIPT)}:`;
+  const Pali = (await import(`./${DIRNAME}/../src/pali.mjs`)).default;
+
+  let endings = Pali.ENDINGS;
+  let rendings = endings.map(e=>{
+    let cs = e.split('');
+    return cs.reverse().join('');
+  }).sort(Pali.compareRoman);
+
+  endings = rendings.map(e=>{
+    let cs = e.split('');
+    return cs.reverse().join('');
+  });
+  console.log(msg, "-------TBD-------");
+  console.log(msg, endings);
+  console.log(msg, "-------TBD-------");
+
+})()
+JS
