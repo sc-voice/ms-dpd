@@ -101,8 +101,20 @@ typeof describe === "function" && describe("pali", function () {
       "plural": "-ā"
     });
   });
-  it("TESTTESTendings", ()=>{
-    let ends = Pali.ENDINGS;
-    should(ends.length).equal(59);
+  it("TESTTESTwordStem", ()=>{
+    // Singular
+    should(Pali.wordStem("dhammo")).equal('dhamm');    // Nom
+    should(Pali.wordStem("dhammassa")).equal('dhamm'); // Acc
+    should(Pali.wordStem("dhammena")).equal('dhamm');  // Instr
+    should(Pali.wordStem("dhammāya")).equal('dhamm');  // Dat
+    should(Pali.wordStem("dhammā")).equal('dhamm');    // Abl
+    should(Pali.wordStem("dhammasmā")).equal('dhamm'); // Abl
+    should(Pali.wordStem("dhammamhā")).equal('dhamm'); // Abl
+    should(Pali.wordStem("dhammassa")).equal('dhamm'); // Gen
+    should(Pali.wordStem("dhamme")).equal('dhamm');    // Loc
+    should(Pali.wordStem("dhammasmiṃ")).equal('dhamm');  // Loc
+    should(Pali.wordStem("dhammamhi")).equal('dhamm');   // Loc
+    should(Pali.wordStem("dhamma")).equal('dhamm');    // Voc
+
   });
 });

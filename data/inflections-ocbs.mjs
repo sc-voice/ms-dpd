@@ -95,7 +95,10 @@ export const INFLECTIONS=[
     "gender": "nt.",
     "infCase": "nom",
     "singular": "-aṃ",
-    "plural": "-āni (-ā)"
+    "plural": [
+      "-āni",
+      "-ā"
+    ]
   },
   {
     "ending": [
@@ -105,7 +108,10 @@ export const INFLECTIONS=[
     "gender": "nt.",
     "infCase": "acc",
     "singular": "-aṃ",
-    "plural": "-āni (-ā)"
+    "plural": [
+      "-āni",
+      "-ā"
+    ]
   },
   {
     "ending": [
@@ -173,7 +179,10 @@ export const INFLECTIONS=[
     "gender": "nt.",
     "infCase": "voc",
     "singular": "-a",
-    "plural": "-āni (-ā)"
+    "plural": [
+      "-āni",
+      "-ā"
+    ]
   },
   {
     "ending": [

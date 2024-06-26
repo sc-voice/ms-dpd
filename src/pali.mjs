@@ -1,7 +1,9 @@
 import { INFLECTIONS } from '../data/inflections-ocbs.mjs';
+import { DBG } from './defines.mjs';
 
 export default class Pali {
   static #ENDINGS;
+  static #STEM_RE;
   static #OCBS_ALPHABET = [
     'a', 'ā', 'i', 'ī', 'u', 'ū', 'e', 'o', 'ṃ',
     'k', 'kh', 'g', 'gh', 
@@ -144,6 +146,22 @@ export default class Pali {
       Pali.#ENDINGS = Object.keys(endMap).sort(Pali.compareRoman);
     }
     return Pali.#ENDINGS;
+  }
+
+  static wordStem(word) {
+    const msg = 'Pali.wordStem()';
+    const dbg = DBG.PALI;
+    if (Pali.#STEM_RE == null) {
+      let rends = Pali.ENDINGS
+        .map(e=>e.substring(1).split('').reverse().join(''))
+        .sort(Pali.compareRoman)
+        .reverse();
+      let pat = `^(${rends.join('|')})`;
+      Pali.#STEM_RE = new RegExp(pat);
+      dbg && console.log(msg, '[1]#STEM_RE', Pali.#STEM_RE);
+    }
+    let rw = word.split('').reverse().join('');
+    return rw.replace(Pali.#STEM_RE, '').split('').reverse().join('');
   }
 
 }
