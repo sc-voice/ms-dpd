@@ -80,13 +80,13 @@ export default class Dictionary {
     return entry
   }
 
-  async lookup(word) {
+  lookup(word) {
     let wlen = word.length;
     let stem = word.substring(0,wlen-1);
     let suffix1 = word.substring(wlen-1);
     let suffix2 = word.substring(wlen-2);
     //console.log({wlen, stem, suffix1, suffix2});
-    let entry = await this.entryOf(word);
+    let entry = this.entryOf(word);
     if (entry == null) {
       return null;
     }
@@ -95,6 +95,5 @@ export default class Dictionary {
       definition: entry.definition,
     }
   }
-
 
 }

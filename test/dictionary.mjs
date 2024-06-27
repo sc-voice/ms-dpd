@@ -41,10 +41,10 @@ typeof describe === "function" &&
   it("lookup()", async()=>{
     let dict = await Dictionary.create();
 
-    let dhamma = await dict.lookup("dhamma");
+    let dhamma = dict.lookup("dhamma");
     should(dhamma.key).equal("dhamma");
     //console.log(dhamma);
-    let dhammo = await dict.lookup("dhammo");
+    let dhammo = dict.lookup("dhammo");
     should(dhammo.key).equal("dhammo");
     should.deepEqual(
       dhamma.definition.slice(0,11),
