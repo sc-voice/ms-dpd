@@ -1,6 +1,7 @@
 export const DBG = {
   PALI: 0,
   DICTIONARY: 0,
+  ENTRY_OF: 0,
   SANKEY: 0,
 }
 

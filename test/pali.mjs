@@ -66,6 +66,18 @@ typeof describe === "function" && describe("pali", function () {
     test('icchati iñjati icchā iṭṭha', 'icchati icchā iñjati iṭṭha');
     test('sīla siṅgāla sikhā sīta', 'sikhā siṅgāla sīla sīta');
   });
+  it("compareStem()", ()=>{
+    return; // DEPRECATED
+    let pali = new Pali();
+    let test = (items, expected) =>{
+      let sorted = items.split(' ').sort(Pali.compareStem).join(' ');
+      should(sorted).equal(expected);
+    }
+
+    test('dhamma dhammehi dhammabhogo', 'dhamma dhammehi dhammabhogo');
+    test('dhammo dhammehi dhammi dhammā ababo ūmi dhammabhogo dhamma', 
+      'ababo dhamma dhammā dhammehi dhammabhogo dhammi dhammo ūmi'); 
+  });
   it("compare endings()", ()=>{
     let pali = new Pali();
     let endings = [
@@ -101,7 +113,7 @@ typeof describe === "function" && describe("pali", function () {
       "plural": "-ā"
     });
   });
-  it("TESTTESTwordStem", ()=>{
+  it("wordStem", ()=>{
     // Singular
     should(Pali.wordStem("dhammo")).equal('dhamm');    // Nom
     should(Pali.wordStem("dhammassa")).equal('dhamm'); // Acc

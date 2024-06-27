@@ -25,17 +25,17 @@ typeof describe === "function" &&
     should(dict.dpd.__metadata.license).match(/digitalpalidictionary/);
     should(dict.dpdTexts.length).equal(49757);
   });
-  it("entryOf()", async()=>{
+  it("TESTTESTentryOf()", async()=>{
     let dict = await Dictionary.create();
 
-    // Entry
-    let dhamma = await dict.entryOf("dhamma");
+    let dhamma = dict.entryOf("dhamma");
     let { definition } = dhamma;
-    //console.log(definition);
+    let dhamma2 = dict.entryOf("dhamma");
+    should.deepEqual(dhamma2, dhamma);
 
     // No entry
     should(definition[0]).match(/nature; character/);
-    let asdf = await dict.entryOf("asdf");
+    let asdf = dict.entryOf("asdf");
     should(asdf).equal(null);
   });
   it("lookup()", async()=>{

@@ -8,7 +8,7 @@ import should from "should";
 import { default as AST } from '../src/ast.mjs';
 
 typeof describe === "function" && 
-  describe("TESTTESTast", function () 
+  describe("ast", function () 
 {
   it("default ctor", () => {
     let eCaught;

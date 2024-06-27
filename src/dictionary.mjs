@@ -54,21 +54,30 @@ export default class Dictionary {
     }
   }
 
-  async entryOf(word) {
+  entryOf(word) {
+    const msg = "Dictionary.entryOf()";
+    const dbg = DBG.ENTRY_OF;
     let { lzs, dpd, dpdTexts } = this;
     word = word.toLowerCase();
-    let json = dpd[word];
-    if (json == null) {
+    let entry = dpd[word];
+    if (entry == null) {
       return null;
     }
-    //let json = await lzs.lzwDecompress(entry);
-    //json = entry;
-    let result = JSON.parse(json);
-    let { d } = result;
-    let definition = d.map(code=>dpdTexts[code]);
-    return {
-      definition,
+
+    if (typeof entry === 'string') {
+      let result = JSON.parse(entry);
+      let { d } = result;
+      let definition = d.map(code=>dpdTexts[code]);
+      entry = {
+        definition, 
+      }
+      dpd[word] = entry;
+      //dbg && console.log(msg, '[1]word');
+    } else {
+      //dbg && console.log(msg, '[2]word');
     }
+
+    return entry
   }
 
   async lookup(word) {
@@ -86,4 +95,6 @@ export default class Dictionary {
       definition: entry.definition,
     }
   }
+
+
 }
