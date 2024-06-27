@@ -3,6 +3,7 @@ import { DBG } from './defines.mjs';
 
 export default class Pali {
   static #ENDINGS;
+  static #ENDING_MAX_LEN;
   static #STEM_RE;
   static #OCBS_ALPHABET = [
     'a', 'ā', 'i', 'ī', 'u', 'ū', 'e', 'o', 'ṃ',
@@ -57,6 +58,14 @@ export default class Pali {
 
   static get INFLECTIONS() {
     return INFLECTIONS;
+  }
+
+  static get ENDING_MAX_LEN() {
+    if (Pali.#ENDING_MAX_LEN == null) {
+      let maxLen = Pali.ENDINGS.reduce((a,e)=>Math.max(a, e.length), 0);
+      Pali.#ENDING_MAX_LEN = maxLen - 1; // ignore dash
+    }
+    return Pali.#ENDING_MAX_LEN;
   }
 
   static get OCBS_ALPHABET() {

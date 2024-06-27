@@ -1,11 +1,12 @@
 import { DBG } from './defines.mjs';
 import { default as Compress } from "./compress.mjs";
+import { default as Pali } from '../src/pali.mjs';
 
 export default class Dictionary {
-  static #create = false;
+  static #CREATE = false;
 
   constructor(opts={}) {
-    if (!Dictionary.#create) {
+    if (!Dictionary.#CREATE) {
       throw new Error(`Use Dictionary.create()`);
     }
 
@@ -21,7 +22,7 @@ export default class Dictionary {
         dpd,
         dpdTexts,
       } = opts;
-      Dictionary.#create = true;
+      Dictionary.#CREATE = true;
       if (dpd == null) {
         let dpdPath = '../data/en/dpd.mjs';
         let dpdImport = await import(dpdPath);
@@ -50,7 +51,7 @@ export default class Dictionary {
     } catch (e) {
       throw e;
     } finally {
-      Dictionary.#create = false;
+      Dictionary.#CREATE = false;
     }
   }
 
@@ -94,6 +95,16 @@ export default class Dictionary {
       key: word,
       definition: entry.definition,
     }
+  }
+
+  relatedEntries(word) {
+    const msg = "Dictionary.relatedEntries()";
+    let { dpd } = this;
+    let stem = Pali.wordStem(word);
+    let keys = Object.keys(dpd)
+    let maxLen = word.length + 5;
+    let stemKeys = keys.filter(k=>k.startsWith(stem) && k.length<=maxLen);
+    //console.log(msg, stem, keys[0], stemKeys.length);
   }
 
 }

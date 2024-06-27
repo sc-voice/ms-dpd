@@ -129,4 +129,7 @@ typeof describe === "function" && describe("pali", function () {
     should(Pali.wordStem("dhamma")).equal('dhamm');    // Voc
 
   });
+  it("ENDING_MAX_LEN", ()=>{
+    should(Pali.ENDING_MAX_LEN).equal(5);
+  });
 });

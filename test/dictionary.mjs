@@ -6,6 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 import should from "should";
 import { default as Dictionary } from '../src/dictionary.mjs';
+import { default as Pali } from '../src/pali.mjs';
 
 typeof describe === "function" && 
   describe("dictionary", function () 
@@ -52,5 +53,9 @@ typeof describe === "function" &&
     should.deepEqual(
       dhamma.definition.slice(12),
       dhammo.definition.slice(11));
+  });
+  it("TESTTESTrelatedEntries()", async()=>{
+    let dict = await Dictionary.create();
+    let entries = dict.relatedEntries("dhamma");
   });
 });
