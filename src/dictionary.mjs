@@ -55,8 +55,8 @@ export default class Dictionary {
     }
   }
 
-  entryOf(word) {
-    const msg = "Dictionary.entryOf()";
+  #entryOf(word) {
+    const msg = "Dictionary.#entryOf()";
     const dbg = DBG.ENTRY_OF;
     let { lzs, dpd, dpdTexts } = this;
     word = word.toLowerCase();
@@ -81,30 +81,54 @@ export default class Dictionary {
     return entry
   }
 
-  lookup(word) {
-    let wlen = word.length;
-    let stem = word.substring(0,wlen-1);
-    let suffix1 = word.substring(wlen-1);
-    let suffix2 = word.substring(wlen-2);
-    //console.log({wlen, stem, suffix1, suffix2});
-    let entry = this.entryOf(word);
+  entryOf(word) {
+    let entry = this.#entryOf(word);
     if (entry == null) {
       return null;
     }
-    return {
-      key: word,
-      definition: entry.definition,
-    }
+    return Object.assign({word}, entry);
   }
 
-  relatedEntries(word) {
+  relatedEntries(word, opts={}) {
     const msg = "Dictionary.relatedEntries()";
     let { dpd } = this;
+    let { 
+      overlapThreshold=0,
+    } = opts;
     let stem = Pali.wordStem(word);
     let keys = Object.keys(dpd)
-    let maxLen = word.length + 5;
-    let stemKeys = keys.filter(k=>k.startsWith(stem) && k.length<=maxLen);
-    //console.log(msg, stem, keys[0], stemKeys.length);
+    let maxLen = word.length + Pali.ENDING_MAX_LEN;
+    let stemKeys = keys.filter(k=>{
+      return k.startsWith(stem) && k.length<=maxLen;
+    });
+    let entry = this.entryOf(word);
+    if (entry == null) {
+      return undefined;
+    }
+    let { definition } = entry;
+    let map = {};
+    definition.forEach(line=>map[line]=true);
+    let overlapBasis = definition.length;
+    //console.log(msg, {map});
+
+    let entries = stemKeys.reduce((entries,key)=>{
+      let entry = this.entryOf(key);
+      let intersection = entry.definition.reduce((aDef,line)=>{
+        if (map[line] != null) {
+          aDef++;
+        }
+        return aDef;
+      }, 0);
+      let overlap = intersection/overlapBasis;
+      if (overlap>overlapThreshold) {
+        let decoratedEntry = Object.assign({overlap}, entry);
+        entries.push(decoratedEntry);
+      }
+
+      return entries;
+    }, []);
+
+    return entries;
   }
 
 }

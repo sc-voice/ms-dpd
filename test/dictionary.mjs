@@ -29,24 +29,23 @@ typeof describe === "function" &&
   it("TESTTESTentryOf()", async()=>{
     let dict = await Dictionary.create();
 
+    // dhamma
     let dhamma = dict.entryOf("dhamma");
-    let { definition } = dhamma;
+    should(dhamma).properties(["word", "definition"]);
+    should(dhamma.word).equal("dhamma");
+    should(dhamma.definition[0]).match(/nature; character/);
+    should(dhamma.definition[11])
+      .match(/nt. <b>teaching; discourse;/);
     let dhamma2 = dict.entryOf("dhamma");
     should.deepEqual(dhamma2, dhamma);
 
     // No entry
-    should(definition[0]).match(/nature; character/);
     let asdf = dict.entryOf("asdf");
     should(asdf).equal(null);
-  });
-  it("lookup()", async()=>{
-    let dict = await Dictionary.create();
 
-    let dhamma = dict.lookup("dhamma");
-    should(dhamma.key).equal("dhamma");
-    //console.log(dhamma);
-    let dhammo = dict.lookup("dhammo");
-    should(dhammo.key).equal("dhammo");
+    // dhammo
+    let dhammo = dict.entryOf("dhammo");
+    should(dhammo.word).equal("dhammo");
     should.deepEqual(
       dhamma.definition.slice(0,11),
       dhammo.definition.slice(0,11));
@@ -57,5 +56,11 @@ typeof describe === "function" &&
   it("TESTTESTrelatedEntries()", async()=>{
     let dict = await Dictionary.create();
     let entries = dict.relatedEntries("dhamma");
+    should(entries.length).equal(15);
+    let dhammaya = entries.find(e=>e.word === 'dhammāya');
+    should(dhammaya.overlap).equal(1);
+    should(dhammaya.definition.length).equal(16);
+    let dhammani = entries.find(e=>e.word === 'dhammāni');
+    should(dhammani.definition.length).equal(3);
   });
 });
