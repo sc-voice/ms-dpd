@@ -1,4 +1,4 @@
-export const TEXTS=[
+export const DPD_TEXTS=[
  "abbrev. <b>Vibhaṅga Aṭṭhakathā</b>",
  "abbrev. <b>abbreviation of Cambodia; variant reading occurring in Cambodian texts</b>",
  "abbrev. <b>abbreviation of Cūḷaniddesa; canonical commentary on the Pārāyana of the Sutta Nipāta</b>",

@@ -1,6 +1,9 @@
 import { DBG } from './defines.mjs';
 import { default as Pali } from "./pali.mjs";
 
+import { DPD } from '../data/en/dpd.mjs';
+import { DPD_TEXTS } from '../data/en/dpd-text.mjs';
+
 export default class Dictionary {
   static #CREATE = false;
 
@@ -23,9 +26,7 @@ export default class Dictionary {
       } = opts;
       Dictionary.#CREATE = true;
       if (dpd == null) {
-        let dpdPath = '../data/en/dpd.mjs';
-        let dpdImport = await import(dpdPath);
-        dpd = dpdImport.DPD;
+        dpd = DPD;
         let keys = Object.keys(dpd);
         dbg && console.log(msg, '[2]loaded', {
           metadata: dpd?.__metadata, 
@@ -33,9 +34,7 @@ export default class Dictionary {
         });
       }
       if (dpdTexts == null) {
-        let textPath = '../data/en/dpd-text.mjs';
-        let textImport = await import(textPath);
-        dpdTexts = textImport.TEXTS;
+        dpdTexts = DPD_TEXTS;
         dbg && console.log(msg, '[3]dpdTexts', dpdTexts.length); 
       }
       let dict = new Dictionary({

@@ -59,7 +59,7 @@ for (let i = 0; i < data.length; i++) {
 }
 let textPath = `${__dirname}/../data/en/dpd-text.mjs`;
 let textJson = JSON.stringify(texts, null,1);
-let textOut = `export const TEXTS=${textJson}`;
+let textOut = `export const DPD_TEXTS=${textJson}`;
 fs.writeFileSync(textPath, textOut);
 
 let outPath = `${__dirname}/../data/en/dpd.mjs`;
