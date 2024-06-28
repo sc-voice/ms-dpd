@@ -51,8 +51,8 @@ export default class Dictionary {
     }
   }
 
-  #entryOf(word) {
-    const msg = "Dictionary.#entryOf()";
+  _entryOf(word) {
+    const msg = "Dictionary._entryOf()";
     const dbg = DBG.ENTRY_OF;
     let { dpd, dpdTexts } = this;
     word = word.toLowerCase();
@@ -78,7 +78,7 @@ export default class Dictionary {
   }
 
   entryOf(word) {
-    let entry = this.#entryOf(word);
+    let entry = this._entryOf(word);
     if (entry == null) {
       return null;
     }
