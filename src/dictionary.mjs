@@ -1,6 +1,5 @@
 import { DBG } from './defines.mjs';
-import { default as Compress } from "./compress.mjs";
-import { default as Pali } from '../src/pali.mjs';
+import { default as Pali } from "./pali.mjs";
 
 export default class Dictionary {
   static #CREATE = false;
@@ -39,12 +38,10 @@ export default class Dictionary {
         dpdTexts = textImport.TEXTS;
         dbg && console.log(msg, '[3]dpdTexts', dpdTexts.length); 
       }
-      let lzs = new Compress();
       let dict = new Dictionary({
         lang,
         dpd,
         dpdTexts,
-        lzs,
       });
 
       return dict;
@@ -58,7 +55,7 @@ export default class Dictionary {
   #entryOf(word) {
     const msg = "Dictionary.#entryOf()";
     const dbg = DBG.ENTRY_OF;
-    let { lzs, dpd, dpdTexts } = this;
+    let { dpd, dpdTexts } = this;
     word = word.toLowerCase();
     let entry = dpd[word];
     if (entry == null) {

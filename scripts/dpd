@@ -14,7 +14,7 @@ let [ SCRIPT, DASH, DIRNAME, ...args] = process.argv;
   let dict =  await Dictionary.create();
   for (let i=0; i<args.length; i++) {
     let entry = args[i];
-    let info = dict.lookup(entry);
+    let info = dict.entryOf(entry);
     console.log(entry);
     console.log(info);
   }

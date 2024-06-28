@@ -5,8 +5,10 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 import should from "should";
-import { default as Dictionary } from '../src/dictionary.mjs';
-import { default as Pali } from '../src/pali.mjs';
+import {
+  Pali,
+  Dictionary,
+} from '../main.mjs';
 
 typeof describe === "function" && 
   describe("dictionary", function () 
