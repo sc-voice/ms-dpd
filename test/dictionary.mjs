@@ -37,7 +37,7 @@ typeof describe === "function" &&
     should(dhamma.word).equal("dhamma");
     should(dhamma.definition[0]).match(/nature; character/);
     should(dhamma.definition[11])
-      .match(/nt. <b>teaching; discourse;/);
+      .match(/nt.*teaching; discourse;/);
     let dhamma2 = dict.entryOf("dhamma");
     should.deepEqual(dhamma2, dhamma);
 

@@ -58,6 +58,14 @@ for (let i = 0; i < data.length; i++) {
   }
 }
 let textPath = `${__dirname}/../data/en/dpd-text.mjs`;
+texts = texts.map(line=>{
+  let [ type, meaning, construction ] = line.split(/ *<.?b> */);
+  type = type.replace(/\.$/, '');
+  construction = construction
+    .replace(/[\[\]]/g, '')
+    .replace(/ \+ /g, '\u02d6');
+  return [type, meaning, construction].join('|');
+});
 let textJson = JSON.stringify(texts, null,1);
 let textOut = `export const DPD_TEXTS=${textJson}`;
 fs.writeFileSync(textPath, textOut);
