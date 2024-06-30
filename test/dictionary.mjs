@@ -45,7 +45,7 @@ typeof describe === "function" &&
     let asdf = dict.entryOf("asdf");
     should(asdf).equal(null);
 
-    // dhammo
+    // dhammo (similar definition)
     let dhammo = dict.entryOf("dhammo");
     should(dhammo.word).equal("dhammo");
     should.deepEqual(
@@ -54,6 +54,16 @@ typeof describe === "function" &&
     should.deepEqual(
       dhamma.definition.slice(12),
       dhammo.definition.slice(11));
+
+    // dhammaṁ (anusvāra)
+    let dhammam = dict.entryOf("dhammaṁ");
+    should.deepEqual(dhammam.definition, dhamma.definition);
+
+    // giddhe (literal)
+    let giddhe = dict.entryOf("giddhe");
+    should(giddhe.word).equal("giddhe");
+    should(giddhe.definition[0])
+      .match(/pp\|greedy.*\|become greedy\|√gidh˖ta/);
   });
   it("TESTTESTrelatedEntries()", async()=>{
     let dict = await Dictionary.create();

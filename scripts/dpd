@@ -15,23 +15,28 @@ let [ SCRIPT, DASH, DIRNAME, ...args] = process.argv;
   for (let i=0; i<args.length; i++) {
     let word = args[i];
     let info = dict.entryOf(word);
+    if (info == null) {
+      console.log(`${word} (not found)`);
+      return;
+    }
     let { definition } = info;
     console.log(word);
     console.log("=".padEnd(word.length, "="));
     let typePad = 1;
     let constrPad = 1;
-    definition.forEach(line=>{
-      let [ type, meaning, construction ] = line.split('|');
+    let lines = definition.map(line=>{
+      let [ type, meaning, literal, construction ] = line.split('|');
       typePad = Math.max(typePad, type.length);
       constrPad = Math.max(constrPad, construction.length);
+      return [type, meaning, literal, construction ];
     });
-    definition.forEach((line,i)=>{
-      let [ type, meaning, construction ] = line.split('|');
+    lines.forEach((line,i)=>{
+      let [ type, meaning, literal, construction] = line;
       console.log(
         `${i+1}`.padStart(2),
         type.padEnd(typePad+1),
         construction.padEnd(constrPad+1),
-        meaning,
+        `${meaning}${literal && ("; lit."+literal)}`,
       );
     });
   }

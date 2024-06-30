@@ -13,7 +13,8 @@ const textMap = {};
 let APIURL = 'https://suttacentral.net/api';
 let url = `${APIURL}/dictionaries/lookup?from=pli&to=en`;
 let res = await fetch(url);
-let data = await res.json();
+let resText = await res.text();
+let data = JSON.parse(resText.replace(/ṃ/g, 'ṁ')); // SC anusvāra
 let dataMap = {
   __metadata: {
     license: "https://digitalpalidictionary.github.io/titlepage.html",
@@ -59,12 +60,12 @@ for (let i = 0; i < data.length; i++) {
 }
 let textPath = `${__dirname}/../data/en/dpd-text.mjs`;
 texts = texts.map(line=>{
-  let [ type, meaning, construction ] = line.split(/ *<.?b> */);
+  let [ type, meaning, litcon ] = line.split(/ *<.?b>/);
+  let [ lit, con ] = litcon.split(' [');
   type = type.replace(/\.$/, '');
-  construction = construction
-    .replace(/[\[\]]/g, '')
-    .replace(/ \+ /g, '\u02d6');
-  return [type, meaning, construction].join('|');
+  lit = (lit||'') && lit.replace(/;? *lit\. */, '');
+  con = (con||'') && con.replace(/] */, '').replace(/ \+ /g, '\u02d6');
+  return [type, meaning, lit, con].join('|');
 });
 let textJson = JSON.stringify(texts, null,1);
 let textOut = `export const DPD_TEXTS=${textJson}`;
