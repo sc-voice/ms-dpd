@@ -93,16 +93,31 @@ typeof describe === "function" &&
   });
   it("TESTTESTfindWords()", async()=>{
     let dict = await Dictionary.create();
-    let entries = dict.findWords(/\bto the Truth/i);
-    should(entries.length).equal(9);
-    //console.log(entries);
-    let e0 = entries[0];
-    should.deepEqual(dict.parseDefinition(e0.definition), {
-      construction: 'sacca˖gāmī',
-      literal: '',
-      meaning: 'leading to the truth; going to the true',
-      type: 'adj',
-    });
-    should.deepEqual(e0.words, ['saccagāmiṁ']);
+    let matches = dict.findWords(/\bto the Truth/i);
+    should(matches.length).equal(9);
+
+    { // matches single word
+      let { definition, words } = matches[0];
+      //console.log(matches[0]);
+      should.deepEqual(words, ['saccagāmiṁ']);
+      should.deepEqual(dict.parseDefinition(definition), {
+        type: 'adj',
+        meaning: 'leading to the truth; going to the true',
+        literal: '',
+        construction: 'sacca˖gāmī',
+      });
+    }
+
+    { // matches multiple words
+      let { definition, words } = matches[6];
+      //console.log(matches[6]);
+      should.deepEqual(words, ['saccānubodhaṁ', 'saccānubodho']);
+      should.deepEqual(dict.parseDefinition(definition), {
+        type: 'masc',
+        meaning: 'awakening to the truth; understanding the truth; realizing reality',
+        literal: '',
+        construction: 'sacca˖anubodha',
+      });
+    }
   });
 });
