@@ -35,7 +35,13 @@ typeof describe === "function" &&
     let dhamma = dict.entryOf("dhamma");
     should(dhamma).properties(["word", "definition"]);
     should(dhamma.word).equal("dhamma");
-    should(dhamma.definition[0]).match(/nature; character/);
+    let def0 = dict.parseDefinition(dhamma.definition[0]);
+    should.deepEqual(def0, {
+      type: 'masc',
+      meaning: 'nature; character',
+      literal: '',
+      construction: '√dhar˖ma',
+    });
     should(dhamma.definition[11])
       .match(/nt.*teaching; discourse;/);
     let dhamma2 = dict.entryOf("dhamma");
@@ -65,7 +71,7 @@ typeof describe === "function" &&
     should(giddhe.definition[0])
       .match(/pp\|greedy.*\|become greedy\|√gidh˖ta/);
   });
-  it("TESTTESTrelatedEntries()", async()=>{
+  it("relatedEntries()", async()=>{
     let dict = await Dictionary.create();
     let entries = dict.relatedEntries("dhamma");
     should(entries.length).equal(15);
@@ -74,5 +80,29 @@ typeof describe === "function" &&
     should(dhammaya.definition.length).equal(16);
     let dhammani = entries.find(e=>e.word === 'dhammāni');
     should(dhammani.definition.length).equal(3);
+  });
+  it("TESTTESTparseDefinition()", async()=>{
+    let dict = await Dictionary.create();
+    let entry = dict.entryOf("dhamma");
+    should.deepEqual(dict.parseDefinition(entry.definition[0]), {
+      type: 'masc',
+      meaning: 'nature; character',
+      literal: '',
+      construction: '√dhar˖ma',
+    });
+  });
+  it("TESTTESTfindWords()", async()=>{
+    let dict = await Dictionary.create();
+    let entries = dict.findWords(/\bto the Truth/i);
+    should(entries.length).equal(9);
+    //console.log(entries);
+    let e0 = entries[0];
+    should.deepEqual(dict.parseDefinition(e0.definition), {
+      construction: 'sacca˖gāmī',
+      literal: '',
+      meaning: 'leading to the truth; going to the true',
+      type: 'adj',
+    });
+    should.deepEqual(e0.words, ['saccagāmiṁ']);
   });
 });

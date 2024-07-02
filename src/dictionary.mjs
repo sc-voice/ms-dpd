@@ -4,8 +4,10 @@ import { default as Pali } from "./pali.mjs";
 import { DPD } from '../data/en/dpd.mjs';
 import { DPD_TEXTS } from '../data/en/dpd-text.mjs';
 
+
 export default class Dictionary {
   static #CREATE = false;
+  static #DPD; // cache
 
   constructor(opts={}) {
     if (!Dictionary.#CREATE) {
@@ -16,22 +18,31 @@ export default class Dictionary {
   }
 
   static async create(opts={}) {
-    const msg = 'Dictionary.#loadDpd()';
-    const dbg = DBG.DICTIONARY;
+    const msg = 'Dictionary.create()';
+    const dbg = DBG.DICTIONARY_CREATE;
     try {
       let { 
         lang='en',
-        dpd,
+        dpd=Dictionary.#DPD,
         dpdTexts,
       } = opts;
       Dictionary.#CREATE = true;
       if (dpd == null) {
-        dpd = DPD;
-        let keys = Object.keys(dpd);
-        dbg && console.log(msg, '[2]loaded', {
+        let keys = Object.keys(DPD);
+        dpd = keys.reduce((a,word)=>{
+          let rawEntry = DPD[word];
+          a[word] = typeof rawEntry === 'string'
+            ? JSON.parse(rawEntry) 
+            : rawEntry;
+          return a;
+        }, DPD); // overwrite imported DPD;
+        Dictionary.#DPD = dpd;
+        dbg && console.log(msg, '[1]DPD', {
           metadata: dpd?.__metadata, 
           keys: keys.length,
         });
+      } else {
+        dbg && console.log(msg, '[2]dpd');
       }
       if (dpdTexts == null) {
         dpdTexts = DPD_TEXTS;
@@ -51,38 +62,18 @@ export default class Dictionary {
     }
   }
 
-  _entryOf(word) {
-    const msg = "Dictionary._entryOf()";
+  entryOf(word) {
+    const msg = "Dictionary.entryOf()";
     const dbg = DBG.ENTRY_OF;
     let { dpd, dpdTexts } = this;
     word = word.toLowerCase();
-    let entry = dpd[word];
-    if (entry == null) {
+    let rawEntry = dpd[word];
+    if (rawEntry == null) {
       return null;
     }
-
-    if (typeof entry === 'string') {
-      let result = JSON.parse(entry);
-      let { d } = result;
-      let definition = d.map(code=>dpdTexts[code]);
-      entry = {
-        definition, 
-      }
-      dpd[word] = entry;
-      //dbg && console.log(msg, '[1]word');
-    } else {
-      //dbg && console.log(msg, '[2]word');
-    }
-
-    return entry
-  }
-
-  entryOf(word) {
-    let entry = this._entryOf(word);
-    if (entry == null) {
-      return null;
-    }
-    return Object.assign({word}, entry);
+    let { d } = rawEntry;
+    let definition = d.map(id=>dpdTexts[id]);
+    return Object.assign({word}, {definition});
   }
 
   relatedEntries(word, opts={}) {
@@ -105,7 +96,6 @@ export default class Dictionary {
     let map = {};
     definition.forEach(line=>map[line]=true);
     let overlapBasis = definition.length;
-    //console.log(msg, {map});
 
     let entries = stemKeys.reduce((entries,key)=>{
       let entry = this.entryOf(key);
@@ -125,6 +115,57 @@ export default class Dictionary {
     }, []);
 
     return entries;
+  }
+
+  findWords(defPat) {
+    const msg="Dictionary.findWords()";
+    const dbg = DBG.DEFINED_ENTRIES;
+    let { dpd, dpdTexts } = this;
+    let re = defPat instanceof RegExp ? defPat : new RegExp(defPat);
+    let textMap = {};
+    let dpdKeys = Object.keys(dpd);
+    let idMatch = dpdTexts.reduce((a,text,i)=>{
+      if (re.test(text)) {
+        a[i] = text;
+        textMap[text] = i;
+      }
+      return a;
+    }, {});
+    let dpdEntries = Object.entries(dpd);
+    let defWords = dpdEntries.reduce((a,entry,i) =>{
+      let [ word, info ] = entry;
+      (info.d instanceof Array) && info.d.forEach(id=>{
+        if (idMatch[id]) {
+          let defText = dpdTexts[id];
+          let words = a[id] || [];
+          words.push(word);
+          a[id] = words;
+        }
+      });
+      return a;
+    }, {});
+    let matches = Object.entries(defWords).map(entry=>{
+      let [id, words] = entry;
+      let d = dpdTexts[id];
+      return {
+        definition:d,
+        words,
+      }
+    });
+    dbg && console.log(msg, matches);
+    return matches;
+  }
+
+  parseDefinition(d='type?|meaning?|literal?|construction?') {
+    if (d instanceof Array) {
+      return d.map(line=>this.parseDefinition(line));
+    }
+    if (typeof d === 'string') {
+      let [ type, meaning, literal, construction ] = d.split('|');
+      return { type, meaning, literal, construction };
+    }
+
+    return undefined; 
   }
 
 }
