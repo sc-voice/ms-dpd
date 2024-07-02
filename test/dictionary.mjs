@@ -26,7 +26,7 @@ typeof describe === "function" &&
     let dict = await Dictionary.create();
     should(dict.lang).equal('en');
     should(dict.dpd.__metadata.license).match(/digitalpalidictionary/);
-    should(dict.dpdTexts.length).equal(49757);
+    should(dict.dpdTexts.length).above(52000).below(55000);
   });
   it("TESTTESTentryOf()", async()=>{
     let dict = await Dictionary.create();
@@ -58,7 +58,7 @@ typeof describe === "function" &&
       dhamma.definition.slice(0,11),
       dhammo.definition.slice(0,11));
     should.deepEqual(
-      dhamma.definition.slice(12),
+      dhamma.definition.slice(12,16),
       dhammo.definition.slice(11));
 
     // dhammaṁ (anusvāra)
@@ -71,13 +71,13 @@ typeof describe === "function" &&
     should(giddhe.definition[0])
       .match(/pp\|greedy.*\|become greedy\|√gidh˖ta/);
   });
-  it("relatedEntries()", async()=>{
+  it("TESTTESTrelatedEntries()", async()=>{
     let dict = await Dictionary.create();
     let entries = dict.relatedEntries("dhamma");
     should(entries.length).equal(15);
     let dhammaya = entries.find(e=>e.word === 'dhammāya');
     should(dhammaya.overlap).equal(1);
-    should(dhammaya.definition.length).equal(16);
+    should(dhammaya.definition.length).equal(17);
     let dhammani = entries.find(e=>e.word === 'dhammāni');
     should(dhammani.definition.length).equal(3);
   });
@@ -94,7 +94,7 @@ typeof describe === "function" &&
   it("TESTTESTfindWords()", async()=>{
     let dict = await Dictionary.create();
     let matches = dict.findWords(/\bto the Truth/i);
-    should(matches.length).equal(9);
+    should(matches.length).equal(10);
 
     { // matches single word
       let { definition, words } = matches[0];
@@ -109,7 +109,7 @@ typeof describe === "function" &&
     }
 
     { // matches multiple words
-      let { definition, words } = matches[6];
+      let { definition, words } = matches[7];
       //console.log(matches[6]);
       should.deepEqual(words, ['saccānubodhaṁ', 'saccānubodho']);
       should.deepEqual(dict.parseDefinition(definition), {

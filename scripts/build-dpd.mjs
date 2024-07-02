@@ -10,9 +10,14 @@ import { default as Compress } from "../src/compress.mjs";
 const msg = `${__filename}`;
 const textMap = {};
 
-let APIURL = 'https://suttacentral.net/api';
-let url = `${APIURL}/dictionaries/lookup?from=pli&to=en`;
-let res = await fetch(url);
+let SC_DATA_URL = [
+  'https://raw.githubusercontent.com/suttacentral/sc-data',
+  'main/dictionaries/simple/en/pli2en_dpd.json',
+].join('/');
+//let APIURL = 'https://suttacentral.net/api';
+//let url = `${APIURL}/dictionaries/lookup?from=pli&to=en`;
+//let res = await fetch(url);
+let res = await fetch(SC_DATA_URL);
 let resText = await res.text();
 let data = JSON.parse(resText.replace(/ṃ/g, 'ṁ')); // SC anusvāra
 let dataMap = {
