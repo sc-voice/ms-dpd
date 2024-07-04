@@ -32,6 +32,7 @@
     "should": "^13.2.3"
   },
   "dependencies": {
+    "@sc-voice/pali": "^1.14.0",
     "shrink-string": "^3.1.9"
   }
 }

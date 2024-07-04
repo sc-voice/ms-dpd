@@ -17,6 +17,19 @@ export default class Dictionary {
     Object.assign(this, opts);
   }
 
+  static romanizePattern(pattern) {
+    return pattern
+      .replace(/a/iug, '(a|ā)')
+      .replace(/i/iug, '(i|ī)')
+      .replace(/u/iug, '(u|ū)')
+      .replace(/m/iug, '(m|ṁ|ṃ)')
+      .replace(/d/iug, '(d|ḍ)')
+      .replace(/n/iug, '(n|ṅ|ñ|ṇ)')
+      .replace(/l/iug, '(l|ḷ)')
+      .replace(/t/iug, '(t|ṭ)')
+      ;
+  }
+
   static async create(opts={}) {
     const msg = 'Dictionary.create()';
     const dbg = DBG.DICTIONARY_CREATE;
@@ -119,7 +132,7 @@ export default class Dictionary {
 
   findWords(defPat) {
     const msg="Dictionary.findWords()";
-    const dbg = DBG.DEFINED_ENTRIES;
+    const dbg = DBG.FIND_WORDS;
     let { dpd, dpdTexts } = this;
     let re = defPat instanceof RegExp ? defPat : new RegExp(defPat);
     let textMap = {};
@@ -168,4 +181,74 @@ export default class Dictionary {
     return undefined; 
   }
 
+  find(pattern, opts={}) {
+    const msg = "Dictionary,find()";
+    const dbg = DBG.FIND;
+    let { dpd } = this;
+    let {
+      method,
+    } = opts;
+    let result;
+    if (!result && (!method || method==='entry')) {
+      let entry = this.entryOf(pattern);
+      if (entry) {
+        let data = entry.definition.map(def=>{
+          let parsed = this.parseDefinition(def);
+          let row = Object.assign(parsed, {word: pattern});
+          return row;
+        });
+        result = { data, pattern, method: 'entry', }
+      }
+    } 
+    if (!result && (!method || method==='romanize')) {
+      pattern = Dictionary.romanizePattern(pattern);
+      let re = new RegExp(`^${pattern}\$`);
+      let data = Object.keys(dpd).reduce((a,word)=>{
+        if (re.test(word)) {
+          let entry = this.entryOf(word);
+          entry && entry.definition.forEach(def=>{
+            let parsed = this.parseDefinition(def);
+            let row = Object.assign(parsed, {word: entry.word});
+            a.push(row);
+          });
+        }
+        return a;
+      }, []);
+      if (data.length) {
+        result = { data, pattern, method: 'romanize', };
+      }
+    }
+    if (!result && (!method || method==='definition')) {
+      let rows = this.findWords(pattern);
+      let data = rows.reduce((a,row)=>{
+        let { definition, words } = row;
+        let parsed = this.parseDefinition(definition);
+        words.forEach(word=>{
+          let row = Object.assign(parsed, {word});
+          a.push(row);
+        });
+        return a;
+      }, []);
+
+      if (data.length) {
+        result = { data, pattern, method: 'definition', };
+      }
+    }
+    
+    if (dbg) {
+      if (result) {
+        result.data.forEach(row=>console.log(msg, '[1]',
+          row.word,
+          row.construction,
+          row.type, 
+          row.meaning, 
+          row.literal, 
+        ));
+      } else {
+        console.log(msg, args, '=>', null);
+      }
+    }
+
+    return result;
+  }
 }

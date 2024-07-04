@@ -28,7 +28,7 @@ typeof describe === "function" &&
     should(dict.dpd.__metadata.license).match(/digitalpalidictionary/);
     should(dict.dpdTexts.length).above(52000).below(55000);
   });
-  it("TESTTESTentryOf()", async()=>{
+  it("entryOf()", async()=>{
     let dict = await Dictionary.create();
 
     // dhamma
@@ -71,7 +71,7 @@ typeof describe === "function" &&
     should(giddhe.definition[0])
       .match(/pp\|greedy.*\|become greedy\|√gidh˖ta/);
   });
-  it("TESTTESTrelatedEntries()", async()=>{
+  it("relatedEntries()", async()=>{
     let dict = await Dictionary.create();
     let entries = dict.relatedEntries("dhamma");
     should(entries.length).equal(15);
@@ -81,7 +81,7 @@ typeof describe === "function" &&
     let dhammani = entries.find(e=>e.word === 'dhammāni');
     should(dhammani.definition.length).equal(3);
   });
-  it("TESTTESTparseDefinition()", async()=>{
+  it("parseDefinition()", async()=>{
     let dict = await Dictionary.create();
     let entry = dict.entryOf("dhamma");
     should.deepEqual(dict.parseDefinition(entry.definition[0]), {
@@ -91,7 +91,7 @@ typeof describe === "function" &&
       construction: '√dhar˖ma',
     });
   });
-  it("TESTTESTfindWords()", async()=>{
+  it("findWords()", async()=>{
     let dict = await Dictionary.create();
     let matches = dict.findWords(/\bto the Truth/i);
     should(matches.length).equal(10);
@@ -119,5 +119,60 @@ typeof describe === "function" &&
         construction: 'sacca˖anubodha',
       });
     }
+  });
+  it("TESTTESTfind() entry", async()=>{
+    let dict = await Dictionary.create();
+    let dhamma = dict.find("dhamma");
+    should(dhamma).properties(['pattern', 'method', 'data' ]);
+    should(dhamma.method).equal('entry');
+    should(dhamma.pattern).equal('dhamma');
+    should(dhamma.data[0]).properties([
+      "word", "type", "meaning", "literal", "construction"
+    ]);
+    should.deepEqual(dhamma.data[0], {
+      word: 'dhamma',
+      type: 'masc',
+      literal: '',
+      construction: '√dhar˖ma',
+      meaning: 'nature; character',
+    });
+  });
+  it("TESTTESTfind() romanize", async()=>{
+    let dict = await Dictionary.create();
+    let dhamma = dict.find("dhamma");
+    let dhamma_rom = dict.find("dhamma", {method:'romanize'});
+    should(dhamma_rom).properties(['pattern', 'method', 'data' ]);
+    should(dhamma_rom.method).equal('romanize');
+    should(dhamma_rom.pattern).equal('(d|ḍ)h(a|ā)(m|ṁ|ṃ)(m|ṁ|ṃ)(a|ā)');
+    should(dhamma_rom.data.length).equal(34);
+    should.deepEqual(dhamma_rom.data[0], { // same as "dhamma"
+      word: 'dhamma',
+      type: 'masc',
+      literal: '',
+      construction: '√dhar˖ma',
+      meaning: 'nature; character',
+    });
+    should.deepEqual(dhamma_rom.data[17], { // almost like "dhamma"
+      word: 'dhammā', 
+      type: 'masc',
+      literal: '',
+      construction: '√dhar˖ma',
+      meaning: 'nature; character',
+    });
+  });
+  it("TESTTESTfind() definition", async()=>{
+    let dict = await Dictionary.create();
+    let virtue = dict.find("superior virtue", {method:'definition'});
+    should(virtue).properties(['pattern', 'method', 'data' ]);
+    should(virtue.method).equal('definition');
+    should(virtue.pattern).equal('superior virtue');
+    should(virtue.data.length).equal(1);
+    should.deepEqual(virtue.data[0], {
+      word: 'sīlaggaṁ',
+      type: 'nt',
+      literal: '',
+      meaning: 'the highest ethical conduct; superior virtue',
+      construction: 'sīla˖agga',
+    });
   });
 });
