@@ -2,16 +2,28 @@
 JavaScript library for searching
 [Digital Pali Dictionary](https://digitalpalidictionary.github.io/titlepage.html)
 
-### Installation
-Installing the library also isntalls a Linux command line script
-that searches the Digital Pali Dictionary
+### Command Line
+For a command line program that gives quick access to DPD:
+
+```
+git clone https://github.com/sc-voice/pali
+cd pali
+npm install
+./scripts/dpd --help
+./scripts/dpd dhamma
+./scripts/dpd -mr dhamma
+./scripts/dpd -md 'superior virtue'
+```
+
+### Library
+For an existing Javascript project (browser or web),
+install the library as follows:
 
 ```
 npm install @sc-voice/pali@latest
-scripts/dpd --help
 ```
 
-### Usage 
+The primary class of interest is Dictionary:
 
 ```
 import { Dictionary } from '@sc-voice/pali/main.mjs'
