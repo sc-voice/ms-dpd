@@ -134,7 +134,10 @@ export default class Dictionary {
     const msg="Dictionary.findWords()";
     const dbg = DBG.FIND_WORDS;
     let { dpd, dpdTexts } = this;
-    let re = defPat instanceof RegExp ? defPat : new RegExp(defPat);
+    let re = defPat instanceof RegExp 
+      ? defPat 
+      : new RegExp(`^.*${defPat}.*$`, 'i');
+    dbg && console.log(msg, '[1]re', re);
     let textMap = {};
     let dpdKeys = Object.keys(dpd);
     let idMatch = dpdTexts.reduce((a,text,i)=>{
@@ -181,6 +184,33 @@ export default class Dictionary {
     return undefined; 
   }
 
+  findDefinition(pattern) {
+    const msg = "Dictionary.findDefinition()";
+    const dbg = DBG.FIND_DEFINITION;
+    let result;
+    let rows = this.findWords(pattern);
+    let data = rows.reduce((a,row)=>{
+      dbg && console.log(msg, '[1]', row);
+      let { definition, words } = row;
+      let parsed = this.parseDefinition(definition);
+      words.forEach(word=>{
+        let resultRow = Object.assign({}, parsed, {word});
+        dbg && console.log(msg, '[2]', resultRow);
+        a.push(resultRow);
+      });
+      return a;
+    }, []);
+
+    if (data.length) {
+      result = { data, pattern, method: 'definition', };
+      dbg && console.log(msg, '[3]result', result);
+    } else {
+      dbg && console.log(msg, '[4]data?', {pattern});
+    }
+
+    return result;
+  }
+
   find(pattern, opts={}) {
     const msg = "Dictionary,find()";
     const dbg = DBG.FIND;
@@ -219,20 +249,7 @@ export default class Dictionary {
       }
     }
     if (!result && (!method || method==='definition')) {
-      let rows = this.findWords(pattern);
-      let data = rows.reduce((a,row)=>{
-        let { definition, words } = row;
-        let parsed = this.parseDefinition(definition);
-        words.forEach(word=>{
-          let row = Object.assign(parsed, {word});
-          a.push(row);
-        });
-        return a;
-      }, []);
-
-      if (data.length) {
-        result = { data, pattern, method: 'definition', };
-      }
+      result = this.findDefinition(pattern);
     }
     
     if (dbg) {
@@ -245,7 +262,7 @@ export default class Dictionary {
           row.literal, 
         ));
       } else {
-        console.log(msg, args, '=>', null);
+        console.log(msg, "result?", {pattern, method});
       }
     }
 

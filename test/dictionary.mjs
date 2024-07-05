@@ -120,7 +120,7 @@ typeof describe === "function" &&
       });
     }
   });
-  it("TESTTESTfind() entry", async()=>{
+  it("find() entry", async()=>{
     let dict = await Dictionary.create();
     let dhamma = dict.find("dhamma");
     should(dhamma).properties(['pattern', 'method', 'data' ]);
@@ -137,7 +137,7 @@ typeof describe === "function" &&
       meaning: 'nature; character',
     });
   });
-  it("TESTTESTfind() romanize", async()=>{
+  it("find() romanize", async()=>{
     let dict = await Dictionary.create();
     let dhamma = dict.find("dhamma");
     let dhamma_rom = dict.find("dhamma", {method:'romanize'});
@@ -160,7 +160,7 @@ typeof describe === "function" &&
       meaning: 'nature; character',
     });
   });
-  it("TESTTESTfind() definition", async()=>{
+  it("find() definition superior virtue", async()=>{
     let dict = await Dictionary.create();
     let virtue = dict.find("superior virtue", {method:'definition'});
     should(virtue).properties(['pattern', 'method', 'data' ]);
@@ -173,6 +173,29 @@ typeof describe === "function" &&
       literal: '',
       meaning: 'the highest ethical conduct; superior virtue',
       construction: 'sīla˖agga',
+    });
+  });
+  it("TESTTESTfind() definition virtue; moral behaviour", async()=>{
+    let dict = await Dictionary.create();
+    let pattern = 'virtue; moral behaviour';
+    let virtue = dict.find(pattern, {method: 'definition'});
+    should(virtue).properties(['pattern', 'method', 'data' ]);
+    should(virtue.method).equal('definition');
+    should(virtue.pattern).equal(pattern);
+    should(virtue.data.length).equal(14);
+    should.deepEqual(virtue.data[0], {
+      word: 'dhamma',
+      type: 'masc',
+      literal: '',
+      meaning: 'virtue; moral behaviour',
+      construction: '√dhar˖ma',
+    });
+    should.deepEqual(virtue.data[1], {
+      word: 'dhammasmiṁ',
+      type: 'masc',
+      literal: '',
+      meaning: 'virtue; moral behaviour',
+      construction: '√dhar˖ma',
     });
   });
 });

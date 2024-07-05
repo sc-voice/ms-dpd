@@ -3,6 +3,7 @@ export const DBG = {
   DICTIONARY_CREATE: 0,
   ENTRY_OF: 0,
   FIND: 0,
+  FIND_DEFINITION: 0,
   FIND_WORDS: 0,
   SANKEY: 0,
 }
