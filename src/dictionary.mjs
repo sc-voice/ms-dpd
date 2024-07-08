@@ -136,7 +136,7 @@ export default class Dictionary {
     let { dpd, dpdTexts } = this;
     let re = defPat instanceof RegExp 
       ? defPat 
-      : new RegExp(`^.*${defPat}.*$`, 'i');
+      : new RegExp(`\\b${defPat}`, 'i');
     dbg && console.log(msg, '[1]re', re);
     let textMap = {};
     let dpdKeys = Object.keys(dpd);
@@ -231,8 +231,8 @@ export default class Dictionary {
       }
     } 
     if (!result && (!method || method==='romanize')) {
-      pattern = Dictionary.romanizePattern(pattern);
-      let re = new RegExp(`^${pattern}\$`);
+      let rpattern = Dictionary.romanizePattern(pattern);
+      let re = new RegExp(`^${rpattern}\$`);
       let data = Object.keys(dpd).reduce((a,word)=>{
         if (re.test(word)) {
           let entry = this.entryOf(word);
@@ -245,7 +245,7 @@ export default class Dictionary {
         return a;
       }, []);
       if (data.length) {
-        result = { data, pattern, method: 'romanize', };
+        result = { data, pattern:rpattern, method: 'romanize', };
       }
     }
     if (!result && (!method || method==='definition')) {

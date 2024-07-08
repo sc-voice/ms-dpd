@@ -120,7 +120,19 @@ typeof describe === "function" &&
       });
     }
   });
-  it("find() entry", async()=>{
+  it("TESTTESTfind() moral behaviour (definition)", async()=>{
+    let dict = await Dictionary.create();
+    let pattern = 'moral behaviour';
+    let res = dict.find(pattern);
+    should(res.method).equal('definition');
+    should(res.pattern).equal(pattern);
+    for (let i=0; i<res.data.length; i++) {
+      let { meaning } = res.data[i];
+      should(meaning).match(new RegExp(`\\b${pattern}`, 'i'));
+    }
+    should(res.data.length).equal(25);
+  });
+  it("find() dhamma (entry)", async()=>{
     let dict = await Dictionary.create();
     let dhamma = dict.find("dhamma");
     should(dhamma).properties(['pattern', 'method', 'data' ]);
