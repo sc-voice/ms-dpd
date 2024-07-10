@@ -17,7 +17,11 @@ export default class Dictionary {
     Object.assign(this, opts);
   }
 
-  static romanizePattern(pattern) {
+  static isAccented(word) {
+    return !/^[a-z]+$/i.test(word);
+  }
+
+  static unaccentedPattern(pattern) {
     return pattern
       .replace(/a/iug, '(a|ā)')
       .replace(/i/iug, '(i|ī)')
@@ -87,6 +91,49 @@ export default class Dictionary {
     let { d } = rawEntry;
     let definition = d.map(id=>dpdTexts[id]);
     return Object.assign({word}, {definition});
+  }
+
+  wordsWithPrefix(prefix, opts={}) {
+    const msg = "Dictionary.autocompleteWords()";
+    let { dpd } = this;
+    let { 
+      limit=0,
+      strict=false,
+    } = opts;
+    let keys = Object.keys(dpd);
+    let matching;
+    let matchLen = prefix.length+1;
+    if (strict) {
+      matching = keys.filter(word=>word.startsWith(prefix));
+    } else if (Dictionary.isAccented(prefix)) {
+      let re = new RegExp(`^${prefix}`, 'i');
+      let map = keys.reduce((a,word)=>{
+        if (re.test(word)) {
+          let key = word.length > matchLen
+            ? word.slice(0, matchLen)+"\u2026"
+            : word;
+          a[key] = 1;
+        }
+        return a;
+      }, {});
+      matching = Object.keys(map);
+    } else {
+      let pat = Dictionary.unaccentedPattern(prefix);
+      let re = new RegExp(`^${pat}`, 'i');
+      let map = keys.reduce((a,word)=>{
+        if (re.test(word)) {
+          let key = word.length > matchLen
+            ? word.slice(0, matchLen)+"\u2026"
+            : word;
+          a[key] = 1;
+        }
+        return a;
+      }, {});
+      matching = Object.keys(map);
+    }
+    return limit 
+      ? matching.slice(0,limit) 
+      : matching;
   }
 
   relatedEntries(word, opts={}) {
@@ -230,8 +277,8 @@ export default class Dictionary {
         result = { data, pattern, method: 'entry', }
       }
     } 
-    if (!result && (!method || method==='romanize')) {
-      let rpattern = Dictionary.romanizePattern(pattern);
+    if (!result && (!method || method==='unaccented')) {
+      let rpattern = Dictionary.unaccentedPattern(pattern);
       let re = new RegExp(`^${rpattern}\$`);
       let data = Object.keys(dpd).reduce((a,word)=>{
         if (re.test(word)) {
@@ -245,7 +292,7 @@ export default class Dictionary {
         return a;
       }, []);
       if (data.length) {
-        result = { data, pattern:rpattern, method: 'romanize', };
+        result = { data, pattern:rpattern, method: 'unaccented', };
       }
     }
     if (!result && (!method || method==='definition')) {

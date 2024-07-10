@@ -120,7 +120,7 @@ typeof describe === "function" &&
       });
     }
   });
-  it("TESTTESTfind() moral behaviour (definition)", async()=>{
+  it("find() moral behaviour (definition)", async()=>{
     let dict = await Dictionary.create();
     let pattern = 'moral behaviour';
     let res = dict.find(pattern);
@@ -149,12 +149,12 @@ typeof describe === "function" &&
       meaning: 'nature; character',
     });
   });
-  it("find() romanize", async()=>{
+  it("find() unaccented", async()=>{
     let dict = await Dictionary.create();
     let dhamma = dict.find("dhamma");
-    let dhamma_rom = dict.find("dhamma", {method:'romanize'});
+    let dhamma_rom = dict.find("dhamma", {method:'unaccented'});
     should(dhamma_rom).properties(['pattern', 'method', 'data' ]);
-    should(dhamma_rom.method).equal('romanize');
+    should(dhamma_rom.method).equal('unaccented');
     should(dhamma_rom.pattern).equal('(d|ḍ)h(a|ā)(m|ṁ|ṃ)(m|ṁ|ṃ)(a|ā)');
     should(dhamma_rom.data.length).equal(34);
     should.deepEqual(dhamma_rom.data[0], { // same as "dhamma"
@@ -187,7 +187,7 @@ typeof describe === "function" &&
       construction: 'sīla˖agga',
     });
   });
-  it("TESTTESTfind() definition virtue; moral behaviour", async()=>{
+  it("find() definition virtue; moral behaviour", async()=>{
     let dict = await Dictionary.create();
     let pattern = 'virtue; moral behaviour';
     let virtue = dict.find(pattern, {method: 'definition'});
@@ -209,5 +209,45 @@ typeof describe === "function" &&
       meaning: 'virtue; moral behaviour',
       construction: '√dhar˖ma',
     });
+  });
+  it("TESTTESTisAccented()", ()=>{
+    should(Dictionary.isAccented("samvega")).equal(false);
+    should(Dictionary.isAccented("saṁvega")).equal(true);
+  });
+  it("TESTTESTwordsWithPrefix()", async ()=>{
+    let dict = await Dictionary.create();
+
+    // When strict is false (default), the output may have ellipses:
+    should.deepEqual(dict.wordsWithPrefix("saṁ"), [
+      "saṁ",
+      "saṁb\u2026",
+      "saṁc\u2026",
+      "saṁh\u2026",
+      "saṁm\u2026",
+      "saṁp\u2026",
+      "saṁs\u2026",
+      "saṁv\u2026",
+      "saṁy\u2026",
+    ]);
+
+    // When strict is false, unaccented patterns are used
+    should.deepEqual(dict.wordsWithPrefix("samvega"), [
+      "saṁvega",
+      "saṁvegaj\u2026",
+      "saṁvegam\u2026",
+      "saṁvegas\u2026",
+      "saṁvegaṁ",
+      "saṁvegāy\u2026",
+    ]);
+  });
+  it("TESTTESTwordsWithPrefix() strict", async ()=>{
+    let dict = await Dictionary.create();
+    let opts = { strict: true };
+    should.deepEqual(dict.wordsWithPrefix("samvega", opts), [
+      // there is no samvega
+    ]);
+    let sam = dict.wordsWithPrefix("saṁ", opts);
+    should(sam[0]).equal("saṁ"); // exact match
+    should(sam.length).above(404).below(500);
   });
 });

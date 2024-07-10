@@ -14,7 +14,7 @@ SYNOPSIS
 DESCRIPTION
         Searches Digital Pali Dictionary using following methods:
         * entries by Pali word
-        * entries by matching romanized Pali word(s)
+        * entries by matching unaccented Pali word(s)
         * entries by matching definitions
 
     -?, --help
@@ -27,9 +27,9 @@ DESCRIPTION
         Use "entry" search method to show definitions for given 
         Pāli word.
 
-    -mr
-        Use "romanized" search method to show definitions for all Pāli 
-        words matching romanized letters with or without diacriticals
+    -mu
+        Use "unaccented" search method to show definitions for all Pāli 
+        words matching unaccented letters with or without diacriticals
 
 EXAMPLES
         dpd dhamma
@@ -54,8 +54,8 @@ EXAMPLES
         case '-me':
           method = 'entry';
           break;
-        case '-mr':
-          method = 'romanize';
+        case '-mu':
+          method = 'unaccented';
           break;
         case '-md':
           method = 'definition';
@@ -84,6 +84,10 @@ EXAMPLES
     let info = dict.find(word, {method});
     if (info == null) {
       console.log(`${word} (not found)`);
+      let words = dict.wordsWithPrefix(word);
+      words.forEach(word=>{
+        console.log(`  ${word}?`);
+      });
       return;
     }
     let { method:methodActual, pattern, data } = info;
