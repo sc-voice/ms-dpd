@@ -257,4 +257,9 @@ typeof describe === "function" &&
       }
     });
   });
+  it("TESTTESTfind() -mu", async()=>{
+    let dict = await Dictionary.create();
+    let dhamma = dict.find("dhamma -mu");
+    should(dhamma.data.length).equal(34); // dhamma + dhammā
+  });
 });

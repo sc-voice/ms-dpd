@@ -270,6 +270,27 @@ export default class Dictionary {
     let {
       method,
     } = opts;
+    if (typeof pattern === 'string') {
+      let words = pattern.split(' ').filter(w=>{
+        if (w.startsWith("-")) {
+          switch (w) {
+            case "-mu": 
+              method = "unaccented";
+              break;
+            case "-me":
+              method = "entry";
+              break;
+            case "-md":
+              method = "definition";
+              break;
+          }
+          return false;
+        }
+        return true;
+      });
+      pattern = words.join(' ');
+    }
+
     let result;
     if (!result && (!method || method==='entry')) {
       let entry = this.entryOf(pattern);

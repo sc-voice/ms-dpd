@@ -15,7 +15,7 @@ cd pali
 npm install
 ./scripts/dpd --help
 ./scripts/dpd dhamma
-./scripts/dpd -mr dhamma
+./scripts/dpd -mu dhamma
 ./scripts/dpd -md 'superior virtue'
 ```
 

@@ -33,7 +33,7 @@ DESCRIPTION
 
 EXAMPLES
         dpd dhamma
-        dpd -mr dhamma
+        dpd -mu dhamma
         dpd -md 'superior virtue'
   `);
   process.exit(0);
