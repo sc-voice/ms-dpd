@@ -121,12 +121,13 @@ EXAMPLES
       );
     rows.forEach((row,i)=>{
       let [ word, type, meaning, literal, construction ] = row;
+      let litOut = 
       console.log(
         `${i+1}`.padStart(2),
         word.padEnd(wordPad),
         type.padEnd(typePad),
         construction.padEnd(constrPad),
-        `${meaning}${literal && ("; lit."+literal)}`,
+        literal ? `${meaning}; lit. ${literal}` : meaning,
       );
     });
   }

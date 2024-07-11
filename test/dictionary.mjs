@@ -250,4 +250,11 @@ typeof describe === "function" &&
     should(sam[0]).equal("saṁ"); // exact match
     should(sam.length).above(404).below(500);
   });
+  it("TESTTESTABBREVIATIONS", ()=>{
+    should(Dictionary.ABBREVIATIONS).properties({
+      pr: {
+        meaning: "present"
+      }
+    });
+  });
 });

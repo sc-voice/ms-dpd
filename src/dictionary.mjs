@@ -1,6 +1,7 @@
 import { DBG } from './defines.mjs';
 import { default as Pali } from "./pali.mjs";
 
+import { ABBREVIATIONS } from '../data/en/abbreviations.mjs';
 import { DPD } from '../data/en/dpd.mjs';
 import { DPD_TEXTS } from '../data/en/dpd-text.mjs';
 
@@ -15,6 +16,10 @@ export default class Dictionary {
     }
 
     Object.assign(this, opts);
+  }
+
+  static get ABBREVIATIONS() {
+    return ABBREVIATIONS;
   }
 
   static isAccented(word) {

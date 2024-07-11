@@ -10,10 +10,8 @@ import { default as Compress } from "../src/compress.mjs";
 const msg = `${__filename}`;
 const textMap = {};
 
-let SC_DATA_URL = [
-  'https://raw.githubusercontent.com/suttacentral/sc-data',
-  'main/dictionaries/simple/en/pli2en_dpd.json',
-].join('/');
+let SC_DATA_URL = 
+  'https://raw.githubusercontent.com/suttacentral/sc-data/main/dictionaries/simple/en/pli2en_dpd.json';
 //let APIURL = 'https://suttacentral.net/api';
 //let url = `${APIURL}/dictionaries/lookup?from=pli&to=en`;
 //let res = await fetch(url);
