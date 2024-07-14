@@ -149,13 +149,10 @@ typeof describe === "function" &&
       meaning: 'nature; character',
     });
   });
-  it("TESTTESTnormalizePattern()", ()=>{
+  it("normalizePattern()", ()=>{
     let good = "abcdefghijklmnopqrstuvwxyz";
     let accented = [ 
-      'ā', 'ī', 'ū', 
-      'ṁ', 
-      'ṃ', 
-      'ḍ', 'ṅ', 'ñ', 'ṇ', 'ḷ', 'ṭ',
+      'ā', 'ī', 'ū', 'ṁ', 'ṃ', 'ḍ', 'ṅ', 'ñ', 'ṇ', 'ḷ', 'ṭ',
     ].join('');
     should(Dictionary.normalizePattern(good)).equal(good);
     should(Dictionary.normalizePattern(accented)).equal(accented);
@@ -221,7 +218,7 @@ typeof describe === "function" &&
       construction: '√dhar˖ma',
     });
   });
-  it("TESTTESTisAccented()", ()=>{
+  it("isAccented()", ()=>{
     should(Dictionary.isAccented("samvega")).equal(false);
     should(Dictionary.isAccented("saṁvega")).equal(true);
   });
@@ -229,29 +226,40 @@ typeof describe === "function" &&
     let dict = await Dictionary.create();
 
     // When strict is false (default), the output may have ellipses:
-    should.deepEqual(dict.wordsWithPrefix("saṁ"), [
-      "saṁ",
-      "saṁb\u2026",
-      "saṁc\u2026",
-      "saṁh\u2026",
-      "saṁm\u2026",
-      "saṁp\u2026",
-      "saṁs\u2026",
-      "saṁv\u2026",
-      "saṁy\u2026",
+    should.deepEqual(dict.wordsWithPrefix("sam").slice(0,20), [
+      "saṁ",  // 3-letter exact
+      "sama", // 4-letter exact
+      "samā", // 4-letter exact
+      "same", // 4-letter exact
+      "sami", // 4-letter exact
+      "samo", // 4-letter exact
+      "samū", // 4-letter exact
+      "sāma", // 4-letter exact
+      "sāmā", // 4-letter exact
+      "sāmi", // 4-letter exact
+      "sāmī", // 4-letter exact
+      "sāmo", // 4-letter exact
+      "sama\u2026", // 4-letter prefix
+      "samā\u2026", // 4-letter prefix
+      "samb\u2026", // 4-letter prefix
+      "same\u2026", // 4-letter prefix
+      "samh\u2026", // 4-letter prefix
+      "sami\u2026", // 4-letter prefix
+      "samī\u2026", // 4-letter prefix
+      "samm\u2026", // 4-letter prefix
     ]);
 
     // When strict is false, unaccented patterns are used
     should.deepEqual(dict.wordsWithPrefix("samvega"), [
       "saṁvega",
+      "saṁvegaṁ",
       "saṁvegaj\u2026",
       "saṁvegam\u2026",
       "saṁvegas\u2026",
-      "saṁvegaṁ",
       "saṁvegāy\u2026",
     ]);
   });
-  it("TESTTESTwordsWithPrefix() strict", async ()=>{
+  it("wordsWithPrefix() strict", async ()=>{
     let dict = await Dictionary.create();
     let opts = { strict: true };
     should.deepEqual(dict.wordsWithPrefix("samvega", opts), [

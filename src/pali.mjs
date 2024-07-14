@@ -6,7 +6,8 @@ export default class Pali {
   static #ENDING_MAX_LEN;
   static #STEM_RE;
   static #OCBS_ALPHABET = [
-    'a', 'ā', 'i', 'ī', 'u', 'ū', 'e', 'o', 'ṃ',
+    'a', 'ā', 'i', 'ī', 'u', 'ū', 'e', 'o', 
+    'ṃ', 'ṁ',
     'k', 'kh', 'g', 'gh', 
     'ṅ', 'c', 'ch', 'j', 'jh', 
     'ñ', 'ṭ', 'ṭh', 'ḍ', 'ḍh', 
@@ -17,26 +18,28 @@ export default class Pali {
   static #OCBS_CHAR_ORDER;
   static #ROMAN_ALPHABET = [
     'a', 'ā', 
-    'b', 'bh', 
-    'c', 'ch', 
-    'd', 'dh', 
-    'ḍ', 'ḍh', 
+    'b', //'bh', 
+    'c', //'ch', 
+    'd', //'dh', 
+    'ḍ', //'ḍh', 
     'e', 
-    'g', 'gh', 
+    'g', //'gh', 
     'h',
     'i', 'ī', 
-    'j', 'jh', 
-    'k', 'kh', 
+    'j', //'jh', 
+    'k', //'kh', 
     'l', 
-    'ḷ', 'ḷh', 
+    'ḷ', //'ḷh', 
     'm', 
+    'ṁ',
     'ṃ',
     'n', 'ñ', 'ṅ', 'ṇ', 
     'o', 
-    'p', 'ph', 
+    'p', //'ph', 
     'r', 
     's', 
-    't', 'th', 'ṭ', 'ṭh', 
+    't', //'th', 
+    'ṭ', //'ṭh', 
     'u', 'ū', 
     'v', 
     'y', 
@@ -157,6 +160,7 @@ export default class Pali {
     if (cmp == 0) {
       cmp = (s1.length < s2.length) ? -1 : cmp;
     }
+    //console.log(msg, {s1,s2,cmp});
 
     return cmp;
   }

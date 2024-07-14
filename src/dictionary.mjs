@@ -118,7 +118,8 @@ export default class Dictionary {
     if (strict) {
       matching = keys.filter(word=>word.startsWith(prefix));
     } else if (Dictionary.isAccented(prefix)) {
-      let re = new RegExp(`^${prefix}`, 'i');
+      let normPrefix = Dictionary.normalizePattern(prefix);
+      let re = new RegExp(`^${normPrefix}`, 'i');
       let map = keys.reduce((a,word)=>{
         if (re.test(word)) {
           let key = word.length > matchLen
@@ -143,9 +144,12 @@ export default class Dictionary {
       }, {});
       matching = Object.keys(map);
     }
-    return limit 
-      ? matching.slice(0,limit) 
-      : matching;
+    limit && (matching.slice(0,limit));
+
+    return matching.sort((a,b)=>{
+      let cmp = a.length - b.length;
+      return cmp || Pali.compareRoman(a,b);
+    });;
   }
 
   relatedEntries(word, opts={}) {

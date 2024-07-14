@@ -7,7 +7,7 @@ typeof describe === "function" && describe("pali", function () {
 
     should.deepEqual(Pali.OCBS_ALPHABET, [
       'a', 'ā', 'i', 'ī', 'u', 'ū', 'e', 'o', 
-      'ṃ', 
+      'ṃ', 'ṁ', 
       'k', 'kh', 'g', 'gh', 
       'ṅ', 'c', 'ch', 'j', 'jh', 
       'ñ', 'ṭ', 'ṭh', 'ḍ', 'ḍh', 
@@ -41,7 +41,8 @@ typeof describe === "function" && describe("pali", function () {
     test('icchati iñjati icchā iṭṭha', 'icchati icchā iñjati iṭṭha');
     test('sīla siṅgāla sikhā sīta', 'sikhā siṅgāla sīta sīla');
   });
-  it("compareRoman()", ()=>{
+  it("TESTTESTcompareRoman()", ()=>{
+    const msg = "test.pali@45";
     let pali = new Pali();
     let test = (items, expected) =>{
       let sorted = items.split(/  */)
@@ -50,6 +51,11 @@ typeof describe === "function" && describe("pali", function () {
       should(sorted).equal(expected);
     }
 
+    test("m ṁ", "m ṁ");
+    test("me ṁb", "me ṁb");
+    test("me\u2026 ṁb\u2026", "me\u2026 ṁb\u2026");
+    test("ame\u2026 aṁb\u2026", "ame\u2026 aṁb\u2026");
+    test("same\u2026 saṁb\u2026", "same\u2026 saṁb\u2026");
     test('ṃd it ṃ  i', 'i it ṃ ṃd');
     test('āsava ācariya ananta ānanda', 'ananta ācariya ānanda āsava');
     test('iñjati amacca oka ūhata', 'amacca iñjati oka ūhata');
