@@ -26,8 +26,15 @@ export default class Dictionary {
     return !/^[a-z]+$/i.test(word);
   }
 
+  static normalizePattern(pattern) {
+    pattern = pattern.toLowerCase();
+    pattern = pattern.replace(/[^a-zA-zāḍīḷṁṃṅñṇṭū]/, '');
+    return pattern;
+  }
+
+
   static unaccentedPattern(pattern) {
-    return pattern
+    return this.normalizePattern(pattern)
       .replace(/a/iug, '(a|ā)')
       .replace(/i/iug, '(i|ī)')
       .replace(/u/iug, '(u|ū)')

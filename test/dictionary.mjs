@@ -149,6 +149,17 @@ typeof describe === "function" &&
       meaning: 'nature; character',
     });
   });
+  it("TESTTESTnormalizePattern()", ()=>{
+    let good = "abcdefghijklmnopqrstuvwxyz";
+    let accented = [ 
+      'ā', 'ī', 'ū', 
+      'ṁ', 
+      'ṃ', 
+      'ḍ', 'ṅ', 'ñ', 'ṇ', 'ḷ', 'ṭ',
+    ].join('');
+    should(Dictionary.normalizePattern(good)).equal(good);
+    should(Dictionary.normalizePattern(accented)).equal(accented);
+  });
   it("find() unaccented", async()=>{
     let dict = await Dictionary.create();
     let dhamma = dict.find("dhamma");
