@@ -106,20 +106,28 @@ typeof describe === "function" && describe("pali", function () {
       '-īhi',
     ]);
   });
-  it("INFLECTIONS", ()=>{
+  it("TESTTESTINFLECTIONS", ()=>{
     let inf = Pali.INFLECTIONS;
     should.deepEqual(inf[0], {
-      "ending": [
-        "-a",
-        "ā"
-      ],
-      "gender": "masc.",
-      "infCase": "nom",
-      "singular": "-o",
-      "plural": "-ā"
+      id: 1,
+      type: "declination",
+      group: "-a/ā",
+      gender: "masc.",
+      infCase: "nom",
+      singular: ["o"],
+      plural: ["ā"]
+    });
+    should.deepEqual(inf[4], {
+      id: 5,
+      type: "declination",
+      group: "-a/ā",
+      gender: "masc.",
+      infCase: "abl",
+      singular: ["ā", "asmā", "amhā"],
+      plural: ["ehi"]
     });
   });
-  it("wordStem", ()=>{
+  it("TESTTESTwordStem", ()=>{
     // Singular
     should(Pali.wordStem("dhammo")).equal('dhamm');    // Nom
     should(Pali.wordStem("dhammassa")).equal('dhamm'); // Acc
@@ -135,7 +143,7 @@ typeof describe === "function" && describe("pali", function () {
     should(Pali.wordStem("dhamma")).equal('dhamm');    // Voc
 
   });
-  it("ENDING_MAX_LEN", ()=>{
+  it("TESTTESTENDING_MAX_LEN", ()=>{
     should(Pali.ENDING_MAX_LEN).equal(5);
   });
 });

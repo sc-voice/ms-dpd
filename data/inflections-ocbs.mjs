@@ -1,836 +1,910 @@
 export const INFLECTIONS=[
   {
-    "ending": [
-      "-a",
-      "ā"
-    ],
+    "id": 1,
+    "type": "declination",
+    "group": "-a/ā",
     "gender": "masc.",
     "infCase": "nom",
-    "singular": "-o",
-    "plural": "-ā"
+    "singular": [
+      "o"
+    ],
+    "plural": [
+      "ā"
+    ]
   },
   {
-    "ending": [
-      "-a",
-      "ā"
-    ],
+    "id": 2,
+    "type": "declination",
+    "group": "-a/ā",
     "gender": "masc.",
     "infCase": "acc",
-    "singular": "-aṃ",
-    "plural": "-e"
+    "singular": [
+      "aṃ"
+    ],
+    "plural": [
+      "e"
+    ]
   },
   {
-    "ending": [
-      "-a",
-      "ā"
-    ],
+    "id": 3,
+    "type": "declination",
+    "group": "-a/ā",
     "gender": "masc.",
     "infCase": "instr",
-    "singular": "-ena",
-    "plural": "-ehi"
+    "singular": [
+      "ena"
+    ],
+    "plural": [
+      "ehi"
+    ]
   },
   {
-    "ending": [
-      "-a",
-      "ā"
-    ],
+    "id": 4,
+    "type": "declination",
+    "group": "-a/ā",
     "gender": "masc.",
     "infCase": "dat",
-    "singular": "-āya",
+    "singular": [
+      "āya"
+    ],
     "plural": null
   },
   {
-    "ending": [
-      "-a",
-      "ā"
-    ],
+    "id": 5,
+    "type": "declination",
+    "group": "-a/ā",
     "gender": "masc.",
     "infCase": "abl",
     "singular": [
-      "-ā",
-      "-asmā",
-      "-amhā"
+      "ā",
+      "asmā",
+      "amhā"
     ],
-    "plural": "-ehi"
+    "plural": [
+      "ehi"
+    ]
   },
   {
-    "ending": [
-      "-a",
-      "ā"
-    ],
+    "id": 6,
+    "type": "declination",
+    "group": "-a/ā",
     "gender": "masc.",
     "infCase": "gen",
-    "singular": "-assa",
-    "plural": "-ānaṃ"
+    "singular": [
+      "assa"
+    ],
+    "plural": [
+      "ānaṃ"
+    ]
   },
   {
-    "ending": [
-      "-a",
-      "ā"
-    ],
+    "id": 7,
+    "type": "declination",
+    "group": "-a/ā",
     "gender": "masc.",
     "infCase": "loc",
     "singular": [
-      "-e",
-      "-asmiṃ",
-      "-amhi"
+      "e",
+      "asmiṃ",
+      "amhi"
     ],
-    "plural": "-esu"
+    "plural": [
+      "esu"
+    ]
   },
   {
-    "ending": [
-      "-a",
-      "ā"
-    ],
+    "id": 8,
+    "type": "declination",
+    "group": "-a/ā",
     "gender": "masc.",
     "infCase": "voc",
-    "singular": "-a",
-    "plural": "-ā"
+    "singular": [
+      "a"
+    ],
+    "plural": [
+      "ā"
+    ]
   },
   {
-    "ending": [
-      "-a",
-      "ā"
-    ],
+    "id": 9,
+    "type": "declination",
+    "group": "-a/ā",
     "gender": "nt.",
     "infCase": "nom",
-    "singular": "-aṃ",
+    "singular": [
+      "aṃ"
+    ],
     "plural": [
-      "-āni",
-      "-ā"
+      "āni",
+      "ā"
     ]
   },
   {
-    "ending": [
-      "-a",
-      "ā"
-    ],
+    "id": 10,
+    "type": "declination",
+    "group": "-a/ā",
     "gender": "nt.",
     "infCase": "acc",
-    "singular": "-aṃ",
+    "singular": [
+      "aṃ"
+    ],
     "plural": [
-      "-āni",
-      "-ā"
+      "āni",
+      "ā"
     ]
   },
   {
-    "ending": [
-      "-a",
-      "ā"
-    ],
+    "id": 11,
+    "type": "declination",
+    "group": "-a/ā",
     "gender": "nt.",
     "infCase": "instr",
-    "singular": "-ena",
-    "plural": "-ehi"
+    "singular": [
+      "ena"
+    ],
+    "plural": [
+      "ehi"
+    ]
   },
   {
-    "ending": [
-      "-a",
-      "ā"
-    ],
+    "id": 12,
+    "type": "declination",
+    "group": "-a/ā",
     "gender": "nt.",
     "infCase": "dat",
-    "singular": "-āya",
+    "singular": [
+      "āya"
+    ],
     "plural": null
   },
   {
-    "ending": [
-      "-a",
-      "ā"
-    ],
+    "id": 13,
+    "type": "declination",
+    "group": "-a/ā",
     "gender": "nt.",
     "infCase": "abl",
     "singular": [
-      "-ā",
-      "-asmā",
-      "-amhā"
+      "ā",
+      "asmā",
+      "amhā"
     ],
-    "plural": "-ehi"
+    "plural": [
+      "ehi"
+    ]
   },
   {
-    "ending": [
-      "-a",
-      "ā"
-    ],
+    "id": 14,
+    "type": "declination",
+    "group": "-a/ā",
     "gender": "nt.",
     "infCase": "gen",
-    "singular": "-assa",
-    "plural": "-ānaṃ"
+    "singular": [
+      "assa"
+    ],
+    "plural": [
+      "ānaṃ"
+    ]
   },
   {
-    "ending": [
-      "-a",
-      "ā"
-    ],
+    "id": 15,
+    "type": "declination",
+    "group": "-a/ā",
     "gender": "nt.",
     "infCase": "loc",
     "singular": [
-      "-e",
-      "-asmiṃ",
-      "-amhi"
+      "e",
+      "asmiṃ",
+      "amhi"
     ],
-    "plural": "-esu"
+    "plural": [
+      "esu"
+    ]
   },
   {
-    "ending": [
-      "-a",
-      "ā"
-    ],
+    "id": 16,
+    "type": "declination",
+    "group": "-a/ā",
     "gender": "nt.",
     "infCase": "voc",
-    "singular": "-a",
+    "singular": [
+      "a"
+    ],
     "plural": [
-      "-āni",
-      "-ā"
+      "āni",
+      "ā"
     ]
   },
   {
-    "ending": [
-      "-a",
-      "ā"
-    ],
+    "id": 17,
+    "type": "declination",
+    "group": "-a/ā",
     "gender": "fem.",
     "infCase": "nom",
-    "singular": "-ā",
+    "singular": [
+      "ā"
+    ],
     "plural": [
-      "-ā",
-      "-āyo"
+      "ā",
+      "āyo"
     ]
   },
   {
-    "ending": [
-      "-a",
-      "ā"
-    ],
+    "id": 18,
+    "type": "declination",
+    "group": "-a/ā",
     "gender": "fem.",
     "infCase": "acc",
-    "singular": "-aṃ",
+    "singular": [
+      "aṃ"
+    ],
     "plural": [
-      "-ā",
-      "-āyo"
+      "ā",
+      "āyo"
     ]
   },
   {
-    "ending": [
-      "-a",
-      "ā"
-    ],
+    "id": 19,
+    "type": "declination",
+    "group": "-a/ā",
     "gender": "fem.",
     "infCase": "instr",
-    "singular": "-āya",
-    "plural": "-āhi"
+    "singular": [
+      "āya"
+    ],
+    "plural": [
+      "āhi"
+    ]
   },
   {
-    "ending": [
-      "-a",
-      "ā"
-    ],
+    "id": 20,
+    "type": "declination",
+    "group": "-a/ā",
     "gender": "fem.",
     "infCase": "dat",
-    "singular": "-āya",
+    "singular": [
+      "āya"
+    ],
     "plural": null
   },
   {
-    "ending": [
-      "-a",
-      "ā"
-    ],
+    "id": 21,
+    "type": "declination",
+    "group": "-a/ā",
     "gender": "fem.",
     "infCase": "abl",
-    "singular": "-āya",
-    "plural": "-āhi"
+    "singular": [
+      "āya"
+    ],
+    "plural": [
+      "āhi"
+    ]
   },
   {
-    "ending": [
-      "-a",
-      "ā"
-    ],
+    "id": 22,
+    "type": "declination",
+    "group": "-a/ā",
     "gender": "fem.",
     "infCase": "gen",
-    "singular": "-āya",
-    "plural": "-ānaṃ"
+    "singular": [
+      "āya"
+    ],
+    "plural": [
+      "ānaṃ"
+    ]
   },
   {
-    "ending": [
-      "-a",
-      "ā"
-    ],
+    "id": 23,
+    "type": "declination",
+    "group": "-a/ā",
     "gender": "fem.",
     "infCase": "loc",
     "singular": [
-      "-āya",
-      "-āyaṃ"
+      "āya",
+      "āyaṃ"
     ],
-    "plural": "-āsu"
+    "plural": [
+      "āsu"
+    ]
   },
   {
-    "ending": [
-      "-a",
-      "ā"
-    ],
+    "id": 24,
+    "type": "declination",
+    "group": "-a/ā",
     "gender": "fem.",
     "infCase": "voc",
-    "singular": "-e",
+    "singular": [
+      "e"
+    ],
     "plural": [
-      "-ā",
-      "-āyo"
+      "ā",
+      "āyo"
     ]
   },
   {
-    "ending": [
-      "-i",
-      "ī"
-    ],
+    "id": 25,
+    "type": "declination",
+    "group": "-i/ī",
     "gender": "fem.",
     "infCase": "nom",
-    "singular": "-ī",
-    "plural": [
-      "-ī",
-      "-iyo"
-    ]
-  },
-  {
-    "ending": [
-      "-i",
-      "ī"
-    ],
-    "gender": "fem.",
-    "infCase": "acc,  -iṃ",
     "singular": [
-      "-ī",
-      "-iyo"
+      "ī"
+    ],
+    "plural": [
+      "ī",
+      "iyo"
     ]
   },
   {
-    "ending": [
-      "-i",
-      "ī"
-    ],
+    "id": 26,
+    "type": "declination",
+    "group": "-i/ī",
+    "gender": "fem.",
+    "infCase": "acc,  -iṃ ",
+    "singular": [
+      "ī",
+      "iyo"
+    ]
+  },
+  {
+    "id": 27,
+    "type": "declination",
+    "group": "-i/ī",
     "gender": "fem.",
     "infCase": "instr,  -iyā",
-    "singular": "-īhi"
+    "singular": [
+      "īhi"
+    ]
   },
   {
-    "ending": [
-      "-i",
-      "ī"
-    ],
+    "id": 28,
+    "type": "declination",
+    "group": "-i/ī",
     "gender": "fem.",
     "infCase": "abl",
-    "singular": "-iyā",
-    "plural": "-īhi"
+    "singular": [
+      "iyā"
+    ],
+    "plural": [
+      "īhi"
+    ]
   },
   {
-    "ending": [
-      "-i",
-      "ī"
-    ],
+    "id": 29,
+    "type": "declination",
+    "group": "-i/ī",
     "gender": "fem.",
     "infCase": "gen",
-    "singular": "-iyā",
-    "plural": "-īnaṃ"
+    "singular": [
+      "iyā"
+    ],
+    "plural": [
+      "īnaṃ"
+    ]
   },
   {
-    "ending": [
-      "-i",
-      "ī"
-    ],
+    "id": 30,
+    "type": "declination",
+    "group": "-i/ī",
     "gender": "fem.",
     "infCase": "loc",
     "singular": [
-      "-iyā",
-      "-iyaṃ"
+      "iyā",
+      "iyaṃ"
     ],
-    "plural": "-īsu"
+    "plural": [
+      "īsu"
+    ]
   },
   {
-    "ending": [
-      "-i",
-      "ī"
-    ],
+    "id": 31,
+    "type": "declination",
+    "group": "-i/ī",
     "gender": "fem.",
     "infCase": "voc",
-    "singular": "-i",
+    "singular": [
+      "i"
+    ],
     "plural": [
-      "-ī",
-      "-iyo"
+      "ī",
+      "iyo"
     ]
   },
   {
-    "ending": [
-      "-i",
-      "ī"
-    ],
+    "id": 32,
+    "type": "declination",
+    "group": "-i/ī",
     "gender": "masc.",
     "infCase": "nom",
-    "singular": "-i",
+    "singular": [
+      "i"
+    ],
     "plural": [
-      "-ayo",
-      "-ī"
+      "ayo",
+      "ī"
     ]
   },
   {
-    "ending": [
-      "-i",
-      "ī"
-    ],
+    "id": 33,
+    "type": "declination",
+    "group": "-i/ī",
     "gender": "masc.",
     "infCase": "acc",
-    "singular": "-iṃ",
+    "singular": [
+      "iṃ"
+    ],
     "plural": [
-      "-ayo",
-      "-ī"
+      "ayo",
+      "ī"
     ]
   },
   {
-    "ending": [
-      "-i",
-      "ī"
-    ],
+    "id": 34,
+    "type": "declination",
+    "group": "-i/ī",
     "gender": "masc.",
     "infCase": "instr",
-    "singular": "-inā",
+    "singular": [
+      "inā"
+    ],
     "plural": [
-      "-īhi",
-      "-ihi"
+      "īhi",
+      "ihi"
     ]
   },
   {
-    "ending": [
-      "-i",
-      "ī"
-    ],
+    "id": 35,
+    "type": "declination",
+    "group": "-i/ī",
     "gender": "masc.",
     "infCase": "abl",
     "singular": [
-      "-inā",
-      "-ismā",
-      "-imhā"
+      "inā",
+      "ismā",
+      "imhā"
     ],
     "plural": [
-      "-īhi",
-      "-ihi"
+      "īhi",
+      "ihi"
     ]
   },
   {
-    "ending": [
-      "-i",
-      "ī"
-    ],
+    "id": 36,
+    "type": "declination",
+    "group": "-i/ī",
     "gender": "masc.",
     "infCase": "gen",
     "singular": [
-      "-ino",
-      "-issa"
+      "ino",
+      "issa"
     ],
     "plural": [
-      "-īnaṃ",
-      "-inaṃ"
+      "īnaṃ",
+      "inaṃ"
     ]
   },
   {
-    "ending": [
-      "-i",
-      "ī"
-    ],
+    "id": 37,
+    "type": "declination",
+    "group": "-i/ī",
     "gender": "masc.",
     "infCase": "loc",
     "singular": [
-      "-ismiṃ",
-      "-imhi"
+      "ismiṃ",
+      "imhi"
     ],
     "plural": [
-      "-īsu",
-      "-isu"
+      "īsu",
+      "isu"
     ]
   },
   {
-    "ending": [
-      "-i",
-      "ī"
-    ],
+    "id": 38,
+    "type": "declination",
+    "group": "-i/ī",
     "gender": "masc.",
     "infCase": "voc",
-    "singular": "-i",
+    "singular": [
+      "i"
+    ],
     "plural": [
-      "-ayo",
-      "-ī"
+      "ayo",
+      "ī"
     ]
   },
   {
-    "ending": [
-      "-i",
-      "ī"
-    ],
+    "id": 39,
+    "type": "declination",
+    "group": "-i/ī",
     "gender": "nt.",
     "infCase": "nom",
     "singular": [
-      "-i",
-      "-iṃ"
+      "i",
+      "iṃ"
     ],
     "plural": [
-      "-ayo",
-      "-ī"
+      "ayo",
+      "ī"
     ]
   },
   {
-    "ending": [
-      "-i",
-      "ī"
-    ],
+    "id": 40,
+    "type": "declination",
+    "group": "-i/ī",
     "gender": "nt.",
     "infCase": "acc",
     "singular": [
-      "-i",
-      "-iṃ"
+      "i",
+      "iṃ"
     ],
     "plural": [
-      "-ayo",
-      "-ī"
+      "ayo",
+      "ī"
     ]
   },
   {
-    "ending": [
-      "-i",
-      "ī"
-    ],
+    "id": 41,
+    "type": "declination",
+    "group": "-i/ī",
     "gender": "nt.",
     "infCase": "instr",
-    "singular": "-inā",
+    "singular": [
+      "inā"
+    ],
     "plural": [
-      "-īhi",
-      "-ihi"
+      "īhi",
+      "ihi"
     ]
   },
   {
-    "ending": [
-      "-i",
-      "ī"
-    ],
+    "id": 42,
+    "type": "declination",
+    "group": "-i/ī",
     "gender": "nt.",
     "infCase": "abl",
     "singular": [
-      "-inā",
-      "-ismā",
-      "-imhā"
+      "inā",
+      "ismā",
+      "imhā"
     ],
     "plural": [
-      "-īhi",
-      "-ihi"
+      "īhi",
+      "ihi"
     ]
   },
   {
-    "ending": [
-      "-i",
-      "ī"
-    ],
+    "id": 43,
+    "type": "declination",
+    "group": "-i/ī",
     "gender": "nt.",
     "infCase": "gen",
     "singular": [
-      "-ino",
-      "-issa"
+      "ino",
+      "issa"
     ],
     "plural": [
-      "-īnaṃ",
-      "-inaṃ"
+      "īnaṃ",
+      "inaṃ"
     ]
   },
   {
-    "ending": [
-      "-i",
-      "ī"
-    ],
+    "id": 44,
+    "type": "declination",
+    "group": "-i/ī",
     "gender": "nt.",
     "infCase": "loc",
     "singular": [
-      "-ismiṃ",
-      "-imhi"
+      "ismiṃ",
+      "imhi"
     ],
     "plural": [
-      "-īsu",
-      "-isu"
+      "īsu",
+      "isu"
     ]
   },
   {
-    "ending": [
-      "-i",
-      "ī"
-    ],
+    "id": 45,
+    "type": "declination",
+    "group": "-i/ī",
     "gender": "nt.",
     "infCase": "voc",
-    "singular": "-i",
+    "singular": [
+      "i"
+    ],
     "plural": [
-      "-ayo",
-      "-ī"
+      "ayo",
+      "ī"
     ]
   },
   {
-    "ending": [
-      "-u",
-      "ū"
-    ],
+    "id": 46,
+    "type": "declination",
+    "group": "-u/ū",
     "gender": "masc.",
     "infCase": "nom",
-    "singular": "-u",
+    "singular": [
+      "u"
+    ],
     "plural": [
-      "-avo",
-      "-ū"
+      "avo",
+      "ū"
     ]
   },
   {
-    "ending": [
-      "-u",
-      "ū"
-    ],
+    "id": 47,
+    "type": "declination",
+    "group": "-u/ū",
     "gender": "masc.",
     "infCase": "acc",
-    "singular": "-uṃ",
+    "singular": [
+      "uṃ"
+    ],
     "plural": [
-      "-avo",
-      "-ū"
+      "avo",
+      "ū"
     ]
   },
   {
-    "ending": [
-      "-u",
-      "ū"
-    ],
+    "id": 48,
+    "type": "declination",
+    "group": "-u/ū",
     "gender": "masc.",
     "infCase": "instr,  -unā",
-    "singular": "-ūhi"
-  },
-  {
-    "ending": [
-      "-u",
-      "ū"
-    ],
-    "gender": "masc.",
-    "infCase": "abl",
     "singular": [
-      "-unā",
-      "-usmā",
-      "-umhā"
-    ],
-    "plural": "-ūhi"
-  },
-  {
-    "ending": [
-      "-u",
-      "ū"
-    ],
-    "gender": "masc.",
-    "infCase": "gen",
-    "singular": [
-      "-uno",
-      "-ussa"
-    ],
-    "plural": "-ūnaṃ"
-  },
-  {
-    "ending": [
-      "-u",
-      "ū"
-    ],
-    "gender": "masc.",
-    "infCase": "loc",
-    "singular": [
-      "-usmiṃ",
-      "-umhi"
-    ],
-    "plural": "-ūsu"
-  },
-  {
-    "ending": [
-      "-u",
-      "ū"
-    ],
-    "gender": "masc.",
-    "infCase": "voc",
-    "singular": "-u",
-    "plural": [
-      "-avo",
-      "-u",
-      "-ave"
+      "ūhi"
     ]
   },
   {
-    "ending": [
-      "-u",
-      "ū"
+    "id": 49,
+    "type": "declination",
+    "group": "-u/ū",
+    "gender": "masc.",
+    "infCase": "abl",
+    "singular": [
+      "unā",
+      "usmā",
+      "umhā"
     ],
+    "plural": [
+      "ūhi"
+    ]
+  },
+  {
+    "id": 50,
+    "type": "declination",
+    "group": "-u/ū",
+    "gender": "masc.",
+    "infCase": "gen",
+    "singular": [
+      "uno",
+      "ussa"
+    ],
+    "plural": [
+      "ūnaṃ"
+    ]
+  },
+  {
+    "id": 51,
+    "type": "declination",
+    "group": "-u/ū",
+    "gender": "masc.",
+    "infCase": "loc",
+    "singular": [
+      "usmiṃ",
+      "umhi"
+    ],
+    "plural": [
+      "ūsu"
+    ]
+  },
+  {
+    "id": 52,
+    "type": "declination",
+    "group": "-u/ū",
+    "gender": "masc.",
+    "infCase": "voc",
+    "singular": [
+      "u"
+    ],
+    "plural": [
+      "avo",
+      "u",
+      "ave"
+    ]
+  },
+  {
+    "id": 53,
+    "type": "declination",
+    "group": "-u/ū",
     "gender": "fem.",
     "infCase": "nom",
-    "singular": "-u",
+    "singular": [
+      "u"
+    ],
     "plural": [
-      "-ū",
-      "-uyo"
+      "ū",
+      "uyo"
     ]
   },
   {
-    "ending": [
-      "-u",
-      "ū"
-    ],
+    "id": 54,
+    "type": "declination",
+    "group": "-u/ū",
     "gender": "fem.",
     "infCase": "acc",
-    "singular": "-uṃ",
+    "singular": [
+      "uṃ"
+    ],
     "plural": [
-      "-ū",
-      "-uyo"
+      "ū",
+      "uyo"
     ]
   },
   {
-    "ending": [
-      "-u",
-      "ū"
-    ],
+    "id": 55,
+    "type": "declination",
+    "group": "-u/ū",
     "gender": "fem.",
     "infCase": "instr",
-    "singular": "-uyā",
-    "plural": "-ūhi"
+    "singular": [
+      "uyā"
+    ],
+    "plural": [
+      "ūhi"
+    ]
   },
   {
-    "ending": [
-      "-u",
-      "ū"
-    ],
+    "id": 56,
+    "type": "declination",
+    "group": "-u/ū",
     "gender": "fem.",
     "infCase": "abl",
-    "singular": "-uyā",
-    "plural": "-ūhi"
+    "singular": [
+      "uyā"
+    ],
+    "plural": [
+      "ūhi"
+    ]
   },
   {
-    "ending": [
-      "-u",
-      "ū"
-    ],
+    "id": 57,
+    "type": "declination",
+    "group": "-u/ū",
     "gender": "fem.",
     "infCase": "gen",
-    "singular": "-uyā",
-    "plural": "-ūnaṃ"
+    "singular": [
+      "uyā"
+    ],
+    "plural": [
+      "ūnaṃ"
+    ]
   },
   {
-    "ending": [
-      "-u",
-      "ū"
-    ],
+    "id": 58,
+    "type": "declination",
+    "group": "-u/ū",
     "gender": "fem.",
     "infCase": "loc",
     "singular": [
-      "-uyā",
-      "-uyaṃ"
+      "uyā",
+      "uyaṃ"
     ],
-    "plural": "-ūsu"
-  },
-  {
-    "ending": [
-      "-u",
-      "ū"
-    ],
-    "gender": "fem.",
-    "infCase": "voc",
-    "singular": "-u",
     "plural": [
-      "-ū",
-      "-uyo"
+      "ūsu"
     ]
   },
   {
-    "ending": [
-      "-u",
-      "ū"
+    "id": 59,
+    "type": "declination",
+    "group": "-u/ū",
+    "gender": "fem.",
+    "infCase": "voc",
+    "singular": [
+      "u"
     ],
+    "plural": [
+      "ū",
+      "uyo"
+    ]
+  },
+  {
+    "id": 60,
+    "type": "declination",
+    "group": "-u/ū",
     "gender": "nt.",
     "infCase": "nom",
     "singular": [
-      "-u",
-      "-uṃ"
+      "u",
+      "uṃ"
     ],
     "plural": [
-      "-ūni",
-      "-ū"
+      "ūni",
+      "ū"
     ]
   },
   {
-    "ending": [
-      "-u",
-      "ū"
-    ],
+    "id": 61,
+    "type": "declination",
+    "group": "-u/ū",
     "gender": "nt.",
     "infCase": "acc",
     "singular": [
-      "-u",
-      "-uṃ"
+      "u",
+      "uṃ"
     ],
     "plural": [
-      "-ūni",
-      "-ū"
+      "ūni",
+      "ū"
     ]
   },
   {
-    "ending": [
-      "-u",
-      "ū"
-    ],
+    "id": 62,
+    "type": "declination",
+    "group": "-u/ū",
     "gender": "nt.",
     "infCase": "instr",
-    "singular": "-unā",
-    "plural": "-ūhi"
+    "singular": [
+      "unā"
+    ],
+    "plural": [
+      "ūhi"
+    ]
   },
   {
-    "ending": [
-      "-u",
-      "ū"
-    ],
+    "id": 63,
+    "type": "declination",
+    "group": "-u/ū",
     "gender": "nt.",
     "infCase": "abl",
     "singular": [
-      "-unā",
-      "-usmā",
-      "-umhā"
+      "unā",
+      "usmā",
+      "umhā"
     ],
-    "plural": "-ūhi"
+    "plural": [
+      "ūhi"
+    ]
   },
   {
-    "ending": [
-      "-u",
-      "ū"
-    ],
+    "id": 64,
+    "type": "declination",
+    "group": "-u/ū",
     "gender": "nt.",
     "infCase": "gen",
     "singular": [
-      "-uno",
-      "-ussa"
+      "uno",
+      "ussa"
     ],
-    "plural": "-ūnaṃ"
+    "plural": [
+      "ūnaṃ"
+    ]
   },
   {
-    "ending": [
-      "-u",
-      "ū"
-    ],
+    "id": 65,
+    "type": "declination",
+    "group": "-u/ū",
     "gender": "nt.",
     "infCase": "loc",
     "singular": [
-      "-usmiṃ",
-      "-umhi"
+      "usmiṃ",
+      "umhi"
     ],
-    "plural": "-ūsu"
+    "plural": [
+      "ūsu"
+    ]
   },
   {
-    "ending": [
-      "-u",
-      "ū"
-    ],
+    "id": 66,
+    "type": "declination",
+    "group": "-u/ū",
     "gender": "nt.",
     "infCase": "voc",
     "singular": [
-      "-u",
-      "-uṃ"
+      "u",
+      "uṃ"
     ],
     "plural": [
-      "-ūni",
-      "-u"
+      "ūni",
+      "u"
     ]
   }
 ]

@@ -5,7 +5,6 @@ import { ABBREVIATIONS } from '../data/en/abbreviations.mjs';
 import { DPD } from '../data/en/dpd.mjs';
 import { DPD_TEXTS } from '../data/en/dpd-text.mjs';
 
-
 export default class Dictionary {
   static #CREATE = false;
   static #DPD; // cache
@@ -156,7 +155,7 @@ export default class Dictionary {
     const msg = "Dictionary.relatedEntries()";
     let { dpd } = this;
     let { 
-      overlapThreshold=0,
+      overlap: minOverlap=0.1,
     } = opts;
     let stem = Pali.wordStem(word);
     let keys = Object.keys(dpd)
@@ -171,7 +170,7 @@ export default class Dictionary {
     let { definition } = entry;
     let map = {};
     definition.forEach(line=>map[line]=true);
-    let overlapBasis = definition.length;
+    let overlapBasis = definition.length || 1;
 
     let entries = stemKeys.reduce((entries,key)=>{
       let entry = this.entryOf(key);
@@ -182,7 +181,7 @@ export default class Dictionary {
         return aDef;
       }, 0);
       let overlap = intersection/overlapBasis;
-      if (overlap>overlapThreshold) {
+      if ( minOverlap <= overlap ) {
         let decoratedEntry = Object.assign({overlap}, entry);
         entries.push(decoratedEntry);
       }
@@ -351,5 +350,50 @@ export default class Dictionary {
     }
 
     return result;
+  }
+
+  inflectionsFilter(word, opts={}) {
+    const msg = 'Dictionary.inflections()';
+    const dbg = DBG.INFLECTIONS;
+    let numberKeys = [ 'singular', 'plural' ];
+    let inflections = Pali.INFLECTIONS.reduce((a,inf)=>{
+      let match = null;
+      for (let i=0; !match && i<numberKeys.length; i++) {
+        let numberKey = numberKeys[i];
+        let suffixes = inf[numberKey];
+        if (suffixes) {
+          for (let j=0; j<suffixes.length; j++) {
+            let suffix = suffixes[j];
+            if (word.endsWith(suffix)) {
+              match = Object.assign({}, inf);
+              a.push(match);
+              break;
+            }
+          }
+        }
+      }
+      return a;
+    }, []);
+    dbg && console.log(msg, '[1]inflections', inflections);
+    return inflections;
+  }
+
+  inflections(word, opts={}) {
+    const msg = 'Dictionary.inflections()';
+    const dbg = DBG.INFLECTIONS;
+    let {
+      overlap=0.5,
+    } = opts;
+    let entries = this.relatedEntries(word, {
+      overlap,
+    });
+
+    let w = word;
+    let inflections = this.inflectionsFilter(w);
+    dbg && console.log(msg, '[1]', word, entries.map(e=>{
+      let { word, overlap } = e;
+      return {word, overlap};
+    }));
+    dbg && console.log(msg, '[2]inflections', inflections);
   }
 }

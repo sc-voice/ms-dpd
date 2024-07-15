@@ -45,7 +45,7 @@ export default class Pali {
     'y', 
   ];
   static #ROMAN_ORDER;
-  static #CASE = {
+  static #INFLECTION_CASE = {
     NOM: {id:"nom", name:"nominative", use:"subject"},
     ACC: {id:"acc", name:"accusative", use:"object"},
     INSTR: {id:"ins", name:"instrumental", use:"by, with"},
@@ -66,7 +66,7 @@ export default class Pali {
   static get ENDING_MAX_LEN() {
     if (Pali.#ENDING_MAX_LEN == null) {
       let maxLen = Pali.ENDINGS.reduce((a,e)=>Math.max(a, e.length), 0);
-      Pali.#ENDING_MAX_LEN = maxLen - 1; // ignore dash
+      Pali.#ENDING_MAX_LEN = maxLen; // ignore dash
     }
     return Pali.#ENDING_MAX_LEN;
   }
@@ -193,7 +193,7 @@ export default class Pali {
     const dbg = DBG.PALI;
     if (Pali.#STEM_RE == null) {
       let rends = Pali.ENDINGS
-        .map(e=>e.substring(1).split('').reverse().join(''))
+        .map(e=>e.split('').reverse().join(''))
         .sort(Pali.compareRoman)
         .reverse();
       let pat = `^(${rends.join('|')})`;

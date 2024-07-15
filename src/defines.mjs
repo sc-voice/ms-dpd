@@ -5,6 +5,7 @@ export const DBG = {
   FIND: 0,
   FIND_DEFINITION: 0,
   FIND_WORDS: 0,
+  INFLECTIONS: 0,
   SANKEY: 0,
 }
 

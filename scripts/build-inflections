@@ -2,7 +2,10 @@
 SCRIPT=$0
 DIRNAME=`dirname $SCRIPT`
 node - <<'JS' $DIRNAME $SCRIPT $*
+
+/*************** JAVASCRIPT **********************/
 let [ NODE, DASH, DIRNAME, SCRIPT, ...args] = process.argv;
+const MAYBE_USELESS = 0;
 (async function() {
   const path = (await import('path'));
   const fs = (await import('fs'));
@@ -16,48 +19,25 @@ let [ NODE, DASH, DIRNAME, SCRIPT, ...args] = process.argv;
   let srcData = await fsp.readFile(srcPath);
   let srcLines = srcData.toString().trim().split('\n');
   let keys = srcLines[0].split(' , ');
-  for (let i=1; i<srcLines.length; i++) {
-    let line = srcLines[i].split(' , ');
-    let entry = {};
+  for (let id=1; id<srcLines.length; id++) {
+    let line = srcLines[id].split(' , ');
+    let entry = {id};
     for (let j=0; j<keys.length; j++) {
       let key = keys[j];
-      let value = /\//.test(line[j]) 
-        ? line[j].split('/').map(lp=>lp.trim())
-        : line[j] && line[j].trim();
+      let value = line[j];
       switch (key) {
+        case 'singular':
+        case 'plural':
+          value = value &&
+            value.split('/').map(s=>s.trim().replace('-','') );
+          break;
         case "infCase": {
-          value = value.toLowerCase(); // match DPD
+          value = value && value.toLowerCase(); // match DPD
         } break;
       }
       entry[key] = /---*/.test(value) ? null : value;
     }
     inflections.push(entry);
-  }
-
-  // Extract word stem
-  if (0) { // stems removed manually from inflections.csv
-    let stem = null;
-    for (let i=inflections.length; --i>=0; ) {
-      let inf = inflections[i];
-      let { infCase, singular, plural } = inf;
-      if (infCase === "voc") {
-        stem = singular instanceof Array ? singular[0] : singular;
-        stem = stem.substring(0, stem.length-1);
-      }
-      if (stem == null) {
-        throw new Error(`${msg} vocative singular? @inflections[${i}]`);
-      }
-      if (singular) {
-        inf.singular = singular instanceof Array
-          ? singular.map(s=>s.replace(stem, "-"))
-          : singular.replace(stem, "-");
-      }
-      if (plural) {
-        inf.plural = plural instanceof Array
-          ? plural.map(s=>s.replace(stem, "-"))
-          : plural.replace(stem, "-");
-      }
-    }
   }
 
   // Save OCBS inflection rules

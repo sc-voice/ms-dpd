@@ -1,67 +1,67 @@
-ending , gender , infCase , singular , plural
--a/ā , masc. , Nom , -o , -ā
--a/ā , masc. , Acc , -aṃ , -e
--a/ā , masc. , Instr , -ena , -ehi
--a/ā , masc. , Dat , -āya , -----
--a/ā , masc. , Abl , -ā/-asmā/-amhā , -ehi
--a/ā , masc. , Gen , -assa , -ānaṃ
--a/ā , masc. , Loc , -e/-asmiṃ/-amhi , -esu
--a/ā , masc. , Voc , -a , -ā 
--a/ā , nt. , Nom , -aṃ , -āni/-ā
--a/ā , nt. , Acc , -aṃ , -āni/-ā
--a/ā , nt. , Instr , -ena , -ehi
--a/ā , nt. , Dat , -āya , -----
--a/ā , nt. , Abl , -ā/-asmā/-amhā , -ehi
--a/ā , nt. , Gen , -assa , -ānaṃ
--a/ā , nt. , Loc , -e/-asmiṃ/-amhi , -esu
--a/ā , nt. , Voc , -a , -āni/-ā
--a/ā , fem. , Nom , -ā , -ā/-āyo
--a/ā , fem. , Acc , -aṃ , -ā/-āyo
--a/ā , fem. , Instr , -āya , -āhi
--a/ā , fem. , Dat , -āya , -----
--a/ā , fem. , Abl , -āya , -āhi
--a/ā , fem. , Gen , -āya , -ānaṃ
--a/ā , fem. , Loc , -āya/-āyaṃ , -āsu
--a/ā , fem. , Voc , -e , -ā/-āyo 
--i/ī , fem. , Nom , -ī  , -ī/-iyo
--i/ī , fem. , Acc,  -iṃ  , -ī/-iyo
--i/ī , fem. , Instr,  -iyā , -īhi
--i/ī , fem. , Abl , -iyā , -īhi
--i/ī , fem. , Gen , -iyā , -īnaṃ
--i/ī , fem. , Loc , -iyā/-iyaṃ , -īsu
--i/ī , fem. , Voc , -i , -ī/-iyo 
--i/ī , masc. , Nom , -i , -ayo/-ī
--i/ī , masc. , Acc , -iṃ , -ayo/-ī
--i/ī , masc. , Instr , -inā , -īhi/-ihi
--i/ī , masc. , Abl , -inā/-ismā/-imhā , -īhi/-ihi
--i/ī , masc. , Gen , -ino/-issa , -īnaṃ/-inaṃ
--i/ī , masc. , Loc , -ismiṃ/-imhi , -īsu/-isu
--i/ī , masc. , Voc , -i , -ayo/-ī
--i/ī , nt. , Nom , -i/-iṃ , -ayo/-ī
--i/ī , nt. , Acc , -i/-iṃ , -ayo/-ī
--i/ī , nt. , Instr , -inā , -īhi/-ihi
--i/ī , nt. , Abl , -inā/-ismā/-imhā , -īhi/-ihi
--i/ī , nt. , Gen , -ino/-issa , -īnaṃ/-inaṃ
--i/ī , nt. , Loc , -ismiṃ/-imhi , -īsu/-isu
--i/ī , nt. , Voc , -i , -ayo/-ī
--u/ū , masc. , Nom , -u , -avo/-ū
--u/ū , masc. , Acc , -uṃ , -avo/-ū
--u/ū , masc. , Instr,  -unā , -ūhi
--u/ū , masc. , Abl , -unā/-usmā/-umhā , -ūhi
--u/ū , masc. , Gen , -uno/-ussa , -ūnaṃ
--u/ū , masc. , Loc , -usmiṃ/-umhi , -ūsu
--u/ū , masc. , Voc , -u , -avo/-u/-ave 
--u/ū , fem. , Nom , -u , -ū/-uyo
--u/ū , fem. , Acc , -uṃ , -ū/-uyo
--u/ū , fem. , Instr , -uyā , -ūhi
--u/ū , fem. , Abl , -uyā , -ūhi
--u/ū , fem. , Gen , -uyā , -ūnaṃ
--u/ū , fem. , Loc , -uyā/-uyaṃ , -ūsu
--u/ū , fem. , Voc , -u , -ū/-uyo 
--u/ū , nt. , Nom , -u/-uṃ , -ūni/-ū
--u/ū , nt. , Acc , -u/-uṃ , -ūni/-ū
--u/ū , nt. , Instr , -unā , -ūhi
--u/ū , nt. , Abl , -unā/-usmā/-umhā , -ūhi
--u/ū , nt. , Gen , -uno/-ussa , -ūnaṃ
--u/ū , nt. , Loc , -usmiṃ/-umhi , -ūsu
--u/ū , nt. , Voc , -u/-uṃ , -ūni/-u 
+type , group , gender , infCase , singular , plural
+declination , -a/ā , masc. , Nom , -o , -ā
+declination , -a/ā , masc. , Acc , -aṃ , -e
+declination , -a/ā , masc. , Instr , -ena , -ehi
+declination , -a/ā , masc. , Dat , -āya , -----
+declination , -a/ā , masc. , Abl , -ā/-asmā/-amhā , -ehi
+declination , -a/ā , masc. , Gen , -assa , -ānaṃ
+declination , -a/ā , masc. , Loc , -e/-asmiṃ/-amhi , -esu
+declination , -a/ā , masc. , Voc , -a , -ā 
+declination , -a/ā , nt. , Nom , -aṃ , -āni/-ā
+declination , -a/ā , nt. , Acc , -aṃ , -āni/-ā
+declination , -a/ā , nt. , Instr , -ena , -ehi
+declination , -a/ā , nt. , Dat , -āya , -----
+declination , -a/ā , nt. , Abl , -ā/-asmā/-amhā , -ehi
+declination , -a/ā , nt. , Gen , -assa , -ānaṃ
+declination , -a/ā , nt. , Loc , -e/-asmiṃ/-amhi , -esu
+declination , -a/ā , nt. , Voc , -a , -āni/-ā
+declination , -a/ā , fem. , Nom , -ā , -ā/-āyo
+declination , -a/ā , fem. , Acc , -aṃ , -ā/-āyo
+declination , -a/ā , fem. , Instr , -āya , -āhi
+declination , -a/ā , fem. , Dat , -āya , -----
+declination , -a/ā , fem. , Abl , -āya , -āhi
+declination , -a/ā , fem. , Gen , -āya , -ānaṃ
+declination , -a/ā , fem. , Loc , -āya/-āyaṃ , -āsu
+declination , -a/ā , fem. , Voc , -e , -ā/-āyo 
+declination , -i/ī , fem. , Nom , -ī  , -ī/-iyo
+declination , -i/ī , fem. , Acc,  -iṃ  , -ī/-iyo
+declination , -i/ī , fem. , Instr,  -iyā , -īhi
+declination , -i/ī , fem. , Abl , -iyā , -īhi
+declination , -i/ī , fem. , Gen , -iyā , -īnaṃ
+declination , -i/ī , fem. , Loc , -iyā/-iyaṃ , -īsu
+declination , -i/ī , fem. , Voc , -i , -ī/-iyo 
+declination , -i/ī , masc. , Nom , -i , -ayo/-ī
+declination , -i/ī , masc. , Acc , -iṃ , -ayo/-ī
+declination , -i/ī , masc. , Instr , -inā , -īhi/-ihi
+declination , -i/ī , masc. , Abl , -inā/-ismā/-imhā , -īhi/-ihi
+declination , -i/ī , masc. , Gen , -ino/-issa , -īnaṃ/-inaṃ
+declination , -i/ī , masc. , Loc , -ismiṃ/-imhi , -īsu/-isu
+declination , -i/ī , masc. , Voc , -i , -ayo/-ī
+declination , -i/ī , nt. , Nom , -i/-iṃ , -ayo/-ī
+declination , -i/ī , nt. , Acc , -i/-iṃ , -ayo/-ī
+declination , -i/ī , nt. , Instr , -inā , -īhi/-ihi
+declination , -i/ī , nt. , Abl , -inā/-ismā/-imhā , -īhi/-ihi
+declination , -i/ī , nt. , Gen , -ino/-issa , -īnaṃ/-inaṃ
+declination , -i/ī , nt. , Loc , -ismiṃ/-imhi , -īsu/-isu
+declination , -i/ī , nt. , Voc , -i , -ayo/-ī
+declination , -u/ū , masc. , Nom , -u , -avo/-ū
+declination , -u/ū , masc. , Acc , -uṃ , -avo/-ū
+declination , -u/ū , masc. , Instr,  -unā , -ūhi
+declination , -u/ū , masc. , Abl , -unā/-usmā/-umhā , -ūhi
+declination , -u/ū , masc. , Gen , -uno/-ussa , -ūnaṃ
+declination , -u/ū , masc. , Loc , -usmiṃ/-umhi , -ūsu
+declination , -u/ū , masc. , Voc , -u , -avo/-u/-ave 
+declination , -u/ū , fem. , Nom , -u , -ū/-uyo
+declination , -u/ū , fem. , Acc , -uṃ , -ū/-uyo
+declination , -u/ū , fem. , Instr , -uyā , -ūhi
+declination , -u/ū , fem. , Abl , -uyā , -ūhi
+declination , -u/ū , fem. , Gen , -uyā , -ūnaṃ
+declination , -u/ū , fem. , Loc , -uyā/-uyaṃ , -ūsu
+declination , -u/ū , fem. , Voc , -u , -ū/-uyo 
+declination , -u/ū , nt. , Nom , -u/-uṃ , -ūni/-ū
+declination , -u/ū , nt. , Acc , -u/-uṃ , -ūni/-ū
+declination , -u/ū , nt. , Instr , -unā , -ūhi
+declination , -u/ū , nt. , Abl , -unā/-usmā/-umhā , -ūhi
+declination , -u/ū , nt. , Gen , -uno/-ussa , -ūnaṃ
+declination , -u/ū , nt. , Loc , -usmiṃ/-umhi , -ūsu
+declination , -u/ū , nt. , Voc , -u/-uṃ , -ūni/-u 

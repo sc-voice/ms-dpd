@@ -28,10 +28,8 @@ typeof describe === "function" &&
     should(dict.dpd.__metadata.license).match(/digitalpalidictionary/);
     should(dict.dpdTexts.length).above(52000).below(55000);
   });
-  it("entryOf()", async()=>{
+  it("TESTTESTentryOf()", async()=>{
     let dict = await Dictionary.create();
-
-    // dhamma
     let dhamma = dict.entryOf("dhamma");
     should(dhamma).properties(["word", "definition"]);
     should(dhamma.word).equal("dhamma");
@@ -71,9 +69,11 @@ typeof describe === "function" &&
     should(giddhe.definition[0])
       .match(/pp\|greedy.*\|become greedy\|√gidh˖ta/);
   });
-  it("relatedEntries()", async()=>{
+  it("TESTTESTrelatedEntries()", async()=>{
+    const msg = 'test.dictionary@73';
     let dict = await Dictionary.create();
     let entries = dict.relatedEntries("dhamma");
+    //console.log(msg, entries);
     should(entries.length).equal(15);
     let dhammaya = entries.find(e=>e.word === 'dhammāya');
     should(dhammaya.overlap).equal(1);
@@ -222,7 +222,7 @@ typeof describe === "function" &&
     should(Dictionary.isAccented("samvega")).equal(false);
     should(Dictionary.isAccented("saṁvega")).equal(true);
   });
-  it("TESTTESTwordsWithPrefix()", async ()=>{
+  it("wordsWithPrefix()", async ()=>{
     let dict = await Dictionary.create();
 
     // When strict is false (default), the output may have ellipses:
@@ -269,16 +269,34 @@ typeof describe === "function" &&
     should(sam[0]).equal("saṁ"); // exact match
     should(sam.length).above(404).below(500);
   });
-  it("TESTTESTABBREVIATIONS", ()=>{
+  it("ABBREVIATIONS", ()=>{
     should(Dictionary.ABBREVIATIONS).properties({
       pr: {
         meaning: "present"
       }
     });
   });
-  it("TESTTESTfind() -mu", async()=>{
+  it("find() -mu", async()=>{
     let dict = await Dictionary.create();
     let dhamma = dict.find("dhamma -mu");
     should(dhamma.data.length).equal(34); // dhamma + dhammā
+  });
+  it("TESTTESTinflectionsFilter() dhamma", async()=>{
+    let dict = await Dictionary.create();
+    let inflections = dict.inflectionsFilter("dhamma");
+    should(inflections.length).equal(2);
+    should.deepEqual(inflections[0], Pali.INFLECTIONS[7]);
+    should.deepEqual(inflections[1], Pali.INFLECTIONS[15]);
+  });
+  it("TESTTESTinflectionsFilter() dhamme", async()=>{
+    const msg = 'test.dictionary@290';
+    let dict = await Dictionary.create();
+    let inflections = dict.inflectionsFilter("dhamme");
+    should(inflections.length).equal(4);
+    should.deepEqual(inflections[0], Pali.INFLECTIONS[1]);
+    should.deepEqual(inflections[1], Pali.INFLECTIONS[6]);
+    should.deepEqual(inflections[2], Pali.INFLECTIONS[14]);
+    should.deepEqual(inflections[3], Pali.INFLECTIONS[23]);
+    //console.log(msg, inflections);
   });
 });
