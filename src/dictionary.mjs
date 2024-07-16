@@ -31,7 +31,6 @@ export default class Dictionary {
     return pattern;
   }
 
-
   static unaccentedPattern(pattern) {
     return this.normalizePattern(pattern)
       .replace(/a/iug, '(a|ā)')
@@ -352,33 +351,7 @@ export default class Dictionary {
     return result;
   }
 
-  inflectionsFilter(word, opts={}) {
-    const msg = 'Dictionary.inflections()';
-    const dbg = DBG.INFLECTIONS;
-    let numberKeys = [ 'singular', 'plural' ];
-    let inflections = Pali.INFLECTIONS.reduce((a,inf)=>{
-      let match = null;
-      for (let i=0; !match && i<numberKeys.length; i++) {
-        let numberKey = numberKeys[i];
-        let suffixes = inf[numberKey];
-        if (suffixes) {
-          for (let j=0; j<suffixes.length; j++) {
-            let suffix = suffixes[j];
-            if (word.endsWith(suffix)) {
-              match = Object.assign({}, inf);
-              a.push(match);
-              break;
-            }
-          }
-        }
-      }
-      return a;
-    }, []);
-    dbg && console.log(msg, '[1]inflections', inflections);
-    return inflections;
-  }
-
-  inflections(word, opts={}) {
+  inflections(word, opts={}) { // EXPERIMENTAL
     const msg = 'Dictionary.inflections()';
     const dbg = DBG.INFLECTIONS;
     let {

@@ -110,18 +110,18 @@ typeof describe === "function" && describe("pali", function () {
     let inf = Pali.INFLECTIONS;
     should.deepEqual(inf[0], {
       id: 1,
-      type: "declination",
+      type: "declension",
       group: "-a/ā",
-      gender: "masc.",
+      gender: "masc",
       infCase: "nom",
       singular: ["o"],
       plural: ["ā"]
     });
     should.deepEqual(inf[4], {
       id: 5,
-      type: "declination",
+      type: "declension",
       group: "-a/ā",
-      gender: "masc.",
+      gender: "masc",
       infCase: "abl",
       singular: ["ā", "asmā", "amhā"],
       plural: ["ehi"]

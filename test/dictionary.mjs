@@ -281,22 +281,4 @@ typeof describe === "function" &&
     let dhamma = dict.find("dhamma -mu");
     should(dhamma.data.length).equal(34); // dhamma + dhammā
   });
-  it("TESTTESTinflectionsFilter() dhamma", async()=>{
-    let dict = await Dictionary.create();
-    let inflections = dict.inflectionsFilter("dhamma");
-    should(inflections.length).equal(2);
-    should.deepEqual(inflections[0], Pali.INFLECTIONS[7]);
-    should.deepEqual(inflections[1], Pali.INFLECTIONS[15]);
-  });
-  it("TESTTESTinflectionsFilter() dhamme", async()=>{
-    const msg = 'test.dictionary@290';
-    let dict = await Dictionary.create();
-    let inflections = dict.inflectionsFilter("dhamme");
-    should(inflections.length).equal(4);
-    should.deepEqual(inflections[0], Pali.INFLECTIONS[1]);
-    should.deepEqual(inflections[1], Pali.INFLECTIONS[6]);
-    should.deepEqual(inflections[2], Pali.INFLECTIONS[14]);
-    should.deepEqual(inflections[3], Pali.INFLECTIONS[23]);
-    //console.log(msg, inflections);
-  });
 });

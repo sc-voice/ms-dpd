@@ -1,9 +1,9 @@
 export const INFLECTIONS=[
   {
     "id": 1,
-    "type": "declination",
+    "type": "declension",
     "group": "-a/ā",
-    "gender": "masc.",
+    "gender": "masc",
     "infCase": "nom",
     "singular": [
       "o"
@@ -14,9 +14,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 2,
-    "type": "declination",
+    "type": "declension",
     "group": "-a/ā",
-    "gender": "masc.",
+    "gender": "masc",
     "infCase": "acc",
     "singular": [
       "aṃ"
@@ -27,9 +27,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 3,
-    "type": "declination",
+    "type": "declension",
     "group": "-a/ā",
-    "gender": "masc.",
+    "gender": "masc",
     "infCase": "instr",
     "singular": [
       "ena"
@@ -40,9 +40,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 4,
-    "type": "declination",
+    "type": "declension",
     "group": "-a/ā",
-    "gender": "masc.",
+    "gender": "masc",
     "infCase": "dat",
     "singular": [
       "āya"
@@ -51,9 +51,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 5,
-    "type": "declination",
+    "type": "declension",
     "group": "-a/ā",
-    "gender": "masc.",
+    "gender": "masc",
     "infCase": "abl",
     "singular": [
       "ā",
@@ -66,9 +66,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 6,
-    "type": "declination",
+    "type": "declension",
     "group": "-a/ā",
-    "gender": "masc.",
+    "gender": "masc",
     "infCase": "gen",
     "singular": [
       "assa"
@@ -79,9 +79,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 7,
-    "type": "declination",
+    "type": "declension",
     "group": "-a/ā",
-    "gender": "masc.",
+    "gender": "masc",
     "infCase": "loc",
     "singular": [
       "e",
@@ -94,9 +94,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 8,
-    "type": "declination",
+    "type": "declension",
     "group": "-a/ā",
-    "gender": "masc.",
+    "gender": "masc",
     "infCase": "voc",
     "singular": [
       "a"
@@ -107,9 +107,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 9,
-    "type": "declination",
+    "type": "declension",
     "group": "-a/ā",
-    "gender": "nt.",
+    "gender": "nt",
     "infCase": "nom",
     "singular": [
       "aṃ"
@@ -121,9 +121,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 10,
-    "type": "declination",
+    "type": "declension",
     "group": "-a/ā",
-    "gender": "nt.",
+    "gender": "nt",
     "infCase": "acc",
     "singular": [
       "aṃ"
@@ -135,9 +135,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 11,
-    "type": "declination",
+    "type": "declension",
     "group": "-a/ā",
-    "gender": "nt.",
+    "gender": "nt",
     "infCase": "instr",
     "singular": [
       "ena"
@@ -148,9 +148,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 12,
-    "type": "declination",
+    "type": "declension",
     "group": "-a/ā",
-    "gender": "nt.",
+    "gender": "nt",
     "infCase": "dat",
     "singular": [
       "āya"
@@ -159,9 +159,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 13,
-    "type": "declination",
+    "type": "declension",
     "group": "-a/ā",
-    "gender": "nt.",
+    "gender": "nt",
     "infCase": "abl",
     "singular": [
       "ā",
@@ -174,9 +174,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 14,
-    "type": "declination",
+    "type": "declension",
     "group": "-a/ā",
-    "gender": "nt.",
+    "gender": "nt",
     "infCase": "gen",
     "singular": [
       "assa"
@@ -187,9 +187,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 15,
-    "type": "declination",
+    "type": "declension",
     "group": "-a/ā",
-    "gender": "nt.",
+    "gender": "nt",
     "infCase": "loc",
     "singular": [
       "e",
@@ -202,9 +202,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 16,
-    "type": "declination",
+    "type": "declension",
     "group": "-a/ā",
-    "gender": "nt.",
+    "gender": "nt",
     "infCase": "voc",
     "singular": [
       "a"
@@ -216,9 +216,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 17,
-    "type": "declination",
+    "type": "declension",
     "group": "-a/ā",
-    "gender": "fem.",
+    "gender": "fem",
     "infCase": "nom",
     "singular": [
       "ā"
@@ -230,9 +230,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 18,
-    "type": "declination",
+    "type": "declension",
     "group": "-a/ā",
-    "gender": "fem.",
+    "gender": "fem",
     "infCase": "acc",
     "singular": [
       "aṃ"
@@ -244,9 +244,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 19,
-    "type": "declination",
+    "type": "declension",
     "group": "-a/ā",
-    "gender": "fem.",
+    "gender": "fem",
     "infCase": "instr",
     "singular": [
       "āya"
@@ -257,9 +257,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 20,
-    "type": "declination",
+    "type": "declension",
     "group": "-a/ā",
-    "gender": "fem.",
+    "gender": "fem",
     "infCase": "dat",
     "singular": [
       "āya"
@@ -268,9 +268,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 21,
-    "type": "declination",
+    "type": "declension",
     "group": "-a/ā",
-    "gender": "fem.",
+    "gender": "fem",
     "infCase": "abl",
     "singular": [
       "āya"
@@ -281,9 +281,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 22,
-    "type": "declination",
+    "type": "declension",
     "group": "-a/ā",
-    "gender": "fem.",
+    "gender": "fem",
     "infCase": "gen",
     "singular": [
       "āya"
@@ -294,9 +294,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 23,
-    "type": "declination",
+    "type": "declension",
     "group": "-a/ā",
-    "gender": "fem.",
+    "gender": "fem",
     "infCase": "loc",
     "singular": [
       "āya",
@@ -308,9 +308,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 24,
-    "type": "declination",
+    "type": "declension",
     "group": "-a/ā",
-    "gender": "fem.",
+    "gender": "fem",
     "infCase": "voc",
     "singular": [
       "e"
@@ -322,9 +322,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 25,
-    "type": "declination",
+    "type": "declension",
     "group": "-i/ī",
-    "gender": "fem.",
+    "gender": "fem",
     "infCase": "nom",
     "singular": [
       "ī"
@@ -336,9 +336,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 26,
-    "type": "declination",
+    "type": "declension",
     "group": "-i/ī",
-    "gender": "fem.",
+    "gender": "fem",
     "infCase": "acc,  -iṃ ",
     "singular": [
       "ī",
@@ -347,9 +347,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 27,
-    "type": "declination",
+    "type": "declension",
     "group": "-i/ī",
-    "gender": "fem.",
+    "gender": "fem",
     "infCase": "instr,  -iyā",
     "singular": [
       "īhi"
@@ -357,9 +357,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 28,
-    "type": "declination",
+    "type": "declension",
     "group": "-i/ī",
-    "gender": "fem.",
+    "gender": "fem",
     "infCase": "abl",
     "singular": [
       "iyā"
@@ -370,9 +370,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 29,
-    "type": "declination",
+    "type": "declension",
     "group": "-i/ī",
-    "gender": "fem.",
+    "gender": "fem",
     "infCase": "gen",
     "singular": [
       "iyā"
@@ -383,9 +383,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 30,
-    "type": "declination",
+    "type": "declension",
     "group": "-i/ī",
-    "gender": "fem.",
+    "gender": "fem",
     "infCase": "loc",
     "singular": [
       "iyā",
@@ -397,9 +397,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 31,
-    "type": "declination",
+    "type": "declension",
     "group": "-i/ī",
-    "gender": "fem.",
+    "gender": "fem",
     "infCase": "voc",
     "singular": [
       "i"
@@ -411,9 +411,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 32,
-    "type": "declination",
+    "type": "declension",
     "group": "-i/ī",
-    "gender": "masc.",
+    "gender": "masc",
     "infCase": "nom",
     "singular": [
       "i"
@@ -425,9 +425,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 33,
-    "type": "declination",
+    "type": "declension",
     "group": "-i/ī",
-    "gender": "masc.",
+    "gender": "masc",
     "infCase": "acc",
     "singular": [
       "iṃ"
@@ -439,9 +439,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 34,
-    "type": "declination",
+    "type": "declension",
     "group": "-i/ī",
-    "gender": "masc.",
+    "gender": "masc",
     "infCase": "instr",
     "singular": [
       "inā"
@@ -453,9 +453,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 35,
-    "type": "declination",
+    "type": "declension",
     "group": "-i/ī",
-    "gender": "masc.",
+    "gender": "masc",
     "infCase": "abl",
     "singular": [
       "inā",
@@ -469,9 +469,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 36,
-    "type": "declination",
+    "type": "declension",
     "group": "-i/ī",
-    "gender": "masc.",
+    "gender": "masc",
     "infCase": "gen",
     "singular": [
       "ino",
@@ -484,9 +484,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 37,
-    "type": "declination",
+    "type": "declension",
     "group": "-i/ī",
-    "gender": "masc.",
+    "gender": "masc",
     "infCase": "loc",
     "singular": [
       "ismiṃ",
@@ -499,9 +499,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 38,
-    "type": "declination",
+    "type": "declension",
     "group": "-i/ī",
-    "gender": "masc.",
+    "gender": "masc",
     "infCase": "voc",
     "singular": [
       "i"
@@ -513,9 +513,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 39,
-    "type": "declination",
+    "type": "declension",
     "group": "-i/ī",
-    "gender": "nt.",
+    "gender": "nt",
     "infCase": "nom",
     "singular": [
       "i",
@@ -528,9 +528,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 40,
-    "type": "declination",
+    "type": "declension",
     "group": "-i/ī",
-    "gender": "nt.",
+    "gender": "nt",
     "infCase": "acc",
     "singular": [
       "i",
@@ -543,9 +543,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 41,
-    "type": "declination",
+    "type": "declension",
     "group": "-i/ī",
-    "gender": "nt.",
+    "gender": "nt",
     "infCase": "instr",
     "singular": [
       "inā"
@@ -557,9 +557,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 42,
-    "type": "declination",
+    "type": "declension",
     "group": "-i/ī",
-    "gender": "nt.",
+    "gender": "nt",
     "infCase": "abl",
     "singular": [
       "inā",
@@ -573,9 +573,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 43,
-    "type": "declination",
+    "type": "declension",
     "group": "-i/ī",
-    "gender": "nt.",
+    "gender": "nt",
     "infCase": "gen",
     "singular": [
       "ino",
@@ -588,9 +588,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 44,
-    "type": "declination",
+    "type": "declension",
     "group": "-i/ī",
-    "gender": "nt.",
+    "gender": "nt",
     "infCase": "loc",
     "singular": [
       "ismiṃ",
@@ -603,9 +603,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 45,
-    "type": "declination",
+    "type": "declension",
     "group": "-i/ī",
-    "gender": "nt.",
+    "gender": "nt",
     "infCase": "voc",
     "singular": [
       "i"
@@ -617,9 +617,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 46,
-    "type": "declination",
+    "type": "declension",
     "group": "-u/ū",
-    "gender": "masc.",
+    "gender": "masc",
     "infCase": "nom",
     "singular": [
       "u"
@@ -631,9 +631,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 47,
-    "type": "declination",
+    "type": "declension",
     "group": "-u/ū",
-    "gender": "masc.",
+    "gender": "masc",
     "infCase": "acc",
     "singular": [
       "uṃ"
@@ -645,9 +645,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 48,
-    "type": "declination",
+    "type": "declension",
     "group": "-u/ū",
-    "gender": "masc.",
+    "gender": "masc",
     "infCase": "instr,  -unā",
     "singular": [
       "ūhi"
@@ -655,9 +655,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 49,
-    "type": "declination",
+    "type": "declension",
     "group": "-u/ū",
-    "gender": "masc.",
+    "gender": "masc",
     "infCase": "abl",
     "singular": [
       "unā",
@@ -670,9 +670,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 50,
-    "type": "declination",
+    "type": "declension",
     "group": "-u/ū",
-    "gender": "masc.",
+    "gender": "masc",
     "infCase": "gen",
     "singular": [
       "uno",
@@ -684,9 +684,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 51,
-    "type": "declination",
+    "type": "declension",
     "group": "-u/ū",
-    "gender": "masc.",
+    "gender": "masc",
     "infCase": "loc",
     "singular": [
       "usmiṃ",
@@ -698,9 +698,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 52,
-    "type": "declination",
+    "type": "declension",
     "group": "-u/ū",
-    "gender": "masc.",
+    "gender": "masc",
     "infCase": "voc",
     "singular": [
       "u"
@@ -713,9 +713,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 53,
-    "type": "declination",
+    "type": "declension",
     "group": "-u/ū",
-    "gender": "fem.",
+    "gender": "fem",
     "infCase": "nom",
     "singular": [
       "u"
@@ -727,9 +727,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 54,
-    "type": "declination",
+    "type": "declension",
     "group": "-u/ū",
-    "gender": "fem.",
+    "gender": "fem",
     "infCase": "acc",
     "singular": [
       "uṃ"
@@ -741,9 +741,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 55,
-    "type": "declination",
+    "type": "declension",
     "group": "-u/ū",
-    "gender": "fem.",
+    "gender": "fem",
     "infCase": "instr",
     "singular": [
       "uyā"
@@ -754,9 +754,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 56,
-    "type": "declination",
+    "type": "declension",
     "group": "-u/ū",
-    "gender": "fem.",
+    "gender": "fem",
     "infCase": "abl",
     "singular": [
       "uyā"
@@ -767,9 +767,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 57,
-    "type": "declination",
+    "type": "declension",
     "group": "-u/ū",
-    "gender": "fem.",
+    "gender": "fem",
     "infCase": "gen",
     "singular": [
       "uyā"
@@ -780,9 +780,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 58,
-    "type": "declination",
+    "type": "declension",
     "group": "-u/ū",
-    "gender": "fem.",
+    "gender": "fem",
     "infCase": "loc",
     "singular": [
       "uyā",
@@ -794,9 +794,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 59,
-    "type": "declination",
+    "type": "declension",
     "group": "-u/ū",
-    "gender": "fem.",
+    "gender": "fem",
     "infCase": "voc",
     "singular": [
       "u"
@@ -808,9 +808,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 60,
-    "type": "declination",
+    "type": "declension",
     "group": "-u/ū",
-    "gender": "nt.",
+    "gender": "nt",
     "infCase": "nom",
     "singular": [
       "u",
@@ -823,9 +823,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 61,
-    "type": "declination",
+    "type": "declension",
     "group": "-u/ū",
-    "gender": "nt.",
+    "gender": "nt",
     "infCase": "acc",
     "singular": [
       "u",
@@ -838,9 +838,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 62,
-    "type": "declination",
+    "type": "declension",
     "group": "-u/ū",
-    "gender": "nt.",
+    "gender": "nt",
     "infCase": "instr",
     "singular": [
       "unā"
@@ -851,9 +851,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 63,
-    "type": "declination",
+    "type": "declension",
     "group": "-u/ū",
-    "gender": "nt.",
+    "gender": "nt",
     "infCase": "abl",
     "singular": [
       "unā",
@@ -866,9 +866,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 64,
-    "type": "declination",
+    "type": "declension",
     "group": "-u/ū",
-    "gender": "nt.",
+    "gender": "nt",
     "infCase": "gen",
     "singular": [
       "uno",
@@ -880,9 +880,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 65,
-    "type": "declination",
+    "type": "declension",
     "group": "-u/ū",
-    "gender": "nt.",
+    "gender": "nt",
     "infCase": "loc",
     "singular": [
       "usmiṃ",
@@ -894,9 +894,9 @@ export const INFLECTIONS=[
   },
   {
     "id": 66,
-    "type": "declination",
+    "type": "declension",
     "group": "-u/ū",
-    "gender": "nt.",
+    "gender": "nt",
     "infCase": "voc",
     "singular": [
       "u",
