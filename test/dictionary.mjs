@@ -285,4 +285,12 @@ typeof describe === "function" &&
     let dict = await Dictionary.create();
     let infs = dict.wordInflections("dhamma");
   });
+  it("TESTTESTprefixOf()", ()=>{
+    // useless
+    should(Dictionary.prefixOf('')).equal('');
+    should(Dictionary.prefixOf('abc')).equal('abc');
+
+    should(Dictionary.prefixOf('abcdef', 'abc', 'aba')).equal('ab');
+    should(Dictionary.prefixOf(['a', 'abc', 'aba'])).equal('a');
+  });
 });

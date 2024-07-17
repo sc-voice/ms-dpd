@@ -26,6 +26,20 @@ export default class Dictionary {
     return !/^[a-z]+$/i.test(word);
   }
 
+  static prefixOf(...strings) {
+    const msg = 'Dictionary.prefixOf()';
+    strings = strings.flat();
+
+    let prefix = strings.reduce((a,s)=>{
+      while (a && !s.startsWith(a)) {
+        a = a.substring(0, a.length-1);
+      }
+      return a;
+    }, strings[0] || '');
+
+    return prefix;
+  }
+
   static normalizePattern(pattern) {
     pattern = pattern.toLowerCase();
     pattern = pattern.replace(/[^a-zA-zāḍīḷṁṃṅñṇṭū]/, '');
@@ -361,11 +375,14 @@ export default class Dictionary {
     let entries = this.relatedEntries(word, {
       overlap,
     });
+    let stem = Dictionary.prefixOf(entries.map(e=>e.word));
 
     let w = word;
     dbg && entries.forEach(e=>{
       let { word, overlap } = e;
-      let infs = Inflection.find(inf=>inf.matchesWord(word));
+      let infs = Inflection.find(inf=>{
+        return inf.matchesWord(word, {stem})
+      });
       console.log(msg, word, Inflection.union(infs));
     });
   }

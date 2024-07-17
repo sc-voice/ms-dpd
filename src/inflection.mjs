@@ -70,13 +70,25 @@ export default class Inflection {
     return Inflection.union(this, ...args);
   }
 
-  matchesWord(word, opts={singular:true, plural:true}) {
-    let { singular, plural } = opts;
+  matchesWord(word, opts={}) {
+    const msg = 'Inflection.matchesWord()';
+    const dbg = DBG.MATCHES_WORD;
+    let { stem, singular, plural } = opts;
+    if (singular == null && plural==null) {
+      singular = true;
+      plural = true;
+    }
     let endings = [];
     singular && endings.push(this.singular);
     plural && endings.push(this.plural);
+    endings = endings.flat().filter(end=>!!end);;
+    if (stem) {
+      let endLen = word.length - stem.length;
+      dbg && console.log(msg, {stem, endings});
+      endings = endings.filter(end=>end && (end.length === endLen));
+    }
+
     return endings
-      .flat()
       .reduce((a,end)=>(a || word.endsWith(end)), false);
   }
 

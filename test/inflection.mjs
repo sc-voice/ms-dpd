@@ -84,7 +84,7 @@ typeof describe === "function" &&
     // union of unions
     should.deepEqual(union_ab.union(union_ba), union_ab);
   });
-  it("matchesWord()", ()=>{
+  it("TESTTESTmatchesWord()", ()=>{
     // lenient default {singular:true, plural:true}
     let infS = new Inflection({singular: 'a'});
     should(infS.matchesWord("dhamma")).equal(true);
@@ -105,6 +105,16 @@ typeof describe === "function" &&
 
     should(infSP.matchesWord("dhammā", {singular:true})).equal(false);
     should(infSP.matchesWord("dhammā", {plural:true})).equal(false);
+
+    // stem
+    should(infS.matchesWord("dhamma", {stem:"dhamm"})).equal(true);
+    should(infS.matchesWord("dhamme", {stem:"dhamm"})).equal(false);
+    should(infP.matchesWord("dhamma", {stem:"dhamm"})).equal(false);
+
+    should(infP.matchesWord("dhamma", {stem:"dhamm"})).equal(false);
+    should(infP.matchesWord("dhammā", {stem:"dhamm"})).equal(true);
+    should(infP.matchesWord("dhammehi", {stem:"dhamm"})).equal(true);
+    should(infP.matchesWord("dhammassa", {stem:"dhamm"})).equal(false);
   });
   it("TESTTESTfind() ", ()=>{
     const msg = "test.inflection@114";
