@@ -41,7 +41,7 @@ typeof describe === "function" && describe("pali", function () {
     test('icchati iñjati icchā iṭṭha', 'icchati icchā iñjati iṭṭha');
     test('sīla siṅgāla sikhā sīta', 'sikhā siṅgāla sīta sīla');
   });
-  it("TESTTESTcompareRoman()", ()=>{
+  it("compareRoman()", ()=>{
     const msg = "test.pali@45";
     let pali = new Pali();
     let test = (items, expected) =>{
@@ -106,7 +106,7 @@ typeof describe === "function" && describe("pali", function () {
       '-īhi',
     ]);
   });
-  it("TESTTESTINFLECTIONS", ()=>{
+  it("INFLECTIONS", ()=>{
     let inf = Pali.INFLECTIONS;
     should.deepEqual(inf[0], {
       id: 1,
@@ -138,12 +138,12 @@ typeof describe === "function" && describe("pali", function () {
     should(Pali.wordStem("dhammamhā")).equal('dhamm'); // Abl
     should(Pali.wordStem("dhammassa")).equal('dhamm'); // Gen
     should(Pali.wordStem("dhamme")).equal('dhamm');    // Loc
-    should(Pali.wordStem("dhammasmiṃ")).equal('dhamm');  // Loc
+    should(Pali.wordStem("dhammasmiṁ")).equal('dhamm');  // Loc
     should(Pali.wordStem("dhammamhi")).equal('dhamm');   // Loc
     should(Pali.wordStem("dhamma")).equal('dhamm');    // Voc
 
   });
-  it("TESTTESTENDING_MAX_LEN", ()=>{
+  it("ENDING_MAX_LEN", ()=>{
     should(Pali.ENDING_MAX_LEN).equal(5);
   });
 });

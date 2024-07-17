@@ -28,7 +28,7 @@ typeof describe === "function" &&
     should(dict.dpd.__metadata.license).match(/digitalpalidictionary/);
     should(dict.dpdTexts.length).above(52000).below(55000);
   });
-  it("TESTTESTentryOf()", async()=>{
+  it("entryOf()", async()=>{
     let dict = await Dictionary.create();
     let dhamma = dict.entryOf("dhamma");
     should(dhamma).properties(["word", "definition"]);
@@ -69,7 +69,7 @@ typeof describe === "function" &&
     should(giddhe.definition[0])
       .match(/pp\|greedy.*\|become greedy\|√gidh˖ta/);
   });
-  it("TESTTESTrelatedEntries()", async()=>{
+  it("relatedEntries()", async()=>{
     const msg = 'test.dictionary@73';
     let dict = await Dictionary.create();
     let entries = dict.relatedEntries("dhamma");
@@ -280,5 +280,9 @@ typeof describe === "function" &&
     let dict = await Dictionary.create();
     let dhamma = dict.find("dhamma -mu");
     should(dhamma.data.length).equal(34); // dhamma + dhammā
+  });
+  it("TESTTESTwordInflections", async()=>{ // ExPERIMENTAL
+    let dict = await Dictionary.create();
+    let infs = dict.wordInflections("dhamma");
   });
 });

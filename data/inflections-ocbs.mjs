@@ -19,7 +19,7 @@ export const INFLECTIONS=[
     "gender": "masc",
     "infCase": "acc",
     "singular": [
-      "aṃ"
+      "aṁ"
     ],
     "plural": [
       "e"
@@ -74,7 +74,7 @@ export const INFLECTIONS=[
       "assa"
     ],
     "plural": [
-      "ānaṃ"
+      "ānaṁ"
     ]
   },
   {
@@ -85,7 +85,7 @@ export const INFLECTIONS=[
     "infCase": "loc",
     "singular": [
       "e",
-      "asmiṃ",
+      "asmiṁ",
       "amhi"
     ],
     "plural": [
@@ -112,7 +112,7 @@ export const INFLECTIONS=[
     "gender": "nt",
     "infCase": "nom",
     "singular": [
-      "aṃ"
+      "aṁ"
     ],
     "plural": [
       "āni",
@@ -126,7 +126,7 @@ export const INFLECTIONS=[
     "gender": "nt",
     "infCase": "acc",
     "singular": [
-      "aṃ"
+      "aṁ"
     ],
     "plural": [
       "āni",
@@ -182,7 +182,7 @@ export const INFLECTIONS=[
       "assa"
     ],
     "plural": [
-      "ānaṃ"
+      "ānaṁ"
     ]
   },
   {
@@ -193,7 +193,7 @@ export const INFLECTIONS=[
     "infCase": "loc",
     "singular": [
       "e",
-      "asmiṃ",
+      "asmiṁ",
       "amhi"
     ],
     "plural": [
@@ -235,7 +235,7 @@ export const INFLECTIONS=[
     "gender": "fem",
     "infCase": "acc",
     "singular": [
-      "aṃ"
+      "aṁ"
     ],
     "plural": [
       "ā",
@@ -289,7 +289,7 @@ export const INFLECTIONS=[
       "āya"
     ],
     "plural": [
-      "ānaṃ"
+      "ānaṁ"
     ]
   },
   {
@@ -300,7 +300,7 @@ export const INFLECTIONS=[
     "infCase": "loc",
     "singular": [
       "āya",
-      "āyaṃ"
+      "āyaṁ"
     ],
     "plural": [
       "āsu"
@@ -339,7 +339,7 @@ export const INFLECTIONS=[
     "type": "declension",
     "group": "-i/ī",
     "gender": "fem",
-    "infCase": "acc,  -iṃ ",
+    "infCase": "acc,  -iṁ ",
     "singular": [
       "ī",
       "iyo"
@@ -378,7 +378,7 @@ export const INFLECTIONS=[
       "iyā"
     ],
     "plural": [
-      "īnaṃ"
+      "īnaṁ"
     ]
   },
   {
@@ -389,7 +389,7 @@ export const INFLECTIONS=[
     "infCase": "loc",
     "singular": [
       "iyā",
-      "iyaṃ"
+      "iyaṁ"
     ],
     "plural": [
       "īsu"
@@ -430,7 +430,7 @@ export const INFLECTIONS=[
     "gender": "masc",
     "infCase": "acc",
     "singular": [
-      "iṃ"
+      "iṁ"
     ],
     "plural": [
       "ayo",
@@ -478,7 +478,7 @@ export const INFLECTIONS=[
       "issa"
     ],
     "plural": [
-      "īnaṃ",
+      "īnaṁ",
       "inaṃ"
     ]
   },
@@ -489,7 +489,7 @@ export const INFLECTIONS=[
     "gender": "masc",
     "infCase": "loc",
     "singular": [
-      "ismiṃ",
+      "ismiṁ",
       "imhi"
     ],
     "plural": [
@@ -519,7 +519,7 @@ export const INFLECTIONS=[
     "infCase": "nom",
     "singular": [
       "i",
-      "iṃ"
+      "iṁ"
     ],
     "plural": [
       "ayo",
@@ -534,7 +534,7 @@ export const INFLECTIONS=[
     "infCase": "acc",
     "singular": [
       "i",
-      "iṃ"
+      "iṁ"
     ],
     "plural": [
       "ayo",
@@ -582,7 +582,7 @@ export const INFLECTIONS=[
       "issa"
     ],
     "plural": [
-      "īnaṃ",
+      "īnaṁ",
       "inaṃ"
     ]
   },
@@ -593,7 +593,7 @@ export const INFLECTIONS=[
     "gender": "nt",
     "infCase": "loc",
     "singular": [
-      "ismiṃ",
+      "ismiṁ",
       "imhi"
     ],
     "plural": [
@@ -636,7 +636,7 @@ export const INFLECTIONS=[
     "gender": "masc",
     "infCase": "acc",
     "singular": [
-      "uṃ"
+      "uṁ"
     ],
     "plural": [
       "avo",
@@ -679,7 +679,7 @@ export const INFLECTIONS=[
       "ussa"
     ],
     "plural": [
-      "ūnaṃ"
+      "ūnaṁ"
     ]
   },
   {
@@ -689,7 +689,7 @@ export const INFLECTIONS=[
     "gender": "masc",
     "infCase": "loc",
     "singular": [
-      "usmiṃ",
+      "usmiṁ",
       "umhi"
     ],
     "plural": [
@@ -732,7 +732,7 @@ export const INFLECTIONS=[
     "gender": "fem",
     "infCase": "acc",
     "singular": [
-      "uṃ"
+      "uṁ"
     ],
     "plural": [
       "ū",
@@ -775,7 +775,7 @@ export const INFLECTIONS=[
       "uyā"
     ],
     "plural": [
-      "ūnaṃ"
+      "ūnaṁ"
     ]
   },
   {
@@ -786,7 +786,7 @@ export const INFLECTIONS=[
     "infCase": "loc",
     "singular": [
       "uyā",
-      "uyaṃ"
+      "uyaṁ"
     ],
     "plural": [
       "ūsu"
@@ -814,7 +814,7 @@ export const INFLECTIONS=[
     "infCase": "nom",
     "singular": [
       "u",
-      "uṃ"
+      "uṁ"
     ],
     "plural": [
       "ūni",
@@ -829,7 +829,7 @@ export const INFLECTIONS=[
     "infCase": "acc",
     "singular": [
       "u",
-      "uṃ"
+      "uṁ"
     ],
     "plural": [
       "ūni",
@@ -875,7 +875,7 @@ export const INFLECTIONS=[
       "ussa"
     ],
     "plural": [
-      "ūnaṃ"
+      "ūnaṁ"
     ]
   },
   {
@@ -885,7 +885,7 @@ export const INFLECTIONS=[
     "gender": "nt",
     "infCase": "loc",
     "singular": [
-      "usmiṃ",
+      "usmiṁ",
       "umhi"
     ],
     "plural": [
@@ -900,7 +900,7 @@ export const INFLECTIONS=[
     "infCase": "voc",
     "singular": [
       "u",
-      "uṃ"
+      "uṁ"
     ],
     "plural": [
       "ūni",

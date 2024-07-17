@@ -6,7 +6,7 @@ import {
 } from '../main.mjs';
 
 typeof describe === "function" && 
-  describe("TESTTESTinflection", function () 
+  describe("inflection", function () 
 {
   it("default ctor", () => {
     let inf = new Inflection();
@@ -106,7 +106,7 @@ typeof describe === "function" &&
     should(infSP.matchesWord("dhammā", {singular:true})).equal(false);
     should(infSP.matchesWord("dhammā", {plural:true})).equal(false);
   });
-  it("find() ", ()=>{
+  it("TESTTESTfind() ", ()=>{
     const msg = "test.inflection@114";
     let infAll = Inflection.find();
     should(infAll.length).above(65).below(100);
@@ -120,6 +120,10 @@ typeof describe === "function" &&
     should.deepEqual(unionDhamma.gender, ['masc', 'nt']);
     should(unionDhamma.singular).equal('a');
     should.deepEqual(unionDhamma.plural, ['ā', 'āni']);
+
+    // ṃ
+    let infDhammanam = Inflection.find(inf=>inf.matchesWord('dhammanaṁ'));
+    should(infDhammanam.length).equal(4);
   });
 
 });

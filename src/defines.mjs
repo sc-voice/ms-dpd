@@ -5,9 +5,9 @@ export const DBG = {
   FIND: 0,
   FIND_DEFINITION: 0,
   FIND_WORDS: 0,
-  INFLECTION_FIND: true,
-  INFLECTIONS: 0,
+  INFLECTION_FIND: 0,
   SANKEY: 0,
+  WORD_INFLECTIONS: 0,
 }
 
 export const CASE = {

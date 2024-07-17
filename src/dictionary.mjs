@@ -1,5 +1,6 @@
 import { DBG } from './defines.mjs';
-import { default as Pali } from "./pali.mjs";
+import Pali from "./pali.mjs";
+import Inflection from "./inflection.mjs";
 
 import { ABBREVIATIONS } from '../data/en/abbreviations.mjs';
 import { DPD } from '../data/en/dpd.mjs';
@@ -351,9 +352,9 @@ export default class Dictionary {
     return result;
   }
 
-  inflections(word, opts={}) { // EXPERIMENTAL
-    const msg = 'Dictionary.inflections()';
-    const dbg = DBG.INFLECTIONS;
+  wordInflections(word, opts={}) { // EXPERIMENTAL
+    const msg = 'Dictionary.wordInflections()';
+    const dbg = DBG.WORD_INFLECTIONS;
     let {
       overlap=0.5,
     } = opts;
@@ -362,11 +363,10 @@ export default class Dictionary {
     });
 
     let w = word;
-    let inflections = this.inflectionsFilter(w);
-    dbg && console.log(msg, '[1]', word, entries.map(e=>{
+    dbg && entries.forEach(e=>{
       let { word, overlap } = e;
-      return {word, overlap};
-    }));
-    dbg && console.log(msg, '[2]inflections', inflections);
+      let infs = Inflection.find(inf=>inf.matchesWord(word));
+      console.log(msg, word, Inflection.union(infs));
+    });
   }
 }

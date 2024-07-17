@@ -44,8 +44,10 @@ export default class Inflection {
             });
             a[k] = akv.length > 1 ? akv : (akv[0] || null);
           } else if (akv.indexOf(ikv) < 0) {
-            akv.push(ikv);
-            a[k] = akv.sort();
+            if (ikv) {
+              akv.push(ikv);
+              a[k] = akv.sort();
+            }
           } else {
             // ignore existing value
           }
