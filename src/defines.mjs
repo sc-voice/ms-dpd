@@ -8,7 +8,7 @@ export const DBG = {
   INFLECTION_FIND: 0,
   MATCHES_WORD: 0,
   SANKEY: 0,
-  WORD_INFLECTIONS: 0,
+  WORD_INFLECTIONS: true,
 }
 
 export const CASE = {

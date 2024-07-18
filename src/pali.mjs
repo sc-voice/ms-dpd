@@ -45,16 +45,6 @@ export default class Pali {
     'y', 
   ];
   static #ROMAN_ORDER;
-  static #INFLECTION_CASE = {
-    NOM: {id:"nom", name:"nominative", use:"subject"},
-    ACC: {id:"acc", name:"accusative", use:"object"},
-    INSTR: {id:"ins", name:"instrumental", use:"by, with"},
-    DAT: {id:"dat", name:"dative", use:"to, for"},
-    ABL: {id:"abl", name:"ablative", use:"from"},
-    GEN: {id:"gen", name:"genitive", use:"of"},
-    LOC: {id:"loc", name:"locative", use:"in, at, on"},
-    VOC: {id:"voc", name:"vocative", use:"(the)"},
-  }
 
   constructor(opts={}) {
   }

@@ -282,14 +282,39 @@ typeof describe === "function" &&
     should(dhamma.data.length).equal(34); // dhamma + dhammā
   });
   it("TESTTESTwordInflections", async()=>{ // ExPERIMENTAL
+    const msg = "test.dictionary.wordInflections@285";
     let dict = await Dictionary.create();
-    let infs = dict.wordInflections("dhamma");
+    let wi = dict.wordInflections("dhamma");
+
+    const infExpected = [
+      { gdr: 'masc', case: 'nom', nbr: 'sg', word: 'dhammo' },
+      { gdr: 'masc', case: 'nom', nbr: 'pl', word: 'dhammā' },
+      { gdr: 'masc', case: 'acc', nbr: 'sg', word: 'dhammaṁ' },
+      { gdr: 'masc', case: 'acc', nbr: 'pl', word: 'dhamme' },
+      // DPD { gdr: 'masc', case: 'instr', nbr: 'sg', word: 'dhammā' },
+      { gdr: 'masc', case: 'instr', nbr: 'sg', word: 'dhammena' },
+      { gdr: 'masc', case: 'instr', nbr: 'pl', word: 'dhammehi' },
+      { gdr: 'masc', case: 'dat', nbr: 'sg', word: 'dhammāya' },
+      { gdr: 'masc', case: 'abl', nbr: 'sg', word: 'dhammā' },
+      // !MS { gdr: 'masc', case: 'abl', nbr: 'sg', word: 'dhammasmā' },
+      // !MS { gdr: 'masc', case: 'abl', nbr: 'sg', word: 'dhammamhā' },
+      { gdr: 'masc', case: 'abl', nbr: 'pl', word: 'dhammehi' },
+      { gdr: 'masc', case: 'gen', nbr: 'sg', word: 'dhammassa' },
+      { gdr: 'masc', case: 'gen', nbr: 'pl', word: 'dhammānaṁ' },
+      { gdr: 'masc', case: 'loc', nbr: 'sg', word: 'dhammasmiṁ' },
+      { gdr: 'masc', case: 'loc', nbr: 'sg', word: 'dhamme' },
+      // !MS { gdr: 'masc', case: 'loc', nbr: 'sg', word: 'dhammamhi' },
+      { gdr: 'masc', case: 'loc', nbr: 'pl', word: 'dhammesu' },
+      { gdr: 'masc', case: 'voc', nbr: 'sg', word: 'dhamma' },
+      { gdr: 'masc', case: 'voc', nbr: 'pl', word: 'dhammā' },
+    ];
+    for (let i=0; i<infExpected.length; i++) {
+      should.deepEqual(wi[i], infExpected[i]);
+    }
   });
-  it("TESTTESTprefixOf()", ()=>{
-    // useless
+  it("prefixOf()", ()=>{
     should(Dictionary.prefixOf('')).equal('');
     should(Dictionary.prefixOf('abc')).equal('abc');
-
     should(Dictionary.prefixOf('abcdef', 'abc', 'aba')).equal('ab');
     should(Dictionary.prefixOf(['a', 'abc', 'aba'])).equal('a');
   });

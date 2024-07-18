@@ -113,7 +113,7 @@ typeof describe === "function" && describe("pali", function () {
       type: "declension",
       group: "-a/ā",
       gender: "masc",
-      infCase: "nom",
+      'case': "nom",
       singular: ["o"],
       plural: ["ā"]
     });
@@ -122,12 +122,12 @@ typeof describe === "function" && describe("pali", function () {
       type: "declension",
       group: "-a/ā",
       gender: "masc",
-      infCase: "abl",
+      'case': "abl",
       singular: ["ā", "asmā", "amhā"],
       plural: ["ehi"]
     });
   });
-  it("TESTTESTwordStem", ()=>{
+  it("wordStem", ()=>{
     // Singular
     should(Pali.wordStem("dhammo")).equal('dhamm');    // Nom
     should(Pali.wordStem("dhammassa")).equal('dhamm'); // Acc

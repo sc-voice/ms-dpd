@@ -33,8 +33,9 @@ const MAYBE_USELESS = 0;
           value = value &&
             value.split('/').map(s=>s.trim().replace('-','') );
           break;
-        case "infCase": {
+        case "case": {
           value = value && value.toLowerCase(); // match DPD
+          key = "case";
         } break;
       }
       entry[key] = /---*/.test(value) ? null : value;

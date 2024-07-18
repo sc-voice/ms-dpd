@@ -1,4 +1,4 @@
-type , group , gender , infCase , singular , plural
+type , group , gender , case , singular , plural
 declension , -a/ā , masc , Nom , -o , -ā
 declension , -a/ā , masc , Acc , -aṃ , -e
 declension , -a/ā , masc , Instr , -ena , -ehi
@@ -24,8 +24,8 @@ declension , -a/ā , fem , Gen , -āya , -ānaṃ
 declension , -a/ā , fem , Loc , -āya/-āyaṃ , -āsu
 declension , -a/ā , fem , Voc , -e , -ā/-āyo 
 declension , -i/ī , fem , Nom , -ī  , -ī/-iyo
-declension , -i/ī , fem , Acc,  -iṃ  , -ī/-iyo
-declension , -i/ī , fem , Instr,  -iyā , -īhi
+declension , -i/ī , fem , Acc ,  -iṃ  , -ī/-iyo
+declension , -i/ī , fem , Instr ,  -iyā , -īhi
 declension , -i/ī , fem , Abl , -iyā , -īhi
 declension , -i/ī , fem , Gen , -iyā , -īnaṃ
 declension , -i/ī , fem , Loc , -iyā/-iyaṃ , -īsu
@@ -46,7 +46,7 @@ declension , -i/ī , nt , Loc , -ismiṃ/-imhi , -īsu/-isu
 declension , -i/ī , nt , Voc , -i , -ayo/-ī
 declension , -u/ū , masc , Nom , -u , -avo/-ū
 declension , -u/ū , masc , Acc , -uṃ , -avo/-ū
-declension , -u/ū , masc , Instr,  -unā , -ūhi
+declension , -u/ū , masc , Instr ,  -unā , -ūhi
 declension , -u/ū , masc , Abl , -unā/-usmā/-umhā , -ūhi
 declension , -u/ū , masc , Gen , -uno/-ussa , -ūnaṃ
 declension , -u/ū , masc , Loc , -usmiṃ/-umhi , -ūsu

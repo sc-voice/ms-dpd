@@ -372,18 +372,73 @@ export default class Dictionary {
     let {
       overlap=0.5,
     } = opts;
+    let entry = this.find(word);
+    let { data } = entry;
+    let entryTypes = data && data.reduce((a,def)=>{
+      let { type } = def;
+      a[type] = (a[type]||0) + 1;
+      a.total++;
+      return a;
+    }, {total:0, masc:0, nt:0, fem:0});
+    let wordGender;
+    if (entryTypes.total) {
+      wordGender = entryTypes.nt > entryTypes.fem 
+        ? 'nt' : 'fem';
+      wordGender = entryTypes.masc > entryTypes[wordGender] 
+        ? 'masc' : wordGender;
+    }
+
     let entries = this.relatedEntries(word, {
       overlap,
     });
     let stem = Dictionary.prefixOf(entries.map(e=>e.word));
 
     let w = word;
-    dbg && entries.forEach(e=>{
+    let singular = entries.reduce((a,e)=>{
       let { word, overlap } = e;
       let infs = Inflection.find(inf=>{
-        return inf.matchesWord(word, {stem})
+        return inf.matchesWord(word, {stem, singular:true})
       });
-      console.log(msg, word, Inflection.union(infs));
-    });
+      infs.forEach(inf=>{
+        let { gender, } = inf;
+        if (wordGender === gender) {
+          a.push({ 
+            [Inflection.attribute('gender').id]:
+              Inflection.attribute(gender).id,
+            [Inflection.attribute('case').id]:
+              Inflection.attribute(inf.case).id,
+            [Inflection.attribute('number').id]:
+              Inflection.attribute('single').id,
+            word,
+          });
+        }
+      });
+
+      return a;
+    }, []);
+    let plural = entries.reduce((a,e)=>{
+      let { word, overlap } = e;
+      let infs = Inflection.find(inf=>{
+        return inf.matchesWord(word, {stem, plural:true})
+      });
+      infs.forEach(inf=>{
+        let { gender, } = inf;
+        if (wordGender === gender) {
+          a.push({ 
+            [Inflection.attribute('gender').id]:
+              Inflection.attribute(gender).id,
+            [Inflection.attribute('case').id]:
+              Inflection.attribute(inf.case).id,
+            [Inflection.attribute('number').id]:
+              Inflection.attribute('plural').id,
+            word,
+          });
+        }
+      });
+
+      return a;
+    }, []);
+
+    return [...singular, ...plural].sort(Inflection.compare);
   }
 }

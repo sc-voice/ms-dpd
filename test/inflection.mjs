@@ -15,34 +15,36 @@ typeof describe === "function" &&
       type: null,
       group: null,
       gender: null,
-      infCase: null,
+      'case': null,
       singular: null,
       plural: null,
     });
+    should(inf.isEmpty).equal(true);
   });
   it("custom ctor", ()=>{
     let id = 'test-id';
     let type = 'test-type';
     let group = 'test-group';
     let gender = 'test-gender';
-    let infCase = 'test-infCase' ;
+    let $case = 'test-case' ;
     let singular = 'test-singular';
     let plural = 'test-plural';
     
     let inf = new Inflection({
-      id, type, group, gender, infCase, singular, plural
+      id, type, group, gender, 'case':$case, singular, plural
     });
     should(inf).properties({
-      id, type, group, gender, infCase, singular, plural
+      id, type, group, gender, 'case':$case, singular, plural
     });
+    should(inf.isEmpty).equal(false);
   });
-  it("union()", ()=>{
+  it("TESTTESTunion()", ()=>{
     let infa = new Inflection({
       id: 'a-id',
       type: 'a-type',
       group: 'a-group',
       gender: 'a-gender',
-      infCase: 'a-infCase',
+      'case': 'a-case',
       singular: 'a-singular',
       plural: 'a-plural',
     });
@@ -51,7 +53,7 @@ typeof describe === "function" &&
       type: 'b-type',
       group: 'b-group',
       gender: 'b-gender',
-      infCase: 'b-infCase',
+      'case': 'b-case',
       singular: 'b-singular',
       plural: 'b-plural',
     });
@@ -68,7 +70,7 @@ typeof describe === "function" &&
       type: ['a-type', 'b-type'],
       group: ['a-group', 'b-group'],
       gender: ['a-gender', 'b-gender'],
-      infCase: ['a-infCase', 'b-infCase'],
+      'case': ['a-case', 'b-case'],
       singular: ['a-singular', 'b-singular'],
       plural: ['a-plural', 'b-plural'],
     });
@@ -84,7 +86,7 @@ typeof describe === "function" &&
     // union of unions
     should.deepEqual(union_ab.union(union_ba), union_ab);
   });
-  it("TESTTESTmatchesWord()", ()=>{
+  it("matchesWord()", ()=>{
     // lenient default {singular:true, plural:true}
     let infS = new Inflection({singular: 'a'});
     should(infS.matchesWord("dhamma")).equal(true);
@@ -116,7 +118,7 @@ typeof describe === "function" &&
     should(infP.matchesWord("dhammehi", {stem:"dhamm"})).equal(true);
     should(infP.matchesWord("dhammassa", {stem:"dhamm"})).equal(false);
   });
-  it("TESTTESTfind() ", ()=>{
+  it("find() ", ()=>{
     const msg = "test.inflection@114";
     let infAll = Inflection.find();
     should(infAll.length).above(65).below(100);
@@ -124,7 +126,7 @@ typeof describe === "function" &&
     let infDhamma = Inflection.find(inf=>inf.matchesWord("dhamma"));
     let unionDhamma = Inflection.union(infDhamma);
     //console.log(msg, unionDhamma);
-    should(unionDhamma.infCase).equal('voc');
+    should(unionDhamma.case).equal('voc');
     should(unionDhamma.type).equal('declension');
     should(unionDhamma.group).equal('-a/ā');
     should.deepEqual(unionDhamma.gender, ['masc', 'nt']);
