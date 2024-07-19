@@ -32,6 +32,10 @@ export default class Inflection {
     cmp = aCase.order - bCase.order;
     if (cmp) { return cmp; }
 
+    let aNumber = Inflection.attribute(a.nbr);
+    let bNumber = Inflection.attribute(b.nbr);
+    cmp = aNumber.order - bNumber.order;
+
     return cmp;
   }
 

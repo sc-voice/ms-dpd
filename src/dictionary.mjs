@@ -369,6 +369,7 @@ export default class Dictionary {
   wordInflections(word, opts={}) { // EXPERIMENTAL
     const msg = 'Dictionary.wordInflections()';
     const dbg = DBG.WORD_INFLECTIONS;
+    if (!DBG.EXPERIMENTAL) throw new Error(`${msg} UNSUPPORTED`);
     let {
       overlap=0.5,
     } = opts;
@@ -419,8 +420,10 @@ export default class Dictionary {
     let plural = entries.reduce((a,e)=>{
       let { word, overlap } = e;
       let infs = Inflection.find(inf=>{
-        return inf.matchesWord(word, {stem, plural:true})
+        let match = inf.matchesWord(word, {stem, plural:true});
+        return match;
       });
+
       infs.forEach(inf=>{
         let { gender, } = inf;
         if (wordGender === gender) {
@@ -439,6 +442,13 @@ export default class Dictionary {
       return a;
     }, []);
 
-    return [...singular, ...plural].sort(Inflection.compare);
+    let compare = (a,b) => {
+      let cmp = Inflection.compare(a,b);
+      return cmp === 0 
+        ? Pali.compareRoman(a.word, b.word) 
+        : cmp;
+    }
+
+    return [...singular, ...plural].sort(compare);
   }
 }

@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 import should from "should";
+import { DBG } from '../src/defines.mjs';
 import {
   Pali,
   Dictionary,
@@ -281,7 +282,8 @@ typeof describe === "function" &&
     let dhamma = dict.find("dhamma -mu");
     should(dhamma.data.length).equal(34); // dhamma + dhammā
   });
-  it("TESTTESTwordInflections", async()=>{ // ExPERIMENTAL
+  it("wordInflections dhamma", async()=>{ 
+    if (!DBG.EXPERIMENTAL) return;
     const msg = "test.dictionary.wordInflections@285";
     let dict = await Dictionary.create();
     let wi = dict.wordInflections("dhamma");
@@ -307,6 +309,112 @@ typeof describe === "function" &&
       { gdr: 'masc', case: 'loc', nbr: 'pl', word: 'dhammesu' },
       { gdr: 'masc', case: 'voc', nbr: 'sg', word: 'dhamma' },
       { gdr: 'masc', case: 'voc', nbr: 'pl', word: 'dhammā' },
+    ];
+    for (let i=0; i<infExpected.length; i++) {
+      should.deepEqual(wi[i], infExpected[i]);
+    }
+  });
+  it("TESTTESTwordInflections devī", async()=>{ 
+    if (!DBG.EXPERIMENTAL) return;
+    const msg = "test.dictionary.wordInflections devī";
+    let dict = await Dictionary.create();
+    let wi = dict.wordInflections("devī");
+
+    const infExpected = [
+      { gdr:'fem', case:'nom', nbr:'sg', word:'devī' }, 
+      { gdr:'fem', case:'nom', nbr:'pl', word:'deviyo' },
+      { gdr:'fem', case:'nom', nbr:'pl', word:'devī' }, 
+      { gdr:'fem', case:'acc', nbr:'sg', word:'deviṁ' },
+      { gdr:'fem', case:'acc', nbr:'pl', word:'deviyo' },
+      { gdr:'fem', case:'acc', nbr:'pl', word:'devī' }, 
+      { gdr:'fem', case:'instr', nbr:'sg', word:'deviyā' }, 
+      // !MS { gdr:'fem', case:'instr', nbr:'pl', word:'devīhi' }, 
+      { gdr:'fem', case:'abl', nbr:'sg', word:'deviyā' },
+      // !MS { gdr:'fem', case:'abl', nbr:'pl', word:'devīhi' },
+      { gdr:'fem', case:'gen', nbr: 'sg', word:'deviyā' },
+      // !MS { gdr:'fem', case:'gen', nbr:'pl', word:'devinaṁ' },
+      { gdr:'fem', case:'loc', nbr:'sg', word:'deviyā' },
+      // !MS { gdr:'fem', case:'loc', nbr:'sg', word:'deviyāṁ' },
+      // !MS { gdr:'fem', case:'loc', nbr:'pl', word:'devisu' },
+      { gdr:'fem', case:'voc', nbr:'sg', word:'devi' },
+      { gdr:'fem', case:'voc', nbr:'pl', word:'deviyo' },
+      { gdr:'fem', case:'voc', nbr:'pl', word:'devī' },
+    ];
+    //console.log(msg, wi);
+    for (let i=0; i<infExpected.length; i++) {
+      should.deepEqual(wi[i], infExpected[i]);
+    }
+  });
+  it("wordInflections aggi", async()=>{
+    if (!DBG.EXPERIMENTAL) return;
+    const msg = "test.dictionary.wordInflections aggi";
+    const dbg = 0;
+    let dict = await Dictionary.create();
+    let wi = dict.wordInflections("aggi");
+    dbg && console.log(msg, wi);
+
+    const infExpected = [
+      { gdr:'masc', case:'nom', nbr:'sg', word:'aggi' }, 
+      // !MS { gdr:'masc', case:'nom', nbr:'pl', word:'aggayo' },
+      { gdr:'masc', case:'nom', nbr:'pl', word:'aggī' }, 
+      { gdr:'masc', case:'acc', nbr:'sg', word:'aggiṁ' },
+      // !MS { gdr:'masc', case:'acc', nbr:'pl', word:'aggayo' },
+      { gdr:'masc', case:'acc', nbr:'pl', word:'aggī' }, 
+      { gdr:'masc', case:'instr', nbr:'sg', word:'agginā' }, 
+      // !MS { gdr:'masc', case:'instr', nbr:'pl', word:'aggihi' }, 
+      // !MS { gdr:'masc', case:'instr', nbr:'pl', word:'aggīhi' }, 
+      { gdr:'masc', case:'abl', nbr:'sg', word:'agginā' },
+      // !MS { gdr:'masc', case:'abl', nbr:'sg', word:'aggismā' },
+      // !MS { gdr:'masc', case:'abl', nbr:'sg', word:'aggimhā' },
+      // !MS { gdr:'masc', case:'abl', nbr:'pl', word:'aggihi' }, 
+      // !MS { gdr:'masc', case:'abl', nbr:'pl', word:'aggīhi' }, 
+      { gdr:'masc', case:'gen', nbr: 'sg', word:'aggino' },
+      { gdr:'masc', case:'gen', nbr: 'sg', word:'aggissa' },
+      // !MS { gdr:'masc', case:'gen', nbr: 'pl', word:'agginaṁ' },
+      { gdr:'masc', case:'gen', nbr: 'pl', word:'aggīnaṁ' },
+      { gdr:'masc', case:'loc', nbr: 'sg', word:'aggimhi' },
+      { gdr:'masc', case:'loc', nbr: 'sg', word:'aggismiṁ' },
+      { gdr:'masc', case:'voc', nbr: 'sg', word:'aggi' },
+
+      // !MS { gdr:'masc', case:'voc', nbr: 'pl', word:'aggayo' },
+      { gdr:'masc', case:'voc', nbr: 'pl', word:'aggī' },
+    ];
+    for (let i=0; i<infExpected.length; i++) {
+      should.deepEqual(wi[i], infExpected[i]);
+    }
+  });
+  it("TESTTESTwordInflections akkhi", async()=>{
+    if (!DBG.EXPERIMENTAL) return;
+    const msg = "test.dictionary.wordInflections akkhi";
+    const dbg = 0;
+    let dict = await Dictionary.create();
+    let wi = dict.wordInflections("akkhi");
+    dbg && console.log(msg, wi);
+
+    const infExpected = [
+      { gdr:'nt', case:'nom', nbr:'sg', word:'akkhi' }, 
+      { gdr:'nt', case:'nom', nbr:'sg', word:'akkhiṁ' }, 
+      // !DPD { gdr:'nt', case:'nom', nbr:'pl', word:'akkhī' }, 
+      { gdr:'nt', case:'nom', nbr:'pl', word:'akkhīni' }, 
+      { gdr:'nt', case:'acc', nbr:'sg', word:'akkhi' }, 
+      { gdr:'nt', case:'acc', nbr:'sg', word:'akkhiṁ' }, 
+      // !DPD { gdr:'nt', case:'acc', nbr:'pl', word:'akkhī' }, 
+      { gdr:'nt', case:'acc', nbr:'pl', word:'akkhīni' }, 
+      // !MS { gdr:'nt', case:'instr', nbr:'sg', word:'akkhinā' }, 
+      // !MS { gdr:'nt', case:'instr', nbr:'pl', word:'akkhihi' }, 
+      { gdr:'nt', case:'instr', nbr:'pl', word:'akkhīhi' }, 
+      { gdr:'nt', case:'abl', nbr:'sg', word:'akkhimhā' },
+      // !MS { gdr:'nt', case:'abl', nbr:'sg', word:'akkhinā' },
+      // !MS { gdr:'nt', case:'abl', nbr:'sg', word:'akkhismā' },
+      // !MS { gdr:'nt', case:'abl', nbr:'pl', word:'akkhihi' }, 
+      { gdr:'nt', case:'abl', nbr:'pl', word:'akkhīhi' }, 
+
+      { gdr:'nt', case:'voc', nbr:'sg', word:'akkhi' }, 
+      { gdr:'nt', case:'voc', nbr:'sg', word:'akkhiṁ' }, 
+      // !DPD { gdr:'nt', case:'voc', nbr:'pl', word:'akkhī' }, 
+      { gdr:'nt', case:'voc', nbr:'pl', word:'akkhīni' }, 
+
+      //{ gdr:'nt', case:'CASE', nbr:'sg', word:'WORD' }, 
     ];
     for (let i=0; i<infExpected.length; i++) {
       should.deepEqual(wi[i], infExpected[i]);

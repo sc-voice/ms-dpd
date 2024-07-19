@@ -27,7 +27,7 @@ declension , -i/ī , fem , Nom , -ī  , -ī/-iyo
 declension , -i/ī , fem , Acc ,  -iṃ  , -ī/-iyo
 declension , -i/ī , fem , Instr ,  -iyā , -īhi
 declension , -i/ī , fem , Abl , -iyā , -īhi
-declension , -i/ī , fem , Gen , -iyā , -īnaṃ
+declension , -i/ī , fem , Gen , -iyā , -īnaṃ/-inaṃ
 declension , -i/ī , fem , Loc , -iyā/-iyaṃ , -īsu
 declension , -i/ī , fem , Voc , -i , -ī/-iyo 
 declension , -i/ī , masc , Nom , -i , -ayo/-ī
@@ -37,13 +37,13 @@ declension , -i/ī , masc , Abl , -inā/-ismā/-imhā , -īhi/-ihi
 declension , -i/ī , masc , Gen , -ino/-issa , -īnaṃ/-inaṃ
 declension , -i/ī , masc , Loc , -ismiṃ/-imhi , -īsu/-isu
 declension , -i/ī , masc , Voc , -i , -ayo/-ī
-declension , -i/ī , nt , Nom , -i/-iṃ , -ayo/-ī
-declension , -i/ī , nt , Acc , -i/-iṃ , -ayo/-ī
+declension , -i/ī , nt , Nom , -i/-iṃ , -īni/-ī
+declension , -i/ī , nt , Acc , -i/-iṃ , -īni/-ī
 declension , -i/ī , nt , Instr , -inā , -īhi/-ihi
 declension , -i/ī , nt , Abl , -inā/-ismā/-imhā , -īhi/-ihi
 declension , -i/ī , nt , Gen , -ino/-issa , -īnaṃ/-inaṃ
 declension , -i/ī , nt , Loc , -ismiṃ/-imhi , -īsu/-isu
-declension , -i/ī , nt , Voc , -i , -ayo/-ī
+declension , -i/ī , nt , Voc , -i/-iṃ , -īni/-ī
 declension , -u/ū , masc , Nom , -u , -avo/-ū
 declension , -u/ū , masc , Acc , -uṃ , -avo/-ū
 declension , -u/ū , masc , Instr ,  -unā , -ūhi

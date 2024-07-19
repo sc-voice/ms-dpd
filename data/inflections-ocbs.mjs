@@ -384,7 +384,8 @@ export const INFLECTIONS=[
       "iyā"
     ],
     "plural": [
-      "īnaṁ"
+      "īnaṁ",
+      "inaṁ"
     ]
   },
   {
@@ -485,7 +486,7 @@ export const INFLECTIONS=[
     ],
     "plural": [
       "īnaṁ",
-      "inaṃ"
+      "inaṁ"
     ]
   },
   {
@@ -528,7 +529,7 @@ export const INFLECTIONS=[
       "iṁ"
     ],
     "plural": [
-      "ayo",
+      "īni",
       "ī"
     ]
   },
@@ -543,7 +544,7 @@ export const INFLECTIONS=[
       "iṁ"
     ],
     "plural": [
-      "ayo",
+      "īni",
       "ī"
     ]
   },
@@ -589,7 +590,7 @@ export const INFLECTIONS=[
     ],
     "plural": [
       "īnaṁ",
-      "inaṃ"
+      "inaṁ"
     ]
   },
   {
@@ -614,10 +615,11 @@ export const INFLECTIONS=[
     "gender": "nt",
     "case": "voc",
     "singular": [
-      "i"
+      "i",
+      "iṁ"
     ],
     "plural": [
-      "ayo",
+      "īni",
       "ī"
     ]
   },

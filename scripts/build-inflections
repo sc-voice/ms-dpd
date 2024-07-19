@@ -21,7 +21,7 @@ const MAYBE_USELESS = 0;
   let keys = srcLines[0].split(' , ');
   for (let id=1; id<srcLines.length; id++) {
     let line = srcLines[id]
-      .replace('ṃ', 'ṁ')
+      .replaceAll('ṃ', 'ṁ')
       .split(' , ');
     let entry = {id};
     for (let j=0; j<keys.length; j++) {

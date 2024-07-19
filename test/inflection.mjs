@@ -86,7 +86,7 @@ typeof describe === "function" &&
     // union of unions
     should.deepEqual(union_ab.union(union_ba), union_ab);
   });
-  it("matchesWord()", ()=>{
+  it("matchesWord() a/ā", ()=>{
     // lenient default {singular:true, plural:true}
     let infS = new Inflection({singular: 'a'});
     should(infS.matchesWord("dhamma")).equal(true);
@@ -117,6 +117,39 @@ typeof describe === "function" &&
     should(infP.matchesWord("dhammā", {stem:"dhamm"})).equal(true);
     should(infP.matchesWord("dhammehi", {stem:"dhamm"})).equal(true);
     should(infP.matchesWord("dhammassa", {stem:"dhamm"})).equal(false);
+  });
+  it("TESTTESTmatchesWord() i/ī", ()=>{
+    let stem = 'dev';
+    // lenient default {singular:true, plural:true}
+    let inf27 = new Inflection({
+      "id": 27,
+      "type": "declension",
+      "group": "-i/ī",
+      "gender": "fem",
+      "case": "instr",
+      "singular": [
+        "iyā"
+      ],
+      "plural": [
+        "īhi"
+      ]
+    });
+    let inf31 = new Inflection({
+      "id": 31,
+      "type": "declension",
+      "group": "-i/ī",
+      "gender": "fem",
+      "case": "voc",
+      "singular": [
+        "i"
+      ],
+      "plural": [
+        "ī",
+        "iyo"
+      ]
+    });
+    should(inf27.matchesWord("devīhi", {stem})).equal(true);
+    should(inf31.matchesWord("devī", {stem})).equal(true);
   });
   it("find() ", ()=>{
     const msg = "test.inflection@114";
