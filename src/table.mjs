@@ -1,17 +1,171 @@
-
 import { DBG } from './defines.mjs';
-import { ABBREVIATIONS } from '../data/en/abbreviations.mjs';
-import { DPD } from '../data/en/dpd.mjs';
-import { DPD_TEXTS } from '../data/en/dpd-text.mjs';
-import Pali from './pali.mjs';
 
-export default class Inflection {
-  constructor(opts={}) {
-    Inflection.#KEYS.forEach(k=>{
-      this[k] = opts[k] || null;
+export default class Table {
+  constructor(data, opts={}) {
+    const msg = 'Table.ctor';
+    let {
+      headers=[],
+      emptyRow = {},
+      emptyCell = '\u233f',
+      cellOverflow = '\u2026',
+      title,
+      caption,
+      columnSeparator = ' ',
+    } = opts;
+    if (!(data instanceof Array)) {
+      throw new Error(`${msg} [1]data:Array[Object]!`);
+    }
+    if (!(headers instanceof Array)) {
+      let eText = `[1]headers:Array! ${JSON.stringify(headers)}`;
+      throw new Error(`${msg} ${eText}`);
+    }
+    let rows = data;
+    let data0 = data[0];
+    if (headers.length===0) {
+      if(data0 instanceof Array) {
+        throw new Error(`${msg} [2]data:Array[Object]!`);
+      }
+      headers = Object.keys(data0).map(key=>({id:key}));
+    }
+    headers.forEach(h=>{
+      h.id = h.id || h.title || emptyCell;
+      h.title = h.title || h.id.replace(/^./, h.id.at(0).toUpperCase());
+      h.width = h.title.length;
+      h.maxWidth = h.maxWidth || 0;
+    });
+
+    Object.assign(this, {
+      title,
+      headers,
+      rows,
+      caption,
+      columnSeparator,
+      emptyCell,
     });
   }
 
+  static fromArray2(data, opts={}) {
+    const msg = 'Table.fromArray2';
+    let {
+      headers = [],
+      emptyRow = {},
+    } = opts;
+    if (!data instanceof Array) {
+      throw new Error(`${msg} [1]data:Array?`);
+    }
+    let rows = data;
+    let data0 = data[0];
+    if(!data0 instanceof Array) {
+      throw new Error(`${msg} [2]data:Array[Array]?`);
+    }
+    if (headers.length===0) {
+      headers = data0.map(c=>{
+        if (typeof c !== 'string') {
+          throw new Error(`${msg} [3]header? ${c}`);
+        } 
+        return { id:c }
+      });
+    }
+
+    // convert rows to Object
+    rows = rows.slice(1).map(
+      row=>row.reduce((a,c,i)=>{
+        let hdr = headers[i];
+        a[hdr.id] = c;
+        return a;
+      }, {})
+    );
+
+    let newOpts = Object.assign({}, opts, {headers});
+    return new Table(rows, newOpts);
+  }
+
+  datumAsString(row, id) {
+    const msg = "Table.datumAsString()";
+    let { headers, emptyCell='', cellOverflow } = this;
+    let val = row[id];
+    if (val == null) {
+      return emptyCell;
+    }
+    let hdr = headers.find(h=>h.id===id);
+    let s = val;
+    if (typeof s === 'number') {
+      s = s+'';
+    }
+    if (hdr) {
+      if (hdr.maxWidth && hdr.width < s.length) {
+        s = s.slice(0, hdr.maxWidth-1) + cellOverflow;
+      }
+    }
+    if (s == null) {
+      console.log(msg, {s, row, id});
+    }
+    return s;
+  }
+
+  updateHeaders() {
+    const msg = "Table.asColumns()";
+
+    let { 
+      headers, 
+      rows,
+    } = this;
+
+    // calculate column width
+    rows.forEach(row=>{
+      for (let i=0; i<headers.length; i++) {
+        let h = headers[i];
+        let datum = this.datumAsString(row, h.id);
+        h.width = Math.max(h.width, datum.length);
+      }
+    });
+  }
+
+  asColumns(opts={}) {
+    const msg = "Table.asColumns()";
+    const dbg = 0;
+    let {
+      title = this.title,
+      caption = this.caption,
+      columnSeparator = this.columnSeparator,
+    } = opts;
+    let { 
+      headers, 
+      rows,
+    } = this;
+
+    this.updateHeaders();
+
+    let lines = [];
+    title && lines.push(title);
+    let colTitles = headers.map(h=>{
+      let datum = h.title || h.id;
+      return datum.padEnd(h.width);
+    });
+    lines.push(colTitles.join(columnSeparator));
+
+    rows.forEach(row=>{
+      let data = [];
+      headers.forEach(h=>{
+        let rawDatum = row[h.id];
+        let datum = this.datumAsString(row, h.id);
+        if (typeof rawDatum === 'number') {
+          data.push(datum.padStart(h.width));
+        } else {
+          data.push(datum.padEnd(h.width));
+        }
+      });
+      let line = data.join(columnSeparator);
+      dbg && console.log(msg, row, line);
+      lines.push(line);
+    });
+
+    caption && lines.push(caption);
+
+    return lines;
+  }
+
+  /*
   static compare(a,b) {
     if (a === b) {
       return 0;
@@ -113,7 +267,7 @@ export default class Inflection {
     showSrc && rows.forEach((row,iRow)=>{
       if (filterCase) {
         if (typeof filterCase === 'string') {
-          filterCase = filterCase.split(/, */);
+          filterCase = filterCase.split(new RegExp(', *'));
         }
         showSrc = (0 <= filterCase.findIndex(ic=>row[0][0]===ic));
       }
@@ -288,4 +442,5 @@ export default class Inflection {
     {type:'case', id:'loc', order:7, name:"locative", use:"in, at, on"},
     {type:'case', id:'voc', order:8, name:"vocative", use:"(the)"},
   ];
+*/
 }

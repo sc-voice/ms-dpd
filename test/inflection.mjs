@@ -38,7 +38,7 @@ typeof describe === "function" &&
     });
     should(inf.isEmpty).equal(false);
   });
-  it("TESTTESTunion()", ()=>{
+  it("union()", ()=>{
     let infa = new Inflection({
       id: 'a-id',
       type: 'a-type',
@@ -118,7 +118,7 @@ typeof describe === "function" &&
     should(infP.matchesWord("dhammehi", {stem:"dhamm"})).equal(true);
     should(infP.matchesWord("dhammassa", {stem:"dhamm"})).equal(false);
   });
-  it("TESTTESTmatchesWord() i/ī", ()=>{
+  it("matchesWord() i/ī", ()=>{
     let stem = 'dev';
     // lenient default {singular:true, plural:true}
     let inf27 = new Inflection({
@@ -169,6 +169,41 @@ typeof describe === "function" &&
     // ṃ
     let infDhammanam = Inflection.find(inf=>inf.matchesWord('dhammanaṁ'));
     should(infDhammanam.length).equal(4);
+  });
+  it("attribute() attribute", ()=>{
+    let test = (idOrName,props) => {
+      should(Inflection.attribute(idOrName)).properties(props);
+    };
+    test(null, {id:null, type:'attribute'});
+    test('attribute', {id:'attr', type:'attribute'});
+    test('gender', {id:'gdr', type:'attribute'});
+    test('number', {id:'nbr', type:'attribute'});
+    test('inflection_case', {id:'case', type:'attribute'});
+  });
+  it("attribute() number", ()=>{
+    let attr = Inflection.attribute;
+
+    should(attr('number')).properties({id:'nbr', type:'attribute'});
+    should(attr('sg')).properties({id:'sg', type:'number'});
+    should(attr('singular')).properties({id:'sg', type:'number'});
+    should(attr('pl')).properties({id:'pl', type:'number'});
+    should(attr('plural')).properties({id:'pl', type:'number'});
+  });
+  it("parseDpdInflectionTemplate)", ()=>{
+    let dpdTmplt = 'a masc|dhamma|[[[""], ["masc sg"], [""], ["masc pl"], [""]], [["nom"], ["o"], ["masc nom sg"], ["ā", "āse"], ["masc nom pl"]], [["acc"], ["aṃ"], ["masc acc sg"], ["e"], ["masc acc pl"]], [["instr"], ["ā", "ena"], ["masc instr sg"], ["ebhi", "ehi"], ["masc instr pl"]], [["dat"], ["assa", "āya"], ["masc dat sg"], ["ānaṃ"], ["masc dat pl"]], [["abl"], ["ato", "amhā", "asmā", "ā"], ["masc abl sg"], ["ato", "ebhi", "ehi"], ["masc abl pl"]], [["gen"], ["assa"], ["masc gen sg"], ["āna", "ānaṃ"], ["masc gen pl"]], [["loc"], ["amhi", "asmiṃ", "e"], ["masc loc sg"], ["esu"], ["masc loc pl"]], [["voc"], ["a", "ā"], ["masc voc sg"], ["ā"], ["masc voc pl"]], [["in comps"], ["a"], ["in comps"], [""], [""]]]';
+
+    let opts = {
+      textOut:[],
+      verbose: false,
+    };
+    let {
+      pattern, like, comps, textOut,
+    } = Inflection.parseDpdInflectionTemplate(dpdTmplt, opts);
+    should(pattern).equal('a masc');
+    should(like).equal('dhamma');
+    should.deepEqual(comps, ['a']);
+    console.log(`pattern:${pattern} like:${like} comps:${comps}`);
+    textOut.forEach(out => console.log(out));
   });
 
 });
