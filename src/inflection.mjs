@@ -4,12 +4,19 @@ import { ABBREVIATIONS } from '../data/en/abbreviations.mjs';
 import { DPD } from '../data/en/dpd.mjs';
 import { DPD_TEXTS } from '../data/en/dpd-text.mjs';
 import Pali from './pali.mjs';
+import Table from './table.mjs';
 
 export default class Inflection {
-  constructor(opts={}) {
-    Inflection.#KEYS.forEach(k=>{
+  constructor(opts={}) { Inflection.#KEYS.forEach(k=>{
       this[k] = opts[k] || null;
     });
+  }
+
+  static attributes(opts) {
+    let tblOpts = opts || {
+      title: "Inflection.attributes()",
+    }
+    return Table.fromRows(Inflection.#ATTRIBUTES, tblOpts);
   }
 
   static compare(a,b) {
@@ -147,14 +154,10 @@ export default class Inflection {
   }
 
   static attribute(idOrName) {
-    let attrs = Inflection.#ATTRIBUTES;
-    for (let i=0; i<attrs.length; i++) {
-      let attr = attrs[i];
-      if (attr.id===idOrName || attr.name===idOrName) {
-        return attr;
-      }
-    }
-    return found || {
+    let attrs = Inflection.#ATTRIBUTES.filter(attr=>{
+      return attr.id===idOrName || attr.name===idOrName; 
+    });
+    return attrs[0] || {
       type:'unknown', id:null, order:-1, name:'unknown', use:'unknown'
     }
   }

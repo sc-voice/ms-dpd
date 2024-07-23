@@ -193,9 +193,9 @@ export default class Table {
     return lines;
   }
 
-  filter(f=(row=>true)) {
+  filter(f=(row=>true), opts={}) {
     let { rows } = this;
-    let opts = Object.assign({}, this);
+    opts = Object.assign({}, this, opts);
     opts.rows = rows.filter(f);
     return new Table(opts);
   }

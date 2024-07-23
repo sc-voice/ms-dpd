@@ -205,5 +205,15 @@ typeof describe === "function" &&
     console.log(`pattern:${pattern} like:${like} comps:${comps}`);
     textOut.forEach(out => console.log(out));
   });
+  it("TESTTESTattributes()", ()=>{
+    let title = 'test-title';
+    let tbl = Inflection.attributes({title});
+    let fNumber = (row=>row.type === 'number');
+
+    should(tbl.title).equal(title);
+
+    let tblNumber = tbl.filter(fNumber);
+    should.deepEqual(tblNumber.rows.map(r=>r.id), ['sg', 'pl']);
+  });
 
 });
