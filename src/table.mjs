@@ -74,21 +74,23 @@ export default class Table {
       headers = [],
       emptyRow = {},
     } = opts;
-    if (!data instanceof Array) {
+    if (!(data instanceof Array)) {
       throw new Error(`${msg} [1]data:Array?`);
     }
     let rows = data;
-    let data0 = data[0];
-    if(!data0 instanceof Array) {
-      throw new Error(`${msg} [2]data:Array[Array]?`);
-    }
-    if (headers.length===0) {
-      headers = data0.map(c=>{
-        if (typeof c !== 'string') {
-          throw new Error(`${msg} [3]header? ${c}`);
-        } 
-        return { id:c }
-      });
+    if (rows.length) {
+      let row0 = rows[0];
+      if(!(row0 instanceof Array)) {
+        throw new Error(`${msg} [2]data:Array[Array]?`);
+      }
+      if (headers.length===0) {
+        headers = row0.map(c=>{
+          if (typeof c !== 'string') {
+            throw new Error(`${msg} [3]header? ${c}`);
+          } 
+          return { id:c }
+        });
+      }
     }
 
     // convert rows to Object

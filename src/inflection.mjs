@@ -7,7 +7,8 @@ import Pali from './pali.mjs';
 import Table from './table.mjs';
 
 export default class Inflection {
-  constructor(opts={}) { Inflection.#KEYS.forEach(k=>{
+  constructor(opts={}) { 
+    Inflection.#KEYS.forEach(k=>{
       this[k] = opts[k] || null;
     });
   }
@@ -53,12 +54,13 @@ export default class Inflection {
       inflections,
       comps,
     } = opts;
-    const dbg = 0;
+    const dbg = 1;
     const dbgv = 0;
     let dbgmsg;
     let dbgvmsg;
-    let rowType = row[0][0];
+    let rowType = row.c1
     let group;
+    let keys = Object.keys(row);
     switch (rowType) {
       case '': 
         rowType = 'title'; 
@@ -73,15 +75,26 @@ export default class Inflection {
       case 'loc':
       case 'voc': {
         rowType = 'declension';
-        for (let i=1; i<row.length; i+=2) {
-          let data = row[i];
-          let key = row[i+1];
-          dbg && console.log(msg, {comps, key, data});
+        for (let i=2; i<keys.length; i+=2) {
+          let data = row[`c${i}`];
+          let key = row[`c${i+1}`];
+          let keyParts = key.split(' ');
+          let info = keyParts.reduce((a,kp)=>{
+            let kpi = Inflection.attribute(kp);
+            if (kpi) {
+              let attr = Inflection.attribute(kpi?.type);
+              if (attr) {
+                a[attr.id] = kp;
+              }
+            }
+            return a;
+          }, {suffix:data});
+          dbg && console.log(msg, info);
         }
-        dbg && (dbgmsg = `${pattern}, ${rowType}`);
+        //dbg && (dbgmsg = `${pattern}, ${rowType}`);
       } break;
       case 'in comps':
-        group = row[1];
+        group = row.c2;
         break;
       default:
         dbgv && (
@@ -108,49 +121,41 @@ export default class Inflection {
     } = opts;
     let [ pattern, like, data ] = dpdInf.split('|');
     
-    let rows = JSON.parse(data);
+    let srcRows = JSON.parse(data);
     let rowType;
     let group;
     let inflections = [];
-    let lastRow = rows[rows.length-1];
+    let lastRow = srcRows.at(-1);
     let in_comps = lastRow[0][0];
-    let comps = lastRow[1];
+    let comps = lastRow[1].join(',');
     dbg && console.log(msg, {pattern, like, comps});
     let showSrc = !!textOut;
-    showSrc && rows.forEach((row,iRow)=>{
-      if (filterCase) {
-        if (typeof filterCase === 'string') {
-          filterCase = filterCase.split(/, */);
+    let headers = srcRows.reduce((a,row,i)=>{
+      for (let i=a.length; i<row.length; i++) {
+        a.push({id:`c${i+1}`});
+      }
+      return a;
+    }, []);
+    srcRows.forEach(row=>{
+      row.forEach((c,i)=>{
+        if (c?.length === 1) {
+          row[i] = c[0];
         }
-        showSrc = (0 <= filterCase.findIndex(ic=>row[0][0]===ic));
-      }
-      if (showSrc) {
-        const EMPTY = '\u233f';
-        let srcRow = row.map((cell,i)=>{
-          if (i === 0) {
-            let text = verbose ? '' : cell;
-            let rowNum = (
-              iRow==0 ? '#' : iRow.toString()
-            ).padStart(2);
-            return `${rowNum} ${text}`.padEnd(verbose ? 2 : 11 );
-          } else if (i % 2) {
-            return (cell.join(',')||EMPTY).padEnd(23);
-          } else {
-            let text = cell.join(',') || EMPTY;
-            return verbose 
-              ? text.padEnd(13) 
-              : (text&&'\u2026' || text);
-          }
-        });
-        let outRow = srcRow.join(' ');
-        textOut.push(outRow);
-      }
-      let info = Inflection.#parseDpdInfDatum(row, 
-        {pattern, comps, inflections});
-      rowType = rowType || info.rowType;
-      group = group || info.group;
+      });
     });
-    return { pattern, like, comps, textOut, }
+    let srcTable = Table.fromArray2(srcRows, {
+      headers,
+      title: `srcTable pattern:${pattern} like:${like} comps:${comps}`,
+    });
+
+    srcTable.rows.forEach((row, iRow) => {
+      let info = Inflection.#parseDpdInfDatum(row, {
+        pattern, comps, inflections
+      });
+      dbg && console.log(msg, row);
+    });
+
+    return { pattern, like, comps, srcTable, inflections}
   }
 
   static attribute(idOrName) {
