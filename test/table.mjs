@@ -2,19 +2,16 @@ import should from "should";
 import Table from '../src/table.mjs';
 
 typeof describe === "function" && 
-  describe("table", function () 
+  describe("TESTTESTtable", function () 
 {
   it("default ctor", () => {
-    let eCaught;
-    try {
-      let tbl = new Table();
-    } catch(e) {
-      eCaught = e;
-    }
-    should(eCaught.message).match(/\[1\]data:Array\[Object\]!/);
+    let tbl = new Table();
+    should.deepEqual(tbl.headers, []);
+    should.deepEqual(tbl.rows, []);
+    should.deepEqual(tbl.asColumns(), []);
   });
-  it("custom ctor", ()=>{
-    let data = [
+  it("fromRows()", ()=>{
+    let rows = [
       {color: 'purple', size:10},
       {color: 'red', size:5},
     ];
@@ -22,7 +19,7 @@ typeof describe === "function" &&
     let caption = 'test-caption';
     let opts = {title, caption};
 
-    let tbl = new Table(data, opts);
+    let tbl = Table.fromRows(rows, opts);
 
     should(tbl.title).equal(title);
     should(tbl.caption).equal(caption);
@@ -30,7 +27,26 @@ typeof describe === "function" &&
     should.deepEqual(tbl.headers.map(h=>h.id), ['color', 'size']);
     should.deepEqual(tbl.headers.map(h=>h.width), [5,4]);
     should(tbl.rows.length).equal(2);
-    should(tbl.rows).equal(data);
+    should(tbl.rows).equal(rows);
+
+    let tbl2 = Table.fromRows(rows,
+      {title, caption, headers:tbl.headers});
+    should(tbl2.headers).not.equal(tbl.headers);
+    should.deepEqual(tbl2, tbl);
+  });
+  it("serialize", ()=>{
+    let rows = [
+      {color: 'purple', size:10},
+      {color: 'red', size:5},
+    ];
+    let title = 'test-title';
+    let caption = 'test-caption';
+    let opts = {title, caption};
+
+    let tbl = Table.fromRows(rows, opts);
+    let json = JSON.stringify(tbl);
+    let tbl2 = new Table(JSON.parse(json));
+    should.deepEqual(tbl2, tbl);
   });
   it("fromArray2()", ()=>{
     let data = [
@@ -56,7 +72,7 @@ typeof describe === "function" &&
     should.deepEqual(tbl.rows[1], expected[1]);
     should(tbl.rows.length).equal(3);
   });
-  it("TESTTESTasColumns()", ()=>{
+  it("asColumns()", ()=>{
     let data = [
       ['color', 'size'],
       ['purple', 10],

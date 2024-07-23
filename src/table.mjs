@@ -1,32 +1,38 @@
 import { DBG } from './defines.mjs';
 
 export default class Table {
-  constructor(data, opts={}) {
-    const msg = 'Table.ctor';
+  constructor(opts={}) {
+    const msg = "Table.ctor";
     let {
-      headers=[],
       emptyRow = {},
       emptyCell = '\u233f',
       cellOverflow = '\u2026',
-      title,
       caption,
       columnSeparator = ' ',
+      headers=[],
+      title,
+      rows=[],
     } = opts;
-    if (!(data instanceof Array)) {
-      throw new Error(`${msg} [1]data:Array[Object]!`);
+
+    if (!(rows instanceof Array)) {
+      throw new Error(`${msg} [1]rows:Array[Object]!`);
     }
     if (!(headers instanceof Array)) {
       let eText = `[1]headers:Array! ${JSON.stringify(headers)}`;
       throw new Error(`${msg} ${eText}`);
     }
-    let rows = data;
-    let data0 = data[0];
-    if (headers.length===0) {
-      if(data0 instanceof Array) {
-        throw new Error(`${msg} [2]data:Array[Object]!`);
+    if (rows.length) {
+      let row0 = rows[0];
+      if (headers.length) {
+        headers = JSON.parse(JSON.stringify(headers));
+      } else {
+        if(row0 instanceof Array) {
+          throw new Error(`${msg} [2]rows:Array[Object]!`);
+        }
+        headers = Object.keys(row0).map(key=>({id:key}));
       }
-      headers = Object.keys(data0).map(key=>({id:key}));
     }
+
     headers.forEach(h=>{
       h.id = h.id || h.title || emptyCell;
       h.title = h.title || h.id.replace(/^./, h.id.at(0).toUpperCase());
@@ -35,15 +41,27 @@ export default class Table {
     });
 
     Object.assign(this, {
-      title,
-      headers,
-      rows,
+      emptyRow,
+      emptyCell,
+      cellOverflow,
       caption,
       columnSeparator,
-      emptyCell,
+      headers,
+      title,
+      rows,
     });
   }
 
+  // [{color:"red", size:10}, ...]
+  static fromRows(rows, opts={}) {
+    const msg = 'Table.fromRows()';
+    return new Table(Object.assign({}, opts, {rows}));
+  }
+
+  // [
+  //   ["color", "size}],
+  //   ["red", 10]
+  // ]
   static fromArray2(data, opts={}) {
     const msg = 'Table.fromArray2';
     let {
@@ -77,7 +95,7 @@ export default class Table {
     );
 
     let newOpts = Object.assign({}, opts, {headers});
-    return new Table(rows, newOpts);
+    return Table.fromRows(rows, newOpts);
   }
 
   datumAsString(row, id) {
@@ -103,8 +121,8 @@ export default class Table {
     return s;
   }
 
-  updateHeaders() {
-    const msg = "Table.asColumns()";
+  #updateHeaders() {
+    const msg = "Table.#updateHeaders()";
 
     let { 
       headers, 
@@ -134,15 +152,17 @@ export default class Table {
       rows,
     } = this;
 
-    this.updateHeaders();
+    this.#updateHeaders();
 
     let lines = [];
     title && lines.push(title);
-    let colTitles = headers.map(h=>{
-      let datum = h.title || h.id;
-      return datum.padEnd(h.width);
-    });
-    lines.push(colTitles.join(columnSeparator));
+    if (headers.length) {
+      let colTitles = headers.map(h=>{
+        let datum = h.title || h.id;
+        return datum.padEnd(h.width);
+      });
+      lines.push(colTitles.join(columnSeparator));
+    }
 
     rows.forEach(row=>{
       let data = [];
