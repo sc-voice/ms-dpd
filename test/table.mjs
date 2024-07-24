@@ -16,6 +16,7 @@ typeof describe === "function" &&
     should.deepEqual(tbl.headers, []);
     should.deepEqual(tbl.rows, []);
     should.deepEqual(tbl.asColumns(), []);
+    should(tbl.titleOfId).equal(Table.titleOfId);
   });
   it("fromRows()", ()=>{
     let rows = [
@@ -30,9 +31,7 @@ typeof describe === "function" &&
 
     should(tbl.title).equal(title);
     should(tbl.caption).equal(caption);
-    should.deepEqual(tbl.headers.map(h=>h.title), ['Color', 'Size']);
     should.deepEqual(tbl.headers.map(h=>h.id), ['color', 'size']);
-    should.deepEqual(tbl.headers.map(h=>h.width), [5,4]);
     should(tbl.rows.length).equal(2);
     should.deepEqual(tbl.rows, rows);
     should(tbl.rows).not.equal(rows);
@@ -69,9 +68,7 @@ typeof describe === "function" &&
 
     let tbl = Table.fromArray2(data, opts);
 
-    should.deepEqual(tbl.headers.map(h=>h.title), ['Color', 'Size']);
     should.deepEqual(tbl.headers.map(h=>h.id), ['color', 'size']);
-    should.deepEqual(tbl.headers.map(h=>h.width), [5,4]);
     let expected = [
       {color: 'purple', size:10},
       {color: 'red', size:5},
@@ -120,20 +117,23 @@ typeof describe === "function" &&
     should(tbl2.sort(compare)).equal(tbl2);
     should.deepEqual(tbl2.rows[0], tbl.rows[2]);
   });
-  it("toLocaleString()", ()=>{
+  it("format()", ()=>{
     let tbl = Table.fromArray2(TEST_DATA);
     let compare = ((a,b) => {
       let cmp = a.color.localeCompare(b.color);
       return cmp;
     });
-    let localeOpts = { dateStyle: "short", }
-    let tblEN = tbl.toLocaleString('en', localeOpts);
+    let localeOptions = { dateStyle: "short", }
+    let tblEN = tbl.format({locales:'en', localeOptions});
     should(tblEN.split('\n')[0]).match(/Color *Size Date/i);
     should(tblEN.split('\n')[1]).match(/purple   10 2.1.00/);
 
-    let tblFR = tbl.toLocaleString('fr', localeOpts);
+    let tblFR = tbl.format({locales:'fr', localeOptions});
     let frLines = tblFR.split('\n');
     should(frLines[0]).match(/Color  Size Date/i);
     should(frLines[1]).match(/purple   10 01.02.2000/);
+  });
+  it("titleOfId", ()=>{
+    should(Table.titleOfId("happy cow")).equal("Happy cow");
   });
 });

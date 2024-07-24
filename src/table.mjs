@@ -1,5 +1,8 @@
 import { DBG } from './defines.mjs';
 
+
+const DFLT_COMPACT = true;
+
 export default class Table {
   constructor(opts={}) {
     const msg = "Table.ctor";
@@ -14,7 +17,8 @@ export default class Table {
       title,
       rows=[],
       locales,
-      localeOpts,
+      localeOptions,
+      titleOfId = Table.titleOfId,
     } = opts;
 
     if (!(rows instanceof Array)) {
@@ -38,8 +42,6 @@ export default class Table {
 
     headers.forEach(h=>{
       h.id = h.id || h.title || emptyCell;
-      h.title = h.title || h.id.replace(/^./, h.id.at(0).toUpperCase());
-      h.width = h.title.length;
       h.maxWidth = h.maxWidth || 0;
     });
 
@@ -54,8 +56,15 @@ export default class Table {
       title,
       rows: [...rows],
       locales,
-      localeOpts,
+      localeOptions,
+      titleOfId,
     });
+  }
+
+  static titleOfId(id='') {
+    return id && id.length
+      ? id.replace(/^./, id.at(0).toUpperCase())
+      : (id||'');
   }
 
   // [{color:"red", size:10}, ...]
@@ -113,14 +122,14 @@ export default class Table {
     } = this;
     let {
       locales = this.locales,
-      localeOpts = this.localeOpts,
+      localeOptions = this.localeOptions,
     } = opts;
     let val = row[id];
     if (val == null) {
       return emptyCell;
     }
     let hdr = headers.find(h=>h.id===id);
-    let s = val.toLocaleString(locales, localeOpts);
+    let s = val.toLocaleString(locales, localeOptions);
     if (hdr) {
       if (hdr.maxWidth && hdr.width < s.length) {
         s = s.slice(0, hdr.maxWidth-1) + cellOverflow;
@@ -135,7 +144,15 @@ export default class Table {
     let { 
       headers, 
       rows,
+      titleOfId,
+      emptyCell,
     } = this;
+
+    for (let i=0; i<headers.length; i++) {
+      let h = headers[i];
+      let title = h.title || titleOfId(h.id) || emptyCell;
+      h.width = title.length;
+    }
 
     // calculate column width
     rows.forEach(row=>{
@@ -154,9 +171,9 @@ export default class Table {
       title = this.title,
       caption = this.caption,
       columnSeparator = this.columnSeparator,
-      locales=this.locales,
-      localeOpts=this.localeOpts,
-      compact = true,
+      locales = this.locales,
+      localeOptions = this.localeOptions,
+      titleOfId = Table.titleOfId || this.titleOfId,
     } = opts;
     let { 
       headers, 
@@ -169,7 +186,7 @@ export default class Table {
     title && lines.push(title);
     if (headers.length) {
       let colTitles = headers.map(h=>{
-        let datum = compact ? h.id.toUpperCase() : h.title;
+        let datum = h.title || titleOfId(h.id);
         return datum.padEnd(h.width);
       });
       lines.push(colTitles.join(columnSeparator));
@@ -179,7 +196,8 @@ export default class Table {
       let data = [];
       headers.forEach(h=>{
         let rawDatum = row[h.id];
-        let datum = this.datumAsString(row, h.id, {locales, localeOpts});
+        let datum = this.datumAsString(row, h.id, 
+          {locales, localeOptions});
         if (typeof rawDatum === 'number') {
           data.push(datum.padStart(h.width));
         } else {
@@ -209,10 +227,19 @@ export default class Table {
     return this;
   }
 
-  toLocaleString(locales, localeOpts) {
-    let opts = {locales, localeOpts};
-    let lines = this.asColumns(opts);
-    let { lineSeparator } = this;
+  format(opts={}) {
+    let {
+      locales,
+      localeOptions,
+      titleOfId = this.titleOfId,
+      lineSeparator = this.lineSeparator,
+    } = opts;
+    let lines = this.asColumns({
+      locales, 
+      localeOptions, 
+      titleOfId,
+    });
+
     return lines.join(lineSeparator);
   }
 

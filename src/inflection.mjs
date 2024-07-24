@@ -11,9 +11,21 @@ export default class Inflection {
     Object.assign(this, opts);
   }
 
+  static titleOfId(id) {
+    const msg = "Inflection.titleOfId()";
+    const dbg = 0;
+    let info = Inflection.attribute(id);
+    let title = info.id
+      ? info.name
+      : Table.titleOfId(id);
+    dbg && console.log(msg, {title, info});
+    return Table.titleOfId(title);
+  }
+
   static attributes(opts) {
     let tblOpts = opts || {
       title: "Inflection.attributes()",
+      titleOfId: Inflection.titleOfId,
     }
     return Table.fromRows(Inflection.#ATTRIBUTES, tblOpts);
   }
@@ -94,7 +106,7 @@ export default class Inflection {
             pat:pattern, 
             like, 
             infl:'dcl',
-            suffix:data, 
+            [Inflection.attribute('suffix').id]:data, 
           });
           inflections.push(new Inflection(info));
           dbg && console.log(msg, '[1]info', JSON.stringify(info));
@@ -147,6 +159,7 @@ export default class Inflection {
     let srcTable = Table.fromArray2(srcRows, {
       headers,
       title: `srcTable pattern:${pattern} like:${like}`,
+      titleOfId: Inflection.titleOfId,
     });
 
     srcTable.rows.forEach((row, iRow) => {
@@ -281,10 +294,12 @@ export default class Inflection {
       use:'inflection group'},
     {type:'attribute', id:'pat', order:7, name:'pattern', 
       use:'search parameters'},
+    {type:'attribute', id:'sfx', order:8, name:'suffix', use:"-a/-o"},
 
     {type:'number', id:'sg', order:1, name:'singular', 
       use:"I, you, he/it/she"},
     {type:'number', id:'pl', order:2, name:'plural', use:"we/they"},
+
 
     {type:'inflection', id:'dcl', order:1, name:'declension', 
       use:"noun/nouns"},
