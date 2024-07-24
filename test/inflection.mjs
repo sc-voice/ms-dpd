@@ -11,15 +11,6 @@ typeof describe === "function" &&
 {
   it("default ctor", () => {
     let inf = new Inflection();
-    should(inf).properties({
-      id: null,
-      type: null,
-      group: null,
-      gender: null,
-      'case': null,
-      singular: null,
-      plural: null,
-    });
     should(inf.isEmpty).equal(true);
   });
   it("custom ctor", ()=>{
@@ -202,7 +193,7 @@ typeof describe === "function" &&
   });
   it("TESTTESTparseDpdInflectionTemplate)", ()=>{
     const msg = "test.inflection@193";
-    let dbg = 1;
+    let dbg = 0;
     let dpdTmplt = 'a masc|dhamma|[[[""], ["masc sg"], [""], ["masc pl"], [""]], [["nom"], ["o"], ["masc nom sg"], ["ā", "āse"], ["masc nom pl"]], [["acc"], ["aṃ"], ["masc acc sg"], ["e"], ["masc acc pl"]], [["instr"], ["ā", "ena"], ["masc instr sg"], ["ebhi", "ehi"], ["masc instr pl"]], [["dat"], ["assa", "āya"], ["masc dat sg"], ["ānaṃ"], ["masc dat pl"]], [["abl"], ["ato", "amhā", "asmā", "ā"], ["masc abl sg"], ["ato", "ebhi", "ehi"], ["masc abl pl"]], [["gen"], ["assa"], ["masc gen sg"], ["āna", "ānaṃ"], ["masc gen pl"]], [["loc"], ["amhi", "asmiṃ", "e"], ["masc loc sg"], ["esu"], ["masc loc pl"]], [["voc"], ["a", "ā"], ["masc voc sg"], ["ā"], ["masc voc pl"]], [["in comps"], ["a"], ["in comps"], [""], [""]]]';
 
     let opts = {
@@ -214,7 +205,6 @@ typeof describe === "function" &&
     } = Inflection.parseDpdInflectionTemplate(dpdTmplt, opts);
     should(pattern).equal('a masc');
     should(like).equal('dhamma');
-    should(comps).equal('a');
 
     dbg && console.log(msg, srcTable.toLocaleString());
     let infTable = Table.fromRows(inflections, {

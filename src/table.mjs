@@ -156,6 +156,7 @@ export default class Table {
       columnSeparator = this.columnSeparator,
       locales=this.locales,
       localeOpts=this.localeOpts,
+      compact = true,
     } = opts;
     let { 
       headers, 
@@ -168,7 +169,7 @@ export default class Table {
     title && lines.push(title);
     if (headers.length) {
       let colTitles = headers.map(h=>{
-        let datum = h.title || h.id;
+        let datum = compact ? h.id.toUpperCase() : h.title;
         return datum.padEnd(h.width);
       });
       lines.push(colTitles.join(columnSeparator));

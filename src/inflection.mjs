@@ -8,9 +8,7 @@ import Table from './table.mjs';
 
 export default class Inflection {
   constructor(opts={}) { 
-    Inflection.#KEYS.forEach(k=>{
-      this[k] = opts[k] || null;
-    });
+    Object.assign(this, opts);
   }
 
   static attributes(opts) {
@@ -52,19 +50,20 @@ export default class Inflection {
     let {
       pattern,
       inflections,
-      comps,
+      like,
     } = opts;
-    const dbg = 1;
+    const dbg = 0;
     const dbgv = 0;
     let dbgmsg;
     let dbgvmsg;
-    let rowType = row.c1
+    let rowType = row.c1[0];
     let group;
     let keys = Object.keys(row);
     switch (rowType) {
       case '': 
         rowType = 'title'; 
-        dbgv && (dbgvmsg = `${pattern} ["${row[0]}", "${row[1]}",...]`);
+        dbgv && console.log(msg, 
+          `${pattern} ["${row[0]}", "${row[1]}",...]`);
         break;
       case 'nom':
       case 'acc':
@@ -78,6 +77,9 @@ export default class Inflection {
         for (let i=2; i<keys.length; i+=2) {
           let data = row[`c${i}`];
           let key = row[`c${i+1}`];
+          if ((key instanceof Array) && key.length===1) {
+            key = key[0];
+          }
           let keyParts = key.split(' ');
           let info = keyParts.reduce((a,kp)=>{
             let kpi = Inflection.attribute(kp);
@@ -88,27 +90,25 @@ export default class Inflection {
               }
             }
             return a;
-          }, {suffix:data});
-          dbg && console.log(msg, info);
+          }, {
+            pat:pattern, 
+            like, 
+            infl:'dcl',
+            suffix:data, 
+          });
+          inflections.push(new Inflection(info));
+          dbg && console.log(msg, '[1]info', JSON.stringify(info));
         }
-        //dbg && (dbgmsg = `${pattern}, ${rowType}`);
       } break;
       case 'in comps':
-        group = row.c2;
         break;
       default:
-        dbgv && (
-          dbgvmsg = `...${pattern} [${row[0]}, ${row[1]}, ...] IGNORED`
-        );
+        dbgv && console.log(msg,
+          `...${pattern} [${row[0]}, ${row[1]}, ...] IGNORED`);
         break;
     }
-    dbgmsg && console.log(msg, dbgmsg);
-    dbgvmsg && console.log(msg, dbgvmsg);
-    return {
-      rowType,
-      group,
-      inflections,
-    };
+
+    return this;
   }
 
   static parseDpdInflectionTemplate(dpdInf, opts={}) {
@@ -122,12 +122,11 @@ export default class Inflection {
     let [ pattern, like, data ] = dpdInf.split('|');
     
     let srcRows = JSON.parse(data);
-    let rowType;
     let group;
     let inflections = [];
     let lastRow = srcRows.at(-1);
-    let in_comps = lastRow[0][0];
-    let comps = lastRow[1].join(',');
+    //let in_comps = lastRow[0][0];
+    //let comps = lastRow[1].join(',');
     dbg && console.log(msg, {pattern, like, comps});
     let showSrc = !!textOut;
     let headers = srcRows.reduce((a,row,i)=>{
@@ -139,23 +138,25 @@ export default class Inflection {
     srcRows.forEach(row=>{
       row.forEach((c,i)=>{
         if (c?.length === 1) {
-          row[i] = c[0];
+          if (!c[0]) {
+            row[i] = null;
+          }
         }
       });
     });
     let srcTable = Table.fromArray2(srcRows, {
       headers,
-      title: `srcTable pattern:${pattern} like:${like} comps:${comps}`,
+      title: `srcTable pattern:${pattern} like:${like}`,
     });
 
     srcTable.rows.forEach((row, iRow) => {
-      let info = Inflection.#parseDpdInfDatum(row, {
-        pattern, comps, inflections
-      });
       dbg && console.log(msg, row);
+      Inflection.#parseDpdInfDatum(row, {
+        pattern, like, inflections
+      });
     });
 
-    return { pattern, like, comps, srcTable, inflections}
+    return { pattern, like, srcTable, inflections}
   }
 
   static attribute(idOrName) {
@@ -276,10 +277,19 @@ export default class Inflection {
     {type:'attribute', id:'nbr', order:3, name:'number', use:'sg/pl'},
     {type:'attribute', id:'case', order:4, name:'inflection_case', 
       use:'nom/acc/instr/dat/abl/gen/loc/voc'},
+    {type:'attribute', id:'infl', order:5, name:'inflection', 
+      use:'inflection group'},
+    {type:'attribute', id:'pat', order:7, name:'pattern', 
+      use:'search parameters'},
 
     {type:'number', id:'sg', order:1, name:'singular', 
       use:"I, you, he/it/she"},
     {type:'number', id:'pl', order:2, name:'plural', use:"we/they"},
+
+    {type:'inflection', id:'dcl', order:1, name:'declension', 
+      use:"noun/nouns"},
+    {type:'inflection', id:'cnj', order:2, name:'conjugation', 
+      use:"hear/heard"},
 
     {type:'gender', id: 'nt', name:'neuter', order:0, use:'it'},
     {type:'gender', id: 'masc', name:'masculine', order:1, use:'he'},

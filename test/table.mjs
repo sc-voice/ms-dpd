@@ -90,7 +90,7 @@ typeof describe === "function" &&
     let lines = tbl.asColumns();
     //console.log(lines.join('\n'));
     should(lines[0]).equal(title);
-    should(lines[1]).match(/Color *Size/);
+    should(lines[1]).match(/Color *Size/i);
     should(lines[2]).match(/purple *10/);
     should(lines[3]).match(/red *5/);
     should(lines[4]).match(/blue *⌿/);
@@ -128,11 +128,12 @@ typeof describe === "function" &&
     });
     let localeOpts = { dateStyle: "short", }
     let tblEN = tbl.toLocaleString('en', localeOpts);
-    should(tblEN.split('\n')[0]).match(/Color  Size Date/);
+    should(tblEN.split('\n')[0]).match(/Color *Size Date/i);
     should(tblEN.split('\n')[1]).match(/purple   10 2.1.00/);
 
     let tblFR = tbl.toLocaleString('fr', localeOpts);
-    should(tblFR.split('\n')[0]).match(/Color  Size Date/);
-    should(tblFR.split('\n')[1]).match(/purple   10 01.02.2000/);
+    let frLines = tblFR.split('\n');
+    should(frLines[0]).match(/Color  Size Date/i);
+    should(frLines[1]).match(/purple   10 01.02.2000/);
   });
 });
