@@ -314,7 +314,7 @@ typeof describe === "function" &&
       should.deepEqual(wi[i], infExpected[i]);
     }
   });
-  it("TESTTESTwordInflections devī", async()=>{ 
+  it("wordInflections devī", async()=>{ 
     if (!DBG.EXPERIMENTAL) return;
     const msg = "test.dictionary.wordInflections devī";
     let dict = await Dictionary.create();
@@ -383,7 +383,7 @@ typeof describe === "function" &&
       should.deepEqual(wi[i], infExpected[i]);
     }
   });
-  it("TESTTESTwordInflections akkhi", async()=>{
+  it("wordInflections akkhi", async()=>{
     if (!DBG.EXPERIMENTAL) return;
     const msg = "test.dictionary.wordInflections akkhi";
     const dbg = 0;

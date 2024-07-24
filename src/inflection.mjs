@@ -40,8 +40,8 @@ export default class Inflection {
     }
     let cmp;
 
-    let aGender = Inflection.attribute(a.gender);
-    let bGender = Inflection.attribute(b.gender);
+    let aGender = Inflection.attribute(a.gdr);
+    let bGender = Inflection.attribute(b.gdr);
     cmp = aGender.order - bGender.order;
     if (cmp) { return cmp; }
 
@@ -246,7 +246,7 @@ export default class Inflection {
   matchesWord(word, opts={}) {
     const msg = 'Inflection.matchesWord()';
     const dbg = DBG.MATCHES_WORD;
-    let { stem, singular, plural, gender } = opts;
+    let { stem, singular, plural, gdr } = opts;
     if (singular == null && plural==null) {
       singular = true;
       plural = true;
@@ -270,7 +270,7 @@ export default class Inflection {
     "id",
     "type",
     "group",
-    "gender",
+    "gdr",
     "case",
     "singular",
     "plural",
@@ -306,10 +306,10 @@ export default class Inflection {
     {type:'inflection', id:'cnj', order:2, name:'conjugation', 
       use:"hear/heard"},
 
-    {type:'gender', id: 'nt', name:'neuter', order:0, use:'it'},
-    {type:'gender', id: 'masc', name:'masculine', order:1, use:'he'},
-    {type:'gender', id: 'fem', name:'feminine', order:2, use:'she'},
-    {type:'gender', id:'x', name:'(no gender)', order:3, use:'I, you'},
+    {type:'gdr', id: 'nt', name:'neuter', order:0, use:'it'},
+    {type:'gdr', id: 'masc', name:'masculine', order:1, use:'he'},
+    {type:'gdr', id: 'fem', name:'feminine', order:2, use:'she'},
+    {type:'gdr', id:'x', name:'(no gender)', order:3, use:'I, you'},
 
     {type:'case', id:'nom', order:1, name:"nominative", use:"subject"},
     {type:'case', id:'acc', order:2, name:"accusative", use:"object"},

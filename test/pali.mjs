@@ -112,7 +112,7 @@ typeof describe === "function" && describe("pali", function () {
       id: 1,
       type: "declension",
       group: "-a/ā",
-      gender: "masc",
+      gdr: "masc",
       'case': "nom",
       singular: ["o"],
       plural: ["ā"]
@@ -121,7 +121,7 @@ typeof describe === "function" && describe("pali", function () {
       id: 5,
       type: "declension",
       group: "-a/ā",
-      gender: "masc",
+      gdr: "masc",
       'case': "abl",
       singular: ["ā", "asmā", "amhā"],
       plural: ["ehi"]

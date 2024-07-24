@@ -17,25 +17,25 @@ typeof describe === "function" &&
     let id = 'test-id';
     let type = 'test-type';
     let group = 'test-group';
-    let gender = 'test-gender';
+    let gdr = 'test-gender';
     let $case = 'test-case' ;
     let singular = 'test-singular';
     let plural = 'test-plural';
     
     let inf = new Inflection({
-      id, type, group, gender, 'case':$case, singular, plural
+      id, type, group, gdr, 'case':$case, singular, plural
     });
     should(inf).properties({
-      id, type, group, gender, 'case':$case, singular, plural
+      id, type, group, gdr, 'case':$case, singular, plural
     });
     should(inf.isEmpty).equal(false);
   });
-  it("union()", ()=>{
+  it("TESTTESTunion()", ()=>{
     let infa = new Inflection({
       id: 'a-id',
       type: 'a-type',
       group: 'a-group',
-      gender: 'a-gender',
+      gdr: 'a-gender',
       'case': 'a-case',
       singular: 'a-singular',
       plural: 'a-plural',
@@ -44,7 +44,7 @@ typeof describe === "function" &&
       id: 'b-id',
       type: 'b-type',
       group: 'b-group',
-      gender: 'b-gender',
+      gdr: 'b-gender',
       'case': 'b-case',
       singular: 'b-singular',
       plural: 'b-plural',
@@ -61,7 +61,7 @@ typeof describe === "function" &&
       id: ['a-id', 'b-id'],
       type: ['a-type', 'b-type'],
       group: ['a-group', 'b-group'],
-      gender: ['a-gender', 'b-gender'],
+      gdr: ['a-gender', 'b-gender'],
       'case': ['a-case', 'b-case'],
       singular: ['a-singular', 'b-singular'],
       plural: ['a-plural', 'b-plural'],
@@ -117,7 +117,7 @@ typeof describe === "function" &&
       "id": 27,
       "type": "declension",
       "group": "-i/ī",
-      "gender": "fem",
+      "gdr": "fem",
       "case": "instr",
       "singular": [
         "iyā"
@@ -130,7 +130,7 @@ typeof describe === "function" &&
       "id": 31,
       "type": "declension",
       "group": "-i/ī",
-      "gender": "fem",
+      "gdr": "fem",
       "case": "voc",
       "singular": [
         "i"
@@ -143,7 +143,7 @@ typeof describe === "function" &&
     should(inf27.matchesWord("devīhi", {stem})).equal(true);
     should(inf31.matchesWord("devī", {stem})).equal(true);
   });
-  it("find() ", ()=>{
+  it("TESTTESTfind() ", ()=>{
     const msg = "test.inflection@114";
     let infAll = Inflection.find();
     should(infAll.length).above(65).below(100);
@@ -154,7 +154,7 @@ typeof describe === "function" &&
     should(unionDhamma.case).equal('voc');
     should(unionDhamma.type).equal('declension');
     should(unionDhamma.group).equal('-a/ā');
-    should.deepEqual(unionDhamma.gender, ['masc', 'nt']);
+    should.deepEqual(unionDhamma.gdr, ['masc', 'nt']);
     should(unionDhamma.singular).equal('a');
     should.deepEqual(unionDhamma.plural, ['ā', 'āni']);
 
@@ -168,7 +168,7 @@ typeof describe === "function" &&
     };
     test(null, {id:null, type:'attribute'});
     test('attribute', {id:'attr', type:'attribute'});
-    test('gender', {id:'gdr', type:'attribute'});
+    test('gdr', {id:'gdr', type:'attribute'});
     test('number', {id:'nbr', type:'attribute'});
     test('inflection_case', {id:'case', type:'attribute'});
   });
@@ -191,7 +191,7 @@ typeof describe === "function" &&
     let tblNumber = tbl.filter(fNumber);
     should.deepEqual(tblNumber.rows.map(r=>r.id), ['sg', 'pl']);
   });
-  it("TESTTESTparseDpdInflectionTemplate)", ()=>{
+  it("parseDpdInflectionTemplate)", ()=>{
     const msg = "test.inflection@193";
     let dbg = 1;
     let dpdTmplt = 'a masc|dhamma|[[[""], ["masc sg"], [""], ["masc pl"], [""]], [["nom"], ["o"], ["masc nom sg"], ["ā", "āse"], ["masc nom pl"]], [["acc"], ["aṃ"], ["masc acc sg"], ["e"], ["masc acc pl"]], [["instr"], ["ā", "ena"], ["masc instr sg"], ["ebhi", "ehi"], ["masc instr pl"]], [["dat"], ["assa", "āya"], ["masc dat sg"], ["ānaṃ"], ["masc dat pl"]], [["abl"], ["ato", "amhā", "asmā", "ā"], ["masc abl sg"], ["ato", "ebhi", "ehi"], ["masc abl pl"]], [["gen"], ["assa"], ["masc gen sg"], ["āna", "ānaṃ"], ["masc gen pl"]], [["loc"], ["amhi", "asmiṃ", "e"], ["masc loc sg"], ["esu"], ["masc loc pl"]], [["voc"], ["a", "ā"], ["masc voc sg"], ["ā"], ["masc voc pl"]], [["in comps"], ["a"], ["in comps"], [""], [""]]]';

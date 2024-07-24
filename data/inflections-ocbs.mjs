@@ -3,7 +3,7 @@ export const INFLECTIONS=[
     "id": 1,
     "type": "declension",
     "group": "-a/ā",
-    "gender": "masc",
+    "gdr": "masc",
     "case": "nom",
     "singular": [
       "o"
@@ -16,7 +16,7 @@ export const INFLECTIONS=[
     "id": 2,
     "type": "declension",
     "group": "-a/ā",
-    "gender": "masc",
+    "gdr": "masc",
     "case": "acc",
     "singular": [
       "aṁ"
@@ -29,7 +29,7 @@ export const INFLECTIONS=[
     "id": 3,
     "type": "declension",
     "group": "-a/ā",
-    "gender": "masc",
+    "gdr": "masc",
     "case": "instr",
     "singular": [
       "ena"
@@ -42,7 +42,7 @@ export const INFLECTIONS=[
     "id": 4,
     "type": "declension",
     "group": "-a/ā",
-    "gender": "masc",
+    "gdr": "masc",
     "case": "dat",
     "singular": [
       "āya"
@@ -53,7 +53,7 @@ export const INFLECTIONS=[
     "id": 5,
     "type": "declension",
     "group": "-a/ā",
-    "gender": "masc",
+    "gdr": "masc",
     "case": "abl",
     "singular": [
       "ā",
@@ -68,7 +68,7 @@ export const INFLECTIONS=[
     "id": 6,
     "type": "declension",
     "group": "-a/ā",
-    "gender": "masc",
+    "gdr": "masc",
     "case": "gen",
     "singular": [
       "assa"
@@ -81,7 +81,7 @@ export const INFLECTIONS=[
     "id": 7,
     "type": "declension",
     "group": "-a/ā",
-    "gender": "masc",
+    "gdr": "masc",
     "case": "loc",
     "singular": [
       "e",
@@ -96,7 +96,7 @@ export const INFLECTIONS=[
     "id": 8,
     "type": "declension",
     "group": "-a/ā",
-    "gender": "masc",
+    "gdr": "masc",
     "case": "voc",
     "singular": [
       "a"
@@ -109,7 +109,7 @@ export const INFLECTIONS=[
     "id": 9,
     "type": "declension",
     "group": "-a/ā",
-    "gender": "nt",
+    "gdr": "nt",
     "case": "nom",
     "singular": [
       "aṁ"
@@ -123,7 +123,7 @@ export const INFLECTIONS=[
     "id": 10,
     "type": "declension",
     "group": "-a/ā",
-    "gender": "nt",
+    "gdr": "nt",
     "case": "acc",
     "singular": [
       "aṁ"
@@ -137,7 +137,7 @@ export const INFLECTIONS=[
     "id": 11,
     "type": "declension",
     "group": "-a/ā",
-    "gender": "nt",
+    "gdr": "nt",
     "case": "instr",
     "singular": [
       "ena"
@@ -150,7 +150,7 @@ export const INFLECTIONS=[
     "id": 12,
     "type": "declension",
     "group": "-a/ā",
-    "gender": "nt",
+    "gdr": "nt",
     "case": "dat",
     "singular": [
       "āya"
@@ -161,7 +161,7 @@ export const INFLECTIONS=[
     "id": 13,
     "type": "declension",
     "group": "-a/ā",
-    "gender": "nt",
+    "gdr": "nt",
     "case": "abl",
     "singular": [
       "ā",
@@ -176,7 +176,7 @@ export const INFLECTIONS=[
     "id": 14,
     "type": "declension",
     "group": "-a/ā",
-    "gender": "nt",
+    "gdr": "nt",
     "case": "gen",
     "singular": [
       "assa"
@@ -189,7 +189,7 @@ export const INFLECTIONS=[
     "id": 15,
     "type": "declension",
     "group": "-a/ā",
-    "gender": "nt",
+    "gdr": "nt",
     "case": "loc",
     "singular": [
       "e",
@@ -204,7 +204,7 @@ export const INFLECTIONS=[
     "id": 16,
     "type": "declension",
     "group": "-a/ā",
-    "gender": "nt",
+    "gdr": "nt",
     "case": "voc",
     "singular": [
       "a"
@@ -218,7 +218,7 @@ export const INFLECTIONS=[
     "id": 17,
     "type": "declension",
     "group": "-a/ā",
-    "gender": "fem",
+    "gdr": "fem",
     "case": "nom",
     "singular": [
       "ā"
@@ -232,7 +232,7 @@ export const INFLECTIONS=[
     "id": 18,
     "type": "declension",
     "group": "-a/ā",
-    "gender": "fem",
+    "gdr": "fem",
     "case": "acc",
     "singular": [
       "aṁ"
@@ -246,7 +246,7 @@ export const INFLECTIONS=[
     "id": 19,
     "type": "declension",
     "group": "-a/ā",
-    "gender": "fem",
+    "gdr": "fem",
     "case": "instr",
     "singular": [
       "āya"
@@ -259,7 +259,7 @@ export const INFLECTIONS=[
     "id": 20,
     "type": "declension",
     "group": "-a/ā",
-    "gender": "fem",
+    "gdr": "fem",
     "case": "dat",
     "singular": [
       "āya"
@@ -270,7 +270,7 @@ export const INFLECTIONS=[
     "id": 21,
     "type": "declension",
     "group": "-a/ā",
-    "gender": "fem",
+    "gdr": "fem",
     "case": "abl",
     "singular": [
       "āya"
@@ -283,7 +283,7 @@ export const INFLECTIONS=[
     "id": 22,
     "type": "declension",
     "group": "-a/ā",
-    "gender": "fem",
+    "gdr": "fem",
     "case": "gen",
     "singular": [
       "āya"
@@ -296,7 +296,7 @@ export const INFLECTIONS=[
     "id": 23,
     "type": "declension",
     "group": "-a/ā",
-    "gender": "fem",
+    "gdr": "fem",
     "case": "loc",
     "singular": [
       "āya",
@@ -310,7 +310,7 @@ export const INFLECTIONS=[
     "id": 24,
     "type": "declension",
     "group": "-a/ā",
-    "gender": "fem",
+    "gdr": "fem",
     "case": "voc",
     "singular": [
       "e"
@@ -324,7 +324,7 @@ export const INFLECTIONS=[
     "id": 25,
     "type": "declension",
     "group": "-i/ī",
-    "gender": "fem",
+    "gdr": "fem",
     "case": "nom",
     "singular": [
       "ī"
@@ -338,7 +338,7 @@ export const INFLECTIONS=[
     "id": 26,
     "type": "declension",
     "group": "-i/ī",
-    "gender": "fem",
+    "gdr": "fem",
     "case": "acc",
     "singular": [
       "iṁ"
@@ -352,7 +352,7 @@ export const INFLECTIONS=[
     "id": 27,
     "type": "declension",
     "group": "-i/ī",
-    "gender": "fem",
+    "gdr": "fem",
     "case": "instr",
     "singular": [
       "iyā"
@@ -365,7 +365,7 @@ export const INFLECTIONS=[
     "id": 28,
     "type": "declension",
     "group": "-i/ī",
-    "gender": "fem",
+    "gdr": "fem",
     "case": "abl",
     "singular": [
       "iyā"
@@ -378,7 +378,7 @@ export const INFLECTIONS=[
     "id": 29,
     "type": "declension",
     "group": "-i/ī",
-    "gender": "fem",
+    "gdr": "fem",
     "case": "gen",
     "singular": [
       "iyā"
@@ -392,7 +392,7 @@ export const INFLECTIONS=[
     "id": 30,
     "type": "declension",
     "group": "-i/ī",
-    "gender": "fem",
+    "gdr": "fem",
     "case": "loc",
     "singular": [
       "iyā",
@@ -406,7 +406,7 @@ export const INFLECTIONS=[
     "id": 31,
     "type": "declension",
     "group": "-i/ī",
-    "gender": "fem",
+    "gdr": "fem",
     "case": "voc",
     "singular": [
       "i"
@@ -420,7 +420,7 @@ export const INFLECTIONS=[
     "id": 32,
     "type": "declension",
     "group": "-i/ī",
-    "gender": "masc",
+    "gdr": "masc",
     "case": "nom",
     "singular": [
       "i"
@@ -434,7 +434,7 @@ export const INFLECTIONS=[
     "id": 33,
     "type": "declension",
     "group": "-i/ī",
-    "gender": "masc",
+    "gdr": "masc",
     "case": "acc",
     "singular": [
       "iṁ"
@@ -448,7 +448,7 @@ export const INFLECTIONS=[
     "id": 34,
     "type": "declension",
     "group": "-i/ī",
-    "gender": "masc",
+    "gdr": "masc",
     "case": "instr",
     "singular": [
       "inā"
@@ -462,7 +462,7 @@ export const INFLECTIONS=[
     "id": 35,
     "type": "declension",
     "group": "-i/ī",
-    "gender": "masc",
+    "gdr": "masc",
     "case": "abl",
     "singular": [
       "inā",
@@ -478,7 +478,7 @@ export const INFLECTIONS=[
     "id": 36,
     "type": "declension",
     "group": "-i/ī",
-    "gender": "masc",
+    "gdr": "masc",
     "case": "gen",
     "singular": [
       "ino",
@@ -493,7 +493,7 @@ export const INFLECTIONS=[
     "id": 37,
     "type": "declension",
     "group": "-i/ī",
-    "gender": "masc",
+    "gdr": "masc",
     "case": "loc",
     "singular": [
       "ismiṁ",
@@ -508,7 +508,7 @@ export const INFLECTIONS=[
     "id": 38,
     "type": "declension",
     "group": "-i/ī",
-    "gender": "masc",
+    "gdr": "masc",
     "case": "voc",
     "singular": [
       "i"
@@ -522,7 +522,7 @@ export const INFLECTIONS=[
     "id": 39,
     "type": "declension",
     "group": "-i/ī",
-    "gender": "nt",
+    "gdr": "nt",
     "case": "nom",
     "singular": [
       "i",
@@ -537,7 +537,7 @@ export const INFLECTIONS=[
     "id": 40,
     "type": "declension",
     "group": "-i/ī",
-    "gender": "nt",
+    "gdr": "nt",
     "case": "acc",
     "singular": [
       "i",
@@ -552,7 +552,7 @@ export const INFLECTIONS=[
     "id": 41,
     "type": "declension",
     "group": "-i/ī",
-    "gender": "nt",
+    "gdr": "nt",
     "case": "instr",
     "singular": [
       "inā"
@@ -566,7 +566,7 @@ export const INFLECTIONS=[
     "id": 42,
     "type": "declension",
     "group": "-i/ī",
-    "gender": "nt",
+    "gdr": "nt",
     "case": "abl",
     "singular": [
       "inā",
@@ -582,7 +582,7 @@ export const INFLECTIONS=[
     "id": 43,
     "type": "declension",
     "group": "-i/ī",
-    "gender": "nt",
+    "gdr": "nt",
     "case": "gen",
     "singular": [
       "ino",
@@ -597,7 +597,7 @@ export const INFLECTIONS=[
     "id": 44,
     "type": "declension",
     "group": "-i/ī",
-    "gender": "nt",
+    "gdr": "nt",
     "case": "loc",
     "singular": [
       "ismiṁ",
@@ -612,7 +612,7 @@ export const INFLECTIONS=[
     "id": 45,
     "type": "declension",
     "group": "-i/ī",
-    "gender": "nt",
+    "gdr": "nt",
     "case": "voc",
     "singular": [
       "i",
@@ -627,7 +627,7 @@ export const INFLECTIONS=[
     "id": 46,
     "type": "declension",
     "group": "-u/ū",
-    "gender": "masc",
+    "gdr": "masc",
     "case": "nom",
     "singular": [
       "u"
@@ -641,7 +641,7 @@ export const INFLECTIONS=[
     "id": 47,
     "type": "declension",
     "group": "-u/ū",
-    "gender": "masc",
+    "gdr": "masc",
     "case": "acc",
     "singular": [
       "uṁ"
@@ -655,7 +655,7 @@ export const INFLECTIONS=[
     "id": 48,
     "type": "declension",
     "group": "-u/ū",
-    "gender": "masc",
+    "gdr": "masc",
     "case": "instr",
     "singular": [
       "unā"
@@ -668,7 +668,7 @@ export const INFLECTIONS=[
     "id": 49,
     "type": "declension",
     "group": "-u/ū",
-    "gender": "masc",
+    "gdr": "masc",
     "case": "abl",
     "singular": [
       "unā",
@@ -683,7 +683,7 @@ export const INFLECTIONS=[
     "id": 50,
     "type": "declension",
     "group": "-u/ū",
-    "gender": "masc",
+    "gdr": "masc",
     "case": "gen",
     "singular": [
       "uno",
@@ -697,7 +697,7 @@ export const INFLECTIONS=[
     "id": 51,
     "type": "declension",
     "group": "-u/ū",
-    "gender": "masc",
+    "gdr": "masc",
     "case": "loc",
     "singular": [
       "usmiṁ",
@@ -711,7 +711,7 @@ export const INFLECTIONS=[
     "id": 52,
     "type": "declension",
     "group": "-u/ū",
-    "gender": "masc",
+    "gdr": "masc",
     "case": "voc",
     "singular": [
       "u"
@@ -726,7 +726,7 @@ export const INFLECTIONS=[
     "id": 53,
     "type": "declension",
     "group": "-u/ū",
-    "gender": "fem",
+    "gdr": "fem",
     "case": "nom",
     "singular": [
       "u"
@@ -740,7 +740,7 @@ export const INFLECTIONS=[
     "id": 54,
     "type": "declension",
     "group": "-u/ū",
-    "gender": "fem",
+    "gdr": "fem",
     "case": "acc",
     "singular": [
       "uṁ"
@@ -754,7 +754,7 @@ export const INFLECTIONS=[
     "id": 55,
     "type": "declension",
     "group": "-u/ū",
-    "gender": "fem",
+    "gdr": "fem",
     "case": "instr",
     "singular": [
       "uyā"
@@ -767,7 +767,7 @@ export const INFLECTIONS=[
     "id": 56,
     "type": "declension",
     "group": "-u/ū",
-    "gender": "fem",
+    "gdr": "fem",
     "case": "abl",
     "singular": [
       "uyā"
@@ -780,7 +780,7 @@ export const INFLECTIONS=[
     "id": 57,
     "type": "declension",
     "group": "-u/ū",
-    "gender": "fem",
+    "gdr": "fem",
     "case": "gen",
     "singular": [
       "uyā"
@@ -793,7 +793,7 @@ export const INFLECTIONS=[
     "id": 58,
     "type": "declension",
     "group": "-u/ū",
-    "gender": "fem",
+    "gdr": "fem",
     "case": "loc",
     "singular": [
       "uyā",
@@ -807,7 +807,7 @@ export const INFLECTIONS=[
     "id": 59,
     "type": "declension",
     "group": "-u/ū",
-    "gender": "fem",
+    "gdr": "fem",
     "case": "voc",
     "singular": [
       "u"
@@ -821,7 +821,7 @@ export const INFLECTIONS=[
     "id": 60,
     "type": "declension",
     "group": "-u/ū",
-    "gender": "nt",
+    "gdr": "nt",
     "case": "nom",
     "singular": [
       "u",
@@ -836,7 +836,7 @@ export const INFLECTIONS=[
     "id": 61,
     "type": "declension",
     "group": "-u/ū",
-    "gender": "nt",
+    "gdr": "nt",
     "case": "acc",
     "singular": [
       "u",
@@ -851,7 +851,7 @@ export const INFLECTIONS=[
     "id": 62,
     "type": "declension",
     "group": "-u/ū",
-    "gender": "nt",
+    "gdr": "nt",
     "case": "instr",
     "singular": [
       "unā"
@@ -864,7 +864,7 @@ export const INFLECTIONS=[
     "id": 63,
     "type": "declension",
     "group": "-u/ū",
-    "gender": "nt",
+    "gdr": "nt",
     "case": "abl",
     "singular": [
       "unā",
@@ -879,7 +879,7 @@ export const INFLECTIONS=[
     "id": 64,
     "type": "declension",
     "group": "-u/ū",
-    "gender": "nt",
+    "gdr": "nt",
     "case": "gen",
     "singular": [
       "uno",
@@ -893,7 +893,7 @@ export const INFLECTIONS=[
     "id": 65,
     "type": "declension",
     "group": "-u/ū",
-    "gender": "nt",
+    "gdr": "nt",
     "case": "loc",
     "singular": [
       "usmiṁ",
@@ -907,7 +907,7 @@ export const INFLECTIONS=[
     "id": 66,
     "type": "declension",
     "group": "-u/ū",
-    "gender": "nt",
+    "gdr": "nt",
     "case": "voc",
     "singular": [
       "u",
