@@ -10,7 +10,7 @@ export default class Table {
       caption,
       cellOverflow = '\u2026',
       columnSeparator = ' ',
-      datumValue,
+      cellValue,
       emptyCell = '\u233f',
       emptyRow = {},
       headers=[],
@@ -51,7 +51,7 @@ export default class Table {
       caption,
       cellOverflow,
       columnSeparator,
-      datumValue,
+      cellValue,
       emptyCell,
       emptyRow,
       headers,
@@ -119,29 +119,58 @@ export default class Table {
     return Table.fromRows(rows, newOpts);
   }
 
-  datumAsString(row, id, opts={}) {
-    const msg = "Table.datumAsString()";
+  #headerId(idOrIndex) {
+    return typeof idOrIndex === 'string'
+      ? idOrIndex 
+      : this.headers[idOrIndex]?.id;
+  }
+
+  at(rowIndex, idOrIndex, opts={}) {
     let { 
-      headers, emptyCell='', cellOverflow,
-    } = this;
+      cellValue = this.cellValue,
+    } = opts;
+    let row = this.rows[rowIndex];
+
+    if (idOrIndex === undefined) {
+      return row;
+    }
+
+    let id = this.#headerId(idOrIndex);
+
+    let cell = row && row[id];
+
+    return cellValue ? cellValue(cell, id) : cell;
+  }
+
+  stringAt(rowIndex, idOrIndex, opts={}) {
+    const msg = "Table.stringAt()";
+    const dbg = 0;
+    let { headers } = this;
     let {
-      datumValue = this.datumValue,
+      emptyCell = this.emptyCell,
       locales = this.locales,
       localeOptions = this.localeOptions,
     } = opts;
-    let val = row[id];
-    if (val == null) {
-      return emptyCell;
+    if (idOrIndex == null) {
+      return undefined;
     }
-    let hdr = headers.find(h=>h.id===id);
-    let s = val.toLocaleString(locales, localeOptions);
-    datumValue && (s = datumValue(s, id));
-    if (hdr) {
-      if (hdr.maxWidth && hdr.width < s.length) {
-        s = s.slice(0, hdr.maxWidth-1) + cellOverflow;
-      }
+    let cell = this.at(rowIndex, idOrIndex, opts);
+    let text;
+    if (cell == null) {
+      text = emptyCell;
+      dbg && console.log(msg, '[1]null', cell);
+    } else if (cell.toLocaleString) {
+      text = cell.toLocaleString(locales, localeOptions);
+      dbg && console.log(msg, '[2]toLocaleString', cell, 
+        {locales, localeOptions});
+    } else if (cell instanceof Array) {
+      text = cell.join(', ');
+      dbg && console.log(msg, '[3]array', text);
+    } else {
+      dbg && console.log(msg, '[4]?', cell);
     }
-    return s;
+
+    return text;
   }
 
   #updateHeaders(opts) {
@@ -161,13 +190,13 @@ export default class Table {
     }
 
     // calculate column width
-    rows.forEach(row=>{
+    for (let iRow=0; iRow<rows.length; iRow++) {
       for (let i=0; i<headers.length; i++) {
         let h = headers[i];
-        let datum = this.datumAsString(row, h.id, opts);
+        let datum = this.stringAt(iRow, h.id, opts);
         h.width = Math.max(h.width, datum.length);
       }
-    });
+    }
   }
 
   asColumns(opts={}) {
@@ -177,7 +206,7 @@ export default class Table {
       title = this.title,
       caption = this.caption,
       columnSeparator = this.columnSeparator,
-      datumValue = this.datumValue,
+      cellValue = this.cellValue,
       locales = this.locales,
       localeOptions = this.localeOptions,
       titleOfId = Table.titleOfId || this.titleOfId,
@@ -199,25 +228,25 @@ export default class Table {
       lines.push(colTitles.join(columnSeparator));
     }
 
-    rows.forEach(row=>{
+    for (let iRow=0; iRow<rows.length; iRow++) {
+      let row = rows[iRow];
       let data = [];
       headers.forEach(h=>{
-        let rawDatum = row[h.id];
-        let datum = this.datumAsString(row, h.id, {
-          datumValue, 
+        let text = this.stringAt(iRow, h.id, {
+          cellValue, 
           locales, 
           localeOptions,
         });
-        if (typeof rawDatum === 'number') {
-          data.push(datum.padStart(h.width));
+        if (typeof row[h.id] === 'number') {
+          data.push(text.padStart(h.width));
         } else {
-          data.push(datum.padEnd(h.width));
+          data.push(text.padEnd(h.width));
         }
       });
       let line = data.join(columnSeparator);
       dbg && console.log(msg, row, line);
       lines.push(line);
-    });
+    }
 
     caption && lines.push(caption);
 
@@ -239,14 +268,14 @@ export default class Table {
 
   format(opts={}) {
     let {
-      datumValue,
+      cellValue,
       locales,
       localeOptions,
       titleOfId = this.titleOfId,
       lineSeparator = this.lineSeparator,
     } = opts;
     let lines = this.asColumns({
-      datumValue,
+      cellValue,
       locales, 
       localeOptions, 
       titleOfId,

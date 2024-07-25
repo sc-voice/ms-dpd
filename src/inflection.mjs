@@ -22,7 +22,7 @@ import Table from './table.mjs';
     return Table.titleOfId(title);
   }
 
-  static datumValue(s,id) {
+  static cellValue(s,id) {
     let info = Inflection.attribute(s);
     if (info.id == null) {
       return s;

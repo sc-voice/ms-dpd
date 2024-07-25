@@ -1,11 +1,17 @@
 import should from "should";
 import Table from '../src/table.mjs';
 
-const TEST_DATA = [
+const TEST_ARRAY = [
   ['color', 'size', 'date'],
   ['purple', 10, new Date(2000, 1, 1)],
   ['red', 5, new Date(2000, 2, 1)],
   ['blue',, new Date(2000, 3, 1)],
+];
+
+const TEST_OBJS = [
+  {color:'purple', size:10, date: new Date(2000, 1, 1), nums:[1,3]},
+  {color:'red', size:5, date: new Date(2000, 2, 1)},
+  {color:'blue', date:new Date(2000, 3, 1)},
 ];
 
 typeof describe === "function" && 
@@ -78,7 +84,7 @@ typeof describe === "function" &&
     should(tbl.rows.length).equal(3);
   });
   it("asColumns()", ()=>{
-    let data = TEST_DATA;
+    let data = TEST_ARRAY;
     let title = 'test-title';
     let caption = 'test-caption';
     let opts = {title, caption};
@@ -97,7 +103,7 @@ typeof describe === "function" &&
     let title = 'test-title';
     let caption = 'test-caption';
     let opts = {title, caption};
-    let tbl = Table.fromArray2(TEST_DATA, opts);
+    let tbl = Table.fromArray2(TEST_ARRAY, opts);
     let rowFilter = (row=>row.size);
 
     let tbl2 = tbl.filter(rowFilter);
@@ -107,7 +113,7 @@ typeof describe === "function" &&
     should.deepEqual(tbl2.rows, tbl.rows.filter(rowFilter));
   });
   it("sort()", ()=>{
-    let tbl = Table.fromArray2(TEST_DATA);
+    let tbl = Table.fromArray2(TEST_ARRAY);
     let compare = ((a,b) => {
       let cmp = a.color.localeCompare(b.color);
       return cmp;
@@ -117,16 +123,16 @@ typeof describe === "function" &&
     should(tbl2.sort(compare)).equal(tbl2);
     should.deepEqual(tbl2.rows[0], tbl.rows[2]);
   });
-  it("TESTTESTformat()", ()=>{
-    let tbl = Table.fromArray2(TEST_DATA);
+  it("format()", ()=>{
+    let tbl = Table.fromArray2(TEST_ARRAY);
     let compare = ((a,b) => {
       let cmp = a.color.localeCompare(b.color);
       return cmp;
     });
     let localeOptions = { dateStyle: "short", }
-    let datumValue = ((s, id)=>id==='color' ? `${s}-${id}` : s);
+    let cellValue = ((s, id)=>id==='color' ? `${s}-${id}` : s);
     let tblEN = tbl.format({
-      datumValue,
+      cellValue,
       locales:'en', 
       localeOptions,
     });
@@ -140,5 +146,40 @@ typeof describe === "function" &&
   });
   it("titleOfId", ()=>{
     should(Table.titleOfId("happy cow")).equal("Happy cow");
+  });
+  it("at", ()=>{
+    let tbl = Table.fromRows(TEST_OBJS);
+
+    // one argument
+    should.deepEqual(tbl.at(-1), undefined);
+    should.deepEqual(tbl.at(0), TEST_OBJS[0]);
+    should.deepEqual(tbl.at(1), TEST_OBJS[1]);
+    should.deepEqual(tbl.at(2), TEST_OBJS[2]);
+    should.deepEqual(tbl.at(3), undefined);
+
+    // two arguments
+    should.deepEqual(tbl.at(-1,0), undefined);
+    should.deepEqual(tbl.at(0,0), 'purple');
+    should.deepEqual(tbl.at(0,3), [1,3]);
+    should.deepEqual(tbl.at(1,1), 5);
+    should.deepEqual(tbl.at(2,2), TEST_OBJS[2].date);
+    should.deepEqual(tbl.at(2,'size'), undefined);
+    should.deepEqual(tbl.at(3,4), undefined);
+  });
+  it("TESTTESTstringAt", ()=>{
+    let tbl = Table.fromRows(TEST_OBJS);
+    let locales = 'en';
+    let opts = {
+      locales: 'en',
+      localeOptions: {
+        dateStyle:'short'
+      },
+    }
+
+    should(tbl.stringAt(-1)).equal(undefined);
+    should(tbl.stringAt(0,0)).equal('purple');
+    should(tbl.stringAt(0,1)).equal('10');
+    should(tbl.stringAt(0, 2, opts)).equal('2/1/00');
+    should(tbl.stringAt(2, 1, opts)).equal(tbl.emptyCell);
   });
 });

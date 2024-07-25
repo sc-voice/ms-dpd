@@ -7,7 +7,7 @@ import {
 } from '../main.mjs';
 
 typeof describe === "function" && 
-  describe("TESTTESTinflection", function () 
+  describe("inflection", function () 
 {
   it("default ctor", () => {
     let inf = new Inflection();
@@ -30,7 +30,7 @@ typeof describe === "function" &&
     });
     should(inf.isEmpty).equal(false);
   });
-  it("TESTTESTunion()", ()=>{
+  it("union()", ()=>{
     let infa = new Inflection({
       id: 'a-id',
       type: 'a-type',
@@ -143,7 +143,7 @@ typeof describe === "function" &&
     should(inf27.matchesWord("devīhi", {stem})).equal(true);
     should(inf31.matchesWord("devī", {stem})).equal(true);
   });
-  it("TESTTESTfind() ", ()=>{
+  it("find() ", ()=>{
     const msg = "test.inflection@114";
     let infAll = Inflection.find();
     should(infAll.length).above(65).below(100);
@@ -210,7 +210,7 @@ typeof describe === "function" &&
     let infTable = Table.fromRows(inflections, {
       title: `-------Inflections-------`,
       titleOfId: Inflection.titleOfId,
-      datumValue: Inflection.datumValue,
+      cellValue: Inflection.cellValue,
     });
     let tblOpts = {
     }
