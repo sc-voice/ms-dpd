@@ -7,18 +7,20 @@ export default class Table {
   constructor(opts={}) {
     const msg = "Table.ctor";
     let {
-      emptyRow = {},
-      emptyCell = '\u233f',
-      cellOverflow = '\u2026',
       caption,
+      cellOverflow = '\u2026',
       columnSeparator = ' ',
-      lineSeparator = '\n',
+      datumValue,
+      emptyCell = '\u233f',
+      emptyRow = {},
       headers=[],
-      title,
-      rows=[],
-      locales,
+      lineSeparator = '\n',
       localeOptions,
+      locales,
+      rows=[],
+      title,
       titleOfId = Table.titleOfId,
+
     } = opts;
 
     if (!(rows instanceof Array)) {
@@ -46,18 +48,20 @@ export default class Table {
     });
 
     Object.assign(this, {
-      emptyRow,
-      emptyCell,
-      cellOverflow,
       caption,
+      cellOverflow,
       columnSeparator,
-      lineSeparator,
+      datumValue,
+      emptyCell,
+      emptyRow,
       headers,
-      title,
-      rows: [...rows],
-      locales,
+      lineSeparator,
       localeOptions,
+      locales,
+      rows: [...rows],
+      title,
       titleOfId,
+
     });
   }
 
@@ -121,6 +125,7 @@ export default class Table {
       headers, emptyCell='', cellOverflow,
     } = this;
     let {
+      datumValue = this.datumValue,
       locales = this.locales,
       localeOptions = this.localeOptions,
     } = opts;
@@ -130,6 +135,7 @@ export default class Table {
     }
     let hdr = headers.find(h=>h.id===id);
     let s = val.toLocaleString(locales, localeOptions);
+    datumValue && (s = datumValue(s, id));
     if (hdr) {
       if (hdr.maxWidth && hdr.width < s.length) {
         s = s.slice(0, hdr.maxWidth-1) + cellOverflow;
@@ -171,6 +177,7 @@ export default class Table {
       title = this.title,
       caption = this.caption,
       columnSeparator = this.columnSeparator,
+      datumValue = this.datumValue,
       locales = this.locales,
       localeOptions = this.localeOptions,
       titleOfId = Table.titleOfId || this.titleOfId,
@@ -180,7 +187,7 @@ export default class Table {
       rows,
     } = this;
 
-    this.#updateHeaders();
+    this.#updateHeaders(opts);
 
     let lines = [];
     title && lines.push(title);
@@ -196,8 +203,11 @@ export default class Table {
       let data = [];
       headers.forEach(h=>{
         let rawDatum = row[h.id];
-        let datum = this.datumAsString(row, h.id, 
-          {locales, localeOptions});
+        let datum = this.datumAsString(row, h.id, {
+          datumValue, 
+          locales, 
+          localeOptions,
+        });
         if (typeof rawDatum === 'number') {
           data.push(datum.padStart(h.width));
         } else {
@@ -229,12 +239,14 @@ export default class Table {
 
   format(opts={}) {
     let {
+      datumValue,
       locales,
       localeOptions,
       titleOfId = this.titleOfId,
       lineSeparator = this.lineSeparator,
     } = opts;
     let lines = this.asColumns({
+      datumValue,
       locales, 
       localeOptions, 
       titleOfId,

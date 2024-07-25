@@ -6,7 +6,7 @@ import { DPD_TEXTS } from '../data/en/dpd-text.mjs';
 import Pali from './pali.mjs';
 import Table from './table.mjs';
 
-export default class Inflection {
+  export default class Inflection {
   constructor(opts={}) { 
     Object.assign(this, opts);
   }
@@ -22,9 +22,17 @@ export default class Inflection {
     return Table.titleOfId(title);
   }
 
-  static attributes(opts) {
+  static datumValue(s,id) {
+    let info = Inflection.attribute(s);
+    if (info.id == null) {
+      return s;
+    } 
+    return info.name;
+  }
+
+  static attributeTable(opts) {
     let tblOpts = opts || {
-      title: "Inflection.attributes()",
+      title: "Inflection.attributeTable()",
       titleOfId: Inflection.titleOfId,
     }
     return Table.fromRows(Inflection.#ATTRIBUTES, tblOpts);
@@ -105,7 +113,7 @@ export default class Inflection {
           }, {
             pat:pattern, 
             like, 
-            infl:'dcl',
+            type:'dcl',
             [Inflection.attribute('suffix').id]:data, 
           });
           inflections.push(new Inflection(info));
@@ -288,10 +296,10 @@ export default class Inflection {
     {type:'attribute', id:'gdr', order:2, name:'gender', 
       use:'masc/fem/nt'},
     {type:'attribute', id:'nbr', order:3, name:'number', use:'sg/pl'},
-    {type:'attribute', id:'case', order:4, name:'inflection_case', 
+    {type:'attribute', id:'case', order:4, name:'case', 
       use:'nom/acc/instr/dat/abl/gen/loc/voc'},
-    {type:'attribute', id:'infl', order:5, name:'inflection', 
-      use:'inflection group'},
+    {type:'attribute', id:'type', order:5, name:'type', 
+      use:'dcl/cnj/...'},
     {type:'attribute', id:'pat', order:7, name:'pattern', 
       use:'search parameters'},
     {type:'attribute', id:'sfx', order:8, name:'suffix', use:"-a/-o"},
@@ -301,9 +309,9 @@ export default class Inflection {
     {type:'number', id:'pl', order:2, name:'plural', use:"we/they"},
 
 
-    {type:'inflection', id:'dcl', order:1, name:'declension', 
+    {type:'type', id:'dcl', order:1, name:'declension', 
       use:"noun/nouns"},
-    {type:'inflection', id:'cnj', order:2, name:'conjugation', 
+    {type:'type', id:'cnj', order:2, name:'conjugation', 
       use:"hear/heard"},
 
     {type:'gdr', id: 'nt', name:'neuter', order:0, use:'it'},

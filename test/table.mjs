@@ -117,16 +117,21 @@ typeof describe === "function" &&
     should(tbl2.sort(compare)).equal(tbl2);
     should.deepEqual(tbl2.rows[0], tbl.rows[2]);
   });
-  it("format()", ()=>{
+  it("TESTTESTformat()", ()=>{
     let tbl = Table.fromArray2(TEST_DATA);
     let compare = ((a,b) => {
       let cmp = a.color.localeCompare(b.color);
       return cmp;
     });
     let localeOptions = { dateStyle: "short", }
-    let tblEN = tbl.format({locales:'en', localeOptions});
-    should(tblEN.split('\n')[0]).match(/Color *Size Date/i);
-    should(tblEN.split('\n')[1]).match(/purple   10 2.1.00/);
+    let datumValue = ((s, id)=>id==='color' ? `${s}-${id}` : s);
+    let tblEN = tbl.format({
+      datumValue,
+      locales:'en', 
+      localeOptions,
+    });
+    should(tblEN.split('\n')[0]).match(/Color +Size +Date/i);
+    should(tblEN.split('\n')[1]).match(/purple-color +10 +2.1.00/);
 
     let tblFR = tbl.format({locales:'fr', localeOptions});
     let frLines = tblFR.split('\n');

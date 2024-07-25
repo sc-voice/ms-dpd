@@ -7,7 +7,7 @@ import {
 } from '../main.mjs';
 
 typeof describe === "function" && 
-  describe("inflection", function () 
+  describe("TESTTESTinflection", function () 
 {
   it("default ctor", () => {
     let inf = new Inflection();
@@ -170,7 +170,7 @@ typeof describe === "function" &&
     test('attribute', {id:'attr', type:'attribute'});
     test('gdr', {id:'gdr', type:'attribute'});
     test('number', {id:'nbr', type:'attribute'});
-    test('inflection_case', {id:'case', type:'attribute'});
+    test('case', {id:'case', type:'attribute'});
   });
   it("attribute() number", ()=>{
     let attr = Inflection.attribute;
@@ -181,9 +181,9 @@ typeof describe === "function" &&
     should(attr('pl')).properties({id:'pl', type:'number'});
     should(attr('plural')).properties({id:'pl', type:'number'});
   });
-  it("attributes()", ()=>{
+  it("attributeTable()", ()=>{
     let title = 'test-title';
-    let tbl = Inflection.attributes({title});
+    let tbl = Inflection.attributeTable({title});
     let fNumber = (row=>row.type === 'number');
 
     should(tbl.title).equal(title);
@@ -210,7 +210,10 @@ typeof describe === "function" &&
     let infTable = Table.fromRows(inflections, {
       title: `-------Inflections-------`,
       titleOfId: Inflection.titleOfId,
+      datumValue: Inflection.datumValue,
     });
-    dbg && console.log(msg, infTable.format());
+    let tblOpts = {
+    }
+    dbg && console.log(msg, infTable.format(tblOpts));
   });
 });
