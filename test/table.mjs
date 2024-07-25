@@ -166,10 +166,13 @@ typeof describe === "function" &&
     should.deepEqual(tbl.at(2,'size'), undefined);
     should.deepEqual(tbl.at(3,4), undefined);
   });
-  it("TESTTESTstringAt", ()=>{
+  it("stringAt", ()=>{
     let tbl = Table.fromRows(TEST_OBJS);
     let locales = 'en';
+    let cellValue = ((value,id) => 
+      value==='purple' ? `p-${id}` : value);
     let opts = {
+      cellValue,
       locales: 'en',
       localeOptions: {
         dateStyle:'short'
@@ -178,6 +181,7 @@ typeof describe === "function" &&
 
     should(tbl.stringAt(-1)).equal(undefined);
     should(tbl.stringAt(0,0)).equal('purple');
+    should(tbl.stringAt(0,0,opts)).equal('p-color');
     should(tbl.stringAt(0,1)).equal('10');
     should(tbl.stringAt(0, 2, opts)).equal('2/1/00');
     should(tbl.stringAt(2, 1, opts)).equal(tbl.emptyCell);
