@@ -131,31 +131,23 @@ import Table from './table.mjs';
     return this;
   }
 
-  static parseDpdInflectionTemplate(dpdInf, opts={}) {
-    const msg = "Inflection.parseDpdInflectionTemplate()";
+  static parseDpdInflection(dpdInf) {
+    const msg = "Inflection.parseDpdInflection()";
     let dbg = 0;
-    let {
-      filterCase,
-      verbose,
-      textOut,
-    } = opts;
     let [ pattern, like, data ] = dpdInf.split('|');
     
-    let srcRows = JSON.parse(data);
+    let dpdData = JSON.parse(data);
     let group;
     let inflections = [];
-    let lastRow = srcRows.at(-1);
-    //let in_comps = lastRow[0][0];
-    //let comps = lastRow[1].join(',');
+    let lastRow = dpdData.at(-1);
     dbg && console.log(msg, {pattern, like, comps});
-    let showSrc = !!textOut;
-    let headers = srcRows.reduce((a,row,i)=>{
+    let headers = dpdData.reduce((a,row,i)=>{
       for (let i=a.length; i<row.length; i++) {
         a.push({id:`c${i+1}`});
       }
       return a;
     }, []);
-    srcRows.forEach(row=>{
+    dpdData.forEach(row=>{
       row.forEach((c,i)=>{
         if (c?.length === 1) {
           if (!c[0]) {
@@ -164,7 +156,7 @@ import Table from './table.mjs';
         }
       });
     });
-    let srcTable = Table.fromArray2(srcRows, {
+    let srcTable = Table.fromArray2(dpdData, {
       headers,
       title: `srcTable pattern:${pattern} like:${like}`,
       titleOfId: Inflection.titleOfId,
