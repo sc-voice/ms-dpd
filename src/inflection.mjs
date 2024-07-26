@@ -3,12 +3,17 @@ import { DBG } from './defines.mjs';
 import { ABBREVIATIONS } from '../data/en/abbreviations.mjs';
 import { DPD } from '../data/en/dpd.mjs';
 import { DPD_TEXTS } from '../data/en/dpd-text.mjs';
-import Pali from './pali.mjs';
 import Table from './table.mjs';
 
-  export default class Inflection {
+import { OCBS_INFLECTIONS } from '../data/ocbs-inflections.mjs';
+
+export default class Inflection {
   constructor(opts={}) { 
     Object.assign(this, opts);
+  }
+
+  static Inflections() {
+    return OCBS_INFLECTIONS;
   }
 
   static titleOfId(id) {
@@ -77,7 +82,6 @@ import Table from './table.mjs';
     let dbgmsg;
     let dbgvmsg;
     let rowType = row.c1[0];
-    let group;
     let keys = Object.keys(row);
     switch (rowType) {
       case '': 
@@ -137,7 +141,6 @@ import Table from './table.mjs';
     let [ pattern, like, data ] = dpdInf.split('|');
     
     let dpdData = JSON.parse(data);
-    let group;
     let inflections = [];
     let lastRow = dpdData.at(-1);
     dbg && console.log(msg, {pattern, like, comps});
@@ -269,14 +272,14 @@ import Table from './table.mjs';
   static #KEYS = [
     "id",
     "type",
-    "group",
+    "pat",
     "gdr",
     "case",
     "singular",
     "plural",
   ];
 
-  static #ALL = Pali.INFLECTIONS.map(inf=>new Inflection(inf));
+  static #ALL = OCBS_INFLECTIONS.map(inf=>new Inflection(inf));
   
   static #ATTRIBUTE_UNKNOWN = 
     {type:'attribute', id:null, order:0, name:'unknown', 

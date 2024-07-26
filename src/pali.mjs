@@ -1,7 +1,13 @@
-import { INFLECTIONS } from '../data/inflections-ocbs.mjs';
 import { DBG } from './defines.mjs';
 
+// DEPRECATED
+import { OCBS_INFLECTIONS } from '../data/ocbs-inflections.mjs';
+
 export default class Pali {
+
+  static get INFLECTIONS() { // DEPRECATED
+    return OCBS_INFLECTIONS;
+  }
   static #ENDINGS;
   static #ENDING_MAX_LEN;
   static #STEM_RE;
@@ -47,10 +53,6 @@ export default class Pali {
   static #ROMAN_ORDER;
 
   constructor(opts={}) {
-  }
-
-  static get INFLECTIONS() {
-    return INFLECTIONS;
   }
 
   static get ENDING_MAX_LEN() {

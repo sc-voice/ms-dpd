@@ -15,7 +15,7 @@ const MAYBE_USELESS = 0;
 
   // load inflection CSV
   let inflections = [];
-  const srcPath = `${DIRNAME}/../src/inflections.csv`;
+  const srcPath = `${DIRNAME}/../src/ocbs-inflections.csv`;
   let srcData = await fsp.readFile(srcPath);
   let srcLines = srcData.toString().trim().split('\n');
   let keys = srcLines[0].split(' , ');
@@ -46,7 +46,7 @@ const MAYBE_USELESS = 0;
   // Save OCBS inflection rules
   let infJSON = JSON.stringify(inflections, null, 2);
   infJSON = 'export const INFLECTIONS=' + infJSON;
-  const dstPath = `${DIRNAME}/../data/inflections-ocbs.mjs`;
+  const dstPath = `${DIRNAME}/../data/ocbs-inflections.mjs`;
   await fs.promises.writeFile(dstPath, infJSON);
   console.log(msg, dstPath);
 })()

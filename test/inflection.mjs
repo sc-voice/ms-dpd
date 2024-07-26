@@ -16,17 +16,17 @@ typeof describe === "function" &&
   it("custom ctor", ()=>{
     let id = 'test-id';
     let type = 'test-type';
-    let group = 'test-group';
+    let pat = 'test-pat';
     let gdr = 'test-gender';
     let $case = 'test-case' ;
     let singular = 'test-singular';
     let plural = 'test-plural';
     
     let inf = new Inflection({
-      id, type, group, gdr, 'case':$case, singular, plural
+      id, type, pat, gdr, 'case':$case, singular, plural
     });
     should(inf).properties({
-      id, type, group, gdr, 'case':$case, singular, plural
+      id, type, pat, gdr, 'case':$case, singular, plural
     });
     should(inf.isEmpty).equal(false);
   });
@@ -34,7 +34,7 @@ typeof describe === "function" &&
     let infa = new Inflection({
       id: 'a-id',
       type: 'a-type',
-      group: 'a-group',
+      pat: 'a-pat',
       gdr: 'a-gender',
       'case': 'a-case',
       singular: 'a-singular',
@@ -43,7 +43,7 @@ typeof describe === "function" &&
     let infb = new Inflection({
       id: 'b-id',
       type: 'b-type',
-      group: 'b-group',
+      pat: 'b-pat',
       gdr: 'b-gender',
       'case': 'b-case',
       singular: 'b-singular',
@@ -60,7 +60,7 @@ typeof describe === "function" &&
     should(union_ab).properties({
       id: ['a-id', 'b-id'],
       type: ['a-type', 'b-type'],
-      group: ['a-group', 'b-group'],
+      pat: ['a-pat', 'b-pat'],
       gdr: ['a-gender', 'b-gender'],
       'case': ['a-case', 'b-case'],
       singular: ['a-singular', 'b-singular'],
@@ -116,7 +116,7 @@ typeof describe === "function" &&
     let inf27 = new Inflection({
       "id": 27,
       "type": "declension",
-      "group": "-i/ī",
+      "pat": "-i/ī",
       "gdr": "fem",
       "case": "instr",
       "singular": [
@@ -129,7 +129,7 @@ typeof describe === "function" &&
     let inf31 = new Inflection({
       "id": 31,
       "type": "declension",
-      "group": "-i/ī",
+      "pat": "-i/ī",
       "gdr": "fem",
       "case": "voc",
       "singular": [
@@ -143,8 +143,8 @@ typeof describe === "function" &&
     should(inf27.matchesWord("devīhi", {stem})).equal(true);
     should(inf31.matchesWord("devī", {stem})).equal(true);
   });
-  it("find() ", ()=>{
-    const msg = "test.inflection@114";
+  it("TESTTESTfind() ", ()=>{
+    const msg = "test.inflection@147";
     let infAll = Inflection.find();
     should(infAll.length).above(65).below(100);
 
@@ -153,7 +153,7 @@ typeof describe === "function" &&
     //console.log(msg, unionDhamma);
     should(unionDhamma.case).equal('voc');
     should(unionDhamma.type).equal('declension');
-    should(unionDhamma.group).equal('-a/ā');
+    should(unionDhamma.pat).equal('-a/ā');
     should.deepEqual(unionDhamma.gdr, ['masc', 'nt']);
     should(unionDhamma.singular).equal('a');
     should.deepEqual(unionDhamma.plural, ['ā', 'āni']);

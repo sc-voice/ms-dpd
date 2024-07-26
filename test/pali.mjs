@@ -111,7 +111,7 @@ typeof describe === "function" && describe("pali", function () {
     should.deepEqual(inf[0], {
       id: 1,
       type: "declension",
-      group: "-a/ā",
+      pat: "-a/ā",
       gdr: "masc",
       'case': "nom",
       singular: ["o"],
@@ -120,7 +120,7 @@ typeof describe === "function" && describe("pali", function () {
     should.deepEqual(inf[4], {
       id: 5,
       type: "declension",
-      group: "-a/ā",
+      pat: "-a/ā",
       gdr: "masc",
       'case': "abl",
       singular: ["ā", "asmā", "amhā"],

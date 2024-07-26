@@ -192,7 +192,7 @@ function parseDataRow(row, opts={}) {
   // Save OCBS inflection rules
   let infJSON = JSON.stringify(inflections, null, 2);
   infJSON = 'export const INFLECTIONS=' + infJSON;
-  const dstPath = `${__dirname}/../data/inflections-ocbs.mjs`;
+  const dstPath = `${__dirname}/../data/ocbs-inflections.mjs`;
   await fs.promises.writeFile(dstPath, infJSON);
   console.log(msg, dstPath);
 */
