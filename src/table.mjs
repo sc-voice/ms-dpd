@@ -9,9 +9,15 @@ export default class Table {
       rows,
     } = this;
 
-    if (headers.length) {
-      headers = JSON.parse(JSON.stringify(headers));
-    } else {
+    // headers are owned by table
+    this.headers = headers = 
+      headers ?  JSON.parse(JSON.stringify(headers)) : [];
+
+    // Each row is owned by client, but the 
+    // collection is owned by table
+    this.rows = rows = rows && [...rows] || [];
+
+    if (headers.length === 0) {
       let row0 = rows[0];
       let rowType = typeof row0;
       switch (rowType) {
@@ -64,8 +70,6 @@ export default class Table {
     if (rows && !(rows instanceof Array)) {
       throw new Error(`${msg} [1]rows:Array[Object]!`);
     }
-    headers = headers && [...headers] || [];
-    rows = rows && [...rows] || [];
 
     return {
       caption,
