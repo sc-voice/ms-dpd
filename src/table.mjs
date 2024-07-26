@@ -9,8 +9,6 @@ export default class Table {
       rows,
     } = this;
 
-    headers = headers && [...headers] || [];
-    rows = rows && [...rows] || [];
     if (headers.length) {
       headers = JSON.parse(JSON.stringify(headers));
     } else {
@@ -66,6 +64,8 @@ export default class Table {
     if (rows && !(rows instanceof Array)) {
       throw new Error(`${msg} [1]rows:Array[Object]!`);
     }
+    headers = headers && [...headers] || [];
+    rows = rows && [...rows] || [];
 
     return {
       caption,
