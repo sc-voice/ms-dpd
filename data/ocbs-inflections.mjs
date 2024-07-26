@@ -1,7 +1,7 @@
 export const OCBS_INFLECTIONS=[
   {
     "id": 1,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-a/ā",
     "gdr": "masc",
     "case": "nom",
@@ -14,7 +14,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 2,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-a/ā",
     "gdr": "masc",
     "case": "acc",
@@ -27,7 +27,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 3,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-a/ā",
     "gdr": "masc",
     "case": "instr",
@@ -40,7 +40,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 4,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-a/ā",
     "gdr": "masc",
     "case": "dat",
@@ -51,7 +51,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 5,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-a/ā",
     "gdr": "masc",
     "case": "abl",
@@ -66,7 +66,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 6,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-a/ā",
     "gdr": "masc",
     "case": "gen",
@@ -79,7 +79,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 7,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-a/ā",
     "gdr": "masc",
     "case": "loc",
@@ -94,7 +94,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 8,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-a/ā",
     "gdr": "masc",
     "case": "voc",
@@ -107,7 +107,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 9,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-a/ā",
     "gdr": "nt",
     "case": "nom",
@@ -121,7 +121,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 10,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-a/ā",
     "gdr": "nt",
     "case": "acc",
@@ -135,7 +135,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 11,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-a/ā",
     "gdr": "nt",
     "case": "instr",
@@ -148,7 +148,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 12,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-a/ā",
     "gdr": "nt",
     "case": "dat",
@@ -159,7 +159,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 13,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-a/ā",
     "gdr": "nt",
     "case": "abl",
@@ -174,7 +174,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 14,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-a/ā",
     "gdr": "nt",
     "case": "gen",
@@ -187,7 +187,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 15,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-a/ā",
     "gdr": "nt",
     "case": "loc",
@@ -202,7 +202,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 16,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-a/ā",
     "gdr": "nt",
     "case": "voc",
@@ -216,7 +216,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 17,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-a/ā",
     "gdr": "fem",
     "case": "nom",
@@ -230,7 +230,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 18,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-a/ā",
     "gdr": "fem",
     "case": "acc",
@@ -244,7 +244,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 19,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-a/ā",
     "gdr": "fem",
     "case": "instr",
@@ -257,7 +257,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 20,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-a/ā",
     "gdr": "fem",
     "case": "dat",
@@ -268,7 +268,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 21,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-a/ā",
     "gdr": "fem",
     "case": "abl",
@@ -281,7 +281,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 22,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-a/ā",
     "gdr": "fem",
     "case": "gen",
@@ -294,7 +294,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 23,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-a/ā",
     "gdr": "fem",
     "case": "loc",
@@ -308,7 +308,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 24,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-a/ā",
     "gdr": "fem",
     "case": "voc",
@@ -322,7 +322,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 25,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-i/ī",
     "gdr": "fem",
     "case": "nom",
@@ -336,7 +336,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 26,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-i/ī",
     "gdr": "fem",
     "case": "acc",
@@ -350,7 +350,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 27,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-i/ī",
     "gdr": "fem",
     "case": "instr",
@@ -363,7 +363,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 28,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-i/ī",
     "gdr": "fem",
     "case": "abl",
@@ -376,7 +376,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 29,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-i/ī",
     "gdr": "fem",
     "case": "gen",
@@ -390,7 +390,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 30,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-i/ī",
     "gdr": "fem",
     "case": "loc",
@@ -404,7 +404,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 31,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-i/ī",
     "gdr": "fem",
     "case": "voc",
@@ -418,7 +418,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 32,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-i/ī",
     "gdr": "masc",
     "case": "nom",
@@ -432,7 +432,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 33,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-i/ī",
     "gdr": "masc",
     "case": "acc",
@@ -446,7 +446,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 34,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-i/ī",
     "gdr": "masc",
     "case": "instr",
@@ -460,7 +460,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 35,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-i/ī",
     "gdr": "masc",
     "case": "abl",
@@ -476,7 +476,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 36,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-i/ī",
     "gdr": "masc",
     "case": "gen",
@@ -491,7 +491,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 37,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-i/ī",
     "gdr": "masc",
     "case": "loc",
@@ -506,7 +506,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 38,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-i/ī",
     "gdr": "masc",
     "case": "voc",
@@ -520,7 +520,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 39,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-i/ī",
     "gdr": "nt",
     "case": "nom",
@@ -535,7 +535,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 40,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-i/ī",
     "gdr": "nt",
     "case": "acc",
@@ -550,7 +550,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 41,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-i/ī",
     "gdr": "nt",
     "case": "instr",
@@ -564,7 +564,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 42,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-i/ī",
     "gdr": "nt",
     "case": "abl",
@@ -580,7 +580,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 43,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-i/ī",
     "gdr": "nt",
     "case": "gen",
@@ -595,7 +595,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 44,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-i/ī",
     "gdr": "nt",
     "case": "loc",
@@ -610,7 +610,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 45,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-i/ī",
     "gdr": "nt",
     "case": "voc",
@@ -625,7 +625,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 46,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-u/ū",
     "gdr": "masc",
     "case": "nom",
@@ -639,7 +639,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 47,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-u/ū",
     "gdr": "masc",
     "case": "acc",
@@ -653,7 +653,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 48,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-u/ū",
     "gdr": "masc",
     "case": "instr",
@@ -666,7 +666,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 49,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-u/ū",
     "gdr": "masc",
     "case": "abl",
@@ -681,7 +681,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 50,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-u/ū",
     "gdr": "masc",
     "case": "gen",
@@ -695,7 +695,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 51,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-u/ū",
     "gdr": "masc",
     "case": "loc",
@@ -709,7 +709,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 52,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-u/ū",
     "gdr": "masc",
     "case": "voc",
@@ -724,7 +724,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 53,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-u/ū",
     "gdr": "fem",
     "case": "nom",
@@ -738,7 +738,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 54,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-u/ū",
     "gdr": "fem",
     "case": "acc",
@@ -752,7 +752,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 55,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-u/ū",
     "gdr": "fem",
     "case": "instr",
@@ -765,7 +765,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 56,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-u/ū",
     "gdr": "fem",
     "case": "abl",
@@ -778,7 +778,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 57,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-u/ū",
     "gdr": "fem",
     "case": "gen",
@@ -791,7 +791,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 58,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-u/ū",
     "gdr": "fem",
     "case": "loc",
@@ -805,7 +805,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 59,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-u/ū",
     "gdr": "fem",
     "case": "voc",
@@ -819,7 +819,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 60,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-u/ū",
     "gdr": "nt",
     "case": "nom",
@@ -834,7 +834,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 61,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-u/ū",
     "gdr": "nt",
     "case": "acc",
@@ -849,7 +849,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 62,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-u/ū",
     "gdr": "nt",
     "case": "instr",
@@ -862,7 +862,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 63,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-u/ū",
     "gdr": "nt",
     "case": "abl",
@@ -877,7 +877,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 64,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-u/ū",
     "gdr": "nt",
     "case": "gen",
@@ -891,7 +891,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 65,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-u/ū",
     "gdr": "nt",
     "case": "loc",
@@ -905,7 +905,7 @@ export const OCBS_INFLECTIONS=[
   },
   {
     "id": 66,
-    "type": "declension",
+    "type": "dcl",
     "pat": "-u/ū",
     "gdr": "nt",
     "case": "voc",

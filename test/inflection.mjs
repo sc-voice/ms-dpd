@@ -115,7 +115,7 @@ typeof describe === "function" &&
     // lenient default {singular:true, plural:true}
     let inf27 = new Inflection({
       "id": 27,
-      "type": "declension",
+      "type": "dcl",
       "pat": "-i/ī",
       "gdr": "fem",
       "case": "instr",
@@ -128,7 +128,7 @@ typeof describe === "function" &&
     });
     let inf31 = new Inflection({
       "id": 31,
-      "type": "declension",
+      "type": "dcl",
       "pat": "-i/ī",
       "gdr": "fem",
       "case": "voc",
@@ -152,7 +152,7 @@ typeof describe === "function" &&
     let unionDhamma = Inflection.union(infDhamma);
     //console.log(msg, unionDhamma);
     should(unionDhamma.case).equal('voc');
-    should(unionDhamma.type).equal('declension');
+    should(unionDhamma.type).equal('dcl');
     should(unionDhamma.pat).equal('-a/ā');
     should.deepEqual(unionDhamma.gdr, ['masc', 'nt']);
     should(unionDhamma.singular).equal('a');
@@ -191,7 +191,7 @@ typeof describe === "function" &&
     let tblNumber = tbl.filter(fNumber);
     should.deepEqual(tblNumber.rows.map(r=>r.id), ['sg', 'pl']);
   });
-  it("parseDpdInflection)", ()=>{
+  it("TESTTESTparseDpdInflection)", ()=>{
     const msg = "test.inflection@193";
     let dbg = 1;
     let dpdTmplt = 'a masc|dhamma|[[[""], ["masc sg"], [""], ["masc pl"], [""]], [["nom"], ["o"], ["masc nom sg"], ["ā", "āse"], ["masc nom pl"]], [["acc"], ["aṃ"], ["masc acc sg"], ["e"], ["masc acc pl"]], [["instr"], ["ā", "ena"], ["masc instr sg"], ["ebhi", "ehi"], ["masc instr pl"]], [["dat"], ["assa", "āya"], ["masc dat sg"], ["ānaṃ"], ["masc dat pl"]], [["abl"], ["ato", "amhā", "asmā", "ā"], ["masc abl sg"], ["ato", "ebhi", "ehi"], ["masc abl pl"]], [["gen"], ["assa"], ["masc gen sg"], ["āna", "ānaṃ"], ["masc gen pl"]], [["loc"], ["amhi", "asmiṃ", "e"], ["masc loc sg"], ["esu"], ["masc loc pl"]], [["voc"], ["a", "ā"], ["masc voc sg"], ["ā"], ["masc voc pl"]], [["in comps"], ["a"], ["in comps"], [""], [""]]]';
@@ -203,7 +203,7 @@ typeof describe === "function" &&
     should(like).equal('dhamma');
 
     dbg && console.log(msg, srcTable.format());
-    let verbose = 1;
+    let verbose = 0;
     let tblOpts;
     verbose && (tblOpts = {
       title: `-------Inflections-------`,

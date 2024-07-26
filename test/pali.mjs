@@ -110,7 +110,7 @@ typeof describe === "function" && describe("pali", function () {
     let inf = Pali.INFLECTIONS;
     should.deepEqual(inf[0], {
       id: 1,
-      type: "declension",
+      type: "dcl",
       pat: "-a/ā",
       gdr: "masc",
       'case': "nom",
@@ -119,7 +119,7 @@ typeof describe === "function" && describe("pali", function () {
     });
     should.deepEqual(inf[4], {
       id: 5,
-      type: "declension",
+      type: "dcl",
       pat: "-a/ā",
       gdr: "masc",
       'case': "abl",
