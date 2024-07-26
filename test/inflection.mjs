@@ -191,7 +191,7 @@ typeof describe === "function" &&
     let tblNumber = tbl.filter(fNumber);
     should.deepEqual(tblNumber.rows.map(r=>r.id), ['sg', 'pl']);
   });
-  it("TESTTESTparseDpdInflection)", ()=>{
+  it("parseDpdInflection)", ()=>{
     const msg = "test.inflection@193";
     let dbg = 1;
     let dpdTmplt = 'a masc|dhamma|[[[""], ["masc sg"], [""], ["masc pl"], [""]], [["nom"], ["o"], ["masc nom sg"], ["ā", "āse"], ["masc nom pl"]], [["acc"], ["aṃ"], ["masc acc sg"], ["e"], ["masc acc pl"]], [["instr"], ["ā", "ena"], ["masc instr sg"], ["ebhi", "ehi"], ["masc instr pl"]], [["dat"], ["assa", "āya"], ["masc dat sg"], ["ānaṃ"], ["masc dat pl"]], [["abl"], ["ato", "amhā", "asmā", "ā"], ["masc abl sg"], ["ato", "ebhi", "ehi"], ["masc abl pl"]], [["gen"], ["assa"], ["masc gen sg"], ["āna", "ānaṃ"], ["masc gen pl"]], [["loc"], ["amhi", "asmiṃ", "e"], ["masc loc sg"], ["esu"], ["masc loc pl"]], [["voc"], ["a", "ā"], ["masc voc sg"], ["ā"], ["masc voc pl"]], [["in comps"], ["a"], ["in comps"], [""], [""]]]';
@@ -203,13 +203,15 @@ typeof describe === "function" &&
     should(like).equal('dhamma');
 
     dbg && console.log(msg, srcTable.format());
-    let verbose = false;
-    let tblOpts = {
+    let verbose = 1;
+    let tblOpts;
+    verbose && (tblOpts = {
       title: `-------Inflections-------`,
-      titleOfId: verbose ? Inflection.titleOfId : undefined,
-      cellValue: verbose ? Inflection.cellValue : undefined,
-    }
-    let infTable = Table.fromRows(inflections, tblOpts);
-    dbg && console.log(msg, infTable.format());
+      titleOfId: Inflection.titleOfId,
+      cellValue: Inflection.cellValue,
+    })
+    let infTable = Table.fromRows(inflections);
+    dbg && console.log(msg);
+    dbg && console.log(infTable.format(tblOpts));
   });
 });

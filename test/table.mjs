@@ -99,7 +99,7 @@ typeof describe === "function" &&
     should(lines[4]).match(/blue *⌿/);
     should(lines.at(-1)).equal(caption);
   });
-  it("filter()", ()=>{
+  it("TESTTESTfilter()", ()=>{
     let title = 'test-title';
     let caption = 'test-caption';
     let opts = {title, caption};

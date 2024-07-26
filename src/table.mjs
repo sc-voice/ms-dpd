@@ -1,53 +1,73 @@
 import { DBG } from './defines.mjs';
 
-
-const DFLT_COMPACT = true;
-
 export default class Table {
-  constructor(opts={}) {
+  constructor(opts) {
     const msg = "Table.ctor";
+    Object.assign(this, Table.options(opts));
     let {
-      caption,
-      cellOverflow = '\u2026',
-      columnSeparator = ' ',
-      cellValue,
-      emptyCell = '\u233f',
-      emptyRow = {},
-      headers=[],
-      lineSeparator = '\n',
-      localeOptions,
-      locales,
-      rows=[],
-      title,
-      titleOfId = Table.titleOfId,
+      headers,
+      rows,
+    } = this;
 
-    } = opts;
-
-    if (!(rows instanceof Array)) {
-      throw new Error(`${msg} [1]rows:Array[Object]!`);
-    }
-    if (!(headers instanceof Array)) {
-      let eText = `[1]headers:Array! ${JSON.stringify(headers)}`;
-      throw new Error(`${msg} ${eText}`);
-    }
-    if (rows.length) {
+    headers = headers && [...headers] || [];
+    rows = rows && [...rows] || [];
+    if (headers.length) {
+      headers = JSON.parse(JSON.stringify(headers));
+    } else {
       let row0 = rows[0];
-      if (headers.length) {
-        headers = JSON.parse(JSON.stringify(headers));
-      } else {
-        if(row0 instanceof Array) {
-          throw new Error(`${msg} [2]rows:Array[Object]!`);
-        }
-        headers = Object.keys(row0).map(key=>({id:key}));
+      let rowType = typeof row0;
+      switch (rowType) {
+        case 'object':
+          if (row0 instanceof Array) {
+            headers = row0.map((c,i)=>({id:cellValue(c)}));
+          } else {
+            headers = Object.keys(row0).map(key=>({id:key}));
+          }
+          break;
+        case 'undefined': // empty table
+          break;
+        default:
+          console.log(msg, rows);
+          throw new Error(`${msg} [1]rowType ${rowType}`);
+          break;
       }
     }
-
     headers.forEach(h=>{
       h.id = h.id || h.title || emptyCell;
       h.maxWidth = h.maxWidth || 0;
     });
 
-    Object.assign(this, {
+    Object.assign(this, { headers, rows });
+  }
+
+  static options(opts=[]) {
+    const msg = "Table.options()";
+
+    let {
+      caption = undefined,
+      cellOverflow = '\u2026',
+      columnSeparator = ' ',
+      cellValue = (s=>s),
+      emptyCell = '\u233f',
+      emptyRow = {},
+      headers = undefined,
+      lineSeparator = '\n',
+      localeOptions = undefined,
+      locales = undefined,
+      rows = undefined,
+      title = undefined,
+      titleOfId = Table.titleOfId,
+    } = opts;
+
+    if (headers && !(headers instanceof Array)) {
+      let eText = `[1]headers:Array! ${JSON.stringify(headers)}`;
+      throw new Error(`${msg} ${eText}`);
+    }
+    if (rows && !(rows instanceof Array)) {
+      throw new Error(`${msg} [1]rows:Array[Object]!`);
+    }
+
+    return {
       caption,
       cellOverflow,
       columnSeparator,
@@ -58,11 +78,10 @@ export default class Table {
       lineSeparator,
       localeOptions,
       locales,
-      rows: [...rows],
+      rows,
       title,
       titleOfId,
-
-    });
+    }
   }
 
   static titleOfId(id='') {
@@ -81,12 +100,12 @@ export default class Table {
   //   ["color", "size}],
   //   ["red", 10]
   // ]
-  static fromArray2(data, opts={}) {
+  static fromArray2(data, opts) {
     const msg = 'Table.fromArray2';
     let {
       headers = [],
-      emptyRow = {},
-    } = opts;
+      emptyRow,
+    } = opts = Table.options(opts);
     if (!(data instanceof Array)) {
       throw new Error(`${msg} [1]data:Array?`);
     }
@@ -115,14 +134,18 @@ export default class Table {
       }, {})
     );
 
-    let newOpts = Object.assign({}, opts, {headers});
-    return Table.fromRows(rows, newOpts);
+    opts.headers = headers;
+    return Table.fromRows(rows, opts);
   }
 
   #headerId(idOrIndex) {
     return typeof idOrIndex === 'string'
       ? idOrIndex 
       : this.headers[idOrIndex]?.id;
+  }
+
+  options(opts) {
+    return Table.options(Object.assign({}, this, opts));
   }
 
   at(rowIndex, idOrIndex, opts={}) {
@@ -179,9 +202,11 @@ export default class Table {
     let { 
       headers, 
       rows,
-      titleOfId,
-      emptyCell,
     } = this;
+    let { 
+      titleOfId = this.titleOfId,
+      emptyCell = this.emptyCell,
+    } = opts;
 
     for (let i=0; i<headers.length; i++) {
       let h = headers[i];
@@ -199,22 +224,20 @@ export default class Table {
     }
   }
 
-  asColumns(opts={}) {
+  asColumns(opts) {
     const msg = "Table.asColumns()";
     const dbg = 0;
     let {
-      title = this.title,
-      caption = this.caption,
-      columnSeparator = this.columnSeparator,
-      cellValue = this.cellValue,
-      locales = this.locales,
-      localeOptions = this.localeOptions,
-      titleOfId = Table.titleOfId || this.titleOfId,
-    } = opts;
-    let { 
-      headers, 
+      title,
+      titleOfId,
+      columnSeparator,
+      cellValue,
+      headers,
       rows,
-    } = this;
+      locales,
+      localeOptions,
+      caption,
+    } = opts = this.options(opts);
 
     this.#updateHeaders(opts);
 
@@ -253,10 +276,10 @@ export default class Table {
     return lines;
   }
 
-  filter(f=(row=>true), opts={}) {
-    let { rows } = this;
-    opts = Object.assign({}, this, opts);
-    opts.rows = rows.filter(f);
+  filter(f=(row=>true), opts) {
+    const msg = "Table.filter()";
+    opts = this.options(opts);
+    opts.rows = this.rows.filter(f);
     return new Table(opts);
   }
 
@@ -266,22 +289,11 @@ export default class Table {
     return this;
   }
 
-  format(opts={}) {
-    let {
-      cellValue,
-      locales,
-      localeOptions,
-      titleOfId = this.titleOfId,
-      lineSeparator = this.lineSeparator,
-    } = opts;
-    let lines = this.asColumns({
-      cellValue,
-      locales, 
-      localeOptions, 
-      titleOfId,
-    });
+  format(opts) {
+    opts = this.options(opts);
+    let lines = this.asColumns(opts);
 
-    return lines.join(lineSeparator);
+    return lines.join(opts.lineSeparator);
   }
 
 }
