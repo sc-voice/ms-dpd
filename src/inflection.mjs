@@ -99,29 +99,31 @@ export default class Inflection {
       case 'voc': {
         rowType = 'declension';
         for (let i=2; i<keys.length; i+=2) {
-          let data = row[`c${i}`];
-          let key = row[`c${i+1}`];
-          if ((key instanceof Array) && key.length===1) {
-            key = key[0];
-          }
-          let keyParts = key.split(' ');
-          let info = keyParts.reduce((a,kp)=>{
-            let kpi = Inflection.attribute(kp);
-            if (kpi) {
-              let attr = Inflection.attribute(kpi?.type);
-              if (attr) {
-                a[attr.id] = kp;
-              }
+          let suffixes = row[`c${i}`];
+          suffixes.forEach((sfx)=>{
+            let key = row[`c${i+1}`];
+            if ((key instanceof Array) && key.length===1) {
+              key = key[0];
             }
-            return a;
-          }, {
-            pat:pattern, 
-            like, 
-            type:'dcl',
-            [Inflection.attribute('suffix').id]:data, 
-          });
-          inflections.push(new Inflection(info));
-          dbg && console.log(msg, '[1]info', JSON.stringify(info));
+            let keyParts = key.split(' ');
+            let info = keyParts.reduce((a,kp)=>{
+              let kpi = Inflection.attribute(kp);
+              if (kpi) {
+                let attr = Inflection.attribute(kpi?.type);
+                if (attr) {
+                  a[attr.id] = kp;
+                }
+              }
+              return a;
+            }, {
+              pat:pattern, 
+              like, 
+              type:'dcl',
+              [Inflection.attribute('suffix').id]:sfx, 
+            });
+            inflections.push(new Inflection(info));
+            dbg && console.log(msg, '[1]info', JSON.stringify(info));
+          }); // suffixes
         }
       } break;
       case 'in comps':
