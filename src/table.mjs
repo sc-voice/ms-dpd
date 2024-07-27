@@ -11,7 +11,7 @@ export default class Table {
 
     // headers are owned by table
     this.headers = headers = 
-      headers ?  JSON.parse(JSON.stringify(headers)) : [];
+      headers ? JSON.parse(JSON.stringify(headers)) : [];
 
     // Each row is owned by client, but the 
     // collection is owned by table
@@ -25,7 +25,7 @@ export default class Table {
           if (row0 instanceof Array) {
             headers = row0.map((c,i)=>({id:cellValue(c)}));
           } else {
-            headers = Object.keys(row0).map(key=>({id:key}));
+            headers = Object.keys(row0).map((key,i)=>({id:key}));
           }
           break;
         case 'undefined': // empty table
@@ -36,9 +36,10 @@ export default class Table {
           break;
       }
     }
-    headers.forEach(h=>{
+    headers.forEach((h,i)=>{
       h.id = h.id || h.title || emptyCell;
       h.maxWidth = h.maxWidth || 0;
+      h.index = i;
     });
 
     Object.assign(this, { headers, rows });
@@ -85,6 +86,19 @@ export default class Table {
       rows,
       title,
       titleOfId,
+    }
+  }
+
+  static findHeader(headers, idOrIndex) {
+    switch (typeof idOrIndex) {
+      case 'number':
+        return headers[idOrIndex];
+      case 'string':
+        return headers.find(h=>h.id === idOrIndex);
+      case 'object':
+        return headers.find(h=>h.id === idOrIndex?.id);
+      default: 
+        return undefined;
     }
   }
 
@@ -142,7 +156,7 @@ export default class Table {
     return Table.fromRows(rows, opts);
   }
 
-  #headerId(idOrIndex) {
+  headerId(idOrIndex) {
     return typeof idOrIndex === 'string'
       ? idOrIndex 
       : this.headers[idOrIndex]?.id;
@@ -162,7 +176,7 @@ export default class Table {
       return row;
     }
 
-    let id = this.#headerId(idOrIndex);
+    let id = this.headerId(idOrIndex);
 
     let cell = row && row[id];
 
@@ -216,6 +230,7 @@ export default class Table {
       let h = headers[i];
       let title = h.title || titleOfId(h.id) || emptyCell;
       h.width = title.length;
+      h.index = i;
     }
 
     // calculate column width
@@ -287,6 +302,42 @@ export default class Table {
     return new Table(opts);
   }
 
+  colComparator(cols) {
+    const msg = "Table.cellComparator()";
+    const dbg = 1;
+    let { headers, rows } = this;
+    let keys = cols.map(c=>{
+      switch (typeof c) {
+        case 'string':
+        case 'number':
+          return {
+            id: this.headerId(c),
+            descending: false,
+          }
+        default:
+          return c;
+      }
+    });
+    return (a,b)=>{
+      for (let i=0; i<keys.length; i++) {
+        let { id, descending } = keys[i];
+        let ak = a[id];
+        let bk = b[id];
+        if (ak !== bk) {
+          let ascending = descending ? -1 : 1;
+          if (ak && bk==null) { 
+            return ascending; 
+          } else if (ak==null && bk) { 
+            return -ascending;
+          } else {
+            return ak < bk ? -ascending : ascending;
+          }
+        }
+      }
+      return 0;
+    }
+  }
+
   sort(compare) {
     const msg = "Table.sort()";
     let out = this.rows.sort(compare);
@@ -298,6 +349,52 @@ export default class Table {
     let lines = this.asColumns(opts);
 
     return lines.join(opts.lineSeparator);
+  }
+
+  groupBy(grpCols, aggCols=null) {
+    const msg = "Table.groupBy()";
+    let { headers:srcHdrs, rows:srcRows } = this;
+    let dstHdrs = JSON.parse(JSON.stringify(srcHdrs));
+    let grpHdrs = grpCols.map(c=>{
+      let hdr = Table.findHeader(dstHdrs, c);
+      if (hdr == null) {
+        throw new Error(`${msg} header? ${hdr}`);
+      }
+      hdr.aggregate = false;
+      return hdr;
+    });
+    if (aggCols==null) {
+      aggCols = dstHdrs.filter(h=>{
+        if (h.aggregate === false) {
+          return false;
+        }
+
+        h.aggregate = 'list';
+        return true;
+      });
+    }
+    let aggHdrs = aggCols.map((c,i)=>{
+      let hdr = Table.findHeader(dstHdrs, c);
+      if (hdr == null) {
+        throw new Error(`${msg} header? ${hdr}`);
+      }
+      hdr.aggregate = hdr.aggregate || c?.aggregate || 'list';
+      if (hdr.title == null) {
+        hdr.title = (typeof hdr.aggregate === 'string')
+          ? `${hdr.aggregate}(${hdr.id})`
+          : `F${i}(${hdr.id})`;
+      }
+      return hdr;
+    });
+    dstHdrs = [...grpHdrs, ...aggHdrs];
+    this.sort(this.colComparator(dstHdrs));
+    let rows = [];
+
+    let opts = this.options();
+    //opts.rows = rows;
+    opts.headers = dstHdrs;
+
+    return new Table(opts);
   }
 
 }

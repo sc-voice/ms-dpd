@@ -14,6 +14,18 @@ const TEST_OBJS = [
   {color:'blue', date:new Date(2000, 3, 1)},
 ];
 
+const TEST_GROUP = [
+  ['color',  'city', 'size',   'qty'],
+  ['purple', 'sf',   'small',  1],
+  ['purple', 'ny',   null,     2],
+  ['purple', null,   'large',  1],
+  ['purple', 'ny',   'large',  1],
+  ['purple', 'sf',   'large',  1],
+  ['gold',   'ny',   'small',  4],
+  ['gold',   'sf',   'large',  5],
+  ['gold',   'ny',   'medium', 6],
+];
+
 typeof describe === "function" && 
   describe("table", function () 
 {
@@ -99,7 +111,7 @@ typeof describe === "function" &&
     should(lines[4]).match(/blue *⌿/);
     should(lines.at(-1)).equal(caption);
   });
-  it("TESTTESTfilter()", ()=>{
+  it("filter()", ()=>{
     let title = 'test-title';
     let caption = 'test-caption';
     let opts = {title, caption};
@@ -185,5 +197,27 @@ typeof describe === "function" &&
     should(tbl.stringAt(0,1)).equal('10');
     should(tbl.stringAt(0, 2, opts)).equal('2/1/00');
     should(tbl.stringAt(2, 1, opts)).equal(tbl.emptyCell);
+  });
+  it("findHeader", ()=>{
+    const msg = "test.table@findHeader";
+    let tbl = Table.fromArray2(TEST_GROUP, {title:'---groupBy---'});
+    let { headers:hdrs } = tbl;
+    should(Table.findHeader(hdrs, -1)).equal(undefined);
+    should(Table.findHeader(hdrs, 'asdf')).equal(undefined);
+    should(Table.findHeader(hdrs, 0)).equal(tbl.headers[0]);
+    should(Table.findHeader(hdrs, 'color')).equal(tbl.headers[0]);
+    should(Table.findHeader(hdrs, {id:'color'})).equal(tbl.headers[0]);
+    should(Table.findHeader(hdrs, 1)).equal(tbl.headers[1]);
+    should(Table.findHeader(hdrs, 'city')).equal(tbl.headers[1]);
+    should(Table.findHeader(hdrs, {id:'city'})).equal(tbl.headers[1]);
+  });
+  it("TESTTESTgroupBy", ()=>{
+    const msg = "test.table@2001";
+    let tbl = Table.fromArray2(TEST_GROUP, {title:'---groupBy---'});
+    let aggTbl = tbl.groupBy(
+      ['color', 'city'],
+      [{id:'qty', aggregate:((a,c,i)=>i)}]
+    );
+    console.log(0 ? tbl.format() : aggTbl.format());
   });
 });
