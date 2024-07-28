@@ -283,14 +283,14 @@ typeof describe === "function" &&
     should(aggTbl.at(4,2)).equal(1);
     should(aggTbl.at(4,3)).equal(1);
   });
-  it("groupBy() distinct", ()=>{
+  it("groupBy() distinct/like", ()=>{
     const msg = "test.table.distinct";
     let dbg = 0;
     let tbl = Table.fromArray2(TEST_GROUP, {title:'---groupBy---'});
     let aggTbl = tbl.groupBy(
       ['color', 'city'],
-      [ {id:'size', aggregate:'list'},
-        {id:'size', aggregate:'distinct'},
+      [ {id:'size', aggregate:'list'},      // synonym
+        {id:'size', aggregate:'distinct'},  // synonym
       ],
     );
     dbg && console.log(tbl.format());
