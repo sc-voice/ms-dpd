@@ -19,7 +19,7 @@ const TEST_GROUP = [
   ['purple', 'sf',   'small',  1],
   ['purple', 'ny',   null,     2],
   ['purple', null,   'large',  1],
-  ['purple', 'ny',   'large',  1],
+  ['purple', 'ny',   'large',  null],
   ['purple', 'sf',   'large',  1],
   ['gold',   'ny',   'small',  4],
   ['gold',   'sf',   'large',  5],
@@ -211,13 +211,144 @@ typeof describe === "function" &&
     should(Table.findHeader(hdrs, 'city')).equal(tbl.headers[1]);
     should(Table.findHeader(hdrs, {id:'city'})).equal(tbl.headers[1]);
   });
-  it("TESTTESTgroupBy", ()=>{
-    const msg = "test.table@2001";
+  it("groupBy() count", ()=>{
+    const msg = "test.table.count";
+    const dbg = 0;
     let tbl = Table.fromArray2(TEST_GROUP, {title:'---groupBy---'});
     let aggTbl = tbl.groupBy(
       ['color', 'city'],
-      [{id:'qty', aggregate:((a,c,i)=>i)}]
+      [
+        {id:'size', aggregate:'count'},
+        { id:'size', 
+          aggregate:(a,v,i)=>(v==null ? (a||0) : (a||0)+1),
+        },
+      ]
     );
-    console.log(0 ? tbl.format() : aggTbl.format());
+
+    dbg && console.log(tbl.format());
+    dbg && console.log(aggTbl.format());
+    should(aggTbl.at(0,0)).equal('gold');
+    should(aggTbl.at(0,1)).equal('ny');
+    should(aggTbl.at(0,2)).equal(2);
+    should(aggTbl.at(0,3)).equal(2);
+    should(aggTbl.at(1,0)).equal('gold');
+    should(aggTbl.at(1,1)).equal('sf');
+    should(aggTbl.at(1,2)).equal(1);
+    should(aggTbl.at(1,3)).equal(1);
+    should(aggTbl.at(2,0)).equal('purple');
+    should(aggTbl.at(2,1)).equal(null);
+    should(aggTbl.at(2,2)).equal(1); // null does not count
+    should(aggTbl.at(2,3)).equal(1); // null does not count
+    should(aggTbl.at(3,0)).equal('purple');
+    should(aggTbl.at(3,1)).equal('ny');
+    should(aggTbl.at(3,2)).equal(1);
+    should(aggTbl.at(3,3)).equal(1);
+    should(aggTbl.at(4,0)).equal('purple');
+    should(aggTbl.at(4,1)).equal('sf');
+    should(aggTbl.at(4,2)).equal(2);
+    should(aggTbl.at(4,3)).equal(2);
+  });
+  it("groupBy() min, max", ()=>{
+    const msg = "test.table.min/max";
+    const dbg = 0;
+    let tbl = Table.fromArray2(TEST_GROUP, {title:'---groupBy---'});
+    let aggTbl = tbl.groupBy(
+      ['color', 'city'],
+      [
+        {id:'qty', aggregate:'min'},
+        {id:'qty', aggregate:'max'},
+      ]
+    );
+
+    dbg && console.log(tbl.format());
+    dbg && console.log(aggTbl.format());
+    should(aggTbl.at(0,0)).equal('gold');
+    should(aggTbl.at(0,1)).equal('ny');
+    should(aggTbl.at(0,2)).equal(4);
+    should(aggTbl.at(0,3)).equal(6);
+    should(aggTbl.at(1,0)).equal('gold');
+    should(aggTbl.at(1,1)).equal('sf');
+    should(aggTbl.at(1,2)).equal(5);
+    should(aggTbl.at(1,3)).equal(5);
+    should(aggTbl.at(2,0)).equal('purple');
+    should(aggTbl.at(2,1)).equal(null);
+    should(aggTbl.at(2,2)).equal(1); // null does not count
+    should(aggTbl.at(2,3)).equal(1); // null does not count
+    should(aggTbl.at(3,0)).equal('purple');
+    should(aggTbl.at(3,1)).equal('ny');
+    should(aggTbl.at(3,2)).equal(2);
+    should(aggTbl.at(3,3)).equal(2);
+    should(aggTbl.at(4,0)).equal('purple');
+    should(aggTbl.at(4,1)).equal('sf');
+    should(aggTbl.at(4,2)).equal(1);
+    should(aggTbl.at(4,3)).equal(1);
+  });
+  it("groupBy() distinct", ()=>{
+    const msg = "test.table.distinct";
+    let dbg = 0;
+    let tbl = Table.fromArray2(TEST_GROUP, {title:'---groupBy---'});
+    let aggTbl = tbl.groupBy(
+      ['color', 'city'],
+      [ {id:'size', aggregate:'list'},
+        {id:'size', aggregate:'distinct'},
+      ],
+    );
+    dbg && console.log(tbl.format());
+    dbg && console.log(aggTbl.format());
+    should(aggTbl.at(0,0)).equal('gold');
+    should(aggTbl.at(0,1)).equal('ny');
+    should.deepEqual(aggTbl.at(0,2), ['small', 'medium']);
+    should.deepEqual(aggTbl.at(0,3), aggTbl.at(0,2));
+    should(aggTbl.at(1,0)).equal('gold');
+    should(aggTbl.at(1,1)).equal('sf');
+    should.deepEqual(aggTbl.at(1,2), ['large']);
+    should.deepEqual(aggTbl.at(1,3), aggTbl.at(1,2));
+    should(aggTbl.at(2,0)).equal('purple');
+    should(aggTbl.at(2,1)).equal(null);
+    should.deepEqual(aggTbl.at(2,2), ['large']);
+    should.deepEqual(aggTbl.at(2,3), aggTbl.at(2,2));
+    should(aggTbl.at(3,0)).equal('purple');
+    should(aggTbl.at(3,1)).equal('ny');
+    should.deepEqual(aggTbl.at(3,2), ['large']);
+    should.deepEqual(aggTbl.at(3,3), aggTbl.at(3,2));
+    should(aggTbl.at(4,0)).equal('purple');
+    should(aggTbl.at(4,1)).equal('sf');
+    should.deepEqual(aggTbl.at(4,2), ['small','large']);
+    should.deepEqual(aggTbl.at(4,3), aggTbl.at(4,2));
+  });
+  it("groupBy() sum,avg", ()=>{
+    const msg = "test.table.sum/avg";
+    const dbg = 0;
+    let tbl = Table.fromArray2(TEST_GROUP, {title:'---groupBy---'});
+    let aggTbl = tbl.groupBy(
+      ['color', 'city'],
+      [
+        {id:'qty', aggregate:'sum'},
+        {id:'qty', aggregate:'avg'},
+      ]
+    );
+
+    dbg && console.log(tbl.format());
+    dbg && nsole.log(aggTbl.format());
+    should(aggTbl.at(0,0)).equal('gold');
+    should(aggTbl.at(0,1)).equal('ny');
+    should(aggTbl.at(0,2)).equal(10);
+    should(aggTbl.at(0,3)).equal(5);
+    should(aggTbl.at(1,0)).equal('gold');
+    should(aggTbl.at(1,1)).equal('sf');
+    should(aggTbl.at(1,2)).equal(5);
+    should(aggTbl.at(1,3)).equal(5);
+    should(aggTbl.at(2,0)).equal('purple');
+    should(aggTbl.at(2,1)).equal(null);
+    should(aggTbl.at(2,2)).equal(1); // null does not count
+    should(aggTbl.at(2,3)).equal(1); // null does not count
+    should(aggTbl.at(3,0)).equal('purple');
+    should(aggTbl.at(3,1)).equal('ny');
+    should(aggTbl.at(3,2)).equal(2);
+    should(aggTbl.at(3,3)).equal(2);
+    should(aggTbl.at(4,0)).equal('purple');
+    should(aggTbl.at(4,1)).equal('sf');
+    should(aggTbl.at(4,2)).equal(2);
+    should(aggTbl.at(4,3)).equal(1);
   });
 });

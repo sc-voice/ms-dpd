@@ -351,12 +351,14 @@ export default class Table {
     return lines.join(opts.lineSeparator);
   }
 
-  groupBy(grpCols, aggCols=null) {
-    const msg = "Table.groupBy()";
+  #groupByHeaders(grpCols, aggCols) {
+    const msg = "Table.#groupByHeaders()";
+    const dbg = 0;
+    const dbgv = dbg && DBG.VERBOSE;
     let { headers:srcHdrs, rows:srcRows } = this;
-    let dstHdrs = JSON.parse(JSON.stringify(srcHdrs));
+    srcHdrs = JSON.parse(JSON.stringify(srcHdrs));
     let grpHdrs = grpCols.map(c=>{
-      let hdr = Table.findHeader(dstHdrs, c);
+      let hdr = Table.findHeader(srcHdrs, c);
       if (hdr == null) {
         throw new Error(`${msg} header? ${hdr}`);
       }
@@ -364,34 +366,162 @@ export default class Table {
       return hdr;
     });
     if (aggCols==null) {
-      aggCols = dstHdrs.filter(h=>{
+      aggCols = srcHdrs.filter(h=>{
         if (h.aggregate === false) {
           return false;
         }
 
-        h.aggregate = 'list';
+        h.aggregate = 'count';
         return true;
       });
     }
     let aggHdrs = aggCols.map((c,i)=>{
-      let hdr = Table.findHeader(dstHdrs, c);
+      let hdr = Table.findHeader(srcHdrs, c);
       if (hdr == null) {
-        throw new Error(`${msg} header? ${hdr}`);
+        throw new Error(`${msg} header? ${JSON.stringify(c)}`);
       }
-      hdr.aggregate = hdr.aggregate || c?.aggregate || 'list';
-      if (hdr.title == null) {
-        hdr.title = (typeof hdr.aggregate === 'string')
-          ? `${hdr.aggregate}(${hdr.id})`
-          : `F${i}(${hdr.id})`;
+      let { aggregate, title, id } = hdr;
+      aggregate = aggregate || c?.aggregate || 'list';
+      if (title == null) {
+        title = (typeof aggregate === 'string')
+          ? `${aggregate}(${id})`
+          : `F${i}(${id})`;
       }
-      return hdr;
+      if (typeof aggregate === 'string') {
+        aggregate = aggregate.toLowerCase();
+      }
+      let aggFun = aggregate;
+      switch (aggregate) {
+        case 'min':
+          aggFun = ((a,v,i)=>{
+            if (a == null) { return v; }
+            if (v == null) { return a; }
+            return Math.min(a, Number(v));
+          });
+          break;
+        case 'max':
+          aggFun = ((a,v,i)=>Math.max(Number(a||0), Number(v)));
+          break;
+        case 'avg':
+        case 'sum':
+          aggFun = (()=>{
+            let total;
+            let count;
+            let isAvg = aggregate === 'avg';
+            return ((a,v,i)=> {
+              if (i === 0) {
+                total = 0;
+                count = 0;
+              }
+              if (v == null) {
+                return a;
+              }
+              total += v;
+              count++;
+              return isAvg ? total/count : total;
+            })
+          })();
+          break;
+        case 'count':
+          aggFun = ((a,v,i)=>{
+            return (v == null ? (a||0) : (a||0)+1)
+          });
+          break;
+        case 'list':
+        case 'distinct':
+          aggFun = (()=>{
+            let map;
+            let isAvg = aggregate === 'avg';
+            return ((a,v,i)=> {
+              if (i === 0) {
+                map = {};
+                a = [];
+              }
+              if (v != null) {
+                if (map[v] == null) {
+                  map[v] = true;
+                  a.push(v);
+                }
+              }
+              return a;
+            })
+          })();
+          break;
+        default: {
+          let t = typeof aggregate;
+          aggFun = (t === 'function')
+            ? aggregate 
+            : ((a,v,i)=>`${JSON.toString(aggregate)}? ${t}`);
+          break;
+        }
+      }
+      return {
+        id: `A#${i}`,
+        title,
+        aggFun,
+        aggregate,
+        aggId: id,
+      }
     });
-    dstHdrs = [...grpHdrs, ...aggHdrs];
+    let dstHdrs = [...grpHdrs, ...aggHdrs];
+    dbg && console.log(msg, dstHdrs);
+    return { grpHdrs, aggHdrs, dstHdrs, }
+  }
+
+  groupBy(grpCols, aggCols=null) {
+    const msg = "Table.groupBy()";
+    const dbg = 1;
+    const dbgv = dbg && DBG.VERBOSE;
+    let { headers:srcHdrs, rows:srcRows } = this;
+    let { grpHdrs, aggHdrs, dstHdrs } =
+      this.#groupByHeaders(grpCols, aggCols);
+
     this.sort(this.colComparator(dstHdrs));
+    let agg;
+    let groupCount = 0;
     let rows = [];
+    for (let i=0; i<=this.rows.length; i++) {
+      let inf = this.rows[i];
+      let inGroup = !!agg && !!inf;
+      if (inGroup) {
+        for (let j=0; j<grpHdrs.length; j++) {
+          let { id } = grpHdrs[j];
+          if (agg[id] !== inf[id]) {
+            dbgv && console.log(msg, 'BREAK', id, agg[id], inf[id]);
+            inGroup = false;
+            break;
+          }
+        }
+      }
+      if (inGroup) {
+        for (let j=0; j<dstHdrs.length; j++) {
+          let { aggId, id, aggFun } = dstHdrs[j];
+          if (aggFun) {
+            agg[id] = aggFun(agg[id], inf[aggId], groupCount);
+          }
+        }
+        groupCount++;
+      } else {
+        if (agg) { // emit existing aggregate
+          rows.push(agg);
+        }
+        if (inf) { // new aggregate
+          agg = {};
+          for (let j=0; j<dstHdrs.length; j++) {
+            let { aggId, id, aggFun, } = dstHdrs[j];
+            if (aggFun) {
+              agg[id] = aggFun(undefined, inf[aggId], 0);
+            } else {
+              agg[id] = inf[id];
+            }
+          }
+          groupCount = 1;
+        }
+      }
+    } // for i rows
 
     let opts = this.options();
-    //opts.rows = rows;
+    opts.rows = rows;
     opts.headers = dstHdrs;
 
     return new Table(opts);
