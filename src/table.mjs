@@ -340,7 +340,11 @@ export default class Table {
 
   sort(compare) {
     const msg = "Table.sort()";
-    let out = this.rows.sort(compare);
+    let { rows, headers } = this;
+    if (compare == null) {
+      compare = this.colComparator(headers);
+    }
+    rows.sort(compare);
     return this;
   }
 
@@ -476,7 +480,7 @@ export default class Table {
     let { grpHdrs, aggHdrs, dstHdrs } =
       this.#groupByHeaders(grpCols, aggCols);
 
-    this.sort(this.colComparator(dstHdrs));
+    this.sort(this.colComparator(grpHdrs));
     let agg;
     let groupCount = 0;
     let rows = [];

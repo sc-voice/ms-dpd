@@ -137,13 +137,12 @@ export default class Inflection {
     return this;
   }
 
-  static parseDpdInflection(dpdInf) {
+  static parseDpdInflection(dpdInf, inflections=[]) {
     const msg = "Inflection.parseDpdInflection()";
     let dbg = 0;
     let [ pattern, like, data ] = dpdInf.split('|');
     
     let dpdData = JSON.parse(data);
-    let inflections = [];
     let lastRow = dpdData.at(-1);
     dbg && console.log(msg, {pattern, like, comps});
     let headers = dpdData.reduce((a,row,i)=>{
