@@ -3,7 +3,10 @@ import { DBG } from './defines.mjs';
 export default class Table {
   constructor(opts) {
     const msg = "Table.ctor";
+    const dbg = 1;
     Object.assign(this, Table.options(opts));
+    this.type = "Table";
+    this.version = "1.0.0";
     let {
       headers,
       rows,
@@ -15,24 +18,26 @@ export default class Table {
 
     // Each row is owned by client, but the 
     // collection is owned by table
-    this.rows = rows = rows && [...rows] || [];
+    rows = rows && [...rows] || [];
+    let row0 = rows[0];
+    if (row0 instanceof Array) { // toJSON() format
+      rows = rows.map(row=>headers.reduce((a,h,i)=>{
+        a[h.id] = row[i];
+        return a;
+      }, {}));
+    }
 
     if (headers.length === 0) {
-      let row0 = rows[0];
       let rowType = typeof row0;
       switch (rowType) {
         case 'object':
-          if (row0 instanceof Array) {
-            headers = row0.map((c,i)=>({id:cellValue(c)}));
-          } else {
-            headers = Object.keys(row0).map((key,i)=>({id:key}));
-          }
+          headers = Object.keys(row0).map((key,i)=>({id:key}));
           break;
         case 'undefined': // empty table
           break;
         default:
-          console.log(msg, rows);
-          throw new Error(`${msg} [1]rowType ${rowType}`);
+          console.log(msg, '[1]row0?');
+          throw new Error(`${msg} [1]rowType ${row0}`);
           break;
       }
     }
@@ -52,7 +57,7 @@ export default class Table {
       caption = undefined,
       cellOverflow = '\u2026',
       columnSeparator = ' ',
-      cellValue = (s=>s),
+      cellValue = undefined,
       emptyCell = '\u233f',
       emptyRow = {},
       headers = undefined,
@@ -62,6 +67,8 @@ export default class Table {
       rows = undefined,
       title = undefined,
       titleOfId = Table.titleOfId,
+      type = "Table",
+      version = "1.0.0",
     } = opts;
 
     if (headers && !(headers instanceof Array)) {
@@ -86,6 +93,8 @@ export default class Table {
       rows,
       title,
       titleOfId,
+      type,
+      version,
     }
   }
 
@@ -529,6 +538,28 @@ export default class Table {
     opts.headers = dstHdrs;
 
     return new Table(opts);
+  }
+
+  toJSON() {
+    const msg = "Table.toJSON()";
+    const dbg = 0;
+    let json = this.options();
+    let okeys = Object.keys(json);
+    okeys.forEach(key=>{
+      let v = json[key];
+      if ((typeof v==='function') || (v === undefined)) {
+        delete json[key];
+      }
+    });
+    let hdrMap = json.headers.reduce((a,h,i)=>{
+      a[h.id] = i;
+      return a;
+    }, {});
+    let keys = Object.keys(hdrMap);
+    json.rows = json.rows.map(row=>[...keys.map(k=>row[k])]);
+    dbg && console.log(msg, json);
+
+    return json;
   }
 
 }

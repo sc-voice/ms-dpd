@@ -29,12 +29,20 @@ const TEST_GROUP = [
 typeof describe === "function" && 
   describe("table", function () 
 {
-  it("default ctor", () => {
+  it("TESTTESTdefault ctor", () => {
     let tbl = new Table();
     should.deepEqual(tbl.headers, []);
     should.deepEqual(tbl.rows, []);
     should.deepEqual(tbl.asColumns(), []);
     should(tbl.titleOfId).equal(Table.titleOfId);
+    should(tbl).properties({
+      type: 'Table',
+      version: '1.0.0',
+      columnSeparator: ' ',
+      lineSeparator: '\n',
+      cellOverflow: '\u2026',
+      emptyCell: '\u233f',
+    });
   });
   it("fromRows()", ()=>{
     let rows = [
@@ -59,7 +67,7 @@ typeof describe === "function" &&
     should(tbl2.headers).not.equal(tbl.headers);
     should.deepEqual(tbl2, tbl);
   });
-  it("serialize", ()=>{
+  it("TESTTESTserialize", ()=>{
     let rows = [
       {color: 'purple', size:10},
       {color: 'red', size:5},
@@ -71,7 +79,7 @@ typeof describe === "function" &&
     let tbl = Table.fromRows(rows, opts);
     let json = JSON.stringify(tbl);
     let tbl2 = new Table(JSON.parse(json));
-    should.deepEqual(tbl2, tbl);
+    should.deepEqual(tbl2.options(), tbl.options());
   });
   it("fromArray2()", ()=>{
     let data = [
