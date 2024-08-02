@@ -4,16 +4,24 @@ import { ABBREVIATIONS } from '../data/en/abbreviations.mjs';
 import { DPD } from '../data/en/dpd.mjs';
 import { DPD_TEXTS } from '../data/en/dpd-text.mjs';
 import Table from './table.mjs';
+import Pali from './pali.mjs';
 
-import { OCBS_INFLECTIONS } from '../data/ocbs-inflections.mjs';
+import DPD_INFLECTIONS from '../data/dpd-inflections.mjs';
+
+var INFLECTIONS;
 
 export default class Inflection {
   constructor(opts={}) { 
     Object.assign(this, opts);
   }
 
-  static Inflections() {
-    return OCBS_INFLECTIONS;
+  static get ALL() {
+    if (INFLECTIONS == null) {
+      let tbl = new Table(DPD_INFLECTIONS);
+      tbl.rows = tbl.rows.map(row=>new Inflection(row));
+      INFLECTIONS = tbl;
+    }
+    return INFLECTIONS;
   }
 
   static titleOfId(id) {
@@ -43,7 +51,7 @@ export default class Inflection {
     return Table.fromRows(Inflection.#ATTRIBUTES, tblOpts);
   }
 
-  static compare(a,b) {
+  static #compareString(a,b) {
     if (a === b) {
       return 0;
     } else if (a==null && b) {
@@ -51,21 +59,71 @@ export default class Inflection {
     } else if (a && b==null) {
       return 1;
     }
+
+    return Pali.compareRoman(b);
+  }
+
+  static compare(a,b) {
+    const msg = "Inflection.compare()";
+    const dbg = 0;
+    if (a === b) {
+      dbg && console.log(msg, '[0]===');
+      return 0;
+    } else if (a==null && b) {
+      dbg && console.log(msg, '[1]a:null');
+      return -1;
+    } else if (a && b==null) {
+      dbg && console.log(msg, '[2]b:null');
+      return 1;
+    }
     let cmp;
 
-    let aGender = Inflection.attribute(a.gdr);
-    let bGender = Inflection.attribute(b.gdr);
-    cmp = aGender.order - bGender.order;
-    if (cmp) { return cmp; }
+    cmp = Inflection.#compareString(a.type, b.type);
+    if (cmp) { 
+      dbg && console.log(msg, '[3]type');
+      return cmp;
+    }
 
-    let aCase = Inflection.attribute(a.case);
-    let bCase = Inflection.attribute(b.case);
-    cmp = aCase.order - bCase.order;
-    if (cmp) { return cmp; }
+    switch (a.type) {
+      case undefined:
+      case 'dcl': {
+        let aGender = Inflection.attribute(a.gdr);
+        let bGender = Inflection.attribute(b.gdr);
+        cmp = aGender.order - bGender.order;
+        if (cmp) { 
+          dbg && console.log(msg, '[5]gdr');
+          return cmp;
+        }
 
-    let aNumber = Inflection.attribute(a.nbr);
-    let bNumber = Inflection.attribute(b.nbr);
-    cmp = aNumber.order - bNumber.order;
+        let aNumber = Inflection.attribute(a.nbr);
+        let bNumber = Inflection.attribute(b.nbr);
+        cmp = aNumber.order - bNumber.order;
+        if (cmp) { 
+          dbg && console.log(msg, '[6]nbr');
+          return cmp;
+        }
+
+        let aCase = Inflection.attribute(a.case);
+        let bCase = Inflection.attribute(b.case);
+        cmp = aCase.order - bCase.order;
+        if (cmp) { 
+          dbg && console.log(msg, '[7]case');
+          return cmp;
+        }
+
+        dbg && console.log(msg, '[8]dcl');
+        return cmp;
+      } break;
+      default:
+        dbg && console.log(msg, '[9]type?', a.type);
+        break;
+    }
+
+    cmp = Inflection.#compareString(a.pat, b.pat);
+    if (cmp) { 
+      dbg && console.log(msg, '[4]pat');
+      return cmp;
+    }
 
     return cmp;
   }
@@ -100,7 +158,7 @@ export default class Inflection {
         rowType = 'declension';
         for (let i=2; i<keys.length; i+=2) {
           let suffixes = row[`c${i}`];
-          suffixes.forEach((sfx)=>{
+          suffixes.forEach((sfx,j)=>{
             let key = row[`c${i+1}`];
             if ((key instanceof Array) && key.length===1) {
               key = key[0];
@@ -116,10 +174,14 @@ export default class Inflection {
               }
               return a;
             }, {
+              id:inflections.length+j+1,
+              type:'dcl',
+              gdr:undefined,
+              nbr:undefined,
+              case:undefined,
+              [Inflection.attribute('suffix').id]:sfx, 
               pat:pattern, 
               like, 
-              type:'dcl',
-              [Inflection.attribute('suffix').id]:sfx, 
             });
             inflections.push(new Inflection(info));
             dbg && console.log(msg, '[1]info', JSON.stringify(info));
@@ -186,14 +248,15 @@ export default class Inflection {
   }
 
   static find(filter=(inf=>true)) {
-    let inflections = Inflection.#ALL.reduce((a,inf)=>{
-      inf = new Inflection(inf);
-      if (filter(inf)) {
-        a.push(new Inflection(inf));
-      }
-      return a;
-    }, []);
-    return inflections;
+    const msg = "Inflection.find()";
+    const dbg = 0;
+    let infTable = Inflection.ALL.filter(filter);
+    if (dbg) {
+      infTable.title = `${msg} [1]infTable`;
+      infTable.caption = filter.toString();
+      console.log(infTable.format());
+    }
+    return infTable.rows;
   }
 
   static union(...args) {
@@ -250,38 +313,41 @@ export default class Inflection {
   matchesWord(word, opts={}) {
     const msg = 'Inflection.matchesWord()';
     const dbg = DBG.MATCHES_WORD;
-    let { stem, singular, plural, gdr } = opts;
-    if (singular == null && plural==null) {
-      singular = true;
-      plural = true;
+
+    if (!word.endsWith(this.sfx)) {
+      return false;
     }
-    let endings = [];
-    singular && endings.push(this.singular);
-    plural && endings.push(this.plural);
-    endings = endings.flat().filter(end=>!!end);;
+    if (opts.nbr && opts.nbr!==this.nbr ) {
+      return false;
+    }
+    if (opts.gdr && opts.gdr!==this.gdr ) {
+      return false;
+    }
+    if (opts.case && opts.case!==this.case ) {
+      return false;
+    }
+    let { stem  } = opts;
     if (stem) {
-      let endLen = word.length - stem.length;
-      dbg && console.log(msg, {stem, endings});
-      endings = endings.filter(end=>end && (end.length === endLen));
+      if (word.length !== stem.length+this.sfx.length) {
+        return false;
+      }
     }
 
-    return endings
-      .reduce((a,end)=>(a || word.endsWith(end)), false);
+    return true;
   }
 
 //////////////// PRIVATE ////////////////////
   static #KEYS = [
     "id",
-    "type",
     "pat",
+    "like",
+    "type",
+    "sfx",
     "gdr",
     "case",
-    "singular",
-    "plural",
+    "nbr",
   ];
 
-  static #ALL = OCBS_INFLECTIONS.map(inf=>new Inflection(inf));
-  
   static #ATTRIBUTE_UNKNOWN = 
     {type:'attribute', id:null, order:0, name:'unknown', 
       use:'unknown inflection attribute'};
@@ -289,16 +355,16 @@ export default class Inflection {
     Inflection.#ATTRIBUTE_UNKNOWN,
     {type:'attribute', id:'attr', order:1, name:'attribute', 
       use:'inflection attribute'},
-    {type:'attribute', id:'gdr', order:2, name:'gender', 
-      use:'masc/fem/nt'},
-    {type:'attribute', id:'nbr', order:3, name:'number', use:'sg/pl'},
-    {type:'attribute', id:'case', order:4, name:'case', 
-      use:'nom/acc/instr/dat/abl/gen/loc/voc'},
-    {type:'attribute', id:'type', order:5, name:'type', 
+    {type:'attribute', id:'type', order:2, name:'type', 
       use:'dcl/cnj/...'},
-    {type:'attribute', id:'pat', order:7, name:'pattern', 
+    {type:'attribute', id:'pat', order:3, name:'pattern', 
       use:'search parameters'},
-    {type:'attribute', id:'sfx', order:8, name:'suffix', use:"-a/-o"},
+    {type:'attribute', id:'gdr', order:4, name:'gender', 
+      use:'masc/fem/nt'},
+    {type:'attribute', id:'nbr', order:5, name:'number', use:'sg/pl'},
+    {type:'attribute', id:'case', order:6, name:'case', 
+      use:'nom/acc/instr/dat/abl/gen/loc/voc'},
+    {type:'attribute', id:'sfx', order:7, name:'suffix', use:"-a/-o"},
 
     {type:'number', id:'sg', order:1, name:'singular', 
       use:"I, you, he/it/she"},

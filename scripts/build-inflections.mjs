@@ -15,15 +15,16 @@ const SCRIPT_FILE = SCRIPT.split('/').pop();
 
 function parseArgs() {
   const msg = "parseArgs()";
-  const dbg = 1;
+  const dbg = 0;
   let patternFilter;
   let outSkipped;
   let skipIrregular;
-  let verbose;
+  let verbose = dbg;
 
   for (let i=0; i<args.length; i++) {
     let arg = args[i];
     switch (arg) {
+      case '--verbose':
       case '-v': {
         verbose = true;
       } break;
@@ -48,7 +49,7 @@ function parseArgs() {
     outSkipped,
     skipIrregular,
   }
-  dbg && console.log(msg, result);
+  verbose && console.log(msg, result);
   return result;
 }
 let {
@@ -67,7 +68,9 @@ let {
   let inflections = [];
   const srcPath = `${__dirname}/../src/dpd_inflection_templates`;
   let srcData = await fsp.readFile(srcPath);
-  let srcLines = srcData.toString().trim().split('\n');
+  srcData = srcData.toString().trim()
+    .replace(/ṃ/g, 'ṁ');
+  let srcLines = srcData.split('\n');
   if (patternFilter) {
     let re = new RegExp(patternFilter, 'i');
     srcLines = srcLines.filter(line=>{
@@ -93,11 +96,26 @@ let {
       }
     }
   });
+  inflections.sort(Inflection.compare);
+  inflections.forEach((inf,i)=>{ inf.id=i+1; });
   let infTable = Table.fromRows(inflections);
-  console.log(infTable.format());
+  verbose && console.log(infTable.format());
   if (outSkipped) {
     let skipTable = Table.fromRows(skipped);
     skipTable.sort();
     console.log(skipTable.format());
   }
+  let json = infTable.toJSON();
+  let sJson = JSON.stringify(json)
+    .split('[').join('\n[')
+    .split('],"').join('],\n"');
+  sJson = [
+    'const INFLECTIONS=',
+    sJson,
+    'export default INFLECTIONS;',
+  ].join('\n');
+  let outPath = path.join(__dirname, '../data/dpd-inflections.mjs');
+  await fsp.writeFile(outPath, sJson);
+  console.log(msg, 'output:', outPath);
 })()
+

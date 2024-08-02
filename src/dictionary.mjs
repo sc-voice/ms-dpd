@@ -398,7 +398,7 @@ export default class Dictionary {
     let singular = entries.reduce((a,e)=>{
       let { word, overlap } = e;
       let infs = Inflection.find(inf=>{
-        return inf.matchesWord(word, {stem, singular:true})
+        return inf.matchesWord(word, {stem, nbr:'sg'})
       });
       infs.forEach(inf=>{
         let { gender, } = inf;
@@ -420,7 +420,7 @@ export default class Dictionary {
     let plural = entries.reduce((a,e)=>{
       let { word, overlap } = e;
       let infs = Inflection.find(inf=>{
-        let match = inf.matchesWord(word, {stem, plural:true});
+        let match = inf.matchesWord(word, {stem, nbr:'pl'});
         return match;
       });
 

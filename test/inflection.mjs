@@ -30,15 +30,26 @@ typeof describe === "function" &&
     });
     should(inf.isEmpty).equal(false);
   });
-  it("union()", ()=>{
+  it("compare()", ()=>{
+    let pat = 'a nt';
+    let gdr = 'nt';
+    let infs = [
+      new Inflection({ pat, gdr, nbr:'sg', 'case':'nom' }),
+      new Inflection({ pat, gdr, nbr:'sg', 'case':'acc' }),
+      new Inflection({ pat, gdr, nbr:'pl', 'case':'nom' }),
+    ];
+    should(Inflection.compare(infs[0],infs[1])).below(0);
+    should(Inflection.compare(infs[0],infs[2])).below(0);
+    should(Inflection.compare(infs[1],infs[2])).below(0);
+  });
+  it("TESTTESTunion()", ()=>{
     let infa = new Inflection({
       id: 'a-id',
       type: 'a-type',
       pat: 'a-pat',
       gdr: 'a-gender',
       'case': 'a-case',
-      singular: 'a-singular',
-      plural: 'a-plural',
+      nbr: 'sg',
     });
     let infb = new Inflection({
       id: 'b-id',
@@ -46,8 +57,7 @@ typeof describe === "function" &&
       pat: 'b-pat',
       gdr: 'b-gender',
       'case': 'b-case',
-      singular: 'b-singular',
-      plural: 'b-plural',
+      nbr: 'pl',
     });
 
     // union identity
@@ -63,8 +73,7 @@ typeof describe === "function" &&
       pat: ['a-pat', 'b-pat'],
       gdr: ['a-gender', 'b-gender'],
       'case': ['a-case', 'b-case'],
-      singular: ['a-singular', 'b-singular'],
-      plural: ['a-plural', 'b-plural'],
+      nbr: ['pl', 'sg'],
     });
     should.deepEqual(infa.union(infb), Inflection.union(infa, infb));
 
@@ -79,88 +88,102 @@ typeof describe === "function" &&
     should.deepEqual(union_ab.union(union_ba), union_ab);
   });
   it("matchesWord() a/ā", ()=>{
-    // lenient default {singular:true, plural:true}
-    let infS = new Inflection({singular: 'a'});
-    should(infS.matchesWord("dhamma")).equal(true);
-    should(infS.matchesWord("dhamme")).equal(false);
+    const msg = "test.inflection@94";
+    const dbg = 0;
+    let infs = [
+      new Inflection({case:'voc', gdr:'masc', nbr:'sg', sfx: 'a' }),
+      new Inflection({ case:'voc', gdr:'masc', nbr:'pl', sfx: 'ā' }),
+      new Inflection({ case:'voc', gdr:'masc', nbr:'pl', sfx: 'ehi' }),
+    ];
 
-    let infP = new Inflection({plural: ['ā', 'ehi']});
-    should(infP.matchesWord("dhamma")).equal(false);
-    should(infP.matchesWord("dhammā")).equal(true);
-    should(infP.matchesWord("dhammehi")).equal(true);
+    should(infs[0].matchesWord("dhamma", {stem:'dhamm'})).equal(true);
+    should(infs[0].matchesWord("dhamma", {stem:'dham'})).equal(false);
 
-    // strict options
-    let infSP = new Inflection({singular: 'a', plural: 'e'});
-    should(infSP.matchesWord("dhamma", {singular:true})).equal(true);
-    should(infSP.matchesWord("dhamma", {plural:true})).equal(false);
+    should(infs[0].matchesWord("dhamma")).equal(true);
+    should(infs[1].matchesWord("dhamma")).equal(false);
+    should(infs[2].matchesWord("dhamma")).equal(false);
+    should(infs[0].matchesWord("dhammā")).equal(false);
+    should(infs[1].matchesWord("dhammā")).equal(true);
+    should(infs[2].matchesWord("dhammā")).equal(false);
+    should(infs[0].matchesWord("dhammehi")).equal(false);
+    should(infs[1].matchesWord("dhammehi")).equal(false);
+    should(infs[2].matchesWord("dhammehi")).equal(true);
 
-    should(infSP.matchesWord("dhamme", {singular:true})).equal(false);
-    should(infSP.matchesWord("dhamme", {plural:true})).equal(true);
+    should(infs[0].matchesWord("dhamma",{nbr:'sg'})).equal(true);
+    should(infs[0].matchesWord("dhamma",{nbr:'pl'})).equal(false);
+    should(infs[1].matchesWord("dhammā",{nbr:'sg'})).equal(false);
+    should(infs[1].matchesWord("dhammā",{nbr:'pl'})).equal(true);
 
-    should(infSP.matchesWord("dhammā", {singular:true})).equal(false);
-    should(infSP.matchesWord("dhammā", {plural:true})).equal(false);
-
-    // stem
-    should(infS.matchesWord("dhamma", {stem:"dhamm"})).equal(true);
-    should(infS.matchesWord("dhamme", {stem:"dhamm"})).equal(false);
-    should(infP.matchesWord("dhamma", {stem:"dhamm"})).equal(false);
-
-    should(infP.matchesWord("dhamma", {stem:"dhamm"})).equal(false);
-    should(infP.matchesWord("dhammā", {stem:"dhamm"})).equal(true);
-    should(infP.matchesWord("dhammehi", {stem:"dhamm"})).equal(true);
-    should(infP.matchesWord("dhammassa", {stem:"dhamm"})).equal(false);
+    let dhamma = Inflection.ALL
+      .filter(inf=>inf.matchesWord('dhamma'))
+    should(Pali.compareRoman('a', 'ā')).below(0);
+    dbg && console.log(dhamma.format({title:msg}));
+    should(dhamma.rows.length).equal(3);
+    should.deepEqual(dhamma.rows.map(row=>row.pat),[
+      "a nt", "a masc", "ā fem" ]);
+    should.deepEqual(dhamma.rows.map(row=>row.like),[
+      "citta", "dhamma", "vedanā", ]);
+  });
+  it("TESTTESTmatchesWord() dhammānaṁ ", ()=>{
+    let type = 'dcl';
+    let nt = 'nt';
+    let sg = 'sg';
+    let pl = 'pl';
+    let instr = 'instr';
+    let dat = 'dat';
+    let voc = 'voc';
+    let acc = 'acc';
+    let anam = "ānaṁ";
+    let infs = [
+      new Inflection({type, gdr:nt, case:dat, nbr:pl, sfx:anam}),
+      new Inflection({type, gdr:nt, case:voc, nbr:sg, sfx:anam}),
+    ];
+    let dhammanam = infs.filter(inf=>inf.matchesWord("dhammānaṁ"));
+    should.deepEqual(dhammanam, infs);
   });
   it("matchesWord() i/ī", ()=>{
     let stem = 'dev';
-    // lenient default {singular:true, plural:true}
-    let inf27 = new Inflection({
-      "id": 27,
-      "type": "dcl",
-      "pat": "-i/ī",
-      "gdr": "fem",
-      "case": "instr",
-      "singular": [
-        "iyā"
-      ],
-      "plural": [
-        "īhi"
-      ]
-    });
-    let inf31 = new Inflection({
-      "id": 31,
-      "type": "dcl",
-      "pat": "-i/ī",
-      "gdr": "fem",
-      "case": "voc",
-      "singular": [
-        "i"
-      ],
-      "plural": [
-        "ī",
-        "iyo"
-      ]
-    });
-    should(inf27.matchesWord("devīhi", {stem})).equal(true);
-    should(inf31.matchesWord("devī", {stem})).equal(true);
+    let type = 'dcl';
+    let gdr = 'fem';
+    let infs = [
+      new Inflection({ type, gdr, case:"instr", nbr:'sg', sfx:"iyā"}),
+      new Inflection({ type, gdr, case:"instr", nbr:'pl', sfx:"īhi"}),
+      new Inflection({ type, gdr, case:"voc", nbr:'sg', sfx:'i'}),
+      new Inflection({ type, gdr, case:"voc", nbr:'pl', sfx:'ī'}),
+      new Inflection({ type, gdr, case:"voc", nbr:'pl', sfx:'iyo'}),
+    ];
+    let devi = infs.filter(inf=>inf.matchesWord("devī", {stem}));
+    should.deepEqual(devi, [infs[3]]);
+    let devihi = infs.filter(inf=>inf.matchesWord("devīhi", {stem}));
+    should.deepEqual(devihi, [infs[1]]);
   });
-  it("find() ", ()=>{
+  it("find() ALL", ()=>{
     const msg = "test.inflection@147";
+    const dbg = 0;
     let infAll = Inflection.find();
     should(infAll.length).above(65).below(100);
-
+  });
+  it("find() dhamma", ()=>{
+    const msg = "test.inflection@147";
+    const dbg = 0;
     let infDhamma = Inflection.find(inf=>inf.matchesWord("dhamma"));
     let unionDhamma = Inflection.union(infDhamma);
-    //console.log(msg, unionDhamma);
+    dbg && console.log(msg, unionDhamma);
     should(unionDhamma.case).equal('voc');
     should(unionDhamma.type).equal('dcl');
-    should(unionDhamma.pat).equal('-a/ā');
-    should.deepEqual(unionDhamma.gdr, ['masc', 'nt']);
-    should(unionDhamma.singular).equal('a');
-    should.deepEqual(unionDhamma.plural, ['ā', 'āni']);
-
+    should.deepEqual(unionDhamma.pat, ['a masc', 'a nt', 'ā fem']);
+    should.deepEqual(unionDhamma.gdr, ['fem', 'masc', 'nt']);
+    should.deepEqual(unionDhamma.nbr, 'sg');
+    should.deepEqual(unionDhamma.sfx, 'a');
+  });
+  it("TESTTESTfind() dhammānaṁd ", ()=>{
+    const msg = "test.inflection@147";
+    const dbg = 0;
+    let stem = "dhamm";
     // ṃ
-    let infDhammanam = Inflection.find(inf=>inf.matchesWord('dhammanaṁ'));
-    should(infDhammanam.length).equal(4);
+    let infDhammanam = Inflection.find(
+      inf=>inf.matchesWord('dhammānaṁ', {stem}));
+    should(infDhammanam.length).equal(6);
   });
   it("attribute() attribute", ()=>{
     let test = (idOrName,props) => {
@@ -204,14 +227,14 @@ typeof describe === "function" &&
 
     dbg && console.log(msg, srcTable.format());
     let verbose = 0;
+    let infTable = Table.fromRows(inflections);
+    dbg && console.log(msg);
     let tblOpts;
     verbose && (tblOpts = {
-      title: `-------Inflections-------`,
+      title: `-------${msg} tblOpts-------`,
       titleOfId: Inflection.titleOfId,
       cellValue: Inflection.cellValue,
     })
-    let infTable = Table.fromRows(inflections);
-    dbg && console.log(msg);
     dbg && console.log(infTable.format(tblOpts));
   });
 });

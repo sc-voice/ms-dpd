@@ -29,7 +29,7 @@ const TEST_GROUP = [
 typeof describe === "function" && 
   describe("table", function () 
 {
-  it("TESTTESTdefault ctor", () => {
+  it("default ctor", () => {
     let tbl = new Table();
     should.deepEqual(tbl.headers, []);
     should.deepEqual(tbl.rows, []);
@@ -67,7 +67,7 @@ typeof describe === "function" &&
     should(tbl2.headers).not.equal(tbl.headers);
     should.deepEqual(tbl2, tbl);
   });
-  it("TESTTESTserialize", ()=>{
+  it("serialize", ()=>{
     let rows = [
       {color: 'purple', size:10},
       {color: 'red', size:5},
