@@ -165,6 +165,10 @@ export default class Table {
     return Table.fromRows(rows, opts);
   }
 
+  get length() {
+    return this.rows.length;
+  }
+
   headerId(idOrIndex) {
     return typeof idOrIndex === 'string'
       ? idOrIndex 

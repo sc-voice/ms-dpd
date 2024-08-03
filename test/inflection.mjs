@@ -42,7 +42,7 @@ typeof describe === "function" &&
     should(Inflection.compare(infs[0],infs[2])).below(0);
     should(Inflection.compare(infs[1],infs[2])).below(0);
   });
-  it("TESTTESTunion()", ()=>{
+  it("union()", ()=>{
     let infa = new Inflection({
       id: 'a-id',
       type: 'a-type',
@@ -124,7 +124,7 @@ typeof describe === "function" &&
     should.deepEqual(dhamma.rows.map(row=>row.like),[
       "citta", "dhamma", "vedanā", ]);
   });
-  it("TESTTESTmatchesWord() dhammānaṁ ", ()=>{
+  it("matchesWord() dhammānaṁ ", ()=>{
     let type = 'dcl';
     let nt = 'nt';
     let sg = 'sg';
@@ -176,7 +176,7 @@ typeof describe === "function" &&
     should.deepEqual(unionDhamma.nbr, 'sg');
     should.deepEqual(unionDhamma.sfx, 'a');
   });
-  it("TESTTESTfind() dhammānaṁd ", ()=>{
+  it("find() dhammānaṁd ", ()=>{
     const msg = "test.inflection@147";
     const dbg = 0;
     let stem = "dhamm";
@@ -214,8 +214,8 @@ typeof describe === "function" &&
     let tblNumber = tbl.filter(fNumber);
     should.deepEqual(tblNumber.rows.map(r=>r.id), ['sg', 'pl']);
   });
-  it("parseDpdInflection)", ()=>{
-    const msg = "test.inflection@193";
+  it("TESTTESTparseDpdInflection()", ()=>{
+    const msg = "test.inflection@218";
     let dbg = 1;
     let dpdTmplt = 'a masc|dhamma|[[[""], ["masc sg"], [""], ["masc pl"], [""]], [["nom"], ["o"], ["masc nom sg"], ["ā", "āse"], ["masc nom pl"]], [["acc"], ["aṃ"], ["masc acc sg"], ["e"], ["masc acc pl"]], [["instr"], ["ā", "ena"], ["masc instr sg"], ["ebhi", "ehi"], ["masc instr pl"]], [["dat"], ["assa", "āya"], ["masc dat sg"], ["ānaṃ"], ["masc dat pl"]], [["abl"], ["ato", "amhā", "asmā", "ā"], ["masc abl sg"], ["ato", "ebhi", "ehi"], ["masc abl pl"]], [["gen"], ["assa"], ["masc gen sg"], ["āna", "ānaṃ"], ["masc gen pl"]], [["loc"], ["amhi", "asmiṃ", "e"], ["masc loc sg"], ["esu"], ["masc loc pl"]], [["voc"], ["a", "ā"], ["masc voc sg"], ["ā"], ["masc voc pl"]], [["in comps"], ["a"], ["in comps"], [""], [""]]]';
 
@@ -226,9 +226,9 @@ typeof describe === "function" &&
     should(like).equal('dhamma');
 
     dbg && console.log(msg, srcTable.format());
-    let verbose = 0;
+    let verbose = 1;
     let infTable = Table.fromRows(inflections);
-    dbg && console.log(msg);
+    dbg && console.log(msg, inflections.length);
     let tblOpts;
     verbose && (tblOpts = {
       title: `-------${msg} tblOpts-------`,
@@ -236,5 +236,7 @@ typeof describe === "function" &&
       cellValue: Inflection.cellValue,
     })
     dbg && console.log(infTable.format(tblOpts));
+    should(infTable.length).equal(29);
+    should(infTable.at(3,'sfx')).equal('aṁ');
   });
 });

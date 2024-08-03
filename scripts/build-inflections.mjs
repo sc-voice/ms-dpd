@@ -69,7 +69,6 @@ let {
   const srcPath = `${__dirname}/../src/dpd_inflection_templates`;
   let srcData = await fsp.readFile(srcPath);
   srcData = srcData.toString().trim()
-    .replace(/ṃ/g, 'ṁ');
   let srcLines = srcData.split('\n');
   if (patternFilter) {
     let re = new RegExp(patternFilter, 'i');

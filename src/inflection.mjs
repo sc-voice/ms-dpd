@@ -123,7 +123,7 @@ export default class Inflection {
     if (cmp) { 
       dbg && console.log(msg, '[4]pat');
       return cmp;
-    }
+   }
 
     return cmp;
   }
@@ -142,6 +142,7 @@ export default class Inflection {
     let rowType = row.c1[0];
     let keys = Object.keys(row);
     switch (rowType) {
+      case undefined:
       case '': 
         rowType = 'title'; 
         dbgv && console.log(msg, 
@@ -174,7 +175,6 @@ export default class Inflection {
               }
               return a;
             }, {
-              id:inflections.length+j+1,
               type:'dcl',
               gdr:undefined,
               nbr:undefined,
@@ -202,11 +202,11 @@ export default class Inflection {
   static parseDpdInflection(dpdInf, inflections=[]) {
     const msg = "Inflection.parseDpdInflection()";
     let dbg = 0;
+    dpdInf = dpdInf.replace(/ṃ/g, 'ṁ');
     let [ pattern, like, data ] = dpdInf.split('|');
     
     let dpdData = JSON.parse(data);
-    let lastRow = dpdData.at(-1);
-    dbg && console.log(msg, {pattern, like, comps});
+    dbg && console.log(msg, '[1]parse', {pattern, like, data});
     let headers = dpdData.reduce((a,row,i)=>{
       for (let i=a.length; i<row.length; i++) {
         a.push({id:`c${i+1}`});
@@ -229,7 +229,7 @@ export default class Inflection {
     });
 
     srcTable.rows.forEach((row, iRow) => {
-      dbg && console.log(msg, row);
+      dbg && console.log(msg, `[2]row${iRow}`, row);
       Inflection.#parseDpdInfDatum(row, {
         pattern, like, inflections
       });
@@ -312,7 +312,7 @@ export default class Inflection {
 
   matchesWord(word, opts={}) {
     const msg = 'Inflection.matchesWord()';
-    const dbg = DBG.MATCHES_WORD;
+    const dbg = 0;
 
     if (!word.endsWith(this.sfx)) {
       return false;
