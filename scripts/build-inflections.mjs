@@ -66,7 +66,7 @@ let {
 
   // load inflection CSV
   let inflections = [];
-  const srcPath = `${__dirname}/../src/dpd_inflection_templates`;
+  const srcPath = `${__dirname}/../src/dpd-inflection-templates`;
   let srcData = await fsp.readFile(srcPath);
   srcData = srcData.toString().trim()
   let srcLines = srcData.split('\n');
