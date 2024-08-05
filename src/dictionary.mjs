@@ -395,6 +395,8 @@ export default class Dictionary {
     let stem = Dictionary.prefixOf(entries.map(e=>e.word));
 
     let w = word;
+    dbg && console.log(msg, {word, stem}, 
+      entries.map(e=>e.word).join('\n'));
     let singular = entries.reduce((a,e)=>{
       let { word, overlap } = e;
       let infs = Inflection.find(inf=>{

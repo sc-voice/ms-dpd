@@ -52,15 +52,21 @@ export default class Inflection {
   }
 
   static #compareString(a,b) {
+    const msg = 'Inflectin.compareString()';
+    const dbg = 0;
     if (a === b) {
+      dbg && console.log(msg, '[1]===');
       return 0;
     } else if (a==null && b) {
+      dbg && console.log(msg, '[2]aNull');
       return -1;
     } else if (a && b==null) {
+      dbg && console.log(msg, '[3]bNull');
       return 1;
     }
 
-    return Pali.compareRoman(b);
+    dbg && console.log(msg, '[4]compareRoman');
+    return Pali.compareRoman(a, b);
   }
 
   static compare(a,b) {
@@ -78,9 +84,15 @@ export default class Inflection {
     }
     let cmp;
 
+    cmp = Inflection.#compareString(a.like, b.like);
+    if (cmp) { 
+      dbg && console.log(msg, '[3]like');
+      return cmp;
+    }
+
     cmp = Inflection.#compareString(a.type, b.type);
     if (cmp) { 
-      dbg && console.log(msg, '[3]type');
+      dbg && console.log(msg, '[4]type');
       return cmp;
     }
 
@@ -121,9 +133,9 @@ export default class Inflection {
 
     cmp = Inflection.#compareString(a.pat, b.pat);
     if (cmp) { 
-      dbg && console.log(msg, '[4]pat');
+      dbg && console.log(msg, '[10]pat');
       return cmp;
-   }
+    }
 
     return cmp;
   }

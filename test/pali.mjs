@@ -51,6 +51,7 @@ typeof describe === "function" && describe("pali", function () {
       should(sorted).equal(expected);
     }
 
+    test("vedanā dhamma", "dhamma vedanā");
     test("m ṁ", "m ṁ");
     test("me ṁb", "me ṁb");
     test("me\u2026 ṁb\u2026", "me\u2026 ṁb\u2026");

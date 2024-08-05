@@ -383,10 +383,10 @@ typeof describe === "function" &&
       should.deepEqual(wi[i], infExpected[i]);
     }
   });
-  it("wordInflections akkhi", async()=>{
+  it("TESTTESTwordInflections akkhi", async()=>{
     if (!DBG.EXPERIMENTAL) return;
     const msg = "test.dictionary.wordInflections akkhi";
-    const dbg = 0;
+    const dbg = 1;
     let dict = await Dictionary.create();
     let wi = dict.wordInflections("akkhi");
     dbg && console.log(msg, wi);
@@ -394,15 +394,18 @@ typeof describe === "function" &&
     const infExpected = [
       { gdr:'nt', case:'nom', nbr:'sg', word:'akkhi' }, 
       { gdr:'nt', case:'nom', nbr:'sg', word:'akkhiṁ' }, 
-      // !DPD { gdr:'nt', case:'nom', nbr:'pl', word:'akkhī' }, 
+      { gdr:'nt', case:'nom', nbr:'pl', word:'akkhī' }, 
       { gdr:'nt', case:'nom', nbr:'pl', word:'akkhīni' }, 
+
       { gdr:'nt', case:'acc', nbr:'sg', word:'akkhi' }, 
-      { gdr:'nt', case:'acc', nbr:'sg', word:'akkhiṁ' }, 
-      // !DPD { gdr:'nt', case:'acc', nbr:'pl', word:'akkhī' }, 
+      // { gdr:'nt', case:'acc', nbr:'sg', word:'akkhiṁ' }, 
+      { gdr:'nt', case:'acc', nbr:'pl', word:'akkhī' }, 
       { gdr:'nt', case:'acc', nbr:'pl', word:'akkhīni' }, 
+
       // !MS { gdr:'nt', case:'instr', nbr:'sg', word:'akkhinā' }, 
       // !MS { gdr:'nt', case:'instr', nbr:'pl', word:'akkhihi' }, 
       { gdr:'nt', case:'instr', nbr:'pl', word:'akkhīhi' }, 
+
       { gdr:'nt', case:'abl', nbr:'sg', word:'akkhimhā' },
       // !MS { gdr:'nt', case:'abl', nbr:'sg', word:'akkhinā' },
       // !MS { gdr:'nt', case:'abl', nbr:'sg', word:'akkhismā' },

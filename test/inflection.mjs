@@ -33,14 +33,25 @@ typeof describe === "function" &&
   it("compare()", ()=>{
     let pat = 'a nt';
     let gdr = 'nt';
+    let type = 'dcl';
+    let nbr = 'sg';
+    let nom = 'nom';
     let infs = [
-      new Inflection({ pat, gdr, nbr:'sg', 'case':'nom' }),
-      new Inflection({ pat, gdr, nbr:'sg', 'case':'acc' }),
-      new Inflection({ pat, gdr, nbr:'pl', 'case':'nom' }),
+      new Inflection({ type, pat, gdr, nbr, 'case':nom }),
+      new Inflection({ type, pat, gdr, nbr, 'case':'acc' }),
+      new Inflection({ type, pat, gdr, nbr:'pl', 'case':nom }),
+      new Inflection({type, pat, gdr, nbr, 'case':nom, 
+        like:'citta' }),
+      //["dcl","fem","sg","nom","ā","ā fem","vedanā",30],
+      new Inflection({type, pat:'ā fem', gdr:'fem', nbr, 'case':nom, 
+        like:'vedanā' }),
     ];
+    should(Inflection.compare(infs[3],infs[4])).below(0);
+
     should(Inflection.compare(infs[0],infs[1])).below(0);
     should(Inflection.compare(infs[0],infs[2])).below(0);
     should(Inflection.compare(infs[1],infs[2])).below(0);
+    should(Inflection.compare(infs[3],infs[4])).below(0);
   });
   it("union()", ()=>{
     let infa = new Inflection({
@@ -115,7 +126,8 @@ typeof describe === "function" &&
     should(infs[1].matchesWord("dhammā",{nbr:'pl'})).equal(true);
 
     let dhamma = Inflection.ALL
-      .filter(inf=>inf.matchesWord('dhamma'))
+      .filter(inf=>inf.matchesWord('dhamma', {stem:"dhamm"}))
+    dbg && console.log(msg, dhamma);
     should(Pali.compareRoman('a', 'ā')).below(0);
     dbg && console.log(dhamma.format({title:msg}));
     should(dhamma.rows.length).equal(3);
@@ -141,7 +153,7 @@ typeof describe === "function" &&
     let dhammanam = infs.filter(inf=>inf.matchesWord("dhammānaṁ"));
     should.deepEqual(dhammanam, infs);
   });
-  it("matchesWord() i/ī", ()=>{
+  it("matchesWord() i/ī devī", ()=>{
     let stem = 'dev';
     let type = 'dcl';
     let gdr = 'fem';
@@ -157,11 +169,29 @@ typeof describe === "function" &&
     let devihi = infs.filter(inf=>inf.matchesWord("devīhi", {stem}));
     should.deepEqual(devihi, [infs[1]]);
   });
+  it("matchesWord() i/ī akkhi", ()=>{
+    const msg =  'test.inflection@161';
+    const dbg = 1;
+    let stem = 'akkh';
+    let type = 'dcl';
+    let gdr = 'nt';
+    let infs = [
+      new Inflection({ type, gdr, case:"instr", nbr:'sg', sfx:"iyā"}),
+      new Inflection({ type, gdr, case:"instr", nbr:'pl', sfx:"īhi"}),
+      new Inflection({ type, gdr, case:"voc", nbr:'sg', sfx:'i'}),
+      new Inflection({ type, gdr, case:"voc", nbr:'pl', sfx:'ī'}),
+      new Inflection({ type, gdr, case:"voc", nbr:'pl', sfx:'iyo'}),
+    ];
+    let akkhi = infs.filter(inf=>inf.matchesWord("akkhī", {stem}));
+    should.deepEqual(akkhi, [infs[3]]);
+    let akkhihi = infs.filter(inf=>inf.matchesWord("akkhīhi", {stem}));
+    should.deepEqual(akkhihi, [infs[1]]);
+  });
   it("find() ALL", ()=>{
     const msg = "test.inflection@147";
     const dbg = 0;
     let infAll = Inflection.find();
-    should(infAll.length).above(65).below(100);
+    should(infAll.length).above(110).below(150);
   });
   it("find() dhamma", ()=>{
     const msg = "test.inflection@147";
@@ -214,9 +244,9 @@ typeof describe === "function" &&
     let tblNumber = tbl.filter(fNumber);
     should.deepEqual(tblNumber.rows.map(r=>r.id), ['sg', 'pl']);
   });
-  it("TESTTESTparseDpdInflection()", ()=>{
+  it("parseDpdInflection()", ()=>{
     const msg = "test.inflection@218";
-    let dbg = 1;
+    let dbg = 0;
     let dpdTmplt = 'a masc|dhamma|[[[""], ["masc sg"], [""], ["masc pl"], [""]], [["nom"], ["o"], ["masc nom sg"], ["ā", "āse"], ["masc nom pl"]], [["acc"], ["aṃ"], ["masc acc sg"], ["e"], ["masc acc pl"]], [["instr"], ["ā", "ena"], ["masc instr sg"], ["ebhi", "ehi"], ["masc instr pl"]], [["dat"], ["assa", "āya"], ["masc dat sg"], ["ānaṃ"], ["masc dat pl"]], [["abl"], ["ato", "amhā", "asmā", "ā"], ["masc abl sg"], ["ato", "ebhi", "ehi"], ["masc abl pl"]], [["gen"], ["assa"], ["masc gen sg"], ["āna", "ānaṃ"], ["masc gen pl"]], [["loc"], ["amhi", "asmiṃ", "e"], ["masc loc sg"], ["esu"], ["masc loc pl"]], [["voc"], ["a", "ā"], ["masc voc sg"], ["ā"], ["masc voc pl"]], [["in comps"], ["a"], ["in comps"], [""], [""]]]';
 
     let {

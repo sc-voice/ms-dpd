@@ -92,7 +92,7 @@ export default class Pali {
   static compareStem(a, b) {
     const msg = "Pali.compareStem()";
     const dbg = 1;
-    console.log(dbg, "DEPRECATD");
+    console.log(dbg, "DEPRECATED");
     let order = Pali.ROMAN_ORDER;
     let a0 = a.charAt(0);
     let b0 = b.charAt(0);
@@ -134,25 +134,42 @@ export default class Pali {
 
   static compareRoman(s1,s2) {
     const msg = 'Pali.compareRoman()';
+    const dbg = 0;
     let cmp = 0;
     let order = Pali.ROMAN_ORDER;
+
+    if (s1 === s2) {
+      dbg && console.log(msg, '[1]===');
+      return 0;
+    }
+    if (s1 && s2==null) {
+      dbg && console.log(msg, '[2]s2Null');
+      return 1;
+    }
+    if (s1==null && s2) {
+      dbg && console.log(msg, '[3]s1Null');
+      return -1
+    }
 
     for (let i=0; !cmp && i<s1.length; i++) {
       let c1 = s1.charAt(i);
       let c2 = s2.charAt(i);
       if (c1 == null) {
+        dbg && console.log(msg, '[4]c1Null');
         cmp = -1;
       } if (c2 == null) {
+        dbg && console.log(msg, '[5]c2Null');
         cmp = 1;
       } else {
         cmp = order[c1] - order[c2];
+        dbg && console.log(msg, '[6]cmp', cmp);
       }
       //console.log(msg, {cmp, c1, c2});
     }
     if (cmp == 0) {
       cmp = (s1.length < s2.length) ? -1 : cmp;
+        dbg && console.log(msg, '[7]cmp', cmp);
     }
-    //console.log(msg, {s1,s2,cmp});
 
     return cmp;
   }

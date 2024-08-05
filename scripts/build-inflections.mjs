@@ -84,6 +84,7 @@ let {
       case 'dhamma':  // a masc
       case 'vedanā':  // a fem
       case 'citta':   // a nt
+      case 'sappi':   // i nt
         Inflection.parseDpdInflection(line, inflections); 
         break;
       default: {
