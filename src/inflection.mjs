@@ -137,6 +137,12 @@ export default class Inflection {
       return cmp;
     }
 
+    cmp = Inflection.#compareString(a.word, b.word);
+    if (cmp) { 
+      dbg && console.log(msg, '[11]word');
+      return cmp;
+    }
+
     return cmp;
   }
 
@@ -262,6 +268,7 @@ export default class Inflection {
   static find(filter=(inf=>true)) {
     const msg = "Inflection.find()";
     const dbg = 0;
+    console.log(msg, "DEPRECATED. Use Inflection.ALL");
     let infTable = Inflection.ALL.filter(filter);
     if (dbg) {
       infTable.title = `${msg} [1]infTable`;
@@ -326,25 +333,32 @@ export default class Inflection {
     const msg = 'Inflection.matchesWord()';
     const dbg = 0;
 
-    if (!word.endsWith(this.sfx)) {
+    if (word && this.sfx && !word.endsWith(this.sfx)) {
+      dbg && console.log(msg, '[1]word', word);
       return false;
     }
     if (opts.nbr && opts.nbr!==this.nbr ) {
+      dbg && console.log(msg, '[2]nbr');
       return false;
     }
     if (opts.gdr && opts.gdr!==this.gdr ) {
+      dbg && console.log(msg, '[3]gdr');
       return false;
     }
     if (opts.case && opts.case!==this.case ) {
+      dbg && console.log(msg, '[4]case');
       return false;
     }
     let { stem  } = opts;
     if (stem) {
-      if (word.length !== stem.length+this.sfx.length) {
+      if (!word || this.sfx==null ||
+        word.length!==stem.length+this.sfx.length) {
+        dbg && console.log(msg, '[5]stem');
         return false;
       }
     }
 
+      dbg && console.log(msg, '[5]==');
     return true;
   }
 
@@ -365,8 +379,9 @@ export default class Inflection {
       use:'unknown inflection attribute'};
   static #ATTRIBUTES = [
     Inflection.#ATTRIBUTE_UNKNOWN,
-    {type:'attribute', id:'attr', order:1, name:'attribute', 
+    {type:'attribute', id:'attr', order:0, name:'attribute', 
       use:'inflection attribute'},
+    {type:'attribute', id:'like', order:1, name:'like', use:'Pali word'},
     {type:'attribute', id:'type', order:2, name:'type', 
       use:'dcl/cnj/...'},
     {type:'attribute', id:'pat', order:3, name:'pattern', 

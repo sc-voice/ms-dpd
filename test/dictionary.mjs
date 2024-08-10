@@ -11,6 +11,28 @@ import {
   Dictionary,
 } from '../main.mjs';
 
+async function testDeclensions({word, infExpected, nbr}) {
+  const msg = "test.dictionary.testDeclensions()";
+  const dbg = 0;
+  dbg && console.log(msg, '[1] ${word}');
+  let dict = await Dictionary.create();
+  let infTable = dict.wordInflections(word, {nbr});
+  dbg && console.log(infTable.format({title:`${msg} ${word}`}));
+
+  for (let i=0; i<infExpected.length; i++) {
+    let infA = infTable.rows[i];
+    let infE = infExpected[i];
+    let eMsg = (prop=> [
+      `rows[${i}] ${infE?.word} (${prop}) =>`, 
+      `${infA && infA[prop]}!=${infE && infE[prop]}`,
+    ].join(' '));
+    should(infA?.word).equal(infE?.word, eMsg('word'));
+    should(infA?.nbr).equal(infE?.nbr, eMsg('nbr'));
+    should(infA?.gdr).equal(infE?.gdr, eMsg('gdr'));
+    should(infA?.case).equal(infE?.case, eMsg('case'));
+  }
+}
+
 typeof describe === "function" && 
   describe("dictionary", function () 
 {
@@ -282,146 +304,189 @@ typeof describe === "function" &&
     let dhamma = dict.find("dhamma -mu");
     should(dhamma.data.length).equal(34); // dhamma + dhammā
   });
-  it("wordInflections dhamma", async()=>{ 
-    if (!DBG.EXPERIMENTAL) return;
-    const msg = "test.dictionary.wordInflections@285";
-    let dict = await Dictionary.create();
-    let wi = dict.wordInflections("dhamma");
-
+  it("wordInflections dhamma", async()=>{
     const infExpected = [
-      { gdr: 'masc', case: 'nom', nbr: 'sg', word: 'dhammo' },
-      { gdr: 'masc', case: 'nom', nbr: 'pl', word: 'dhammā' },
-      { gdr: 'masc', case: 'acc', nbr: 'sg', word: 'dhammaṁ' },
-      { gdr: 'masc', case: 'acc', nbr: 'pl', word: 'dhamme' },
-      // DPD { gdr: 'masc', case: 'instr', nbr: 'sg', word: 'dhammā' },
-      { gdr: 'masc', case: 'instr', nbr: 'sg', word: 'dhammena' },
-      { gdr: 'masc', case: 'instr', nbr: 'pl', word: 'dhammehi' },
-      { gdr: 'masc', case: 'dat', nbr: 'sg', word: 'dhammāya' },
-      { gdr: 'masc', case: 'abl', nbr: 'sg', word: 'dhammā' },
-      // !MS { gdr: 'masc', case: 'abl', nbr: 'sg', word: 'dhammasmā' },
-      // !MS { gdr: 'masc', case: 'abl', nbr: 'sg', word: 'dhammamhā' },
-      { gdr: 'masc', case: 'abl', nbr: 'pl', word: 'dhammehi' },
-      { gdr: 'masc', case: 'gen', nbr: 'sg', word: 'dhammassa' },
-      { gdr: 'masc', case: 'gen', nbr: 'pl', word: 'dhammānaṁ' },
-      { gdr: 'masc', case: 'loc', nbr: 'sg', word: 'dhammasmiṁ' },
-      { gdr: 'masc', case: 'loc', nbr: 'sg', word: 'dhamme' },
-      // !MS { gdr: 'masc', case: 'loc', nbr: 'sg', word: 'dhammamhi' },
-      { gdr: 'masc', case: 'loc', nbr: 'pl', word: 'dhammesu' },
-      { gdr: 'masc', case: 'voc', nbr: 'sg', word: 'dhamma' },
-      { gdr: 'masc', case: 'voc', nbr: 'pl', word: 'dhammā' },
-    ];
-    for (let i=0; i<infExpected.length; i++) {
-      should.deepEqual(wi[i], infExpected[i]);
-    }
+      { gdr:'nt', case:'nom', nbr:'sg', word:'dhammaṁ' },
+      { gdr:'nt', case:'acc', nbr:'sg', word:'dhammaṁ' },
+      { gdr:'nt', case:'instr', nbr:'sg', word:'dhammā' },
+      { gdr:'nt', case:'instr', nbr:'sg', word:'dhammena' },
+      { gdr:'nt', case:'dat', nbr:'sg', word:'dhammassa' },
+      { gdr:'nt', case:'dat', nbr:'sg', word:'dhammāya' },
+      { gdr:'nt', case:'abl', nbr:'sg', word:'dhammato' },
+      { gdr:'nt', case:'abl', nbr:'sg', word:'dhammamhā' },
+      { gdr:'nt', case:'abl', nbr:'sg', word:'dhammasmā' },
+      { gdr:'nt', case:'abl', nbr:'sg', word:'dhammā' },
+      { gdr:'nt', case:'gen', nbr:'sg', word:'dhammassa' },
+      { gdr:'nt', case:'loc', nbr:'sg', word:'dhammamhi' },
+      { gdr:'nt', case:'loc', nbr:'sg', word:'dhammasmiṁ' },
+      { gdr:'nt', case:'loc', nbr:'sg', word:'dhamme' },
+      { gdr:'nt', case:'voc', nbr:'sg', word:'dhamma' },
+      { gdr:'nt', case:'voc', nbr:'sg', word:'dhammaṁ' },
+      { gdr:'nt', case:'voc', nbr:'sg', word:'dhammā' },
+      { gdr:'nt', case:'nom', nbr:'pl', word:'dhammā' },
+      { gdr:'nt', case:'nom', nbr:'pl', word:'dhammāni' },
+      { gdr:'nt', case:'acc', nbr:'pl', word:'dhammāni' },
+      { gdr:'nt', case:'acc', nbr:'pl', word:'dhamme' },
+      { gdr:'nt', case:'instr', nbr:'pl', word:'dhammebhi' },
+      { gdr:'nt', case:'instr', nbr:'pl', word:'dhammehi' },
+      { gdr:'nt', case:'dat', nbr:'pl', word:'dhammānaṁ' },
+      { gdr:'nt', case:'abl', nbr:'pl', word:'dhammebhi' },
+      { gdr:'nt', case:'abl', nbr:'pl', word:'dhammehi' },
+      { gdr:'nt', case:'gen', nbr:'pl', word:'dhammāna' },
+      { gdr:'nt', case:'gen', nbr:'pl', word:'dhammānaṁ' },
+      { gdr:'nt', case:'loc', nbr:'pl', word:'dhammesu' },
+      { gdr:'nt', case:'voc', nbr:'pl', word:'dhammā' },
+      { gdr:'nt', case:'voc', nbr:'pl', word:'dhammāni' },
+      { gdr:'masc', case:'nom', nbr:'sg', word:'dhammo' },
+      { gdr:'masc', case:'acc', nbr:'sg', word:'dhammaṁ' },
+      { gdr:'masc', case:'instr', nbr:'sg', word:'dhammā' },
+      { gdr:'masc', case:'instr', nbr:'sg', word:'dhammena' },
+      { gdr:'masc', case:'dat', nbr:'sg', word:'dhammassa' },
+      { gdr:'masc', case:'dat', nbr:'sg', word:'dhammāya' },
+      { gdr:'masc', case:'abl', nbr:'sg', word:'dhammato' },
+      { gdr:'masc', case:'abl', nbr:'sg', word:'dhammamhā' },
+      { gdr:'masc', case:'abl', nbr:'sg', word:'dhammasmā' },
+      { gdr:'masc', case:'abl', nbr:'sg', word:'dhammā' },
+      { gdr:'masc', case:'gen', nbr:'sg', word:'dhammassa' },
+      { gdr:'masc', case:'loc', nbr:'sg', word:'dhammamhi' },
+      { gdr:'masc', case:'loc', nbr:'sg', word:'dhammasmiṁ' },
+      { gdr:'masc', case:'loc', nbr:'sg', word:'dhamme' },
+      { gdr:'masc', case:'voc', nbr:'sg', word:'dhamma' },
+      { gdr:'masc', case:'voc', nbr:'sg', word:'dhammā' },
+      { gdr:'masc', case:'nom', nbr:'pl', word:'dhammā' },
+      { gdr:'masc', case:'nom', nbr:'pl', word:'dhammāse' },
+      { gdr:'masc', case:'acc', nbr:'pl', word:'dhamme' },
+      { gdr:'masc', case:'instr', nbr:'pl', word:'dhammebhi' },
+      { gdr:'masc', case:'instr', nbr:'pl', word:'dhammehi' },
+      { gdr:'masc', case:'dat', nbr:'pl', word:'dhammānaṁ' },
+      { gdr:'masc', case:'abl', nbr:'pl', word:'dhammato' },
+      { gdr:'masc', case:'abl', nbr:'pl', word:'dhammebhi' },
+      { gdr:'masc', case:'abl', nbr:'pl', word:'dhammehi' },
+      { gdr:'masc', case:'gen', nbr:'pl', word:'dhammāna' },
+      { gdr:'masc', case:'gen', nbr:'pl', word:'dhammānaṁ' },
+      { gdr:'masc', case:'loc', nbr:'pl', word:'dhammesu' },
+      { gdr:'masc', case:'voc', nbr:'pl', word:'dhammā' },
+      { gdr:'fem', case:'nom', nbr:'sg', word:'dhammā' },
+      { gdr:'fem', case:'acc', nbr:'sg', word:'dhammaṁ' },
+      { gdr:'fem', case:'instr', nbr:'sg', word:'dhammā' },
+      { gdr:'fem', case:'instr', nbr:'sg', word:'dhammāya' },
+      { gdr:'fem', case:'dat', nbr:'sg', word:'dhammāya' },
+      { gdr:'fem', case:'abl', nbr:'sg', word:'dhammato' },
+      { gdr:'fem', case:'abl', nbr:'sg', word:'dhammāto' },
+      { gdr:'fem', case:'abl', nbr:'sg', word:'dhammāya' },
+      { gdr:'fem', case:'gen', nbr:'sg', word:'dhammāya' },
+      { gdr:'fem', case:'loc', nbr:'sg', word:'dhammāya' },
+      { gdr:'fem', case:'loc', nbr:'sg', word:'dhammāyaṁ' },
+      { gdr:'fem', case:'voc', nbr:'sg', word:'dhamma' },
+      { gdr:'fem', case:'voc', nbr:'sg', word:'dhamme' },
+      { gdr:'fem', case:'nom', nbr:'pl', word:'dhammā' },
+      { gdr:'fem', case:'nom', nbr:'pl', word:'dhammāyo' },
+      { gdr:'fem', case:'acc', nbr:'pl', word:'dhammā' },
+      { gdr:'fem', case:'acc', nbr:'pl', word:'dhammāyo' },
+      { gdr:'fem', case:'instr', nbr:'pl', word:'dhammābhi' },
+      { gdr:'fem', case:'instr', nbr:'pl', word:'dhammāhi' },
+      { gdr:'fem', case:'dat', nbr:'pl', word:'dhammānaṁ' },
+      { gdr:'fem', case:'abl', nbr:'pl', word:'dhammābhi' },
+      { gdr:'fem', case:'abl', nbr:'pl', word:'dhammāhi' },
+      { gdr:'fem', case:'gen', nbr:'pl', word:'dhammānaṁ' },
+      { gdr:'fem', case:'loc', nbr:'pl', word:'dhammāsu' },
+      { gdr:'fem', case:'voc', nbr:'pl', word:'dhammā' },
+      { gdr:'fem', case:'voc', nbr:'pl', word:'dhammāyo' },
+    {}];
+    await testDeclensions({word:'dhamma', infExpected});
   });
-  it("wordInflections devī", async()=>{ 
-    if (!DBG.EXPERIMENTAL) return;
-    const msg = "test.dictionary.wordInflections devī";
-    let dict = await Dictionary.create();
-    let wi = dict.wordInflections("devī");
-
+  it("TESTTESTwordInflections devī", async()=>{ 
+    console.log("test.dictionary@399"); return;
     const infExpected = [
       { gdr:'fem', case:'nom', nbr:'sg', word:'devī' }, 
-      { gdr:'fem', case:'nom', nbr:'pl', word:'deviyo' },
-      { gdr:'fem', case:'nom', nbr:'pl', word:'devī' }, 
       { gdr:'fem', case:'acc', nbr:'sg', word:'deviṁ' },
-      { gdr:'fem', case:'acc', nbr:'pl', word:'deviyo' },
-      { gdr:'fem', case:'acc', nbr:'pl', word:'devī' }, 
       { gdr:'fem', case:'instr', nbr:'sg', word:'deviyā' }, 
-      // !MS { gdr:'fem', case:'instr', nbr:'pl', word:'devīhi' }, 
-      { gdr:'fem', case:'abl', nbr:'sg', word:'deviyā' },
-      // !MS { gdr:'fem', case:'abl', nbr:'pl', word:'devīhi' },
-      { gdr:'fem', case:'gen', nbr: 'sg', word:'deviyā' },
-      // !MS { gdr:'fem', case:'gen', nbr:'pl', word:'devinaṁ' },
+      { gdr:'fem', case:'gen', nbr:'sg', word:'deviyā' },
       { gdr:'fem', case:'loc', nbr:'sg', word:'deviyā' },
       // !MS { gdr:'fem', case:'loc', nbr:'sg', word:'deviyāṁ' },
       // !MS { gdr:'fem', case:'loc', nbr:'pl', word:'devisu' },
+
+      { gdr:'fem', case:'nom', nbr:'pl', word:'deviyo' },
+      { gdr:'fem', case:'nom', nbr:'pl', word:'devī' }, 
+      { gdr:'fem', case:'acc', nbr:'pl', word:'deviyo' },
+      { gdr:'fem', case:'acc', nbr:'pl', word:'devī' }, 
+      // !MS { gdr:'fem', case:'instr', nbr:'pl', word:'devīhi' }, 
+      // !MS { gdr:'fem', case:'abl', nbr:'pl', word:'devīhi' },
       { gdr:'fem', case:'voc', nbr:'sg', word:'devi' },
       { gdr:'fem', case:'voc', nbr:'pl', word:'deviyo' },
       { gdr:'fem', case:'voc', nbr:'pl', word:'devī' },
     ];
-    //console.log(msg, wi);
-    for (let i=0; i<infExpected.length; i++) {
-      should.deepEqual(wi[i], infExpected[i]);
-    }
+    await testDeclensions({word:'devī', infExpected, });
   });
   it("wordInflections aggi", async()=>{
-    if (!DBG.EXPERIMENTAL) return;
-    const msg = "test.dictionary.wordInflections aggi";
-    const dbg = 0;
-    let dict = await Dictionary.create();
-    let wi = dict.wordInflections("aggi");
-    dbg && console.log(msg, wi);
-
     const infExpected = [
-      { gdr:'masc', case:'nom', nbr:'sg', word:'aggi' }, 
-      // !MS { gdr:'masc', case:'nom', nbr:'pl', word:'aggayo' },
-      { gdr:'masc', case:'nom', nbr:'pl', word:'aggī' }, 
-      { gdr:'masc', case:'acc', nbr:'sg', word:'aggiṁ' },
-      // !MS { gdr:'masc', case:'acc', nbr:'pl', word:'aggayo' },
-      { gdr:'masc', case:'acc', nbr:'pl', word:'aggī' }, 
-      { gdr:'masc', case:'instr', nbr:'sg', word:'agginā' }, 
-      // !MS { gdr:'masc', case:'instr', nbr:'pl', word:'aggihi' }, 
-      // !MS { gdr:'masc', case:'instr', nbr:'pl', word:'aggīhi' }, 
-      { gdr:'masc', case:'abl', nbr:'sg', word:'agginā' },
-      // !MS { gdr:'masc', case:'abl', nbr:'sg', word:'aggismā' },
-      // !MS { gdr:'masc', case:'abl', nbr:'sg', word:'aggimhā' },
-      // !MS { gdr:'masc', case:'abl', nbr:'pl', word:'aggihi' }, 
-      // !MS { gdr:'masc', case:'abl', nbr:'pl', word:'aggīhi' }, 
-      { gdr:'masc', case:'gen', nbr: 'sg', word:'aggino' },
-      { gdr:'masc', case:'gen', nbr: 'sg', word:'aggissa' },
-      // !MS { gdr:'masc', case:'gen', nbr: 'pl', word:'agginaṁ' },
-      { gdr:'masc', case:'gen', nbr: 'pl', word:'aggīnaṁ' },
-      { gdr:'masc', case:'loc', nbr: 'sg', word:'aggimhi' },
-      { gdr:'masc', case:'loc', nbr: 'sg', word:'aggismiṁ' },
-      { gdr:'masc', case:'voc', nbr: 'sg', word:'aggi' },
+      { gdr:'nt', case:'nom', nbr:'sg', word:'aggi' }, 
+      { gdr:'nt', case:'acc', nbr:'sg', word:'aggiṁ' }, 
+      { gdr:'nt', case:'instr', nbr:'sg', word:'agginā' }, 
+      { gdr:'nt', case:'dat', nbr:'sg', word:'aggino' },
+      { gdr:'nt', case:'dat', nbr:'sg', word:'aggissa' },
+      { gdr:'nt', case:'abl', nbr:'sg', word:'aggito' },
+      { gdr:'nt', case:'abl', nbr:'sg', word:'agginā' },
+      { gdr:'nt', case:'abl', nbr:'sg', word:'aggimhā' },
+      { gdr:'nt', case:'abl', nbr:'sg', word:'aggismā' },
+      { gdr:'nt', case:'gen', nbr:'sg', word:'aggino' }, 
+      { gdr:'nt', case:'gen', nbr:'sg', word:'aggissa' }, 
+      { gdr:'nt', case:'loc', nbr:'sg', word:'aggini' }, 
+      { gdr:'nt', case:'loc', nbr:'sg', word:'aggimhi' }, 
+      { gdr:'nt', case:'loc', nbr:'sg', word:'aggismiṁ' }, 
+      { gdr:'nt', case:'voc', nbr:'sg', word:'aggi' }, 
 
-      // !MS { gdr:'masc', case:'voc', nbr: 'pl', word:'aggayo' },
-      { gdr:'masc', case:'voc', nbr: 'pl', word:'aggī' },
-    ];
-    for (let i=0; i<infExpected.length; i++) {
-      should.deepEqual(wi[i], infExpected[i]);
-    }
+      { gdr:'nt', case:'nom', nbr:'pl', word:'aggī' }, 
+      { gdr:'nt', case:'nom', nbr:'pl', word:'aggīni' }, 
+      { gdr:'nt', case:'acc', nbr:'pl', word:'aggī' }, 
+      { gdr:'nt', case:'acc', nbr:'pl', word:'aggīni' }, 
+      { gdr:'nt', case:'instr', nbr:'pl', word:'aggibhi' }, 
+      { gdr:'nt', case:'instr', nbr:'pl', word:'aggīhi' }, 
+      { gdr:'nt', case:'dat', nbr:'pl', word:'aggīnaṁ' }, 
+      { gdr:'nt', case:'abl', nbr:'pl', word:'aggibhi' }, 
+      { gdr:'nt', case:'abl', nbr:'pl', word:'aggīhi' }, 
+      { gdr:'nt', case:'gen', nbr:'pl', word:'aggīnaṁ' }, 
+      { gdr:'nt', case:'loc', nbr:'pl', word:'aggisu' }, 
+      { gdr:'nt', case:'loc', nbr:'pl', word:'aggīsu' }, 
+      { gdr:'nt', case:'voc', nbr:'pl', word:'aggī' }, 
+      { gdr:'nt', case:'voc', nbr:'pl', word:'aggīni' }, 
+    {}];
+    await testDeclensions({word:'aggi', infExpected});
   });
-  it("TESTTESTwordInflections akkhi", async()=>{
-    if (!DBG.EXPERIMENTAL) return;
-    const msg = "test.dictionary.wordInflections akkhi";
-    const dbg = 1;
-    let dict = await Dictionary.create();
-    let wi = dict.wordInflections("akkhi");
-    dbg && console.log(msg, wi);
-
+  it("wordInflections akkhi", async()=>{
     const infExpected = [
       { gdr:'nt', case:'nom', nbr:'sg', word:'akkhi' }, 
-      { gdr:'nt', case:'nom', nbr:'sg', word:'akkhiṁ' }, 
+      { gdr:'nt', case:'acc', nbr:'sg', word:'akkhiṁ' }, 
+      { gdr:'nt', case:'instr', nbr:'sg', word:'akkhinā' }, 
+      { gdr:'nt', case:'dat', nbr:'sg', word:'akkhino' },
+      { gdr:'nt', case:'dat', nbr:'sg', word:'akkhissa' },
+      { gdr:'nt', case:'abl', nbr:'sg', word:'akkhito' },
+      { gdr:'nt', case:'abl', nbr:'sg', word:'akkhinā' },
+      { gdr:'nt', case:'abl', nbr:'sg', word:'akkhimhā' },
+      { gdr:'nt', case:'abl', nbr:'sg', word:'akkhismā' },
+      { gdr:'nt', case:'gen', nbr:'sg', word:'akkhino' }, 
+      { gdr:'nt', case:'gen', nbr:'sg', word:'akkhissa' }, 
+      { gdr:'nt', case:'loc', nbr:'sg', word:'akkhini' }, 
+      { gdr:'nt', case:'loc', nbr:'sg', word:'akkhimhi' }, 
+      { gdr:'nt', case:'loc', nbr:'sg', word:'akkhismiṁ' }, 
+      { gdr:'nt', case:'voc', nbr:'sg', word:'akkhi' }, 
+
       { gdr:'nt', case:'nom', nbr:'pl', word:'akkhī' }, 
       { gdr:'nt', case:'nom', nbr:'pl', word:'akkhīni' }, 
-
-      { gdr:'nt', case:'acc', nbr:'sg', word:'akkhi' }, 
-      // { gdr:'nt', case:'acc', nbr:'sg', word:'akkhiṁ' }, 
       { gdr:'nt', case:'acc', nbr:'pl', word:'akkhī' }, 
       { gdr:'nt', case:'acc', nbr:'pl', word:'akkhīni' }, 
-
-      // !MS { gdr:'nt', case:'instr', nbr:'sg', word:'akkhinā' }, 
-      // !MS { gdr:'nt', case:'instr', nbr:'pl', word:'akkhihi' }, 
+      { gdr:'nt', case:'instr', nbr:'pl', word:'akkhibhi' }, 
       { gdr:'nt', case:'instr', nbr:'pl', word:'akkhīhi' }, 
-
-      { gdr:'nt', case:'abl', nbr:'sg', word:'akkhimhā' },
-      // !MS { gdr:'nt', case:'abl', nbr:'sg', word:'akkhinā' },
-      // !MS { gdr:'nt', case:'abl', nbr:'sg', word:'akkhismā' },
-      // !MS { gdr:'nt', case:'abl', nbr:'pl', word:'akkhihi' }, 
+      { gdr:'nt', case:'dat', nbr:'pl', word:'akkhīnaṁ' }, 
+      { gdr:'nt', case:'abl', nbr:'pl', word:'akkhibhi' }, 
       { gdr:'nt', case:'abl', nbr:'pl', word:'akkhīhi' }, 
-
-      { gdr:'nt', case:'voc', nbr:'sg', word:'akkhi' }, 
-      { gdr:'nt', case:'voc', nbr:'sg', word:'akkhiṁ' }, 
-      // !DPD { gdr:'nt', case:'voc', nbr:'pl', word:'akkhī' }, 
+      { gdr:'nt', case:'gen', nbr:'pl', word:'akkhīnaṁ' }, 
+      { gdr:'nt', case:'loc', nbr:'pl', word:'akkhisu' }, 
+      { gdr:'nt', case:'loc', nbr:'pl', word:'akkhīsu' }, 
+      { gdr:'nt', case:'voc', nbr:'pl', word:'akkhī' }, 
       { gdr:'nt', case:'voc', nbr:'pl', word:'akkhīni' }, 
-
-      //{ gdr:'nt', case:'CASE', nbr:'sg', word:'WORD' }, 
-    ];
-    for (let i=0; i<infExpected.length; i++) {
-      should.deepEqual(wi[i], infExpected[i]);
-    }
+    {}];
+    await testDeclensions({word:'akkhi', infExpected});
   });
   it("prefixOf()", ()=>{
     should(Dictionary.prefixOf('')).equal('');

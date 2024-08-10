@@ -167,6 +167,7 @@ export default class Dictionary {
 
   relatedEntries(word, opts={}) {
     const msg = "Dictionary.relatedEntries()";
+    const dbg = DBG.RELATED_ENTRIES;
     let { dpd } = this;
     let { 
       overlap: minOverlap=0.1,
@@ -177,13 +178,14 @@ export default class Dictionary {
     let stemKeys = keys.filter(k=>{
       return k.startsWith(stem) && k.length<=maxLen;
     });
+    dbg && console.log(msg, {word, stemKeys});
     let entry = this.entryOf(word);
     if (entry == null) {
       return undefined;
     }
     let { definition } = entry;
     let map = {};
-    definition.forEach(line=>map[line]=true);
+    definition.forEach(line=>(map[line]=true));
     let overlapBasis = definition.length || 1;
 
     let entries = stemKeys.reduce((entries,key)=>{
@@ -202,6 +204,7 @@ export default class Dictionary {
 
       return entries;
     }, []);
+    dbg && console.log(msg, entries.map(e=>e.word));
 
     return entries;
   }
@@ -366,91 +369,56 @@ export default class Dictionary {
     return result;
   }
 
-  wordInflections(word, opts={}) { // EXPERIMENTAL
+  wordInflections(word, opts={}) { 
     const msg = 'Dictionary.wordInflections()';
-    const dbg = DBG.WORD_INFLECTIONS;
-    if (!DBG.EXPERIMENTAL) throw new Error(`${msg} UNSUPPORTED`);
+    const dbg = 0 || DBG.WORD_INFLECTIONS;
+    const dbgv = dbg && DBG.VERBOSE;
     let {
       overlap=0.5,
+      nbr,
     } = opts;
     let entry = this.find(word);
-    let { data } = entry;
-    let entryTypes = data && data.reduce((a,def)=>{
-      let { type } = def;
-      a[type] = (a[type]||0) + 1;
-      a.total++;
-      return a;
-    }, {total:0, masc:0, nt:0, fem:0});
-    let wordGender;
-    if (entryTypes.total) {
-      wordGender = entryTypes.nt > entryTypes.fem 
-        ? 'nt' : 'fem';
-      wordGender = entryTypes.masc > entryTypes[wordGender] 
-        ? 'masc' : wordGender;
-    }
-
-    let entries = this.relatedEntries(word, {
-      overlap,
-    });
+    let entries = this.relatedEntries(word, {overlap});
     let stem = Dictionary.prefixOf(entries.map(e=>e.word));
-
     let w = word;
-    dbg && console.log(msg, {word, stem}, 
-      entries.map(e=>e.word).join('\n'));
-    let singular = entries.reduce((a,e)=>{
-      let { word, overlap } = e;
-      let infs = Inflection.find(inf=>{
-        return inf.matchesWord(word, {stem, nbr:'sg'})
-      });
-      infs.forEach(inf=>{
-        let { gender, } = inf;
-        if (wordGender === gender) {
-          a.push({ 
-            [Inflection.attribute('gender').id]:
-              Inflection.attribute(gender).id,
-            [Inflection.attribute('case').id]:
-              Inflection.attribute(inf.case).id,
-            [Inflection.attribute('number').id]:
-              Inflection.attribute('single').id,
-            word,
-          });
+    dbg && console.log(msg);
+    dbg & console.log(entries.map(e=>e.word).join('\n'));
+
+    let tblMatch = Inflection.ALL.filter(inf=>{
+      for (let ie=0; ie<entries.length; ie++) {
+        let e = entries[ie];
+        if (inf.matchesWord(e.word, {stem, nbr})) {
+          return true;
         }
-      });
+      }
+      return false;
+    });
+    let title = `${word} matching inflections`;
+    dbgv && console.log(tblMatch.format({title}));
 
+    let tblLike = tblMatch.groupBy(['like'], [
+      {id:'id', aggregate:'count'},
+    ]);
+    title = `${word} grouped by like`;
+    dbgv && console.log(tblLike.format({title}));
+    //return tblMatch;
+
+    let likeMap = tblLike.rows.reduce((a,row)=>{
+      a[row.like] = true;
       return a;
-    }, []);
-    let plural = entries.reduce((a,e)=>{
-      let { word, overlap } = e;
-      let infs = Inflection.find(inf=>{
-        let match = inf.matchesWord(word, {stem, nbr:'pl'});
-        return match;
-      });
+    }, {});
+    let { like } = tblLike.rows[0] || {};
+    let tblLikeOnly =  Inflection.ALL.filter(inf=>{
+      return likeMap[inf.like];
+    });
 
-      infs.forEach(inf=>{
-        let { gender, } = inf;
-        if (wordGender === gender) {
-          a.push({ 
-            [Inflection.attribute('gender').id]:
-              Inflection.attribute(gender).id,
-            [Inflection.attribute('case').id]:
-              Inflection.attribute(inf.case).id,
-            [Inflection.attribute('number').id]:
-              Inflection.attribute('plural').id,
-            word,
-          });
-        }
-      });
-
-      return a;
-    }, []);
-
-    let compare = (a,b) => {
-      let cmp = Inflection.compare(a,b);
-      return cmp === 0 
-        ? Pali.compareRoman(a.word, b.word) 
-        : cmp;
-    }
-
-    return [...singular, ...plural].sort(compare);
+    let tblResult = tblLikeOnly;
+    tblResult.rows = tblResult.rows.map(row=>
+      new Inflection(Object.assign({word:stem+row.sfx}, row)));
+    tblResult.addHeader({id:'word'});
+    tblResult.sort(Inflection.compare);
+    dbg && console.log(tblResult.format({
+      title:`tblResult ${word} group by:${Object.keys(likeMap)}`}));
+    return tblResult;
   }
 }

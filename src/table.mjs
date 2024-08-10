@@ -227,7 +227,12 @@ export default class Table {
     return text;
   }
 
-  #updateHeaders(opts) {
+  addHeader(hdr) {
+    this.headers.push(hdr);
+    this.#updateHeaders();
+  }
+
+  #updateHeaders(opts={}) {
     const msg = "Table.#updateHeaders()";
 
     let { 

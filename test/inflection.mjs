@@ -171,7 +171,7 @@ typeof describe === "function" &&
   });
   it("matchesWord() i/ī akkhi", ()=>{
     const msg =  'test.inflection@161';
-    const dbg = 1;
+    const dbg = 0;
     let stem = 'akkh';
     let type = 'dcl';
     let gdr = 'nt';
@@ -186,6 +186,28 @@ typeof describe === "function" &&
     should.deepEqual(akkhi, [infs[3]]);
     let akkhihi = infs.filter(inf=>inf.matchesWord("akkhīhi", {stem}));
     should.deepEqual(akkhihi, [infs[1]]);
+  });
+  it("matchesWord() gdr", ()=>{
+    const msg =  'test.inflection@191';
+    const dbg = 0;
+    let infs = [
+      new Inflection({ gdr:'nt' }),
+      new Inflection({ gdr:'masc' }),
+      new Inflection({ gdr:'fem' }),
+      new Inflection({ gdr:'*' }),
+    ];
+    should.deepEqual(
+      infs.filter(inf=>inf.matchesWord("x", {})),
+      infs,
+    );
+    should.deepEqual(
+      infs.filter(inf=>inf.matchesWord("x", {gdr:'nt'})),
+      [infs[0]],
+    );
+    should.deepEqual(
+      infs.filter(inf=>inf.matchesWord("x", {gdr:'*'})),
+      [infs[3]],
+    );
   });
   it("find() ALL", ()=>{
     const msg = "test.inflection@147";

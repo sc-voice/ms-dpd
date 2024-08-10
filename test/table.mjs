@@ -208,7 +208,7 @@ typeof describe === "function" &&
   });
   it("findHeader", ()=>{
     const msg = "test.table@findHeader";
-    let tbl = Table.fromArray2(TEST_GROUP, {title:'---groupBy---'});
+    let tbl = Table.fromArray2(TEST_GROUP, {title:'---findHeader---'});
     let { headers:hdrs } = tbl;
     should(Table.findHeader(hdrs, -1)).equal(undefined);
     should(Table.findHeader(hdrs, 'asdf')).equal(undefined);
