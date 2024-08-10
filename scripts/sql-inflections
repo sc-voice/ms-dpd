@@ -10,10 +10,12 @@ echo $SCRIPT '[BEGIN]' `date`
 sync
 
 echo $SCRIPT: "==> Download $BZ2NAME from digitalpalidictionary:"
+echo $SCRIPT: "  https://bit.ly/dpd-releases"
+echo $SCRIPT: "  === OR ==="
 echo $SCRIPT: "  https://github.com/digitalpalidictionary/digitalpalidictionary/releases"
 read -p "$SCRIPT: ==> Downloaded? (Y/n)" YN
-if [ "$YN" == "n" ]; then 
-  echo BYE
+if [[ "$YN" != "Y" && "$YN" != "y" && "$YN" != "" ]]; then 
+  echo $SCRIPT: "[CANCELED]"
   exit -1
 fi
 
