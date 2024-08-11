@@ -18,19 +18,56 @@ node - <<'JS' $DIRNAME $SCRIPT $*
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 let [ NODE, DASH, DIRNAME, SCRIPT, ...args] = process.argv;
+
+function help() {
+  console.error(`
+NAME
+  dpd-lookup - lookup given words in DPD database
+
+SYNOPSIS
+  dpd-lookup [OPTIONS] WORDS
+
+DESCRIPTION
+  Search DPD lookup table in Sqlite3 database,
+  converting the result to JSON.
+
+  -?, --help
+    print this help text
+
+  -ac, --all-columns
+    print all table columns (Default is lookup_key, headwords, grammar)
+
+  -v, --verbose
+    print more information to stderr
+
+EXAMPLES
+  scripts/dpd-lookup -ac dhamma devi
+`);
+  process.exit(0);
+}
+
 (async function() {
   const msg = `${SCRIPT}:`;
   let dbg = 0;
   let limit = 1;
+  let columns = ['lookup_key', 'headwords', 'grammar'];
   let words = args.reduce((a,arg,i)=>{
     switch (arg) {
-      case "--debug":
-      case "-d":
+      case '-?':
+      case '--help':
+        help();
+        break;
+      case "--all-columns":
+      case "-ac":
+        columns = ['*'];
+        break;
+      case "--verbose":
+      case "-v":
         dbg = true;
         break;
       default:
         if (arg.at(0) === "-") {
-          console.error(`${msg} [ERROR] ignoring unknown argument ${arg}`);
+          console.error(`${msg} [ERROR] ignoring ${arg}`);
         } else {
           a.push(arg);
         }
@@ -38,11 +75,14 @@ let [ NODE, DASH, DIRNAME, SCRIPT, ...args] = process.argv;
     }
     return a;
   }, []);
+  if (words.length === 0) {
+    help();
+  }
   let sqlWords = words.map(word=>`"${word}"`).join(",");
   let cmd = [
     'sqlite3 --batch local/dpd.db',
     '".mode json"',
-    `'select lookup_key,headwords,grammar`,
+    `'select ${columns.join(',')}`,
     ` from lookup`,
     ` where lookup_key in (${sqlWords})`,
     ` limit ${sqlWords.length}'`,
@@ -57,7 +97,7 @@ let [ NODE, DASH, DIRNAME, SCRIPT, ...args] = process.argv;
     let {lookup_key, headwords, grammar} = row;
     headwords = JSON.parse(headwords);
     grammar = JSON.parse(grammar);
-    return {lookup_key, headwords, grammar};
+    return Object.assign({}, row, {headwords, grammar});
   });
 
   console.log('[');
