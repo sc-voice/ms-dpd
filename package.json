@@ -27,6 +27,7 @@
   "homepage": "https://github.com/sc-voice/pali#readme",
   "devDependencies": {
     "eslint": "^9.4.0",
+    "json": "^11.0.0",
     "lz-string": "^1.5.0",
     "mocha": "^10.4.0",
     "should": "^13.2.3"

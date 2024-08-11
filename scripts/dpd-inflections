@@ -1,0 +1,21 @@
+#!/usr/bin/bash
+SCRIPT=`basename $0`
+DBNAME=dpd.db
+
+set -e
+echo $SCRIPT: '[BEGIN]' `date`
+sync
+
+if [[ ! -e "local/$DBNAME" ]]; then
+  echo "$SCRIPT: [ERROR] missing $DBNAME"
+  echo "$SCRIPT: [ERROR] run scripts/sql-install"
+  exit -1
+fi;
+
+OUTFILE=src/dpd-inflection-templates
+echo $SCRIPT: "writing inflection templates to $OUTFILE"
+sqlite3 --batch local/dpd.db \
+  "select * from inflection_templates" > $OUTFILE
+echo $SCRIPT: `ls -hs $OUTFILE`
+
+echo $SCRIPT: '[END:OK]' `date`

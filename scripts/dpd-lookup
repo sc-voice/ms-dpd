@@ -1,0 +1,70 @@
+#!/usr/bin/bash
+DBNAME=dpd.db
+SCRIPT=`basename $0`
+DIRNAME=`dirname $0`
+DPDDB='xlocal/dpd.db'
+
+if [[ ! -e "local/$DBNAME" ]]; then
+  echo "$SCRIPT: [ERROR] missing $DBNAME"
+  echo "$SCRIPT: [ERROR] run scripts/dpd-install"
+  exit -1
+fi;
+
+# sqlite3 --batch local/dpd.db ".mode json" "select lookup_key,headwords,roots,deconstructor,variant,spelling,grammar,help,abbrev,epd,other,sinhala,devanagari,thai from lookup where lookup_key=\"$1\" limit 1"  | json
+
+# sqlite3 --batch local/dpd.db ".mode json" "select lookup_key,headwords,grammar from lookup where lookup_key=\"$1\" limit 1"  | json
+
+node - <<'JS' $DIRNAME $SCRIPT $*
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
+let [ NODE, DASH, DIRNAME, SCRIPT, ...args] = process.argv;
+(async function() {
+  const msg = `${SCRIPT}:`;
+  let dbg = 0;
+  let limit = 1;
+  let words = args.reduce((a,arg,i)=>{
+    switch (arg) {
+      case "--debug":
+      case "-d":
+        dbg = true;
+        break;
+      default:
+        if (arg.at(0) === "-") {
+          console.error(`${msg} [ERROR] ignoring unknown argument ${arg}`);
+        } else {
+          a.push(arg);
+        }
+        break;
+    }
+    return a;
+  }, []);
+  let sqlWords = words.map(word=>`"${word}"`).join(",");
+  let cmd = [
+    'sqlite3 --batch local/dpd.db',
+    '".mode json"',
+    `'select lookup_key,headwords,grammar`,
+    ` from lookup`,
+    ` where lookup_key in (${sqlWords})`,
+    ` limit ${sqlWords.length}'`,
+    '| json',
+  ].join(' ');
+  dbg && console.error(msg, {NODE,DASH, DIRNAME, SCRIPT, words});
+  dbg && console.error(msg, cmd);
+  let {stdout, stderr} = await exec(cmd);
+  let json = JSON.parse(stdout);
+  dbg && console.error(msg, json);
+  let rows = json.map(row=>{
+    let {lookup_key, headwords, grammar} = row;
+    headwords = JSON.parse(headwords);
+    grammar = JSON.parse(grammar);
+    return {lookup_key, headwords, grammar};
+  });
+
+  console.log('[');
+  for (let i=0; i<rows.length-1; i++) {
+    console.log(rows[i], ',');
+  }
+  console.log(rows.at(-1));
+  console.log(']');
+})()
+JS

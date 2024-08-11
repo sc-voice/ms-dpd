@@ -77,15 +77,11 @@ if [ -e local/$TARNAME ]; then
   rm -f $DBNAME
   tar -xvf $TARNAME
   popd > /dev/null
-  ls -l local/$DBNAME
+  echo "$SCRIPT: loaded DPD database"
+  echo "$SCRIPT:" `ls -l local/$DBNAME`
 else 
   echo $SCRIPT: "[FAIL] local/$TARNAME not found"
   exit -1
 fi
-
-OUTFILE=src/dpd-inflection-templates
-echo $SCRIPT: "writing inflection templates to $OUTFILE"
-sqlite3 local/dpd.db "select * from inflection_templates" > $OUTFILE
-echo $SCRIPT: `ls -l $OUTFILE`
 
 echo $SCRIPT: '[END:OK]' `date`
