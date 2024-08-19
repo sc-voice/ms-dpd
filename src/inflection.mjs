@@ -15,7 +15,7 @@ export default class Inflection {
     Object.assign(this, opts);
   }
 
-  static get ALL() {
+  static get TABLE() {
     if (INFLECTIONS == null) {
       let tbl = new Table(DPD_INFLECTIONS);
       tbl.rows = tbl.rows.map(row=>new Inflection(row));
@@ -265,17 +265,31 @@ export default class Inflection {
     }
   }
 
-  static find(filter=(inf=>true)) {
+  static xfind(filter=(inf=>true)) {
     const msg = "Inflection.find()";
     const dbg = 0;
-    console.log(msg, "DEPRECATED. Use Inflection.ALL");
-    let infTable = Inflection.ALL.filter(filter);
+    console.log(msg, "DEPRECATED. Use Inflection.select");
+    let infTable = Inflection.TABLE.filter(filter);
     if (dbg) {
       infTable.title = `${msg} [1]infTable`;
       infTable.caption = filter.toString();
       console.log(infTable.format());
     }
     return infTable.rows;
+  }
+
+  static select(filter=(inf=>true)) {
+    const msg = "Inflection.select()";
+    const dbg = 0;
+    let infTable = Inflection.TABLE.filter(filter);
+    if (dbg) {
+      infTable.title = `${msg} [1]infTable`;
+      infTable.caption = filter.toString();
+      console.log(infTable.format());
+    }
+
+    dbg && console.log(msg, '[1]rows', infTable.rows.length);
+    return infTable;
   }
 
   static union(...args) {

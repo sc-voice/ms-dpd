@@ -384,7 +384,7 @@ export default class Dictionary {
     dbg && console.log(msg);
     dbg & console.log(entries.map(e=>e.word).join('\n'));
 
-    let tblMatch = Inflection.ALL.filter(inf=>{
+    let tblMatch = Inflection.TABLE.filter(inf=>{
       for (let ie=0; ie<entries.length; ie++) {
         let e = entries[ie];
         if (inf.matchesWord(e.word, {stem, nbr})) {
@@ -408,7 +408,7 @@ export default class Dictionary {
       return a;
     }, {});
     let { like } = tblLike.rows[0] || {};
-    let tblLikeOnly =  Inflection.ALL.filter(inf=>{
+    let tblLikeOnly =  Inflection.TABLE.filter(inf=>{
       return likeMap[inf.like];
     });
 

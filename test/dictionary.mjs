@@ -14,7 +14,7 @@ import {
 async function testDeclensions({word, infExpected, nbr}) {
   const msg = "test.dictionary.testDeclensions()";
   const dbg = 0;
-  dbg && console.log(msg, '[1] ${word}');
+  dbg && console.log(msg, '[1]word', word);
   let dict = await Dictionary.create();
   let infTable = dict.wordInflections(word, {nbr});
   dbg && console.log(infTable.format({title:`${msg} ${word}`}));
@@ -395,7 +395,7 @@ typeof describe === "function" &&
     {}];
     await testDeclensions({word:'dhamma', infExpected});
   });
-  it("TESTTESTwordInflections devī", async()=>{ 
+  it("TBDTESTTESTwordInflections devī", async()=>{ 
     console.log("test.dictionary@399"); return;
     const infExpected = [
       { gdr:'fem', case:'nom', nbr:'sg', word:'devī' }, 
@@ -418,7 +418,7 @@ typeof describe === "function" &&
     ];
     await testDeclensions({word:'devī', infExpected, });
   });
-  it("wordInflections aggi", async()=>{
+  it("TBDTESTTESTwordInflections aggi", async()=>{
     const infExpected = [
       { gdr:'nt', case:'nom', nbr:'sg', word:'aggi' }, 
       { gdr:'nt', case:'acc', nbr:'sg', word:'aggiṁ' }, 
@@ -453,7 +453,7 @@ typeof describe === "function" &&
     {}];
     await testDeclensions({word:'aggi', infExpected});
   });
-  it("wordInflections akkhi", async()=>{
+  it("TBDTESTTESTwordInflections akkhi", async()=>{
     const infExpected = [
       { gdr:'nt', case:'nom', nbr:'sg', word:'akkhi' }, 
       { gdr:'nt', case:'acc', nbr:'sg', word:'akkhiṁ' }, 

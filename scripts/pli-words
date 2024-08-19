@@ -1,0 +1,195 @@
+#!/usr/bin/bash
+DBNAME=dpd.db
+SCRIPT=`basename $0`
+DIRNAME=`dirname $0`
+DPDDB='local/dpd.db'
+
+if [[ ! -e "local/$DBNAME" ]]; then
+  echo "$SCRIPT: [ERROR] missing $DBNAME"
+  echo "$SCRIPT: [ERROR] run scripts/dpd-install"
+  exit -1
+fi;
+
+node - <<'JS' $DIRNAME $SCRIPT $*
+const fs = require('fs');
+const fsp = fs.promises;
+const path = require('path');
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
+let [ NODE, DASH, DIRNAME, SCRIPT, ...args] = process.argv;
+
+const msg = `${SCRIPT}:`;
+const LOCAL=path.join(DIRNAME, '../local');
+
+function help() {
+  console.error(`
+NAME
+  pli-words - list Pali words in ebt-data/root/pli/ms 
+
+SYNOPSIS
+  pli-words [OPTIONS]
+
+DESCRIPTION
+  Search DPD headwords table in DPD Sqlite3 database,
+  converting the result to JSON.
+
+  -?, --help
+    print this help text
+
+  -sd, --sub-directory DIR
+    subdirectory of "root/pli/ms". (default "")
+
+  -v, --verbose
+    print more information to stderr
+
+  -vv, --very-verbose
+    print even more information to stderr
+
+EXAMPLES
+  scripts/pli-words -?
+`);
+  process.exit(0);
+}
+
+function parseArgs() {
+  const msg = `${SCRIPT}.parseArgs()`;
+  let dbg = 0;
+  if (args.length == 0) {
+    help();
+  }
+  let argTexts = args.reduce((a,arg,i)=>{
+    switch (arg) {
+      case '-?':
+      case '--help':
+        help();
+        break;
+      case "--verbose":
+      case "-v":
+        dbg = 1;
+        break;
+      case "--very-verbose":
+      case "-vv":
+        dbg = 2;
+        break;
+      default:
+        if (arg.at(0) === "-") {
+          console.error(`${msg} [ERROR] ignoring ${arg}`);
+        } else {
+          a.push(arg);
+        }
+        break;
+    }
+    return a;
+  }, []);
+  let parms = { dbg, argTexts };
+  dbg && console.error(msg, { NODE,DASH, DIRNAME, SCRIPT, parms, });
+
+  return parms;
+}
+var { 
+  dbg,
+  argTexts,
+} = parseArgs();
+
+async function loadEbtData(fEbtData) {
+  const msg = `${SCRIPT}.loadEbtData()`;
+  let { dbg } = parseArgs();
+
+  let exists = false;
+  try {
+    await fsp.access(fEbtData);
+    dbg && console.error(msg, '[1]ok', fEbtData);
+    exists = true;
+  } catch(e) {
+    if (e.code !== 'ENOENT') {
+      dbg && console.error(msg, '[2]err', e, fEbtData);
+      throw e;
+    }
+  }
+
+  if (!exists) {
+    let cmdClone = [
+      "git clone https://github.com/ebt-site/ebt-data",
+      fEbtData,
+    ].join(' ');
+
+    try {
+      dbg && console.error(msg, '[3]clone', cmdClone);
+      let { stdout, stderr } = await exec(cmdClone);
+    } catch(e) {
+      let { stdout, stderr } = e;
+      dbg && console.error(msg, '[4]err', e, {stdout, stderr});
+      throw e;
+    }
+  }
+}
+
+async function ebtWords() {
+  const msg = `${SCRIPT}.ebtWords()`;
+  const fEbtData = path.join(LOCAL, '../local/ebt-data');
+  await loadEbtData(fEbtData);
+  let ms = path.join(fEbtData, 'root/pli/ms');
+  //let ms = path.join(fEbtData, 'root/pli/ms');
+  let jsonFiles = (await jsonPaths(ms))
+    .filter(d=>d.name.endsWith('.json'));
+  let wordMap = {};
+  for (let i=0; i<jsonFiles.length; i++) {
+    let d = jsonFiles[i];
+    let fpath = `${d.path}/${d.name}`;
+    let buf = await fsp.readFile(fpath);
+    let doc = JSON.parse(buf);
+    let keys = Object.keys(doc);
+    keys.forEach(key=>{
+      let text = doc[key]
+        .toLowerCase()
+        .replace(/<.?b>/g, ' ')
+        .replace(
+          /[- ,."'()\[\]:;!?0-9‘’“”–…—]+/g,
+          ' ')
+        .trim();
+      if (text) {
+        let words = text.split(' ');
+        words.forEach(word=>{
+          if (wordMap[word]) {
+            wordMap[word]++;
+          } else {
+            wordMap[word] = 1;
+          }
+        });
+      }
+    });
+  }
+  let words = Object.keys(wordMap);
+  if (dbg < 2) {
+    console.log(msg, '[1]words', words.length);
+  } else {
+    words = words.sort();
+    console.log(msg, '[2]words', words);
+  }
+
+  return { wordMap, words };
+}
+
+async function jsonPaths(dir) {
+  const msg = `${SCRIPT}.readDir()`;
+  let files = await fsp.readdir(dir, {
+    recursive:true,
+    withFileTypes:true,
+  });
+  files = files.filter(f=>{
+    return f.name.endsWith('.json') && !/xplayground/.test(f.name);
+  });
+  dbg && console.error(msg, '[1]files', files.length);
+  return files;
+}
+
+async function main() {
+  const msg = `${SCRIPT}.main:`;
+
+  let { wordMap:wmEbt, words:wEbt } = await ebtWords();
+}
+
+(async function() {
+  try { main() } catch(e) { console.error(msg, e); }
+})()
+JS

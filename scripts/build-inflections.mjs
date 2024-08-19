@@ -85,6 +85,7 @@ let {
       case 'vedanā':  // a fem
       case 'citta':   // a nt
       case 'sappi':   // i nt
+      case 'bhikkhunī': // ī fem
         Inflection.parseDpdInflection(line, inflections); 
         break;
       default: {

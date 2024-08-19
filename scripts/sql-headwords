@@ -1,0 +1,164 @@
+#!/usr/bin/bash
+DBNAME=dpd.db
+SCRIPT=`basename $0`
+DIRNAME=`dirname $0`
+DPDDB='local/dpd.db'
+
+if [[ ! -e "local/$DBNAME" ]]; then
+  echo "$SCRIPT: [ERROR] missing $DBNAME"
+  echo "$SCRIPT: [ERROR] run scripts/dpd-install"
+  exit -1
+fi;
+
+# sqlite3 --batch local/dpd.db ".mode json" "select rowid rowid, id,lemma_1,lemma_2,pos,grammar,derived_from,neg,verb,trans,plus_case,meaning_1,meaning_lit,meaning_2,non_ia,sanskrit,root_key,root_sign,root_base,family_root,family_word,family_compound,family_idioms,family_set,derivative,suffix,phonetic,compound_type,compound_construction,non_root_in_comps,source_1,sutta_1,example_1,source_2,sutta_2,example_2,antonym,synonym,variant,var_phonetic,commentary,notes,cognate,link,origin,stem,pattern,created_at,updated_at,inflections from dpd_headwords where id = \"$1\" limit 1" | json
+
+#sqlite3 --batch local/dpd.db ".mode json" "select lemma_1,lemma_2,grammar,derived_from,neg,verb,trans,plus_case,non_ia,sanskrit,root_key,root_sign,root_base,family_root,family_word,family_compound,family_idioms,family_set,derivative,suffix,phonetic,source_1,stem,pattern,inflections, \
+#id, pos, construction, meaning_1, meaning_2, meaning_lit \
+#from dpd_headwords where id = \"$1\" limit 1" | json
+
+node - <<'JS' $DIRNAME $SCRIPT $*
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
+let [ NODE, DASH, DIRNAME, SCRIPT, ...args] = process.argv;
+
+const msg = `${SCRIPT}:`;
+let squishJson = true;
+
+function help() {
+  console.error(`
+NAME
+  dpd-headwords - find given headwords in DPD database
+
+SYNOPSIS
+  dpd-headwords [OPTIONS] WORDS
+
+DESCRIPTION
+  Search DPD headwords table in DPD Sqlite3 database,
+  converting the result to JSON.
+
+  -?, --help
+    print this help text
+
+  -ac, --all-columns
+    print all table columns (Default is lookup_key, headwords, grammar)
+
+  -v, --verbose
+    print more information to stderr
+
+EXAMPLES
+  scripts/dpd-headwords -v dhamma devi
+`);
+  process.exit(0);
+}
+
+let dbg = 0;
+
+async function main() {
+  const msg = `${SCRIPT}.main:`;
+  let limit = 1;
+  let columns = [
+    'lemma_1',
+    'lemma_2',
+    'grammar',
+    'derived_from',
+    'neg',
+    'verb',
+    'trans',
+    'plus_case',
+    'non_ia',
+    'sanskrit',
+    'root_key',
+    'root_sign',
+    'root_base',
+    'family_root',
+    'family_word',
+    'family_compound',
+    'family_idioms',
+    'family_set',
+    'derivative',
+    'suffix',
+    'phonetic',
+    'source_1',
+    'stem',
+    'pattern',
+    'inflections',
+    'id',
+    'pos',
+    'construction',
+    'meaning_1',
+    'meaning_2',
+    'meaning_lit',
+  ];
+  let words = args.reduce((a,arg,i)=>{
+    switch (arg) {
+      case '-?':
+      case '--help':
+        help();
+        break;
+      case "--all-columns":
+      case "-ac":
+        columns = ['*'];
+        break;
+      case "--verbose":
+      case "-v":
+        dbg = true;
+        break;
+      case "--no-squish-json":
+      case "-nsj":
+        squishJson = false;
+        break;
+      default:
+        if (arg.at(0) === "-") {
+          console.error(`${msg} [ERROR] ignoring ${arg}`);
+        } else {
+          a.push(arg);
+        }
+        break;
+    }
+    return a;
+  }, []);
+  if (words.length === 0) {
+    help();
+  }
+  dbg && console.error(msg, {
+    NODE,DASH, DIRNAME, SCRIPT, words, squishJson, verbose:dbg,
+  });
+  let sqlWords = words.map(word=>`"${word}"`).join(",");
+  let sql = [
+    'select',
+    columns.join(','),
+    `from dpd_headwords where id in (${sqlWords})`,
+  ].join(' ');
+  dbg && console.error(msg, {sql});
+  let cmd = [
+    'sqlite3 --batch local/dpd.db ".mode json"',
+    `'${sql}'`,
+    '| json',
+  ].join(' ');
+  dbg && console.error(msg, {cmd});
+  let {stdout, stderr} = await exec(cmd);
+  console.log(msg, {stdout});
+  console.log(msg, {stderr});
+  let json = JSON.parse(stdout);
+  if (squishJson) {
+    json.forEach(row=>{
+      let keys = Object.keys(row);
+      keys.forEach(key=>{
+        let kv = row[key];
+        if (!kv) {
+          delete row[key];
+        }
+      });
+    });
+  }
+  dbg && console.error(msg, 'json', json);
+}
+(async function() {
+  try {
+    main()
+  } catch(e) {
+    console.error(msg, e);
+  }
+})()
+
+JS

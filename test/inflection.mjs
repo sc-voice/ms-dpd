@@ -125,7 +125,7 @@ typeof describe === "function" &&
     should(infs[1].matchesWord("dhammā",{nbr:'sg'})).equal(false);
     should(infs[1].matchesWord("dhammā",{nbr:'pl'})).equal(true);
 
-    let dhamma = Inflection.ALL
+    let dhamma = Inflection.TABLE
       .filter(inf=>inf.matchesWord('dhamma', {stem:"dhamm"}))
     dbg && console.log(msg, dhamma);
     should(Pali.compareRoman('a', 'ā')).below(0);
@@ -209,17 +209,17 @@ typeof describe === "function" &&
       [infs[3]],
     );
   });
-  it("find() ALL", ()=>{
+  it("select()", ()=>{
     const msg = "test.inflection@147";
     const dbg = 0;
-    let infAll = Inflection.find();
+    let infAll = Inflection.select();
     should(infAll.length).above(110).below(150);
   });
-  it("find() dhamma", ()=>{
+  it("TESTTESTselect() dhamma", ()=>{
     const msg = "test.inflection@147";
     const dbg = 0;
-    let infDhamma = Inflection.find(inf=>inf.matchesWord("dhamma"));
-    let unionDhamma = Inflection.union(infDhamma);
+    let infDhamma = Inflection.select(inf=>inf.matchesWord("dhamma"));
+    let unionDhamma = Inflection.union(...infDhamma.rows);
     dbg && console.log(msg, unionDhamma);
     should(unionDhamma.case).equal('voc');
     should(unionDhamma.type).equal('dcl');
@@ -228,12 +228,12 @@ typeof describe === "function" &&
     should.deepEqual(unionDhamma.nbr, 'sg');
     should.deepEqual(unionDhamma.sfx, 'a');
   });
-  it("find() dhammānaṁd ", ()=>{
+  it("select() dhammānaṁd ", ()=>{
     const msg = "test.inflection@147";
     const dbg = 0;
     let stem = "dhamm";
     // ṃ
-    let infDhammanam = Inflection.find(
+    let infDhammanam = Inflection.select(
       inf=>inf.matchesWord('dhammānaṁ', {stem}));
     should(infDhammanam.length).equal(6);
   });
