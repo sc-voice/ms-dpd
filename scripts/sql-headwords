@@ -57,10 +57,41 @@ EXAMPLES
 
 let dbg = 0;
 
-async function main() {
-  const msg = `${SCRIPT}.main:`;
-  let limit = 1;
-  let columns = [
+let COLS_DFLT = [
+  //'lemma_1',
+  //'lemma_2',
+  //'grammar',
+  //'derived_from',
+  'neg',
+  'verb',
+  'trans',
+  'plus_case',
+  'non_ia',
+  //'sanskrit',
+  //'root_key',
+  //'root_sign',
+  //'root_base',
+  //'family_root',
+  //'family_word',
+  //'family_compound',
+  //'family_idioms',
+  'family_set',
+  //'derivative',
+  //'suffix',
+  //'phonetic',
+  //'source_1',
+  'stem',
+  'pattern',
+  //'inflections',
+  'id',
+  'pos',
+  'construction',
+  'meaning_1',
+  //'meaning_2',
+  'meaning_lit',
+];
+
+let COLS_ALL = [
     'lemma_1',
     'lemma_2',
     'grammar',
@@ -92,7 +123,13 @@ async function main() {
     'meaning_1',
     'meaning_2',
     'meaning_lit',
-  ];
+  ]
+
+async function main() {
+  const msg = `${SCRIPT}.main:`;
+  let limit = 1;
+  let columns = COLS_DFLT;
+  ;
   let words = args.reduce((a,arg,i)=>{
     switch (arg) {
       case '-?':
@@ -101,7 +138,7 @@ async function main() {
         break;
       case "--all-columns":
       case "-ac":
-        columns = ['*'];
+        columns = COLS_ALL;
         break;
       case "--verbose":
       case "-v":
@@ -137,12 +174,12 @@ async function main() {
   let cmd = [
     'sqlite3 --batch local/dpd.db ".mode json"',
     `'${sql}'`,
-    '| json',
+//    '| json',
   ].join(' ');
   dbg && console.error(msg, {cmd});
   let {stdout, stderr} = await exec(cmd);
-  console.log(msg, {stdout});
-  console.log(msg, {stderr});
+  //console.log(msg, {stdout});
+  stderr && console.log(msg, {stderr});
   let json = JSON.parse(stdout);
   if (squishJson) {
     json.forEach(row=>{
@@ -155,7 +192,7 @@ async function main() {
       });
     });
   }
-  dbg && console.error(msg, 'json', json);
+  console.log(json);
 }
 (async function() {
   try {
