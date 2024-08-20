@@ -16,6 +16,10 @@ fi;
 #id, pos, construction, meaning_1, meaning_2, meaning_lit \
 #from dpd_headwords where id = \"$1\" limit 1" | json
 
+#sqlite3 --batch local/dpd.db "mode json" \
+# "select T1.lookup_key,T2.value HEADWORD,T3.meaning_1,T3.meaning_2 from lookup T1, json_each(T1.headwords) T2, dpd_headwords T3 \
+#  where T1.headwords is not '' and T2.value=T3.id and T1.lookup_key='devi'"
+
 node - <<'JS' $DIRNAME $SCRIPT $*
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);

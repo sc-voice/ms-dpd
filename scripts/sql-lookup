@@ -22,10 +22,10 @@ let [ NODE, DASH, DIRNAME, SCRIPT, ...args] = process.argv;
 function help() {
   console.error(`
 NAME
-  dpd-lookup - lookup given words in DPD database
+  scripts/sql-lookup - lookup given words in DPD database
 
 SYNOPSIS
-  dpd-lookup [OPTIONS] WORDS
+  scripts/sql-lookup [OPTIONS] WORDS
 
 DESCRIPTION
   Search DPD lookup table in Sqlite3 database,
@@ -40,8 +40,12 @@ DESCRIPTION
   -v, --verbose
     print more information to stderr
 
+  WORDS
+    one or more Pali words (e.g., "dhamma"). A single asterisk ("*")
+    is a wildcard for ALL Pali words.
+
 EXAMPLES
-  scripts/dpd-lookup -ac dhamma devi
+  scripts/sql-lookup -ac dhamma devi
 `);
   process.exit(0);
 }
