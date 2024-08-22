@@ -88,27 +88,36 @@ EXAMPLES
     '".mode json"',
     `'select ${columns.join(',')}`,
     ` from lookup`,
-    ` where lookup_key in (${sqlWords})`,
+    ' where',
+     `lookup_key in (${sqlWords})`,
     ` limit ${sqlWords.length}'`,
     '| json',
   ].join(' ');
   dbg && console.error(msg, {NODE,DASH, DIRNAME, SCRIPT, words});
   dbg && console.error(msg, cmd);
   let {stdout, stderr} = await exec(cmd);
-  let json = JSON.parse(stdout);
-  dbg && console.error(msg, json);
-  let rows = json.map(row=>{
-    let {lookup_key, headwords, grammar} = row;
-    headwords = JSON.parse(headwords);
-    grammar = JSON.parse(grammar);
-    return Object.assign({}, row, {headwords, grammar});
-  });
-
-  console.log('[');
-  for (let i=0; i<rows.length-1; i++) {
-    console.log(rows[i], ',');
+  if (stdout) {
+    try {
+      let json = JSON.parse(stdout);
+      dbg && console.error(msg, json);
+      let rows = json.map(row=>{
+        let {lookup_key, headwords, grammar} = row;
+        headwords = headwords && JSON.parse(headwords) || [];
+        grammar = grammar && JSON.parse(grammar);
+        return Object.assign({}, row, {headwords, grammar});
+      });
+      console.log('[');
+      for (let i=0; i<rows.length-1; i++) {
+        console.log(rows[i], ',');
+      }
+      console.log(rows.at(-1));
+      console.log(']');
+    } catch(e) {
+      console.error(msg, stdout, e);
+    }
+  } else {
+    console.log('[]');
   }
-  console.log(rows.at(-1));
-  console.log(']');
+
 })()
 JS

@@ -1,0 +1,237 @@
+#!/usr/bin/bash
+DBNAME=dpd.db
+SCRIPT=`basename $0`
+DIRNAME=`dirname $0`
+
+node - <<'JS' $DIRNAME $SCRIPT $* 
+const util = require('util');
+const fs = require('fs');
+const fsp = fs.promises;
+const path = require('path');
+const exec = util.promisify(require('child_process').exec);
+const MIN_PARMS = 0;
+let [ NODE, DASH, DIRNAME, SCRIPT, ...args] = process.argv;
+
+const msg = `${SCRIPT}:`;
+
+function help() {
+  console.error(`
+NAME
+  ${SCRIPT} - build JS DPD files from DPD SQL database
+
+SYNOPSIS
+  ${SCRIPT} NEWFILE
+
+DESCRIPTION
+  create new bash script with nodejs wrapper
+
+  -?, --help
+    print this help text
+
+  -rl, --row-limit ROWS
+    Limit SQL output to given number of rows. If ROWS
+    is zero, all rows are processed. (Default: 5)
+
+  -v, --verbose
+    print more information to stderr
+
+  NEWFILE
+    File path of new bash script
+
+EXAMPLES
+  ${SCRIPT} -v scripts/my-new-script
+`);
+  process.exit(0);
+}
+
+function parseArgs() {
+  const msg = `${SCRIPT}.parseArgs:`;
+  // default values
+  let dbg = 0;
+  let rowLimit = 5;
+
+  let parms = [];
+  for (let i=0; i<args.length; i++) {
+    let arg = args[i];
+    switch (arg) {
+      case '-?':
+      case '--help':
+        help();
+        break;
+      case '-rl':
+      case '-row-limit':
+        rowLimit = Number(args[++i]);
+        break;
+      case "--verbose":
+      case "-v":
+        dbg = 1;
+        break;
+      case "--very-verbose":
+      case "-vv":
+        dbg = 2;
+        break;
+      default:
+        if (arg.at(0) === "-") {
+          console.error(`${msg} [ERROR] ignoring ${arg}`);
+        } else {
+          a.push(arg);
+        }
+        break;
+    } // switch arg
+  } // for args
+  if (parms.length < MIN_PARMS) {
+    help();
+  }
+
+  let result = {
+    dbg,
+    rowLimit,
+    parms,
+  }
+  dbg>1 && console.error(msg, Object.assign({
+    NODE,DASH, DIRNAME, SCRIPT, parms, 
+  }, result));
+
+  return result;
+}
+let {
+  dbg,
+  rowLimit,
+  parms,
+} = parseArgs();
+
+async function loadLookup(){ 
+  const msg = `${SCRIPT}.loadLookup:`;
+  let sql = [
+    'select lookup_key word, headwords ',
+    'from lookup T1',
+    'where',
+    "T1.headwords is not ''",
+    'AND',
+    "T1.grammar is not ''",
+    rowLimit ? `limit ${rowLimit}` : '',
+  ].join(' ');
+  dbg>1 && console.error(msg, '[1]sql', sql);
+  let cmd = [
+    'sqlite3 --batch local/dpd.db',
+    '".mode json"',
+    '"',
+    sql,
+    '"',
+  ].join(' ');
+  dbg>1 && console.error(msg, '[2]cmd', cmd);
+  let {stdout, stderr} = await exec(cmd);
+  if (stderr) {
+    console.error(msg, 'stderr', stderr);
+  }
+  dbg>1 && console.error(msg, stdout);
+  let json = JSON.parse(stdout);
+  dbg>1 && console.error(msg, json);
+  let wordMap = json.reduce((a,row,i)=>{
+    let { word, headwords } = row;
+    a[word] = JSON.parse(headwords);
+    return a;
+  }, {});
+  dbg && console.error(msg, wordMap);
+
+  return wordMap;
+}
+
+async function main() {
+  const msg = `${SCRIPT}.main:`;
+
+  let tLookup = loadLookup();
+}
+
+(async function() {
+  try {
+    main()
+  } catch(e) {
+    console.error(msg, e);
+  }
+})()
+
+
+const { Compress } = import(`${DIRNAME}/../src/compress.mjs`);
+async function TBD() {
+  const textMap = {};
+
+  let SC_DATA_URL = 
+    'https://raw.githubusercontent.com/suttacentral/sc-data/main/dictionaries/simple/en/pli2en_dpd.json';
+  //let APIURL = 'https://suttacentral.net/api';
+  //let url = `${APIURL}/dictionaries/lookup?from=pli&to=en`;
+  //let res = await fetch(url);
+  let res = await fetch(SC_DATA_URL);
+  let resText = await res.text();
+  let data = JSON.parse(resText.replace(/ṃ/g, 'ṁ')); // SC anusvāra
+  let dataMap = {
+    __metadata: {
+      license: "https://digitalpalidictionary.github.io/titlepage.html",
+      version: "1.0.0",
+    }
+  }
+
+  let cmprs = new Compress();
+
+  for (let i = 0; i < data.length; i++) {
+    let di = data[i];
+    let key = di.entry;
+    let { definition } = di;
+
+    if (definition) {
+      for (let j=0; j<definition.length; j++) {
+        let line = definition[j];
+        textMap[line] = null;
+      }
+    }
+  }
+  let texts = Object.keys(textMap).sort();
+  for (let i=0; i<texts.length; i++) {
+    let line = texts[i];
+    textMap[line] = i;
+  }
+
+  for (let i = 0; i < data.length; i++) {
+    let di = data[i];
+    let key = di.entry;
+    let { definition } = di;
+
+    if (definition) {
+      definition = definition.map(d=>textMap[d]);
+      let info = JSON.stringify({ d:definition });
+      if (0) {
+        let infoCompress = await cmprs.lzwCompress(info);
+        dataMap[key] = infoCompress;
+      } else {
+        dataMap[key] = info;
+      }
+    }
+  }
+  let textPath = `${DIRNAME}/../data/en/dpd-text.mjs`;
+  texts = texts.map(line=>{
+    let [ type, meaning, litcon ] = line.split(/ *<.?b>/);
+    let [ lit, con ] = litcon.split(' [');
+    type = type.replace(/\.$/, '');
+    lit = (lit||'') && lit.replace(/;? *lit\. */, '');
+    con = (con||'') && con.replace(/] */, '').replace(/ \+ /g, '\u02d6');
+    return [type, meaning, lit, con].join('|');
+  });
+  let textJson = JSON.stringify(texts, null,1);
+  let textOut = `export const DPD_TEXTS=${textJson}`;
+  fs.writeFileSync(textPath, textOut);
+
+  let outPath = `./${DIRNAME}/../data/en/dpd.mjs`;
+  let out = JSON.stringify(dataMap,null,1);
+  out = `export const DPD=${out}`;
+  let keys = Object.keys(dataMap);
+  fs.writeFileSync(outPath, out);
+
+  console.log(msg, 'DPD dictionary updated', {
+    bytes: out.length*2,
+    keys: keys.length, 
+    outPath,
+  });
+}
+
+JS
+
