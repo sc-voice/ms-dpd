@@ -19,7 +19,9 @@ const exec = util.promisify(require('child_process').exec);
 let [ NODE, DASH, DIRNAME, SCRIPT, ...args] = process.argv;
 
 const msg = `${SCRIPT}:`;
+const MIN_ARGS = 0;
 const LOCAL=path.join(DIRNAME, '../local');
+const WORDS_PATH = path.join(LOCAL, 'words');
 
 function help() {
   console.error(`
@@ -37,7 +39,7 @@ DESCRIPTION
     print this help text
 
   -sd, --sub-directory DIR
-    subdirectory of "root/pli/ms". (default "")
+    subdirectory of "root/pli". (default "ms")
 
   -v, --verbose
     print more information to stderr
@@ -54,7 +56,8 @@ EXAMPLES
 function parseArgs() {
   const msg = `${SCRIPT}.parseArgs()`;
   let dbg = 0;
-  if (args.length == 0) {
+  let subDir = 'ms';
+  if (args.length < MIN_ARGS) {
     help();
   }
   let argTexts = args.reduce((a,arg,i)=>{
@@ -62,6 +65,10 @@ function parseArgs() {
       case '-?':
       case '--help':
         help();
+        break;
+      case "--sub-directory":
+      case "-sd":
+        subDir = args[++i];
         break;
       case "--verbose":
       case "-v":
@@ -81,19 +88,24 @@ function parseArgs() {
     }
     return a;
   }, []);
-  let parms = { dbg, argTexts };
-  dbg && console.error(msg, { NODE,DASH, DIRNAME, SCRIPT, parms, });
+  let parms = { 
+    dbg, 
+    argTexts,
+    subDir,
+  };
+  dbg && console.error(msg, 
+    Object.assign({ NODE,DASH, DIRNAME, SCRIPT}, parms));
 
   return parms;
 }
 var { 
   dbg,
   argTexts,
+  subDir,
 } = parseArgs();
 
 async function loadEbtData(fEbtData) {
   const msg = `${SCRIPT}.loadEbtData()`;
-  let { dbg } = parseArgs();
 
   let exists = false;
   try {
@@ -128,9 +140,8 @@ async function ebtWords() {
   const msg = `${SCRIPT}.ebtWords()`;
   const fEbtData = path.join(LOCAL, '../local/ebt-data');
   await loadEbtData(fEbtData);
-  let ms = path.join(fEbtData, 'root/pli/ms');
-  //let ms = path.join(fEbtData, 'root/pli/ms');
-  let jsonFiles = (await jsonPaths(ms))
+  let pliDir = path.join(fEbtData, 'root/pli', subDir);
+  let jsonFiles = (await jsonPaths(pliDir))
     .filter(d=>d.name.endsWith('.json'));
   let wordMap = {};
   for (let i=0; i<jsonFiles.length; i++) {
@@ -160,11 +171,11 @@ async function ebtWords() {
     });
   }
   let words = Object.keys(wordMap);
-  if (dbg < 2) {
-    console.log(msg, '[1]words', words.length);
-  } else {
+  if (dbg > 1) {
     words = words.sort();
-    console.log(msg, '[2]words', words);
+    console.error(msg, '[2]words', words);
+  } else if (dbg > 0) {
+    console.error(msg, '[1]words', words.length);
   }
 
   return { wordMap, words };
@@ -187,9 +198,22 @@ async function main() {
   const msg = `${SCRIPT}.main:`;
 
   let { wordMap:wmEbt, words:wEbt } = await ebtWords();
+  if (fs.existsSync(WORDS_PATH)) {
+    dbg>1 && console.error(msg, '[1]ok', WORDS_PATH);
+  } else {
+    await fsp.mkdir(WORDS_PATH);
+    dbg>1 && console.error(msg, '[1]mkdir', WORDS_PATH);
+  }
+  let wordsFile = path.join(WORDS_PATH, 
+    `${subDir.replaceAll('/','-')}.json`);
+  let json = JSON.stringify(wmEbt,null,1);
+  await fsp.writeFile(wordsFile, json);
+  console.log(msg, wordsFile, '=>', `${json.length} chars`);
 }
 
-(async function() {
-  try { main() } catch(e) { console.error(msg, e); }
-})()
+try { 
+  main();
+} catch(e) { 
+  console.error(msg, e); 
+}
 JS
