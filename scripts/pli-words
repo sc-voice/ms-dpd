@@ -24,7 +24,7 @@ const LOCAL=path.join(DIRNAME, '../local');
 const WORDS_PATH = path.join(LOCAL, 'words');
 
 function help() {
-  console.error(`
+  console.log(`
 NAME
   pli-words - list Pali words in ebt-data/root/pli/ms 
 
@@ -80,7 +80,7 @@ function parseArgs() {
         break;
       default:
         if (arg.at(0) === "-") {
-          console.error(`${msg} [ERROR] ignoring ${arg}`);
+          console.log(`${msg} [ERROR] ignoring ${arg}`);
         } else {
           a.push(arg);
         }
@@ -93,7 +93,7 @@ function parseArgs() {
     argTexts,
     subDir,
   };
-  dbg && console.error(msg, 
+  dbg && console.log(msg, 
     Object.assign({ NODE,DASH, DIRNAME, SCRIPT}, parms));
 
   return parms;
@@ -110,29 +110,26 @@ async function loadEbtData(fEbtData) {
   let exists = false;
   try {
     await fsp.access(fEbtData);
-    dbg && console.error(msg, '[1]ok', fEbtData);
+    dbg && console.log(msg, '[1]ok', fEbtData);
     exists = true;
   } catch(e) {
     if (e.code !== 'ENOENT') {
-      dbg && console.error(msg, '[2]err', e, fEbtData);
+      dbg && console.log(msg, '[2]err', e, fEbtData);
       throw e;
     }
   }
 
-  if (!exists) {
-    let cmdClone = [
-      "git clone https://github.com/ebt-site/ebt-data",
-      fEbtData,
-    ].join(' ');
-
-    try {
-      dbg && console.error(msg, '[3]clone', cmdClone);
-      let { stdout, stderr } = await exec(cmdClone);
-    } catch(e) {
-      let { stdout, stderr } = e;
-      dbg && console.error(msg, '[4]err', e, {stdout, stderr});
-      throw e;
-    }
+  try {
+    let cmd = exists
+      ? `cd ${fEbtData}; git pull`
+      : `git clone https://github.com/ebt-site/ebt-data ${fEbtData}`;
+    console.log(msg, '[3]pull', cmd);
+    let { stdout, stderr } = await exec(cmd);
+    dbg && console.log(msg, '[4]ok', stdout);
+  } catch(e) {
+    let { stdout, stderr } = e;
+    dbg && console.log(msg, '[5]err', e, {stdout, stderr});
+    throw e;
   }
 }
 
@@ -144,6 +141,7 @@ async function ebtWords() {
   let jsonFiles = (await jsonPaths(pliDir))
     .filter(d=>d.name.endsWith('.json'));
   let wordMap = {};
+  console.log(msg, '[1]jsonFiles', jsonFiles.length);
   for (let i=0; i<jsonFiles.length; i++) {
     let d = jsonFiles[i];
     let fpath = `${d.path}/${d.name}`;
@@ -173,9 +171,9 @@ async function ebtWords() {
   let words = Object.keys(wordMap);
   if (dbg > 1) {
     words = words.sort();
-    console.error(msg, '[2]words', words);
+    console.log(msg, '[2]words', words);
   } else if (dbg > 0) {
-    console.error(msg, '[1]words', words.length);
+    console.log(msg, '[3]words', words.length);
   }
 
   return { wordMap, words };
@@ -190,7 +188,7 @@ async function jsonPaths(dir) {
   files = files.filter(f=>{
     return f.name.endsWith('.json') && !/xplayground/.test(f.name);
   });
-  dbg && console.error(msg, '[1]files', files.length);
+  dbg && console.log(msg, '[1]files', files.length);
   return files;
 }
 
@@ -202,13 +200,14 @@ async function main() {
     dbg>1 && console.error(msg, '[1]ok', WORDS_PATH);
   } else {
     await fsp.mkdir(WORDS_PATH);
-    dbg>1 && console.error(msg, '[1]mkdir', WORDS_PATH);
+    dbg>1 && console.error(msg, '[2]mkdir', WORDS_PATH);
   }
   let wordsFile = path.join(WORDS_PATH, 
     `${subDir.replaceAll('/','-')}.json`);
   let json = JSON.stringify(wmEbt,null,1);
   await fsp.writeFile(wordsFile, json);
-  console.log(msg, wordsFile, '=>', `${json.length} chars`);
+  console.log(msg, '[3]wordsFile', wordsFile, '=>', 
+    `${json.length} chars`);
 }
 
 try { 
