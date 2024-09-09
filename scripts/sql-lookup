@@ -2,7 +2,6 @@
 DBNAME=dpd.db
 SCRIPT=`basename $0`
 DIRNAME=`dirname $0`
-DPDDB='xlocal/dpd.db'
 
 if [[ ! -e "local/$DBNAME" ]]; then
   echo "$SCRIPT: [ERROR] missing $DBNAME"

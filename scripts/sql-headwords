@@ -46,6 +46,10 @@ DESCRIPTION
   -ac, --all-columns
     print all table columns (Default is lookup_key, headwords, grammar)
 
+  -nsj, --no-squish-json
+    Do not suppress printing of blank fields. By default, blank fields
+    are not shown, since the table is somewhat sparse.
+    
   -v, --verbose
     print more information to stderr
 

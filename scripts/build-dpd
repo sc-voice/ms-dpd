@@ -11,148 +11,9 @@ const path = require('path');
 const exec = util.promisify(require('child_process').exec);
 const MIN_PARMS = 0;
 let [ NODE, DASH, DIRNAME, SCRIPT, ...args] = process.argv;
-
+const LOCAL = path.join(DIRNAME, '../local');
 const msg = `${SCRIPT}:`;
 
-function help() {
-  console.error(`
-NAME
-  ${SCRIPT} - build JS DPD files from DPD SQL database
-
-SYNOPSIS
-  ${SCRIPT} NEWFILE
-
-DESCRIPTION
-  create new bash script with nodejs wrapper
-
-  -?, --help
-    print this help text
-
-  -rl, --row-limit ROWS
-    Limit SQL output to given number of rows. If ROWS
-    is zero, all rows are processed. (Default: 5)
-
-  -v, --verbose
-    print more information to stderr
-
-  NEWFILE
-    File path of new bash script
-
-EXAMPLES
-  ${SCRIPT} -v scripts/my-new-script
-`);
-  process.exit(0);
-}
-
-function parseArgs() {
-  const msg = `${SCRIPT}.parseArgs:`;
-  // default values
-  let dbg = 0;
-  let rowLimit = 5;
-
-  let parms = [];
-  for (let i=0; i<args.length; i++) {
-    let arg = args[i];
-    switch (arg) {
-      case '-?':
-      case '--help':
-        help();
-        break;
-      case '-rl':
-      case '-row-limit':
-        rowLimit = Number(args[++i]);
-        break;
-      case "--verbose":
-      case "-v":
-        dbg = 1;
-        break;
-      case "--very-verbose":
-      case "-vv":
-        dbg = 2;
-        break;
-      default:
-        if (arg.at(0) === "-") {
-          console.error(`${msg} [ERROR] ignoring ${arg}`);
-        } else {
-          a.push(arg);
-        }
-        break;
-    } // switch arg
-  } // for args
-  if (parms.length < MIN_PARMS) {
-    help();
-  }
-
-  let result = {
-    dbg,
-    rowLimit,
-    parms,
-  }
-  dbg>1 && console.error(msg, Object.assign({
-    NODE,DASH, DIRNAME, SCRIPT, parms, 
-  }, result));
-
-  return result;
-}
-let {
-  dbg,
-  rowLimit,
-  parms,
-} = parseArgs();
-
-async function loadLookup(){ 
-  const msg = `${SCRIPT}.loadLookup:`;
-  let sql = [
-    'select lookup_key word, headwords ',
-    'from lookup T1',
-    'where',
-    "T1.headwords is not ''",
-    'AND',
-    "T1.grammar is not ''",
-    rowLimit ? `limit ${rowLimit}` : '',
-  ].join(' ');
-  dbg>1 && console.error(msg, '[1]sql', sql);
-  let cmd = [
-    'sqlite3 --batch local/dpd.db',
-    '".mode json"',
-    '"',
-    sql,
-    '"',
-  ].join(' ');
-  dbg>1 && console.error(msg, '[2]cmd', cmd);
-  let {stdout, stderr} = await exec(cmd);
-  if (stderr) {
-    console.error(msg, 'stderr', stderr);
-  }
-  dbg>1 && console.error(msg, stdout);
-  let json = JSON.parse(stdout);
-  dbg>1 && console.error(msg, json);
-  let wordMap = json.reduce((a,row,i)=>{
-    let { word, headwords } = row;
-    a[word] = JSON.parse(headwords);
-    return a;
-  }, {});
-  dbg && console.error(msg, wordMap);
-
-  return wordMap;
-}
-
-async function main() {
-  const msg = `${SCRIPT}.main:`;
-
-  let tLookup = loadLookup();
-}
-
-(async function() {
-  try {
-    main()
-  } catch(e) {
-    console.error(msg, e);
-  }
-})()
-
-
-const { Compress } = import(`${DIRNAME}/../src/compress.mjs`);
 async function TBD() {
   const textMap = {};
 
@@ -226,12 +87,262 @@ async function TBD() {
   let keys = Object.keys(dataMap);
   fs.writeFileSync(outPath, out);
 
-  console.log(msg, 'DPD dictionary updated', {
+  console.error(msg, 'DPD dictionary updated', {
     bytes: out.length*2,
     keys: keys.length, 
     outPath,
   });
+} // TBD
+
+
+async function main() {
+  const msg = `${SCRIPT}.main:`;
+  const Pali = (await import(`${DIRNAME}/../src/pali.mjs`)).default;
+  const { Compress } = 
+    (await import(`${DIRNAME}/../src/compress.mjs`)).default;
+
+  function help() {
+    console.error(`
+  NAME
+    ${SCRIPT} - build JS DPD files from DPD SQL database
+
+  SYNOPSIS
+    ${SCRIPT} NEWFILE
+
+  DESCRIPTION
+    create new bash script with nodejs wrapper
+
+    -?, --help
+      print this help text
+
+    -op, --out-patterns [PAT]
+      list headword patterns to stdout. Filter by PAT if given.
+      (default: off)
+
+    -rl, --row-limit ROWS
+      Limit SQL output to given number of rows. If ROWS
+      is zero, all rows are processed. (Default: 20)
+
+    -v, --verbose
+      print more information to stderr
+
+    NEWFILE
+      File path of new bash script
+
+  EXAMPLES
+    ${SCRIPT} -v scripts/my-new-script
+  `);
+    process.exit(0);
+  }
+
+  function parseArgs() {
+    const msg = `${SCRIPT}.parseArgs:`;
+    let result = { // default values
+      dbg: 0,
+      outPatterns: false,
+      parms: [],
+      rowLimit: 130,
+    }
+
+    for (let i=0; i<args.length; i++) {
+      let arg = args[i];
+      let argNext = args[i+1] || '';
+      switch (arg) {
+        case '-?':
+        case '--help':
+          help();
+          break;
+        case '-rl':
+        case '-row-limit':
+          result.rowLimit = Number(argNext);
+          break;
+        case '-op':
+        case '--out-patterns':
+          if (argNext && !argNext.startsWith('-')) {
+            result.outPatterns = argNext;
+            i++;
+          } else {
+            result.outPatterns = '.*';
+          }
+          break;
+        case "--verbose":
+        case "-v":
+          result.dbg = 1;
+          break;
+        case "--very-verbose":
+        case "-vv":
+          result.dbg = 2;
+          break;
+        default:
+          if (arg.at(0) === "-") {
+            console.error(`${msg} [ERROR] ignoring ${arg}`);
+          } else {
+            parms.push(arg);
+          }
+          break;
+      } // switch arg
+    } // for args
+    if (result.parms.length < MIN_PARMS) {
+      help();
+    }
+
+    result.dbg>1 && console.error(msg, Object.assign({
+      NODE,DASH, DIRNAME, SCRIPT, parms, 
+    }, result));
+
+    return result;
+  }
+  let {
+    dbg,
+    outPatterns,
+    rowLimit,
+    parms,
+  } = parseArgs();
+
+  // supported DPD patterns
+  const SCV_PATTERNS = [
+    ...('aāiī'.split('').reduce((a,l)=>{
+      a.push(`${l} masc`);
+      a.push(`${l} fem`);
+      a.push(`${l} nt`);
+      return a;
+    }, [])),
+  ];
+  dbg && console.log(msg, 'SCV_PATTERNS', SCV_PATTERNS);
+
+  async function bashSql(sql, mode='json') { 
+    const msg = `${SCRIPT}.bashSql()`;
+    try {
+      dbg && console.error(msg, '[1]sql', sql);
+      let cmd = [
+        'sqlite3 --batch local/dpd.db',
+        mode ? `".mode ${mode}"` : '',
+        `"${sql}"`,
+      ].join(' ');
+      dbg && console.error(msg, '[2]cmd', cmd);
+      let res = await exec(cmd);
+      dbg>1 && console.error(msg, '[2]res', res);
+      let {stdout, stderr} = res;
+      dbg>1 && console.error(msg, '[3]stdout', stdout);
+      if (stderr) {
+        console.error(msg, '[4]stderr', stderr);
+      }
+      return {stdout, stderr};
+    } catch(e) { 
+      console.error(msg, '[5]catch', e);
+      throw e;
+    }
+  }
+
+  async function loadPatterns() {
+    const msg = `${SCRIPT}.loadPatterns()`;
+    let sql = [
+      'select pattern,count(*) count',
+      'from dpd_headwords T1',
+      'group by pattern',
+      'order by count',
+    ].join(' ');
+    dbg && console.error(msg, '[1]sql', sql);
+    let {stdout, stderr} = await bashSql(sql);
+    let json = JSON.parse(stdout);
+    return json;
+  }
+
+  async function loadHeadwords() {
+    const msg = `${SCRIPT}.loadHeadwords()`;
+    let sql = [
+      'select id, pattern,meaning_1, meaning_2, meaning_lit',
+      'from dpd_headwords T1',
+      'where',
+      `T1.pattern in ('${SCV_PATTERNS.join("','")}')`,
+      rowLimit ? `limit ${rowLimit}` : '',
+    ].join(' ');
+    dbg && console.error(msg, '[1]sql', sql);
+    return await bashSql(sql);
+  }
+
+  async function loadLookup(mPliMs) { 
+    const msg = `${SCRIPT}.loadLookup:`;
+    let wAccept = 0;
+    let wReject = 0;
+    let sql = [
+      'select lookup_key word, headwords ',
+      'from lookup T1',
+      'where',
+      "T1.headwords is not ''",
+      'AND',
+      "T1.grammar is not ''",
+      rowLimit ? `limit ${rowLimit}` : '',
+    ].join(' ');
+    let {stdout, stderr} = await bashSql(sql);
+    let json = JSON.parse(stdout);
+    dbg>1 && console.error(msg, '[2]json', json);
+    let wordMap = json.reduce((a,row,i)=>{
+      let { word, headwords } = row;
+      try {
+        word = word.replace('ṃ', 'ṁ');
+      } catch(e) {
+        console.error(msg, {row}, e);
+        throw e;
+      }
+      if (mPliMs[word]) {
+        a[word] = JSON.parse(headwords);
+        wAccept++;
+      } else {
+        dbg>1 && console.error(msg, '[3]reject', word);
+        wReject++;
+      }
+      return a;
+    }, {});
+    dbg && console.error(msg, '[4]wordMap', wordMap);
+    dbg && console.error(msg, '[5]', {wAccept, wReject});
+
+    return {
+      wordMap,
+      wAccept,
+      wReject,
+    }
+  }
+
+  const PATTERNS = await loadPatterns();
+  if (outPatterns) {
+    PATTERNS.sort((a,b)=>b.count - a.count);
+    let re = new RegExp(outPatterns);
+    let pats = PATTERNS.filter(p=>re.test(p.pattern));
+    console.log("[");
+    pats.forEach((p,i)=>{
+      if (i<pats.length-1) {
+        console.log(`  ${JSON.stringify(p)},`)
+      } else {
+        console.log(`  ${JSON.stringify(p)}`)
+      }
+    });
+    console.log("]");
+    return;
+  }
+
+  console.log(msg, '[1]loadHeadwords');
+  let headwords = await loadHeadwords();
+  dbg && console.error(msg, '[1.1]headwords', headwords);
+
+  let cmd_ms = path.join(DIRNAME, 'pli-words');
+  console.log(msg, '[2]exec', cmd_ms);
+  let { stdout, stderr } = await exec(cmd_ms);
+  dbg>1 && console.error(msg, '[3]stdout', stdout);
+  stderr && console.error(msg, '[4]stderr', stderr);
+  let fnMS = path.join(LOCAL, 'words/ms.json');
+  console.error(msg, '[5]readFile', fnMS);
+  let mPliMs = JSON.parse( await fsp.readFile(fnMS) );
+  //console.error(msg, 'mPliMs', mPliMs);
+
+  console.error(msg, '[6]loadLookup');
+  let lookup = await loadLookup(mPliMs);
+
+  console.error('TBD1', lookup);
+
+  console.error(msg, '[7]done');
 }
+main();
 
 JS
 
