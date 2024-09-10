@@ -3,7 +3,7 @@ DBNAME=dpd.db
 SCRIPT=`basename $0`
 DIRNAME=`dirname $0`
 
-node - <<'JS' $DIRNAME $SCRIPT $* 
+node - <<'JS' $DIRNAME $SCRIPT "$@"
 const util = require('util');
 const fs = require('fs');
 const fsp = fs.promises;
@@ -144,6 +144,7 @@ async function main() {
       rowLimit: 130,
     }
 
+console.error(msg, {args});
     for (let i=0; i<args.length; i++) {
       let arg = args[i];
       let argNext = args[i+1] || '';
@@ -177,7 +178,7 @@ async function main() {
           if (arg.at(0) === "-") {
             console.error(`${msg} [ERROR] ignoring ${arg}`);
           } else {
-            parms.push(arg);
+            result.parms.push(arg);
           }
           break;
       } // switch arg
@@ -309,6 +310,7 @@ async function main() {
     PATTERNS.sort((a,b)=>b.count - a.count);
     let re = new RegExp(outPatterns);
     let pats = PATTERNS.filter(p=>re.test(p.pattern));
+    dbg && console.error(msg, 'outPatterns', outPatterns);
     console.log("[");
     pats.forEach((p,i)=>{
       if (i<pats.length-1) {

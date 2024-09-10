@@ -1,7 +1,7 @@
 #!/bin/bash
 SCRIPT=$0
 DIRNAME=`dirname $SCRIPT`
-node - <<'JS' $DIRNAME $*
+node - <<'JS' $DIRNAME "$@"
 let [ SCRIPT, DASH, DIRNAME, ...args] = process.argv;
 function help() {
   console.log(`
@@ -31,6 +31,10 @@ DESCRIPTION
         Use "unaccented" search method to show definitions for all Pāli 
         words matching unaccented letters with or without diacriticals
 
+    -op, --out-patterns [PAT]
+      list headword patterns to stdout. Filter by PAT if given.
+      (default: off)
+
 EXAMPLES
         dpd dhamma
         dpd -mu dhamma
@@ -38,17 +42,25 @@ EXAMPLES
   `);
   process.exit(0);
 }
-(async function() {
+async function main() {
+  const msg = 'dpd.main()';
   const path = (await import('path'));
   const fs = (await import('fs'));
   const { promises: fsp } = fs;
   const { fileURLToPath } = (await import('url'));
+  const util = require('util');
+  const exec = util.promisify(require('child_process').exec);
   const { default:Dictionary } = (await import(
     `${DIRNAME}/../src/dictionary.mjs`));
 
+  let dbg = 0;
+  let outPatterns = false;
   let dict = await Dictionary.create();
   let method; // default
-  args = args.filter(arg=>{
+  let textArgs = [];
+  for (let i=0; i<args.length; i++) {
+    let arg = args[i];
+    let argNext = args[i+1];
     if (arg.startsWith('-')) {
       switch (arg) {
         case '-me':
@@ -60,27 +72,90 @@ EXAMPLES
         case '-md':
           method = 'definition';
           break;
+        case '-op':
+        case '--out-patterns': 
+          if (argNext && !argNext.startsWith('-')) {
+            outPatterns = argNext;
+            i++;
+          } else {
+            outPatterns = '.*';
+          }
+          break;
         case '-?':
         case '--help':
           help();
           break;
       }
-      return false;
+    } else {
+      textArgs.push(arg);
     }
-
-    return true;
-  });
-  if (args.length == 0) {
+  }
+  if (textArgs.length == 0 && !outPatterns) {
     help();
   }
-  if (args.length > 1) {
+  if (outPatterns) {
+    async function bashSql(sql, mode='json') {
+      const msg = `${SCRIPT}.bashSql()`;
+      try {
+        dbg && console.error(msg, '[1]sql', sql);
+        let cmd = [
+          'sqlite3 --batch local/dpd.db',
+          mode ? `".mode ${mode}"` : '',
+          `"${sql}"`,
+        ].join(' ');
+        dbg && console.error(msg, '[2]cmd', cmd);
+        let res = await exec(cmd);
+        dbg>1 && console.error(msg, '[2]res', res);
+        let {stdout, stderr} = res;
+        dbg>1 && console.error(msg, '[3]stdout', stdout);
+        if (stderr) {
+          console.error(msg, '[4]stderr', stderr);
+        }
+        return {stdout, stderr};
+      } catch(e) { 
+        console.error(msg, '[5]catch', e);
+        throw e;
+      }
+    }
+    async function loadPatterns() {
+      const msg = `${SCRIPT}.loadPatterns()`;
+      let sql = [
+        'select pattern,count(*) count',
+        'from dpd_headwords T1',
+        'group by pattern',
+        'order by count',
+      ].join(' ');
+      dbg && console.error(msg, '[1]sql', sql);
+      let {stdout, stderr} = await bashSql(sql);
+      let json = JSON.parse(stdout);
+      return json;
+    }
+
+    const PATTERNS = await loadPatterns();
+    PATTERNS.sort((a,b)=>b.count - a.count);
+    let re = new RegExp(outPatterns);
+    let pats = PATTERNS.filter(p=>re.test(p.pattern));
+    dbg && console.error(msg, 'outPatterns', outPatterns);
+    console.log("[");
+    pats.forEach((p,i)=>{
+      if (i<pats.length-1) {
+        console.log(`  ${JSON.stringify(p)},`)
+      } else {
+        console.log(`  ${JSON.stringify(p)}`)
+      }
+    });
+    console.log("]");
+    return;
+  }
+
+  if (textArgs.length > 1) {
     if (!method || method==='definition') {
       method = 'definition'
-      args = [ args.join(' ') ];
+      textArgs = [ textArgs.join(' ') ];
     }
   }
-  for (let i=0; i<args.length; i++) {
-    let word = args[i];
+  for (let i=0; i<textArgs.length; i++) {
+    let word = textArgs[i];
     let info = dict.find(word, {method});
     if (info == null) {
       console.log(`${word} (not found)`);
@@ -131,5 +206,6 @@ EXAMPLES
       );
     });
   }
-})()
+} //main
+main()
 JS
