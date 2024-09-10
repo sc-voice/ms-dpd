@@ -211,7 +211,7 @@ console.error(msg, {args});
   ];
   dbg && console.log(msg, 'SCV_PATTERNS', SCV_PATTERNS);
 
-  async function bashSql(sql, mode='json') { 
+  async function bashSql(sql, mode='json') {
     const msg = `${SCRIPT}.bashSql()`;
     try {
       dbg && console.error(msg, '[1]sql', sql);
