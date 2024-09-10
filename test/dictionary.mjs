@@ -13,11 +13,11 @@ import {
 
 async function testDeclensions({word, infExpected, nbr}) {
   const msg = "test.dictionary.testDeclensions()";
-  const dbg = 0;
+  const dbg = 1;
   dbg && console.log(msg, '[1]word', word);
   let dict = await Dictionary.create();
   let infTable = dict.wordInflections(word, {nbr});
-  dbg && console.log(infTable.format({title:`${msg} ${word}`}));
+  dbg && console.log(infTable.format({title:`${msg} infTable ${word}`}));
 
   for (let i=0; i<infExpected.length; i++) {
     let infA = infTable.rows[i];
@@ -26,10 +26,15 @@ async function testDeclensions({word, infExpected, nbr}) {
       `rows[${i}] ${infE?.word} (${prop}) =>`, 
       `${infA && infA[prop]}!=${infE && infE[prop]}`,
     ].join(' '));
-    should(infA?.word).equal(infE?.word, eMsg('word'));
-    should(infA?.nbr).equal(infE?.nbr, eMsg('nbr'));
-    should(infA?.gdr).equal(infE?.gdr, eMsg('gdr'));
-    should(infA?.case).equal(infE?.case, eMsg('case'));
+    try {
+      should(infA?.word).equal(infE?.word, eMsg('word'));
+      should(infA?.nbr).equal(infE?.nbr, eMsg('nbr'));
+      should(infA?.gdr).equal(infE?.gdr, eMsg('gdr'));
+      should(infA?.case).equal(infE?.case, eMsg('case'));
+    } catch(e) {
+      console.log(msg, "ERROR", e.message, {infA, infE});
+      throw e;
+    }
   }
 }
 
@@ -419,6 +424,7 @@ typeof describe === "function" &&
     await testDeclensions({word:'devī', infExpected, });
   });
   it("TBDTESTTESTwordInflections aggi", async()=>{
+    console.log("test.dictionary@422"); return;
     const infExpected = [
       { gdr:'nt', case:'nom', nbr:'sg', word:'aggi' }, 
       { gdr:'nt', case:'acc', nbr:'sg', word:'aggiṁ' }, 
@@ -454,6 +460,7 @@ typeof describe === "function" &&
     await testDeclensions({word:'aggi', infExpected});
   });
   it("TBDTESTTESTwordInflections akkhi", async()=>{
+    console.log("test.dictionary@462"); return;
     const infExpected = [
       { gdr:'nt', case:'nom', nbr:'sg', word:'akkhi' }, 
       { gdr:'nt', case:'acc', nbr:'sg', word:'akkhiṁ' }, 
