@@ -212,33 +212,6 @@ console.error(msg, {args});
   ];
   dbg && console.log(msg, 'SCV_PATTERNS', SCV_PATTERNS);
 
-  async function loadPatterns() {
-    const msg = `${SCRIPT}.loadPatterns()`;
-    let sql = [
-      'select pattern,count(*) count',
-      'from dpd_headwords T1',
-      'group by pattern',
-      'order by count',
-    ].join(' ');
-    dbg && console.error(msg, '[1]sql', sql);
-    let {stdout, stderr} = await SqlDpd.bashSql(sql);
-    let json = JSON.parse(stdout);
-    return json;
-  }
-
-  async function loadHeadwords() {
-    const msg = `${SCRIPT}.loadHeadwords()`;
-    let sql = [
-      'select id, pattern,meaning_1, meaning_2, meaning_lit',
-      'from dpd_headwords T1',
-      'where',
-      `T1.pattern in ('${SCV_PATTERNS.join("','")}')`,
-      rowLimit ? `limit ${rowLimit}` : '',
-    ].join(' ');
-    dbg && console.error(msg, '[1]sql', sql);
-    return await SqlDpd.bashSql(sql);
-  }
-
   async function loadLookup(mPliMs) { 
     const msg = `${SCRIPT}.loadLookup:`;
     let wAccept = 0;
@@ -282,7 +255,7 @@ console.error(msg, {args});
     }
   }
 
-  const PATTERNS = await loadPatterns();
+  const PATTERNS = await SqlDpd.loadPatterns();
   if (outPatterns) {
     PATTERNS.sort((a,b)=>b.count - a.count);
     let re = new RegExp(outPatterns);
@@ -301,7 +274,7 @@ console.error(msg, {args});
   }
 
   console.log(msg, '[1]loadHeadwords');
-  let headwords = await loadHeadwords();
+  let headwords = await SqlDpd.loadHeadwords();
   dbg && console.error(msg, '[1.1]headwords', headwords);
 
   let cmd_ms = path.join(DIRNAME, 'pli-words');

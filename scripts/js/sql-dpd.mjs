@@ -3,11 +3,13 @@ const fs = require('fs');
 const fsp = fs.promises;
 const path = require('path');
 const exec = util.promisify(require('child_process').exec);
+import { DBG } from '../../src/defines.mjs';
+
+let dbg = DBG.SQL_DPD;
 
 export default class SqlDpd {
   static async bashSql(sql, mode='json') {
     const msg = `SqlDpd.bashSql()`;
-    let dbg = 0;
     try {
       dbg && console.error(msg, '[1]sql', sql);
       let cmd = [
@@ -29,4 +31,32 @@ export default class SqlDpd {
       throw e;
     }
   }
+
+  static async loadPatterns() {
+    const msg = `SqlDpd.loadPatterns()`;
+    let sql = [
+      'select pattern,count(*) count',
+      'from dpd_headwords T1',
+      'group by pattern',
+      'order by count',
+    ].join(' ');
+    dbg && console.error(msg, '[1]sql', sql);
+    let {stdout, stderr} = await SqlDpd.bashSql(sql);
+    let json = JSON.parse(stdout);
+    return json;
+  }
+
+  static async loadHeadwords() {
+    const msg = `SqlDpd.loadHeadwords()`;
+    let sql = [
+      'select id, pattern,meaning_1, meaning_2, meaning_lit',
+      'from dpd_headwords T1',
+      'where',
+      `T1.pattern in ('${SCV_PATTERNS.join("','")}')`,
+      rowLimit ? `limit ${rowLimit}` : '',
+    ].join(' ');
+    dbg && console.error(msg, '[1]sql', sql);
+    return await SqlDpd.bashSql(sql);
+  }
+
 }

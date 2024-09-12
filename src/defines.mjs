@@ -9,6 +9,7 @@ export const DBG = {
   INFLECTION_FIND: 0,
   RELATED_ENTRIES: 0,
   SANKEY: 0,
+  SQL_DPD: 0,
   WORD_INFLECTIONS: 0,
 }
 
