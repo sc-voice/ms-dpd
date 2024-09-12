@@ -31,10 +31,6 @@ DESCRIPTION
         Use "unaccented" search method to show definitions for all Pāli 
         words matching unaccented letters with or without diacriticals
 
-    -op, --out-patterns [PAT]
-      list headword patterns to stdout. Filter by PAT if given.
-      (default: off)
-
 EXAMPLES
         dpd dhamma
         dpd -mu dhamma
@@ -54,7 +50,6 @@ async function main() {
     `${DIRNAME}/../src/dictionary.mjs`));
 
   let dbg = 0;
-  let outPatterns = false;
   let dict = await Dictionary.create();
   let method; // default
   let textArgs = [];
@@ -72,15 +67,6 @@ async function main() {
         case '-md':
           method = 'definition';
           break;
-        case '-op':
-        case '--out-patterns': 
-          if (argNext && !argNext.startsWith('-')) {
-            outPatterns = argNext;
-            i++;
-          } else {
-            outPatterns = '.*';
-          }
-          break;
         case '-?':
         case '--help':
           help();
@@ -90,62 +76,8 @@ async function main() {
       textArgs.push(arg);
     }
   }
-  if (textArgs.length == 0 && !outPatterns) {
+  if (textArgs.length == 0) {
     help();
-  }
-  if (outPatterns) {
-    async function bashSql(sql, mode='json') {
-      const msg = `${SCRIPT}.bashSql()`;
-      try {
-        dbg && console.error(msg, '[1]sql', sql);
-        let cmd = [
-          'sqlite3 --batch local/dpd.db',
-          mode ? `".mode ${mode}"` : '',
-          `"${sql}"`,
-        ].join(' ');
-        dbg && console.error(msg, '[2]cmd', cmd);
-        let res = await exec(cmd);
-        dbg>1 && console.error(msg, '[2]res', res);
-        let {stdout, stderr} = res;
-        dbg>1 && console.error(msg, '[3]stdout', stdout);
-        if (stderr) {
-          console.error(msg, '[4]stderr', stderr);
-        }
-        return {stdout, stderr};
-      } catch(e) { 
-        console.error(msg, '[5]catch', e);
-        throw e;
-      }
-    }
-    async function loadPatterns() {
-      const msg = `${SCRIPT}.loadPatterns()`;
-      let sql = [
-        'select pattern,count(*) count',
-        'from dpd_headwords T1',
-        'group by pattern',
-        'order by count',
-      ].join(' ');
-      dbg && console.error(msg, '[1]sql', sql);
-      let {stdout, stderr} = await bashSql(sql);
-      let json = JSON.parse(stdout);
-      return json;
-    }
-
-    const PATTERNS = await loadPatterns();
-    PATTERNS.sort((a,b)=>b.count - a.count);
-    let re = new RegExp(outPatterns);
-    let pats = PATTERNS.filter(p=>re.test(p.pattern));
-    dbg && console.error(msg, 'outPatterns', outPatterns);
-    console.log("[");
-    pats.forEach((p,i)=>{
-      if (i<pats.length-1) {
-        console.log(`  ${JSON.stringify(p)},`)
-      } else {
-        console.log(`  ${JSON.stringify(p)}`)
-      }
-    });
-    console.log("]");
-    return;
   }
 
   if (textArgs.length > 1) {
