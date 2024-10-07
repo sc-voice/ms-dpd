@@ -32,8 +32,9 @@ SYNOPSIS
   pli-words [OPTIONS]
 
 DESCRIPTION
-  Search DPD headwords table in DPD Sqlite3 database,
-  converting the result to JSON.
+  Count occurrences of unique Pali words in ebt-data/root/pli
+  subfolders, writing the resulting JSON map to a file
+  (default local/words/ms.json)
 
   -?, --help
     print this help text

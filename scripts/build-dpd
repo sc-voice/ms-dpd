@@ -201,8 +201,10 @@ console.error(msg, {args});
     parms,
   } = parseArgs();
 
+  let sqlDpd = new SqlDpd({rowLimit});
+
   // supported DPD patterns
-  async function loadLookup(mPliMs) { 
+  async function loadLookup(mPliMs) {
     const msg = `${SCRIPT}.loadLookup:`;
     let wAccept = 0;
     let wReject = 0;
@@ -215,7 +217,7 @@ console.error(msg, {args});
       "T1.grammar is not ''",
       rowLimit ? `limit ${rowLimit}` : '',
     ].join(' ');
-    let {stdout, stderr} = await SqlDpd.bashSql(sql);
+    let {stdout, stderr} = await sqlDpd.bashSql(sql);
     let json = JSON.parse(stdout);
     dbg>1 && console.error(msg, '[2]json', json);
     let wordMap = json.reduce((a,row,i)=>{
@@ -245,7 +247,7 @@ console.error(msg, {args});
     }
   }
 
-  const PATTERNS = await SqlDpd.loadPatterns();
+  const PATTERNS = await sqlDpd.loadPatterns();
   if (outPatterns) {
     PATTERNS.sort((a,b)=>b.count - a.count);
     let re = new RegExp(outPatterns);
@@ -264,9 +266,10 @@ console.error(msg, {args});
   }
 
   console.log(msg, '[1]loadHeadwords');
-  let headwords = await SqlDpd.loadHeadwords({rowLimit});
+  let headwords = await sqlDpd.loadHeadwords();
   dbg && console.error(msg, '[1.1]headwords', headwords);
 
+  // Generate Pali word count from ebt-data/root/pli
   let cmd_ms = path.join(DIRNAME, 'pli-words');
   console.log(msg, '[2]exec', cmd_ms);
   let { stdout, stderr } = await exec(cmd_ms);

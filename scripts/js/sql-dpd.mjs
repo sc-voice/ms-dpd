@@ -17,8 +17,23 @@ const SCV_PATTERNS = [
 ];
 
 export default class SqlDpd {
-  static async bashSql(sql, mode='json') {
+  constructor(opts={}) {
+    let {
+      mode = 'json',
+      rowLimit = 130,
+    } = opts;
+
+    Object.assign(this, {
+      mode,
+      rowLimit,
+    });
+  }
+
+  async bashSql(sql, opts={}) {
     const msg = `SqlDpd.bashSql()`;
+    let {
+      mode = this.mode,
+    } = opts;
     try {
       dbg && console.error(msg, '[1]sql', sql);
       let cmd = [
@@ -41,7 +56,7 @@ export default class SqlDpd {
     }
   }
 
-  static async loadPatterns() {
+  async loadPatterns(opts={}) {
     const msg = `SqlDpd.loadPatterns()`;
     let sql = [
       'select pattern,count(*) count',
@@ -50,15 +65,15 @@ export default class SqlDpd {
       'order by count',
     ].join(' ');
     dbg && console.error(msg, '[1]sql', sql);
-    let {stdout, stderr} = await SqlDpd.bashSql(sql);
+    let {stdout, stderr} = await this.bashSql(sql, opts);
     let json = JSON.parse(stdout);
     return json;
   }
 
-  static async loadHeadwords(opts={}) {
+  async loadHeadwords(opts={}) {
     const msg = `SqlDpd.loadHeadwords()`;
     const {
-      rowLimit = 130,
+      rowLimit = this.rowLimit,
     } = opts;
     let sql = [
       'select id, pattern,meaning_1, meaning_2, meaning_lit',
@@ -68,7 +83,50 @@ export default class SqlDpd {
       rowLimit ? `limit ${rowLimit}` : '',
     ].join(' ');
     dbg && console.error(msg, '[1]sql', sql);
-    return await SqlDpd.bashSql(sql);
+    return await this.bashSql(sql, opts);
+  }
+
+  async loadLookup(mPliMs) { // TBD: coped from build-dpd
+    const msg = `SqlDpd.loadLookup:`;
+    let wAccept = 0;
+    let wReject = 0;
+    let sql = [
+      'select lookup_key word, headwords ',
+      'from lookup T1',
+      'where',
+      "T1.headwords is not ''",
+      'AND',
+      "T1.grammar is not ''",
+      rowLimit ? `limit ${rowLimit}` : '',
+    ].join(' ');
+    let {stdout, stderr} = await sqlDpd.bashSql(sql);
+    let json = JSON.parse(stdout);
+    dbg>1 && console.error(msg, '[2]json', json);
+    let wordMap = json.reduce((a,row,i)=>{
+      let { word, headwords } = row;
+      try {
+        word = word.replace('ṃ', 'ṁ');
+      } catch(e) {
+        console.error(msg, {row}, e);
+        throw e;
+      }
+      if (mPliMs[word]) {
+        a[word] = JSON.parse(headwords);
+        wAccept++;
+      } else {
+        dbg>1 && console.error(msg, '[3]reject', word);
+        wReject++;
+      }
+      return a;
+    }, {});
+    dbg && console.error(msg, '[4]wordMap', wordMap);
+    dbg && console.error(msg, '[5]', {wAccept, wReject});
+
+    return {
+      wordMap,
+      wAccept,
+      wReject,
+    }
   }
 
 }
