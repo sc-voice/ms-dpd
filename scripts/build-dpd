@@ -202,16 +202,6 @@ console.error(msg, {args});
   } = parseArgs();
 
   // supported DPD patterns
-  const SCV_PATTERNS = [
-    ...('aāiī'.split('').reduce((a,l)=>{
-      a.push(`${l} masc`);
-      a.push(`${l} fem`);
-      a.push(`${l} nt`);
-      return a;
-    }, [])),
-  ];
-  dbg && console.log(msg, 'SCV_PATTERNS', SCV_PATTERNS);
-
   async function loadLookup(mPliMs) { 
     const msg = `${SCRIPT}.loadLookup:`;
     let wAccept = 0;
@@ -274,7 +264,7 @@ console.error(msg, {args});
   }
 
   console.log(msg, '[1]loadHeadwords');
-  let headwords = await SqlDpd.loadHeadwords();
+  let headwords = await SqlDpd.loadHeadwords({rowLimit});
   dbg && console.error(msg, '[1.1]headwords', headwords);
 
   let cmd_ms = path.join(DIRNAME, 'pli-words');

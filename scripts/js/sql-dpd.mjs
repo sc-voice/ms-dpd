@@ -7,6 +7,15 @@ import { DBG } from '../../src/defines.mjs';
 
 let dbg = DBG.SQL_DPD;
 
+const SCV_PATTERNS = [
+  ...('aāiī'.split('').reduce((a,l)=>{
+    a.push(`${l} masc`);
+    a.push(`${l} fem`);
+    a.push(`${l} nt`);
+    return a;
+  }, [])),
+];
+
 export default class SqlDpd {
   static async bashSql(sql, mode='json') {
     const msg = `SqlDpd.bashSql()`;
@@ -46,8 +55,11 @@ export default class SqlDpd {
     return json;
   }
 
-  static async loadHeadwords() {
+  static async loadHeadwords(opts={}) {
     const msg = `SqlDpd.loadHeadwords()`;
+    const {
+      rowLimit = 130,
+    } = opts;
     let sql = [
       'select id, pattern,meaning_1, meaning_2, meaning_lit',
       'from dpd_headwords T1',
