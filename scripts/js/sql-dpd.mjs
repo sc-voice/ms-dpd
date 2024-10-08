@@ -86,10 +86,14 @@ export default class SqlDpd {
     return await this.bashSql(sql, opts);
   }
 
-  async loadLookup(mPliMs) { // TBD: coped from build-dpd
+  async loadLookup(opts={}) { // TBD: coped from build-dpd
     const msg = `SqlDpd.loadLookup:`;
     let wAccept = 0;
     let wReject = 0;
+    let {
+      paliMap, // optional object map of allowed Pali words 
+      rowLimit = this.rowLimit,
+    } = opts;
     let sql = [
       'select lookup_key word, headwords ',
       'from lookup T1',
@@ -99,9 +103,13 @@ export default class SqlDpd {
       "T1.grammar is not ''",
       rowLimit ? `limit ${rowLimit}` : '',
     ].join(' ');
-    let {stdout, stderr} = await sqlDpd.bashSql(sql);
+    let {stdout, stderr} = await this.bashSql(sql);
     let json = JSON.parse(stdout);
     dbg>1 && console.error(msg, '[2]json', json);
+    if (dbg) {
+      let nWords = paliMap && Object.keys(paliMap).length || 'all';
+      console.error(msg, '[3]paliMap');
+    }
     let wordMap = json.reduce((a,row,i)=>{
       let { word, headwords } = row;
       try {
@@ -110,17 +118,17 @@ export default class SqlDpd {
         console.error(msg, {row}, e);
         throw e;
       }
-      if (!mPliMs || mPliMs[word]) {
+      if (!paliMap || paliMap[word]) {
         a[word] = JSON.parse(headwords);
         wAccept++;
       } else {
-        dbg>1 && console.error(msg, '[3]reject', word);
+        dbg>1 && console.error(msg, '[4]reject', word);
         wReject++;
       }
       return a;
     }, {});
-    dbg && console.error(msg, '[4]wordMap', wordMap);
-    dbg && console.error(msg, '[5]', {wAccept, wReject});
+    dbg && console.error(msg, '[5]wordMap', wordMap);
+    dbg && console.error(msg, '[6]', {wAccept, wReject});
 
     return {
       wordMap,
