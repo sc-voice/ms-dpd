@@ -110,7 +110,7 @@ export default class SqlDpd {
         console.error(msg, {row}, e);
         throw e;
       }
-      if (mPliMs[word]) {
+      if (!mPliMs || mPliMs[word]) {
         a[word] = JSON.parse(headwords);
         wAccept++;
       } else {

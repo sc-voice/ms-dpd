@@ -281,7 +281,7 @@ console.error(msg, {args});
   //console.error(msg, 'mPliMs', mPliMs);
 
   console.error(msg, '[6]loadLookup');
-  let lookup = await loadLookup(mPliMs);
+  let lookup = await sqlDpd.loadLookup(mPliMs);
 
   console.error('TBD1', lookup);
 
