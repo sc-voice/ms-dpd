@@ -5,8 +5,6 @@ const path = require('path');
 const exec = util.promisify(require('child_process').exec);
 import { DBG } from '../../src/defines.mjs';
 
-let dbg = DBG.SQL_DPD;
-
 const SCV_PATTERNS = [
   ...('aāiī'.split('').reduce((a,l)=>{
     a.push(`${l} masc`);
@@ -19,11 +17,13 @@ const SCV_PATTERNS = [
 export default class SqlDpd {
   constructor(opts={}) {
     let {
+      dbg = DBG.SQL_DPD,
       mode = 'json',
       rowLimit = 130,
     } = opts;
 
     Object.assign(this, {
+      dbg,
       mode,
       rowLimit,
     });
@@ -32,6 +32,7 @@ export default class SqlDpd {
   async bashSql(sql, opts={}) {
     const msg = `SqlDpd.bashSql()`;
     let {
+      dbg = this.dbg,
       mode = this.mode,
     } = opts;
     try {
@@ -58,6 +59,9 @@ export default class SqlDpd {
 
   async loadPatterns(opts={}) {
     const msg = `SqlDpd.loadPatterns()`;
+    let { 
+      dbg = this.dbg,
+    } = opts;
     let sql = [
       'select pattern,count(*) count',
       'from dpd_headwords T1',
@@ -73,6 +77,7 @@ export default class SqlDpd {
   async loadHeadwords(opts={}) {
     const msg = `SqlDpd.loadHeadwords()`;
     const {
+      dbg = this.dbg,
       rowLimit = this.rowLimit,
     } = opts;
     let sql = [
@@ -80,6 +85,7 @@ export default class SqlDpd {
       'from dpd_headwords T1',
       'where',
       `T1.pattern in ('${SCV_PATTERNS.join("','")}')`,
+      `order by id`,
       rowLimit ? `limit ${rowLimit}` : '',
     ].join(' ');
     dbg && console.error(msg, '[1]sql', sql);
@@ -88,6 +94,9 @@ export default class SqlDpd {
 
   async loadLookup(opts={}) { // TBD: coped from build-dpd
     const msg = `SqlDpd.loadLookup:`;
+    let {
+      dbg = this.dbg,
+    } = opts;
     let wAccept = 0;
     let wReject = 0;
     let {

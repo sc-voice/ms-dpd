@@ -143,9 +143,9 @@ async function main() {
       outPatterns: false,
       parms: [],
       rowLimit: 130,
+      verboseRows: 3,
     }
 
-console.error(msg, {args});
     for (let i=0; i<args.length; i++) {
       let arg = args[i];
       let argNext = args[i+1] || '';
@@ -157,6 +157,7 @@ console.error(msg, {args});
         case '-rl':
         case '-row-limit':
           result.rowLimit = Number(argNext);
+          i++;
           break;
         case '-op':
         case '--out-patterns':
@@ -166,6 +167,11 @@ console.error(msg, {args});
           } else {
             result.outPatterns = '.*';
           }
+          break;
+        case "--verbose-rows":
+        case "-vr":
+          result.verboseRows = Number(argNext);
+          i++;
           break;
         case "--verbose":
         case "-v":
@@ -184,12 +190,14 @@ console.error(msg, {args});
           break;
       } // switch arg
     } // for args
+    console.error(msg, '[1]args', args);
+    result.dbg && console.error(msg, '[1]result', JSON.stringify(result));
     if (result.parms.length < MIN_PARMS) {
       help();
     }
 
     result.dbg>1 && console.error(msg, Object.assign({
-      NODE,DASH, DIRNAME, SCRIPT, parms, 
+      NODE,DASH, DIRNAME, SCRIPT, parms:result.parms, 
     }, result));
 
     return result;
@@ -199,9 +207,13 @@ console.error(msg, {args});
     outPatterns,
     rowLimit,
     parms,
+    verboseRows,
   } = parseArgs();
 
-  let sqlDpd = new SqlDpd({rowLimit});
+  let sqlDpd = new SqlDpd({
+    dbg: dbg > 1 ? 1 : 0,
+    rowLimit
+  });
 
   const PATTERNS = await sqlDpd.loadPatterns();
   if (outPatterns) {
@@ -221,9 +233,22 @@ console.error(msg, {args});
     return;
   }
 
-  console.log(msg, '[1]loadHeadwords');
-  let headwords = await sqlDpd.loadHeadwords();
-  dbg && console.error(msg, '[1.1]headwords', headwords);
+  let headwords;
+  try {
+    let {stdout,stderr} = await sqlDpd.loadHeadwords();
+    headwords = JSON.parse(stdout);
+    console.error(msg, '[1]headwords', headwords.length);
+    if (dbg) {
+      for (let i=0; i<verboseRows; i++) {
+        let hwi = JSON.stringify(headwords[i], (k,v)=>v||undefined);
+        console.error(' ', hwi);
+      }
+      console.error('  ...');
+    }
+  } catch(e) {
+    console.error(msg, e);
+    throw e;
+  }
 
   // Generate Pali word count from ebt-data/root/pli
   let cmd_ms = path.join(DIRNAME, 'pli-words');
@@ -234,10 +259,18 @@ console.error(msg, {args});
   let fnMS = path.join(LOCAL, 'words/ms.json');
   console.error(msg, '[5]readFile', fnMS);
   let paliMap = JSON.parse( await fsp.readFile(fnMS) );
-  console.error(msg, '[6]loadLookup');
-  let lookup = await sqlDpd.loadLookup({paliMap});
-
-  console.error('TBD1', lookup);
+  let {wordMap, wAccept, wReject} = await sqlDpd.loadLookup({paliMap});
+  let dbgWordMap = Object.keys(wordMap).slice(0,verboseRows)
+    .reduce((a,k)=>{
+      let v = wordMap[k];
+      v && v.length && (a[k] = v);
+      return a;
+    }, {});
+  console.error(msg, '[6]lookup', {
+    wordMap: dbgWordMap,
+    wAccept,
+    wReject,
+  });
 
   console.error(msg, '[7]done');
 }
