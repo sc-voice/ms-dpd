@@ -20,6 +20,7 @@ export default class SqlDpd {
       dbg = DBG.SQL_DPD,
       mode = 'json',
       rowLimit = 130,
+      maxBuffer = 10 * 1024 * 1024,
     } = opts;
 
     Object.assign(this, {
@@ -34,6 +35,7 @@ export default class SqlDpd {
     let {
       dbg = this.dbg,
       mode = this.mode,
+      maxBuffer = this.maxBuffer,
     } = opts;
     try {
       dbg && console.error(msg, '[1]sql', sql);
@@ -43,7 +45,7 @@ export default class SqlDpd {
         `"${sql}"`,
       ].join(' ');
       dbg && console.error(msg, '[2]cmd', cmd);
-      let res = await exec(cmd);
+      let res = await exec(cmd, {maxBuffer});
       dbg>1 && console.error(msg, '[2]res', res);
       let {stdout, stderr} = res;
       dbg>1 && console.error(msg, '[3]stdout', stdout);
@@ -96,13 +98,13 @@ export default class SqlDpd {
     const msg = `SqlDpd.loadLookup:`;
     let {
       dbg = this.dbg,
-    } = opts;
-    let wAccept = 0;
-    let wReject = 0;
-    let {
       paliMap, // optional object map of allowed Pali words 
       rowLimit = this.rowLimit,
     } = opts;
+    let wAccept = 0; // DPD words used in paliMap
+    let wReject = 0; // DPD words not used in paliMap
+    let wPali = paliMap && Object.keys(paliMap).length || 0;
+    let wUndefined = wPali; // paliMap words not defined in DPD
     let sql = [
       'select lookup_key word, headwords ',
       'from lookup T1',
@@ -130,6 +132,7 @@ export default class SqlDpd {
       if (!paliMap || paliMap[word]) {
         a[word] = JSON.parse(headwords);
         wAccept++;
+        wUndefined--;
       } else {
         dbg>1 && console.error(msg, '[4]reject', word);
         wReject++;
@@ -143,6 +146,8 @@ export default class SqlDpd {
       wordMap,
       wAccept,
       wReject,
+      wPali,
+      wUndefined,
     }
   }
 

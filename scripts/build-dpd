@@ -10,6 +10,7 @@ const fsp = fs.promises;
 const path = require('path');
 const exec = util.promisify(require('child_process').exec);
 const MIN_PARMS = 0;
+const ROW_LIMIT = 130;
 let [ NODE, DASH, DIRNAME, SCRIPT, ...args] = process.argv;
 const LOCAL = path.join(DIRNAME, '../local');
 const msg = `${SCRIPT}:`;
@@ -108,11 +109,12 @@ async function main() {
     ${SCRIPT} - build JS DPD files from DPD SQL database
 
   SYNOPSIS
-    ${SCRIPT} NEWFILE
+    ${SCRIPT} [OPTIONS]
 
   DESCRIPTION
     create new bash script with nodejs wrapper
 
+  OPTIONS
     -?, --help
       print this help text
 
@@ -122,16 +124,14 @@ async function main() {
 
     -rl, --row-limit ROWS
       Limit SQL output to given number of rows. If ROWS
-      is zero, all rows are processed. (Default: 20)
+      is zero, all rows are processed. (Default: ${ROW_LIMIT})
 
     -v, --verbose
       print more information to stderr
 
-    NEWFILE
-      File path of new bash script
-
   EXAMPLES
-    ${SCRIPT} -v scripts/my-new-script
+    ${SCRIPT} -rl 0
+      Rebuild all.
   `);
     process.exit(0);
   }
@@ -142,7 +142,7 @@ async function main() {
       dbg: 0,
       outPatterns: false,
       parms: [],
-      rowLimit: 130,
+      rowLimit: ROW_LIMIT,
       verboseRows: 3,
     }
 
@@ -257,9 +257,11 @@ async function main() {
   dbg>1 && console.error(msg, '[3]stdout', stdout);
   stderr && console.error(msg, '[4]stderr', stderr);
   let fnMS = path.join(LOCAL, 'words/ms.json');
-  console.error(msg, '[5]readFile', fnMS);
   let paliMap = JSON.parse( await fsp.readFile(fnMS) );
-  let {wordMap, wAccept, wReject} = await sqlDpd.loadLookup({paliMap});
+  console.error(msg, '[5]readFile', fnMS, Object.keys(paliMap).length);
+  let {
+    wordMap, wAccept, wReject, wUndefined, wPali
+  } = await sqlDpd.loadLookup({paliMap});
   let dbgWordMap = Object.keys(wordMap).slice(0,verboseRows)
     .reduce((a,k)=>{
       let v = wordMap[k];
@@ -270,6 +272,8 @@ async function main() {
     wordMap: dbgWordMap,
     wAccept,
     wReject,
+    wPali,
+    wUndefined,
   });
 
   console.error(msg, '[7]done');
