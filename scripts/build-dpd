@@ -1,7 +1,17 @@
 #!/usr/bin/bash
 DBNAME=dpd.db
+DBSRC=local/$DBNAME
 SCRIPT=`basename $0`
 DIRNAME=`dirname $0`
+
+set -e # DIE ON ERROR
+
+if [[ -e $DBSRC ]]; then
+  echo $SCRIPT "$DBSRC found, building..."
+else
+  echo $SCRIPT "$DBSRC not found, installing..."
+  $DIRNAME/dpd-install
+fi
 
 node - <<'JS' $DIRNAME $SCRIPT "$@"
 const util = require('util');
