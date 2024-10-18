@@ -1,25 +1,30 @@
 #!/usr/bin/bash
+DMY=`date +%d%m%y`
 DBNAME=dpd.db
-TARNAME=$DBNAME.tar
+DPDNAME=dpd.db.$DMY
+TARNAME=$DBNAME.$DMY.tar
 BZ2NAME=$TARNAME.bz2
 SCRIPT=`basename $0`
-BZ2SRC=~/Downloads/$BZ2NAME
+BZ2SRC=~/Downloads/$DBNAME.tar.bz2
+BZ2DST=local/$BZ2NAME
+TARDST=local/$TARNAME
+DPDURL=https://github.com/digitalpalidictionary/dpd-db/releases
 
-set -e
 echo $SCRIPT '[BEGIN]' `date`
 sync
 
-echo $SCRIPT: "==> Download $BZ2NAME from digitalpalidictionary:"
-echo $SCRIPT: "  https://bit.ly/dpd-releases"
-echo $SCRIPT: "  === OR ==="
-echo $SCRIPT: "  https://github.com/digitalpalidictionary/digitalpalidictionary/releases"
+set -e # TERMINATE ON ERROR
+
+echo $SCRIPT: "==> Open browser and download '$DBNAME.tar.bz2' from:"
+echo "  https://github.com/digitalpalidictionary/dpd-db/releases"
+
 read -p "$SCRIPT: ==> Downloaded? (Y/n)" YN
 if [[ "$YN" != "Y" && "$YN" != "y" && "$YN" != "" ]]; then 
   echo $SCRIPT: "[CANCELED]"
   exit -1
 fi
 
-read -p "$SCRIPT: ==> Downloaded file? ($BZ2SRC):" YN
+read -p "$SCRIPT: ==> Enter download filename: ($BZ2SRC):" YN
 if [ "$YN" != "" ]; then
   BZ2SRC=$YN
 fi
@@ -55,32 +60,34 @@ if [ ! -e $BZ2SRC ]; then
 fi
 echo "$SCRIPT:"  `ls -l $BZ2SRC`
 if [ -e $BZ2SRC ]; then
-  echo $SCRIPT: "Moving $BZ2SRC to local/$BZ2NAME"
-  mv -f $BZ2SRC local/$BZ2NAME
+  echo $SCRIPT: "Moving $BZ2SRC to $BZ2DST"
+  mv -f $BZ2SRC $BZ2DST
 else
   echo $SCRIPT: "[FAIL] $BZ2SRC not found:"
   exit -1
 fi
 
-if [ -e local/$BZ2NAME ]; then
-  echo $SCRIPT: "bzip2 -d local/$BZ2NAME (ETA ~10-20s...)"
-  rm -f local/$TARNAME
-  bzip2 -v -d local/$BZ2NAME
+if [ -e $BZ2DST ]; then
+  echo $SCRIPT: "bzip2 -d $BZ2DST (ETA ~10-20s...)"
+  rm -f $TARDST
+  bzip2 -v -d $BZ2DST
 else 
-  echo $SCRIPT: "[FAIL] local/$BZ2NAME not found..."
+  echo $SCRIPT: "[FAIL] $BZ2DST not found..."
   exit -1
 fi
 
-if [ -e local/$TARNAME ]; then
-  echo $SCRIPT: "tar xvf local/$TARNAME (...)"
+if [ -e $TARDST ]; then
+  echo $SCRIPT: "tar xvf $TARDST (...)"
   pushd local > /dev/null
   rm -f $DBNAME
-  tar -xvf $TARNAME
+  tar -xvf $TARNAME --transform "s,$DBNAME,$DPDNAME,"
+  rm $TARNAME
+  ln -sf $DPDNAME $DBNAME
   popd > /dev/null
   echo "$SCRIPT: loaded DPD database"
-  echo "$SCRIPT:" `ls -l local/$DBNAME`
+  echo "$SCRIPT:" `ls -l local/$DPDNAME`
 else 
-  echo $SCRIPT: "[FAIL] local/$TARNAME not found"
+  echo $SCRIPT: "[FAIL] $TARDST not found"
   exit -1
 fi
 

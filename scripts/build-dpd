@@ -172,6 +172,7 @@ async function main() {
         case "-vr":
           result.verboseRows = Number(argNext);
           i++;
+          result.dbg = result.dbg || 1;
           break;
         case "--verbose":
         case "-v":
@@ -255,29 +256,41 @@ async function main() {
   let cmd_ms = path.join(DIRNAME, 'pli-words');
   console.log(msg, '[2]exec', cmd_ms);
   let { stdout, stderr } = await exec(cmd_ms);
-  dbg>1 && console.error(msg, '[3]stdout', stdout);
-  stderr && console.error(msg, '[4]stderr', stderr);
+  dbg>1 && console.error(msg, '[2.1]stdout', stdout);
+  stderr && console.error(msg, '[2.2]stderr', stderr);
   let fnMS = path.join(LOCAL, 'words/ms.json');
   let paliMap = JSON.parse( await fsp.readFile(fnMS) );
-  console.error(msg, '[5]readFile', fnMS, Object.keys(paliMap).length);
+  console.error(msg, '[3]readFile', fnMS, Object.keys(paliMap).length);
+  let headwordUsage = {};
   let {
-    wordMap, wAccept, wReject, wUndefined, wPali
-  } = await sqlDpd.loadLookup({paliMap});
+    wordMap, wAccept, wReject, wUndefined, wPali,
+  } = await sqlDpd.loadLookup({paliMap, headwordUsage});
   let dbgWordMap = Object.keys(wordMap).slice(0,verboseRows)
     .reduce((a,k)=>{
       let v = wordMap[k];
       v && v.length && (a[k] = v);
       return a;
     }, {});
-  console.error(msg, '[6]lookup', {
+  console.error(msg, '[4]lookup', {
     wordMap: dbgWordMap,
     wAccept,
     wReject,
     wPali,
     wUndefined,
   });
+  let hwKeys = Object.keys(headwordUsage).sort((a,b)=>{
+    return (headwordUsage[b] - headwordUsage[a]) || (a-b);
+  });
+  if (dbg) {
+    let keys = hwKeys.slice(0, verboseRows);
+    let hws =  keys.reduce((a,k,i)=>{
+      a += `${k}:${headwordUsage[k]} `;
+      return a;
+    }, '');
+    console.error(msg, '[4.1]headwordUsage', hws);
+  }
 
-  console.error(msg, '[7]done');
+  console.error(msg, '[5]done');
 }
 main();
 

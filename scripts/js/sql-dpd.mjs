@@ -98,6 +98,7 @@ export default class SqlDpd {
     const msg = `SqlDpd.loadLookup:`;
     let {
       dbg = this.dbg,
+      headwordUsage, // optional map of headword id's
       paliMap, // optional object map of allowed Pali words 
       rowLimit = this.rowLimit,
     } = opts;
@@ -130,7 +131,14 @@ export default class SqlDpd {
         throw e;
       }
       if (!paliMap || paliMap[word]) {
-        a[word] = JSON.parse(headwords);
+        let hwrds = JSON.parse(headwords);
+        a[word] = hwrds;
+        if (headwordUsage) {
+          for (let ihw=0; ihw<hwrds.length; ihw++) {
+            let hw = hwrds[ihw];
+            headwordUsage[hw] = (headwordUsage[hw]||0)+1;
+          }
+        }
         wAccept++;
         wUndefined--;
       } else {
