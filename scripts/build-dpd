@@ -21,8 +21,14 @@ const path = require('path');
 const exec = util.promisify(require('child_process').exec);
 const MIN_PARMS = 0;
 const ROW_LIMIT = 130;
+const VERBOSE_ROWS = 3;
 let [ NODE, DASH, DIRNAME, SCRIPT, ...args] = process.argv;
-const LOCAL = path.join(DIRNAME, '../local');
+const APPDIR = path.join(DIRNAME, '..');
+const LOCAL = path.join(APPDIR, 'local');
+/////////// TODO BEGIN
+const DATADIR = path.join(APPDIR, 'local', 'data'); 
+//const DATADIR = path.join(APPDIR, 'data'); 
+/////////// TODO END
 const msg = `${SCRIPT}:`;
 
 async function TBD() {
@@ -92,7 +98,7 @@ async function TBD() {
   let textOut = `export const DPD_TEXTS=${textJson}`;
   fs.writeFileSync(textPath, textOut);
 
-  let outPath = `./${DIRNAME}/../data/en/dpd.mjs`;
+  let outPath = `./${DIRNAME}/../local/data/en/dpd.mjs`;
   let out = JSON.stringify(dataMap,null,1);
   out = `export const DPD=${out}`;
   let keys = Object.keys(dataMap);
@@ -139,6 +145,10 @@ async function main() {
     -v, --verbose
       print more information to stderr
 
+    -vr, --verbose-rows
+      number of rows of verbose information for tabular data.
+      (Default: ${VERBOSE_ROWS})
+
   EXAMPLES
     ${SCRIPT} -rl 0
       Rebuild all.
@@ -153,7 +163,7 @@ async function main() {
       outPatterns: false,
       parms: [],
       rowLimit: ROW_LIMIT,
-      verboseRows: 3,
+      verboseRows: VERBOSE_ROWS,
     }
 
     for (let i=0; i<args.length; i++) {
@@ -224,7 +234,8 @@ async function main() {
 
   let sqlDpd = new SqlDpd({
     dbg: dbg > 1 ? 1 : 0,
-    rowLimit
+    rowLimit,
+    dataDir: DATADIR,
   });
 
   const PATTERNS = await sqlDpd.loadPatterns();
@@ -263,9 +274,9 @@ async function main() {
   }
 
   // Generate Pali word count from ebt-data/root/pli
-  let cmd_ms = path.join(DIRNAME, 'pli-words');
+  let cmd_ms = path.join('.', 'pli-words');
   console.log(msg, '[2]exec', cmd_ms);
-  let { stdout, stderr } = await exec(cmd_ms);
+  let { stdout, stderr } = await exec(cmd_ms, {cwd:APPDIR});
   dbg>1 && console.error(msg, '[2.1]stdout', stdout);
   stderr && console.error(msg, '[2.2]stderr', stderr);
   let fnMS = path.join(LOCAL, 'words/ms.json');
@@ -274,7 +285,7 @@ async function main() {
   let headwordUsage = {};
   let {
     wordMap, wAccept, wReject, wUndefined, wPali,
-  } = await sqlDpd.loadLookup({paliMap, headwordUsage});
+  } = await sqlDpd.buildLookup({paliMap, headwordUsage});
   let dbgWordMap = Object.keys(wordMap).slice(0,verboseRows)
     .reduce((a,k)=>{
       let v = wordMap[k];
@@ -291,14 +302,6 @@ async function main() {
   let hwKeys = Object.keys(headwordUsage).sort((a,b)=>{
     return (headwordUsage[b] - headwordUsage[a]) || (a-b);
   });
-  if (dbg) {
-    let keys = hwKeys.slice(0, verboseRows);
-    let hws =  keys.reduce((a,k,i)=>{
-      a += `${k}:${headwordUsage[k]} `;
-      return a;
-    }, '');
-    console.error(msg, '[4.1]headwordUsage', hws);
-  }
 
   console.error(msg, '[5]done');
 }

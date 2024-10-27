@@ -1,9 +1,12 @@
-const util = require('util');
-const fs = require('fs');
+import fs from 'fs';
 const fsp = fs.promises;
-const path = require('path');
+import path from 'path';
+import util from 'util';
+import * as url from 'url';
 const exec = util.promisify(require('child_process').exec);
 import { DBG } from '../../src/defines.mjs';
+const msg = "SqlDpd:";
+import * as Pali from '../../src/pali.mjs';
 
 const SCV_PATTERNS = [
   ...('aāiī'.split('').reduce((a,l)=>{
@@ -16,18 +19,22 @@ const SCV_PATTERNS = [
 
 export default class SqlDpd {
   constructor(opts={}) {
+    const msg = "SqlDpd.ctor:";
     let {
       dbg = DBG.SQL_DPD,
       mode = 'json',
       rowLimit = 130,
       maxBuffer = 10 * 1024 * 1024,
+      dataDir = path.join("../../data"),
     } = opts;
 
     Object.assign(this, {
       dbg,
       mode,
       rowLimit,
+      dataDir,
     });
+    console.log(msg, '[1]this', this);
   }
 
   async bashSql(sql, opts={}) {
@@ -94,17 +101,49 @@ export default class SqlDpd {
     return await this.bashSql(sql, opts);
   }
 
-  async loadLookup(opts={}) { // TBD: coped from build-dpd
-    const msg = `SqlDpd.loadLookup:`;
+  async buildIndexMap(headwordUsage) {
+    const msg = `SqlDpd.buildIndexMap:`;
+    let { 
+      dbg,
+      dataDir,
+    } = this;
+    let hwKeys = Object.keys(headwordUsage).sort((a,b)=>{
+      return (headwordUsage[b] - headwordUsage[a]) || (a-b);
+    });
+
+    console.error(msg, '[1]hwKeys', hwKeys.length);
+    if (dbg) {
+      let keys = hwKeys.slice(0, verboseRows);
+      let hws =  keys.reduce((a,k,i)=>{
+        a += `${k}:${headwordUsage[k]} `;
+        return a;
+      }, '');
+      console.error(msg, '[1.1]headwordUsage', hws);
+    }
+    let hwkJson = JSON.stringify(hwKeys, null, 1);
+    let hwkPath = path.join(dataDir, 'headword-keys.mjs');
+    await fs.promises.writeFile(hwkPath, hwkJson);
+    console.error(msg, '[2]hwkPath', hwkJson.length);
+
+  }
+
+  async buildLookup(opts={}) { 
+    const msg = `SqlDpd.buildLookup:`;
+    console.log(msg, 'Pali', Pali);
     let {
-      dbg = this.dbg,
       headwordUsage, // optional map of headword id's
       paliMap, // optional object map of allowed Pali words 
       rowLimit = this.rowLimit,
     } = opts;
+    let {
+      dbg,
+      dataDir,
+    } = this;
     let wAccept = 0; // DPD words used in paliMap
     let wReject = 0; // DPD words not used in paliMap
-    let wPali = paliMap && Object.keys(paliMap).length || 0;
+    let paliWords = paliMap && Object.keys(paliMap)
+      .sort(Pali.compareRoman);
+    let wPali = paliWords && paliWords.length || 0;
     let wUndefined = wPali; // paliMap words not defined in DPD
     let sql = [
       'select lookup_key word, headwords ',
@@ -119,8 +158,8 @@ export default class SqlDpd {
     let json = JSON.parse(stdout);
     dbg>1 && console.error(msg, '[2]json', json);
     if (dbg) {
-      let nWords = paliMap && Object.keys(paliMap).length || 'all';
-      console.error(msg, '[3]paliMap');
+      let nWords = paliWords && paliWords.length || 'all';
+      console.error(msg, '[3]paliWords', nWords);
     }
     let wordMap = json.reduce((a,row,i)=>{
       let { word, headwords } = row;
@@ -147,8 +186,21 @@ export default class SqlDpd {
       }
       return a;
     }, {});
-    dbg && console.error(msg, '[5]wordMap', wordMap);
+    paliMap = paliWords.reduce((a,w)=>{
+      a[w] = paliWords[w];
+      return a;
+    }, {});
+
+    dbg && console.error(msg, '[5]paliMap', paliMap, 
+      paliWords.slice(0, verboseRows));
     dbg && console.error(msg, '[6]', {wAccept, wReject});
+    this.buildIndexMap(headwordUsage);
+
+    let lookupJson = JSON.stringify(paliMap, null, 1);
+    let lookupPath = path.join(dataDir, 'lookup.mjs');
+    await fs.promises.writeFile(lookupPath, lookupJson);
+    dbg && console.error(msg, '[7]lookupPath', lookupPath, 
+      lookupJson.length);
 
     return {
       wordMap,

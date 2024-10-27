@@ -20,6 +20,7 @@ let [ NODE, DASH, DIRNAME, SCRIPT, ...args] = process.argv;
 
 const msg = `${SCRIPT}:`;
 const MIN_ARGS = 0;
+const VERBOSE_ROWS = 3;
 const LOCAL=path.join(DIRNAME, '../local');
 const WORDS_PATH = path.join(LOCAL, 'words');
 
@@ -45,6 +46,10 @@ DESCRIPTION
   -v, --verbose
     print more information to stderr
 
+  -vr, --verbose-rows
+    number of rows of verbose information for tabular data.
+    (Default: ${VERBOSE_ROWS})
+
   -vv, --very-verbose
     print even more information to stderr
 
@@ -58,6 +63,7 @@ function parseArgs() {
   const msg = `${SCRIPT}.parseArgs()`;
   let dbg = 0;
   let subDir = 'ms';
+  let verboseRows = VERBOSE_ROWS;
   if (args.length < MIN_ARGS) {
     help();
   }
@@ -74,6 +80,11 @@ function parseArgs() {
       case "--verbose":
       case "-v":
         dbg = 1;
+        break;
+      case "--verbose-rows":
+      case "-vr":
+        verboseRows = Number(args[++i]);
+        dbg = dbg || 1;
         break;
       case "--very-verbose":
       case "-vv":
@@ -93,6 +104,7 @@ function parseArgs() {
     dbg, 
     argTexts,
     subDir,
+    verboseRows,
   };
   dbg && console.log(msg, 
     Object.assign({ NODE,DASH, DIRNAME, SCRIPT}, parms));
@@ -103,6 +115,7 @@ var {
   dbg,
   argTexts,
   subDir,
+  verboseRows,
 } = parseArgs();
 
 async function loadEbtData(fEbtData) {
@@ -137,6 +150,7 @@ async function loadEbtData(fEbtData) {
 async function ebtWords() {
   const msg = `${SCRIPT}.ebtWords()`;
   const fEbtData = path.join(LOCAL, '../local/ebt-data');
+  const Pali = (await import(`${DIRNAME}/../src/pali.mjs`)).default;
   await loadEbtData(fEbtData);
   let pliDir = path.join(fEbtData, 'root/pli', subDir);
   let jsonFiles = (await jsonPaths(pliDir))
@@ -170,12 +184,16 @@ async function ebtWords() {
     });
   }
   let words = Object.keys(wordMap);
-  if (dbg > 1) {
-    words = words.sort();
-    console.log(msg, '[2]words', words);
-  } else if (dbg > 0) {
-    console.log(msg, '[3]words', words.length);
-  }
+  words = words.sort((a,b)=>{
+    return wordMap[b]-wordMap[a] || Pali.compareRoman(a,b);
+  });
+  wordMap = words.reduce((a,w)=>{
+    a[w] = wordMap[w];
+    return a;
+  },{});
+  //words = words.sort(Pali.compareRoman);
+  dbg && console.log(msg, '[2]words', words.length,
+    words.slice(0,verboseRows));
 
   return { wordMap, words };
 }
