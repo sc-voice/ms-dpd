@@ -232,10 +232,27 @@ async function main() {
     verboseRows,
   } = parseArgs();
 
-  let sqlDpd = new SqlDpd({
+  // Generate Pali word count from ebt-data/root/pli
+  async function buildPaliMap() {
+    const msg = `${SCRIPT}.buildPaliMap:`;
+    let cmd_ms = path.join('.', 'pli-words');
+    console.log(msg, '[2]exec', cmd_ms);
+    let { stdout, stderr } = await exec(cmd_ms, {cwd:APPDIR});
+    dbg>1 && console.error(msg, '[2.1]stdout', stdout);
+    stderr && console.error(msg, '[2.2]stderr', stderr);
+    let fnMS = path.join(LOCAL, 'words/ms.json');
+    let json = JSON.parse( await fsp.readFile(fnMS) );
+    console.error(msg, '[3]readFile', fnMS, Object.keys(json).length);
+    return json;
+  }
+  let paliMap = await buildPaliMap();
+
+  let sqlDpd = await SqlDpd.create({
     dbg: dbg > 1 ? 1 : 0,
     rowLimit,
     dataDir: DATADIR,
+    paliMap,
+    verboseRows,
   });
 
   const PATTERNS = await sqlDpd.loadPatterns();
@@ -256,52 +273,7 @@ async function main() {
     return;
   }
 
-  let headwords;
-  try {
-    let {stdout,stderr} = await sqlDpd.loadHeadwords();
-    headwords = JSON.parse(stdout);
-    console.error(msg, '[1]headwords', headwords.length);
-    if (dbg) {
-      for (let i=0; i<verboseRows; i++) {
-        let hwi = JSON.stringify(headwords[i], (k,v)=>v||undefined);
-        console.error(' ', hwi);
-      }
-      console.error('  ...');
-    }
-  } catch(e) {
-    console.error(msg, e);
-    throw e;
-  }
-
-  // Generate Pali word count from ebt-data/root/pli
-  let cmd_ms = path.join('.', 'pli-words');
-  console.log(msg, '[2]exec', cmd_ms);
-  let { stdout, stderr } = await exec(cmd_ms, {cwd:APPDIR});
-  dbg>1 && console.error(msg, '[2.1]stdout', stdout);
-  stderr && console.error(msg, '[2.2]stderr', stderr);
-  let fnMS = path.join(LOCAL, 'words/ms.json');
-  let paliMap = JSON.parse( await fsp.readFile(fnMS) );
-  console.error(msg, '[3]readFile', fnMS, Object.keys(paliMap).length);
-  let headwordUsage = {};
-  let {
-    wordMap, wAccept, wReject, wUndefined, wPali,
-  } = await sqlDpd.buildLookup({paliMap, headwordUsage});
-  let dbgWordMap = Object.keys(wordMap).slice(0,verboseRows)
-    .reduce((a,k)=>{
-      let v = wordMap[k];
-      v && v.length && (a[k] = v);
-      return a;
-    }, {});
-  console.error(msg, '[4]lookup', {
-    wordMap: dbgWordMap,
-    wAccept,
-    wReject,
-    wPali,
-    wUndefined,
-  });
-  let hwKeys = Object.keys(headwordUsage).sort((a,b)=>{
-    return (headwordUsage[b] - headwordUsage[a]) || (a-b);
-  });
+  await sqlDpd.build();
 
   console.error(msg, '[5]done');
 }
