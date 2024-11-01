@@ -401,7 +401,9 @@ typeof describe === "function" &&
     await testDeclensions({word:'dhamma', infExpected});
   });
   it("TBDTESTTESTwordInflections devī", async()=>{ 
-    console.log("test.dictionary@399"); return;
+    const msg = 'test.dictionary@404';
+    console.log(msg, 'TBD'); 
+    return;
     const infExpected = [
       { gdr:'fem', case:'nom', nbr:'sg', word:'devī' }, 
       { gdr:'fem', case:'acc', nbr:'sg', word:'deviṁ' },
@@ -424,7 +426,9 @@ typeof describe === "function" &&
     await testDeclensions({word:'devī', infExpected, });
   });
   it("TBDTESTTESTwordInflections aggi", async()=>{
-    console.log("test.dictionary@422"); return;
+    const msg = 'test.dictionary@429';
+    console.log(msg, 'TBD'); 
+    return;
     const infExpected = [
       { gdr:'nt', case:'nom', nbr:'sg', word:'aggi' }, 
       { gdr:'nt', case:'acc', nbr:'sg', word:'aggiṁ' }, 
@@ -460,7 +464,9 @@ typeof describe === "function" &&
     await testDeclensions({word:'aggi', infExpected});
   });
   it("TBDTESTTESTwordInflections akkhi", async()=>{
-    console.log("test.dictionary@462"); return;
+    const msg = 'test.dictionary@467';
+    console.log(msg, 'TBD'); 
+    return;
     const infExpected = [
       { gdr:'nt', case:'nom', nbr:'sg', word:'akkhi' }, 
       { gdr:'nt', case:'acc', nbr:'sg', word:'akkhiṁ' }, 

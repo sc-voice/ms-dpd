@@ -290,7 +290,30 @@ export default class Dictionary {
     return result;
   }
 
+  findAltAnusvara(pattern, opts) {
+    let msg = 'Dictionary.findAltAnusvara:';
+    const dbg = DBG.FIND;
+    let altPat = pattern.replace(/n’ti/, 'ṁ');
+    let res;
+    if (altPat !== pattern) {
+      res = this.findMethod(altPat, opts);
+      dbg && console.log(msg, '[1]', altPat, !!res);
+    }
+
+    return res;
+  }
+
   find(pattern, opts={}) {
+    let res = this.findMethod(pattern, opts);
+
+    if (res == null) { // try anusvara rule
+      res = this.findAltAnusvara(pattern, opts);
+    }
+
+    return res;
+  }
+
+  findMethod(pattern, opts={}) {
     const msg = "Dictionary,find()";
     const dbg = DBG.FIND;
     let { dpd } = this;
