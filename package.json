@@ -1,6 +1,6 @@
 {
   "name": "@sc-voice/pali",
-  "version": "1.26.0",
+  "version": "1.27.0",
   "description": "Pali Javascript library",
   "main": "index.js",
   "module": "main.mjs",
