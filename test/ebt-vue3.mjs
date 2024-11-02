@@ -13,8 +13,7 @@ import {
 } from '../main.mjs';
 
 typeof describe === "function" && 
-  describe("TESTTESTebt-vue3", function () 
-{
+  describe("TESTTESTebt-vue3", function () {
 
   it("unaccentedPattern", async ()=>{
     let msg = "test.ebt-vue3@20";
@@ -37,4 +36,36 @@ typeof describe === "function" &&
     should.deepEqual(Object.keys(res1), Object.keys(resExpected));
     should.deepEqual(res1, resExpected);
   });
+  it("ABBREVIATIONS", ()=>{
+    const { ABBREVIATIONS:ABB } = Dictionary;
+    should(ABB["masc"]).properties({ meaning: "masculine" });
+    should(ABB["fem"]).properties({ meaning: "feminine" });
+    should(ABB["nt"]).properties({ meaning: "neuter" });
+  });
+  it("wordsWithPrefix()", async ()=>{
+    let dict = await Dictionary.create();
+
+    // When strict is false, unaccented patterns are used
+    should.deepEqual(dict.wordsWithPrefix("samvega"), [
+      "saṁvega",
+      "saṁvegaṁ",
+      "saṁvegaj\u2026",
+      "saṁvegam\u2026",
+      "saṁvegas\u2026",
+      "saṁvegāy\u2026",
+    ]);
+  });
+  it("entryOf()", async()=>{
+    let dict = await Dictionary.create();
+    let dhamma = dict.entryOf("dhamma");
+    should(dhamma).properties({word:"dhamma"});
+    let def0 = dict.parseDefinition(dhamma.definition[0]);
+    should(def0).properties({
+      type: 'masc',
+      meaning: 'nature; character',
+      literal: '',
+      construction: '√dhar˖ma',
+    });
+  });
+
 });
