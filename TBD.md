@@ -5,3 +5,4 @@
 [ ] remove shrink-string
 [ ] deprecate pali repository and disconnect it from dependabot 
 [ ] npm deprecate "@sc-voice/pali"
+[ ] update Admin page for "pali"
