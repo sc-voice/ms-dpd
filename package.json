@@ -4,6 +4,15 @@
   "description": "Pali Javascript library",
   "main": "index.js",
   "module": "main.mjs",
+  "files": [
+    "data",
+    "LICENSE",
+    "main.mjs",
+    "package.json",
+    "README.md",
+    "scripts",
+    "src"
+  ],
   "scripts": {
     "schedule-action": "scripts/schedule-action",
     "test": "npm run test:verbose",
