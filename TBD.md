@@ -1,3 +1,4 @@
+### Deprecation plan
 * [ ] copy pali repository contents without history to "ms-dpd"
 * [ ] change package name to "@sc-voice/ms-dpd" 
 * [ ] change version number to >= 1.0.0
