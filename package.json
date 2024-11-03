@@ -1,7 +1,8 @@
 {
   "name": "@sc-voice/pali",
+  "new-name": "@sc-voice/ms-dpd",
   "version": "1.27.0",
-  "description": "Pali Javascript library",
+  "description": "Mahāsaṅgīti Pali Javascript adapter for Digital Pali Dictionary",
   "main": "index.js",
   "module": "main.mjs",
   "files": [
@@ -22,18 +23,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sc-voice/pali.git"
+    "url": "git+https://github.com/sc-voice/ms-dpd.git"
   },
   "keywords": [
     "Pali",
+    "DigitalPaliDictionary",
     "Javascript"
   ],
   "author": "Karl Lew",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/sc-voice/pali/issues"
+    "url": "https://github.com/sc-voice/ms-dpd/issues"
   },
-  "homepage": "https://github.com/sc-voice/pali#readme",
+  "homepage": "https://github.com/sc-voice/ms-dpd#readme",
   "devDependencies": {
     "eslint": "^9.4.0",
     "json": "^11.0.0",
@@ -42,7 +44,6 @@
     "should": "^13.2.3"
   },
   "dependencies": {
-    "@sc-voice/pali": "^1.14.0",
     "shrink-string": "^3.1.9"
   }
 }
