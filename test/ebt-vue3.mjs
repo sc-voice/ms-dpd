@@ -13,7 +13,7 @@ import {
 } from '../main.mjs';
 
 typeof describe === "function" && 
-  describe("TESTTESTebt-vue3", function () {
+  describe("ebt-vue3", function () {
 
   it("unaccentedPattern", async ()=>{
     let msg = "test.ebt-vue3@20";

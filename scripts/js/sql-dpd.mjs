@@ -3,11 +3,13 @@ const fsp = fs.promises;
 import path from 'path';
 import util from 'util';
 import * as url from 'url';
-const exec = util.promisify(require('child_process').exec);
+import child_process from 'child_process';
+const exec = util.promisify(child_process.exec);
 import { DBG } from '../../src/defines.mjs';
 const msg = "SqlDpd:";
 import * as Pali from '../../src/pali.mjs';
 const VERBOSE_ROWS = 3;
+const DIRNAME = import.meta.dirname;
 
 const SCV_PATTERNS = [
   ...('aāiī'.split('').reduce((a,l)=>{
@@ -37,14 +39,18 @@ export default class SqlDpd {
       throw new Error('use SqlDpd.create()');
     }
     let {
-      dataDir = path.join("../../data"),
+      dataDir = path.join(`${DIRNAME}/../../local/data`),
       dbg = DBG.SQL_DPD,
       maxBuffer = 10 * 1024 * 1024,
       mode = 'json',
-      paliMap,
-      rowLimit = 130,
+      paliMap = {},
+      rowLimit = 0,
       verboseRows = VERBOSE_ROWS,
     } = opts;
+    if (paliMap == null) {
+      throw new Error(`${msg} paliMap?`);
+    }
+    dataDir = path.resolve(dataDir);
 
     Object.assign(this, {
       dbg,
@@ -72,7 +78,7 @@ export default class SqlDpd {
     console.log(msg, '[1]this', JSON.stringify(this));
   }
 
-  static async create(opts) {
+  static async create(opts={}) {
     const msg = "SqlDpd.create:";
     let {
       verboseRows = VERBOSE_ROWS,
@@ -80,16 +86,10 @@ export default class SqlDpd {
 
     SqlDpd.#privateCtor = true;
     let sqlDpd = new SqlDpd(opts);
-    SqlDpd.#privateCtor = false;
 
     await sqlDpd.#loadLookup();
     await sqlDpd.#loadHeadwords();
-
-    let { dpdLookup, dpdHeadwords } = sqlDpd;
-    console.error(msg, '[0]dpdLookup', 
-      Object.keys(dpdLookup).slice(0,verboseRows));
-
-    console.error(msg, '[1]dpdLookup.devi', dpdLookup.devi);
+    SqlDpd.#privateCtor = false;
 
     return sqlDpd;
   }
@@ -100,13 +100,13 @@ export default class SqlDpd {
       dbg,
       dataDir,
       rowLimit,
-      paliMap,
+      paliMap={},
       headwordUsage,
+      verboseRows,
     } = this;
     let wAccept = 0; // DPD words used in paliMap
     let wReject = 0; // DPD words not used in paliMap
-    let paliWords = paliMap && Object.keys(paliMap)
-      .sort(Pali.compareRoman);
+    let paliWords = Object.keys(paliMap).sort(Pali.compareRoman);
     let wPali = paliWords && paliWords.length || 0;
     let wUndefined = wPali; // paliMap words not defined in DPD
     let sql = [
@@ -134,14 +134,12 @@ export default class SqlDpd {
         console.error(msg, {row}, e);
         throw e;
       }
-      if (!paliMap || paliMap[word]) {
+      if (paliMap[word]) {
         let hwrds = JSON.parse(headwords);
         a[word] = hwrds;
-        if (headwordUsage) {
-          for (let ihw=0; ihw<hwrds.length; ihw++) {
-            let hw = hwrds[ihw];
-            headwordUsage[hw] = (headwordUsage[hw]||0)+1;
-          }
+        for (let ihw=0; ihw<hwrds.length; ihw++) {
+          let hw = hwrds[ihw];
+          headwordUsage[hw] = (headwordUsage[hw]||0)+1;
         }
         wAccept++;
         wUndefined--;
@@ -239,14 +237,15 @@ export default class SqlDpd {
     }
   }
 
-  async fetchHeadwords(opts={}) {
-    const msg = `SqlDpd.fetchHeadwords()`;
+  async #fetchHeadwords(opts={}) {
+    const msg = `SqlDpd.#fetchHeadwords()`;
     const {
       dbg = this.dbg,
       rowLimit = this.rowLimit,
     } = opts;
     let sql = [
-      'select id, pattern,meaning_1, meaning_2, meaning_lit',
+      'select',
+      'id, pos, pattern, meaning_1, meaning_2, meaning_lit',
       'from dpd_headwords T1',
       'where',
       `T1.pattern in ('${SCV_PATTERNS.join("','")}')`,
@@ -262,14 +261,30 @@ export default class SqlDpd {
     const msg = 'SqlDpd.#loadHeadwords:';
 
     let headwords;
+    let headwordMap;
     try {
       let {
         dbg,
+        verboseRows,
+        headwordUsage,
       } = this;
-      let {stdout,stderr} = await this.fetchHeadwords();
+      let {stdout,stderr} = await this.#fetchHeadwords();
       headwords = JSON.parse(stdout);
       console.error(msg, '[1]headwords', headwords.length);
-      if (dbg) {
+      headwordMap = headwords.reduce((a,hw,i)=>{
+        let {
+          id, pattern, meaning_1, meaning_2, meaning_lit,
+          pos, source_1,
+        } = hw;
+        if (headwordUsage[id] > 0) {
+          a[id] = {
+            id, pattern, meaning_1, meaning_2, meaning_lit,
+            pos, source_1,
+          };
+        }
+        return a;
+      }, {});
+      if (dbg && verboseRows) {
         for (let i=0; i<verboseRows; i++) {
           let hwi = JSON.stringify(headwords[i], (k,v)=>v||undefined);
           console.error(' ', hwi);
@@ -280,7 +295,7 @@ export default class SqlDpd {
       console.error(msg, e);
       throw e;
     }
-    return (this.dpdHeadwords = headwords);
+    return (this.dpdHeadwords = headwordMap);
   }
 
   async loadPatterns(opts={}) {
@@ -344,8 +359,7 @@ export default class SqlDpd {
     } = this;
     let wAccept = 0; // DPD words used in paliMap
     let wReject = 0; // DPD words not used in paliMap
-    let paliWords = paliMap && Object.keys(paliMap)
-      .sort(Pali.compareRoman);
+    let paliWords = Object.keys(paliMap).sort(Pali.compareRoman);
     let wPali = paliWords && paliWords.length || 0;
     let wUndefined = wPali; // paliMap words not defined in DPD
     let sql = [
@@ -373,7 +387,7 @@ export default class SqlDpd {
         console.error(msg, {row}, e);
         throw e;
       }
-      if (!paliMap || paliMap[word]) {
+      if (paliMap[word]) {
         let hwrds = JSON.parse(headwords);
         a[word] = hwrds;
         if (headwordUsage) {

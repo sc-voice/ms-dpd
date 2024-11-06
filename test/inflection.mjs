@@ -215,7 +215,7 @@ typeof describe === "function" &&
     let infAll = Inflection.select();
     should(infAll.length).above(110).below(150);
   });
-  it("TESTTESTselect() dhamma", ()=>{
+  it("select() dhamma", ()=>{
     const msg = "test.inflection@147";
     const dbg = 0;
     let infDhamma = Inflection.select(inf=>inf.matchesWord("dhamma"));
