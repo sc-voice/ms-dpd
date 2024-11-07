@@ -23,17 +23,21 @@ typeof describe==="function" && describe("sql-dpd", function()
 
     should(eCaught.message).match(/use SqlDpd.create/);
   });
-  it("create() default", async()=>{
+  it("TESTTESTcreate() default", async()=>{
     let sqlDpd = await SqlDpd.create();
     should(sqlDpd).properties({
       dbg: DBG.SQL_DPD > 1 ? 1 : 0,
       rowLimit: 0,
       dataDir: path.join(import.meta.dirname, '../local/data'),
-      paliMap:{},
+      paliMap: undefined,
       verboseRows: 3,
     });
+
+    let { dpdHeadwords } = sqlDpd;
+    let hwIds = Object.keys(dpdHeadwords);
+    should(hwIds.length).above(70000); // no paliMap filter
   });
-  it("TESTTESTcreate() custom", async()=>{
+  it("create() custom", async()=>{
     const msg = `${M}@37:`;
     let paliMap = {devi:1};
     let verboseRows = 0;
