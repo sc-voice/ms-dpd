@@ -10,6 +10,7 @@ export const DBG = {
   RELATED_ENTRIES: 0,
   SANKEY: 0,
   SQL_DPD: 0,
+  SQL_DPD_BUILD : 1,
   WORD_INFLECTIONS: 0,
 }
 

@@ -23,7 +23,7 @@ typeof describe==="function" && describe("sql-dpd", function()
 
     should(eCaught.message).match(/use SqlDpd.create/);
   });
-  it("TESTTESTcreate() default", async()=>{
+  it("create() default", async()=>{
     let sqlDpd = await SqlDpd.create();
     should(sqlDpd).properties({
       dbg: DBG.SQL_DPD > 1 ? 1 : 0,
@@ -76,5 +76,25 @@ typeof describe==="function" && describe("sql-dpd", function()
     });
     let hwIds = Object.keys(dpdHeadwords);
     should(hwIds.length).equal(2); // devi
+  });
+  it("TESTTESTbuild()", async()=>{
+    let paliMap = { devi:1, deva:1 }; // test words
+    let sqlDpd = await SqlDpd.create({paliMap});
+    await sqlDpd.build();
+    let { hwIdMap, defLines } = sqlDpd;
+
+    should.deepEqual(hwIdMap, {
+      34018: 2,
+      34019: 3,
+      34020: 4,
+      34021: 5,
+      34161: 6,
+      34162: 7,
+    });
+
+    should(defLines[0])
+    .equal('a masc|masc|deity; god|||√div > dev + *a|34018');
+    should(defLines[1])
+    .equal('a masc|masc|king; lord|||√div > dev + *a|34019');
   });
 });
