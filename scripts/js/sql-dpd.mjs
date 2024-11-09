@@ -20,7 +20,7 @@ const DPD_HEADWORD_COLS = [
   'meaning_lit',
   'construction',
 ];
-const HEADWORD_PATTERNS = [
+const HEADWORD_PATTERNS = [ // DEPRECATED
   ...('aāiī'.split('').reduce((a,l)=>{
     a.push(`${l} masc`);
     a.push(`${l} fem`);
@@ -61,6 +61,9 @@ export default class SqlDpd {
       ? Object.keys(paliMap).length
       : 'none');
     dataDir = path.resolve(dataDir);
+    if (!fs.existsSync(dataDir)) {
+      throw new Error(`${msg} dataDir? ${dataDir}`);
+    }
 
     Object.assign(this, {
       dbg,
@@ -80,6 +83,10 @@ export default class SqlDpd {
       writable: true,
       value: undefined,
     });
+    Object.defineProperty(this, "paliWords", {
+      writable: true,
+      value: undefined,
+    });
     Object.defineProperty(this, "paliMap", {
       value: paliMap,
     });
@@ -93,6 +100,10 @@ export default class SqlDpd {
     Object.defineProperty(this, "defLines", {
       writable: true,
       value: [],
+    });
+    Object.defineProperty(this, "defMap", {
+      writable: true,
+      value: undefined,
     });
     console.log(msg, '[2]this', JSON.stringify(this));
   }
@@ -125,10 +136,6 @@ export default class SqlDpd {
     } = this;
     let wAccept = 0; // DPD words used in paliMap
     let wReject = 0; // DPD words not used in paliMap
-    let paliWords = paliMap &&  
-      Object.keys(paliMap).sort(Pali.compareRoman);
-    let wPali = paliWords && paliWords.length || 0;
-    let wUndefined = wPali; // paliMap words not defined in DPD
     let sql = [
       'select lookup_key word, headwords ',
       'from lookup T1',
@@ -142,10 +149,11 @@ export default class SqlDpd {
     let lookupJson = JSON.parse(stdout);
     dbg>1 && console.error(msg, '[0.1]lookupJson', lookupJson);
     if (dbg) {
-      let nWords = paliWords && paliWords.length || 'all';
-      console.error(msg, '[0.2]paliWords', nWords);
+      let nWords = paliMap && Object.keys(paliMap).length || 'all';
+      console.error(msg, '[0.2]paliMap', nWords);
     }
     // Filter out words not in paliMap
+
     let dpdLookup = lookupJson.reduce((a,row,i)=>{
       let { word, headwords } = row;
       try {
@@ -162,7 +170,6 @@ export default class SqlDpd {
           headwordUsage[hw] = (headwordUsage[hw]||0)+1;
         }
         wAccept++;
-        wUndefined--;
       } else {
         dbg>1 && console.error(msg, '[0.3]reject', word);
         wReject++;
@@ -170,28 +177,19 @@ export default class SqlDpd {
       return a;
     }, {});
 
-    let lookupKeys = Object.keys(dpdLookup).sort(Pali.compareRoman);
-    let lookupMap = lookupKeys.reduce((a,w)=>{
+    let paliWords = Object.keys(dpdLookup).sort(Pali.compareRoman);
+    let lookupMap = paliWords.reduce((a,w)=>{
       a[w] = `{h:${JSON.stringify(dpdLookup[w])}}`;
       return a;
     }, {});
 
     dbg && console.error(msg, '[0.4]lookupMap.devi', 
-      lookupMap.devi, 
-      paliWords 
-        ? paliWords.slice(0, verboseRows)
-        : ''
+      lookupMap.devi, paliWords.slice(0, verboseRows)
     );
     dbg && console.error(msg, '[0.5]', {wAccept, wReject});
 
-    let lookupOut = JSON.stringify(lookupMap, null, 1);
-    let lookupPath = path.join(dataDir, 'lookup.mjs');
-    await fs.promises.writeFile(lookupPath, lookupOut);
-    let paliKeys = paliMap ? Object.keys(paliMap).length : [];
-    console.error(msg, '[1]', lookupPath, lookupOut.length, 
-      {wAccept, paliKeys});
-
     this.dpdLookup = dpdLookup;
+    this.paliWords = paliWords;
   }
 
   async build() {
@@ -204,25 +202,7 @@ export default class SqlDpd {
     } = this;
 
     await this.#buildHeadwords();
-
-    /*
-    let {
-      lookupMap, wAccept, wReject, wUndefined, wPali,
-    } = await this.#buildLookup({paliMap, headwordUsage});
-    let dbgLookupMap = Object.keys(lookupMap).slice(0,verboseRows)
-      .reduce((a,k)=>{
-        let v = lookupMap[k];
-        v && v.length && (a[k] = v);
-        return a;
-      }, {});
-    console.error(msg, '[4]lookup', {
-      lookupMap: dbgLookupMap,
-      wAccept,
-      wReject,
-      wPali,
-      wUndefined,
-    });
-    */
+    await this.#buildLookup();
   }
 
   async bashSql(sql, opts={}) {
@@ -273,7 +253,8 @@ export default class SqlDpd {
       rowLimit ? `limit ${rowLimit}` : '',
     ].join(' ');
     let {stdout, stderr} = await this.bashSql(sql, opts);
-    console.error(msg, '[1]stdout,stderr', stdout?.length, stderr?.length);
+    console.error(msg, '[1]stdout,stderr', 
+      stdout?.length, stderr?.length);
     return {stdout, stderr};
   }
 
@@ -403,126 +384,22 @@ export default class SqlDpd {
 
   async #buildLookup() {
     const msg = `SqlDpd.#buildLookup:`;
-    /*
-    let {
-      dbg,
-      dataDir,
-      rowLimit,
-      paliMap,
-      headwordUsage,
-      dpdLookup,
-    } = this;
-    let paliWords = Object.keys(paliMap).sort(Pali.compareRoman);
-    let lookupKeys = Object.keys(dpdLookup).sort(Pali.compareRoman);
-    let lookupMap = lookupKeys.reduce((a,w)=>{
-      a[w] = `{h:${JSON.stringify(dpdLookup[w])}}`;
+    let { dataDir, paliWords, hwIdMap, dpdLookup } = this;
+    let dbg = DBG.SQL_DPD_BUILD || this.dbg;
+    console.log(msg, '[1]');
+    let defMap = paliWords.reduce((a,w)=>{
+      let v = dpdLookup[w].map(id=>hwIdMap[id]);
+      console.error(msg, {w,v});
+      a[w] = v.join(',');
       return a;
     }, {});
 
-    dbg && console.error(msg, '[0.4]lookupMap', lookupMap, 
-      paliWords.slice(0, verboseRows));
-    dbg && console.error(msg, '[0.5]', {wAccept, wReject});
-
-    let lookupOut = JSON.stringify(lookupMap, null, 1);
+    let lookupOut = JSON.stringify(defMap, null, 1);
     let lookupPath = path.join(dataDir, 'lookup.mjs');
     await fs.promises.writeFile(lookupPath, lookupOut);
     console.error(msg, '[1]', lookupPath, lookupOut.length);
 
-    this.dpdLookup = dpdLookup;
-
-    return {
-      lookupMap,
-      wAccept,
-      wReject,
-      wPali,
-      wUndefined,
-    }
-    */
-  }
-
-  async deprecated_buildLookup() {
-    const msg = `SqlDpddeprecated_buildLookup:`;
-    let {
-      headwordUsage, // optional map of headword id's
-      paliMap, // optional object map of allowed Pali words 
-      rowLimit = this.rowLimit,
-    } = opts;
-    let {
-      dbg,
-      dataDir,
-    } = this;
-    let wAccept = 0; // DPD words used in paliMap
-    let wReject = 0; // DPD words not used in paliMap
-    let paliWords = Object.keys(paliMap).sort(Pali.compareRoman);
-    let wPali = paliWords && paliWords.length || 0;
-    let wUndefined = wPali; // paliMap words not defined in DPD
-    let sql = [
-      'select lookup_key word, headwords ',
-      'from lookup T1',
-      'where',
-      "T1.headwords is not ''",
-      'AND',
-      "T1.grammar is not ''",
-      rowLimit ? `limit ${rowLimit}` : '',
-    ].join(' ');
-    let {stdout, stderr} = await this.bashSql(sql);
-    let lookupJson = JSON.parse(stdout);
-    dbg>1 && console.error(msg, '[0.1]lookupJson', lookupJson);
-    if (dbg) {
-      let nWords = paliWords && paliWords.length || 'all';
-      console.error(msg, '[0.2]paliWords', nWords);
-    }
-    // Filter out non-Mahāsaṅgīti words
-    let dpdLookup = lookupJson.reduce((a,row,i)=>{
-      let { word, headwords } = row;
-      try {
-        word = word.replace('ṃ', 'ṁ');
-      } catch(e) {
-        console.error(msg, {row}, e);
-        throw e;
-      }
-      if (paliMap && paliMap[word]) {
-        let hwrds = JSON.parse(headwords);
-        a[word] = hwrds;
-        if (headwordUsage) {
-          for (let ihw=0; ihw<hwrds.length; ihw++) {
-            let hw = hwrds[ihw];
-            headwordUsage[hw] = (headwordUsage[hw]||0)+1;
-          }
-        }
-        wAccept++;
-        wUndefined--;
-      } else {
-        dbg>1 && console.error(msg, '[0.3]reject', word);
-        wReject++;
-      }
-      return a;
-    }, {});
-
-    let lookupKeys = Object.keys(dpdLookup).sort(Pali.compareRoman);
-    let lookupMap = lookupKeys.reduce((a,w)=>{
-      a[w] = `{h:${JSON.stringify(dpdLookup[w])}}`;
-      return a;
-    }, {});
-
-    dbg && console.error(msg, '[0.4]lookupMap', lookupMap, 
-      paliWords.slice(0, verboseRows));
-    dbg && console.error(msg, '[0.5]', {wAccept, wReject});
-
-    let lookupOut = JSON.stringify(lookupMap, null, 1);
-    let lookupPath = path.join(dataDir, 'lookup.mjs');
-    await fs.promises.writeFile(lookupPath, lookupOut);
-    console.error(msg, '[1]', lookupPath, lookupOut.length);
-
-    this.dpdLookup = dpdLookup;
-
-    return {
-      lookupMap,
-      wAccept,
-      wReject,
-      wPali,
-      wUndefined,
-    }
+    this.defMap = defMap;
   }
 
 }

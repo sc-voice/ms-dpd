@@ -8,11 +8,16 @@ import { DBG } from '../src/defines.mjs';
 const M = "test.SqlDpd:";
 import * as Pali from '../src/pali.mjs';
 import { default as SqlDpd } from '../scripts/js/sql-dpd.mjs';
+const DIRNAME = import.meta.dirname;
 
 let msg = M;
 
-typeof describe==="function" && describe("sql-dpd", function() 
-{
+typeof describe==="function" && describe("sql-dpd", function() {
+  before(()=>{
+    console.log(msg, "before");
+    let dataDir = path.join(`${DIRNAME}/../local/data`);
+    fs.mkdirSync(dataDir, {recursive:true});
+  });
   it("ctor", async()=>{
     let eCaught;
     try {
@@ -101,9 +106,11 @@ typeof describe==="function" && describe("sql-dpd", function()
       verboseRows,
     });
 
-    let { dpdLookup, dpdHeadwords } = sqlDpd;
+    let { paliWords, dpdLookup, dpdHeadwords } = sqlDpd;
+    should(paliWords.length).equal(2); // devi, deva
     let lookupKeys = Object.keys(dpdLookup);
-    should(lookupKeys.length).equal(2); // devi, deva
+    should.deepEqual(paliWords, [ 'deva', 'devi' ]);
+    should.deepEqual(lookupKeys, paliWords);
 
     should.deepEqual(sqlDpd.dpdLookup.devi, [34161, 34162])
     should.deepEqual(sqlDpd.dpdLookup.deva, [34018, 34019, 34020, 34021])
@@ -125,11 +132,11 @@ typeof describe==="function" && describe("sql-dpd", function()
     let hwIds = Object.keys(dpdHeadwords);
     should(hwIds.length).equal(2); // devi
   });
-  it("build()", async()=>{
+  it("TESTTESTbuild()", async()=>{
     let paliMap = { devi:1, deva:1 }; // test words
     let sqlDpd = await SqlDpd.create({paliMap});
     await sqlDpd.build();
-    let { hwIdMap, defLines } = sqlDpd;
+    let { hwIdMap, defLines, defMap } = sqlDpd;
 
     should.deepEqual(hwIdMap, {
       34018: 2,
@@ -144,5 +151,20 @@ typeof describe==="function" && describe("sql-dpd", function()
     .equal('a masc|masc|deity; god|||√div > dev + *a|34018');
     should(defLines[1])
     .equal('a masc|masc|king; lord|||√div > dev + *a|34019');
+    should(defLines[2])
+    .equal('a masc|masc|rain cloud|||√div > dev + *a|34020');
+    should(defLines[3])
+    .equal('a masc|masc|sky|||√div > dev + *a|34021');
+    should(defLines[4])
+    .equal('ī fem|fem|queen|||√div > dev + *a + ī\ndeva + ī|34161');
+    should(defLines[5])
+    .equal('ī fem|fem|goddess|||√div > dev + *a + ī\ndeva + ī|34162');
+
+    // defMap maps pali word to file line number,
+    // which is 2+array index
+    should.deepEqual(defMap, {
+      deva: '2,3,4,5', // i.e., [0,1,2,3] in definition array
+      devi: '6,7',      // i.e., [4,5] in definition array
+    });
   });
 });
