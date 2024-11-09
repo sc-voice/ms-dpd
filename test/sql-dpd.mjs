@@ -37,7 +37,7 @@ typeof describe==="function" && describe("sql-dpd", function()
     let hwIds = Object.keys(dpdHeadwords);
     should(hwIds.length).above(70000); // no paliMap filter
   });
-  it("create() custom", async()=>{
+  it("create() paliMap, dataDir, verboseRows, dbg", async()=>{
     const msg = `${M}@37:`;
     let paliMap = {devi:1};
     let verboseRows = 0;
@@ -77,7 +77,55 @@ typeof describe==="function" && describe("sql-dpd", function()
     let hwIds = Object.keys(dpdHeadwords);
     should(hwIds.length).equal(2); // devi
   });
-  it("TESTTESTbuild()", async()=>{
+  it("TESTTESTcreate() headwordPatterns", async()=>{
+    const msg = `${M}@37:`;
+    let paliMap = { devi:1, deva:1 }; // test words
+    let headwordPatterns = ['ī fem'];
+    let verboseRows = 0;
+    let dataDir = path.join(import.meta.dirname, '../local/data');
+    let dbg = 1;
+
+    // DEPRECATED: headwordPatterns
+    // Restricts headwords to the specified patterns.
+    // Restricting dictionary output by part of speech
+    // during ongoing development should happen at 
+    // a higher level since headword ids are permanent.
+    let sqlDpd = await SqlDpd.create({
+      paliMap, verboseRows, dataDir, dbg, headwordPatterns,
+    });
+    should(sqlDpd).properties({
+      dbg,
+      rowLimit: 0,
+      dataDir,
+      paliMap,
+      verboseRows,
+    });
+
+    let { dpdLookup, dpdHeadwords } = sqlDpd;
+    let lookupKeys = Object.keys(dpdLookup);
+    should(lookupKeys.length).equal(2); // devi, deva
+
+    should.deepEqual(sqlDpd.dpdLookup.devi, [34161, 34162])
+    should.deepEqual(sqlDpd.dpdLookup.deva, [34018, 34019, 34020, 34021])
+    should(dpdHeadwords[34018]).equal(undefined);
+    should(dpdHeadwords[34161]).properties({
+      pattern: "ī fem",
+      pos: "fem",
+      id: 34161,
+      meaning_1: "queen",
+      meaning_2: "queen",
+    });
+    should(dpdHeadwords[34162]).properties({
+      pattern: "ī fem",
+      pos: "fem",
+      id: 34162,
+      meaning_1: "goddess",
+      meaning_2: "goddess",
+    });
+    let hwIds = Object.keys(dpdHeadwords);
+    should(hwIds.length).equal(2); // devi
+  });
+  it("build()", async()=>{
     let paliMap = { devi:1, deva:1 }; // test words
     let sqlDpd = await SqlDpd.create({paliMap});
     await sqlDpd.build();

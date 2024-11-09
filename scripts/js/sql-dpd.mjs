@@ -55,7 +55,7 @@ export default class SqlDpd {
       paliMap,
       rowLimit = 0,
       verboseRows = VERBOSE_ROWS,
-      headwordPatterns,
+      headwordPatterns, // DEPRECATED
     } = opts;
     console.error(msg, '[1]paliMap filtering:', paliMap
       ? Object.keys(paliMap).length
@@ -68,7 +68,7 @@ export default class SqlDpd {
       rowLimit,
       dataDir,
       verboseRows,
-      headwordPatterns,
+      headwordPatterns, // DEPRECATED
     });
 
     // Non-enumerable properties
@@ -259,7 +259,7 @@ export default class SqlDpd {
     const {
       dbg = this.dbg,
       rowLimit = this.rowLimit,
-      headwordPatterns = this.headwordPatterns,
+      headwordPatterns = this.headwordPatterns, // DEPRECATED
     } = opts;
     let where = headwordPatterns
       ?  `where T1.pattern in ('${headwordPatterns.join("','")}')`
