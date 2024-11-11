@@ -201,8 +201,8 @@ export default class SqlDpd {
       verboseRows,
     } = this;
 
-    await this.#buildHeadwords();
-    await this.#buildLookup();
+    await this.#buildDefinitions();
+    await this.#buildIndex();
   }
 
   async bashSql(sql, opts={}) {
@@ -317,8 +317,8 @@ export default class SqlDpd {
     return json;
   }
 
-  async #buildHeadwords() {
-    const msg = `SqlDpd.#buildHeadwords:`;
+  async #buildDefinitions() {
+    const msg = `SqlDpd.#buildDefinitions:`;
     let dbg = DBG.SQL_DPD_BUILD || this.dbg;
     let { 
       dataDir,
@@ -349,10 +349,13 @@ export default class SqlDpd {
       }
       return a;
     }, {});
-    let hwIdJson = JSON.stringify(hwIdMap, null, 1);
-    let fnMap = 'headword-id-map.mjs';
-    let hwIdPath = path.join(dataDir, fnMap);
-    await fs.promises.writeFile(hwIdPath, hwIdJson);
+    let hwMapOut = [
+      'export const HEADWORD_MAP=',
+      JSON.stringify(hwIdMap, null, 1)
+    ].join('\n');
+    let fnMap = 'headword-map.mjs';
+    let hwMapPath = path.join(dataDir, fnMap);
+    await fs.promises.writeFile(hwMapPath, hwMapOut);
     console.error(msg, `[1]${fnMap}`, hwKeys.length+2);
     this.hwIdMap = hwIdMap;
 
@@ -373,31 +376,39 @@ export default class SqlDpd {
       ].join('|');
     });
 
-    let defLinesJson = JSON.stringify(defLines, null, 1);
-    let fnLines = 'definition-lines.mjs';
-    let defLinesPath = path.join(dataDir, fnLines);
-    await fs.promises.writeFile(defLinesPath, defLinesJson);
+    let defOut = [
+      'export const DEFINITIONS=',
+      JSON.stringify(defLines, null, 1)
+    ].join('\n');
+    let fnLines = 'definition-en.mjs';
+    let defPath = path.join(dataDir, fnLines);
+    await fs.promises.writeFile(defPath, defOut);
     console.error(msg, `[1]${fnLines}`, defLines.length+2);
 
     this.defLines = defLines;
   }
 
-  async #buildLookup() {
-    const msg = `SqlDpd.#buildLookup:`;
-    let { dataDir, paliWords, hwIdMap, dpdLookup } = this;
+  async #buildIndex() {
+    const msg = `SqlDpd.#buildIndex:`;
+    let { dataDir, paliWords, hwIdMap, dpdLookup, verboseRows } = this;
     let dbg = DBG.SQL_DPD_BUILD || this.dbg;
     console.log(msg, '[1]');
-    let defMap = paliWords.reduce((a,w)=>{
+    let defMap = paliWords.reduce((a,w,i)=>{
       let v = dpdLookup[w].map(id=>hwIdMap[id]);
-      console.error(msg, {w,v});
+      if (dbg && i <= verboseRows ) {
+        console.error(msg, {w,v});
+      }
       a[w] = v.join(',');
       return a;
     }, {});
 
-    let lookupOut = JSON.stringify(defMap, null, 1);
-    let lookupPath = path.join(dataDir, 'lookup.mjs');
-    await fs.promises.writeFile(lookupPath, lookupOut);
-    console.error(msg, '[1]', lookupPath, lookupOut.length);
+    let indexOut = [
+      'export const INDEX=',
+      JSON.stringify(defMap, null, 1),
+    ].join('\n');
+    let indexPath = path.join(dataDir, 'index.mjs');
+    await fs.promises.writeFile(indexPath, indexOut);
+    console.error(msg, '[1]', indexPath, indexOut.length);
 
     this.defMap = defMap;
   }
