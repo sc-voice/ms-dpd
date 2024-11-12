@@ -136,7 +136,7 @@ typeof describe==="function" && describe("sql-dpd", function() {
     let paliMap = { devi:1, deva:1 }; // test words
     let sqlDpd = await SqlDpd.create({paliMap});
     await sqlDpd.build();
-    let { hwIdMap, defLines, defMap } = sqlDpd;
+    let { hwIdMap, defPali, defLang, defMap } = sqlDpd;
 
     should.deepEqual(hwIdMap, {
       34018: 2,
@@ -147,18 +147,30 @@ typeof describe==="function" && describe("sql-dpd", function() {
       34162: 7,
     });
 
-    should(defLines[0])
-    .equal('a masc|masc|deity; god|||√div > dev + *a|34018');
-    should(defLines[1])
-    .equal('a masc|masc|king; lord|||√div > dev + *a|34019');
-    should(defLines[2])
-    .equal('a masc|masc|rain cloud|||√div > dev + *a|34020');
-    should(defLines[3])
-    .equal('a masc|masc|sky|||√div > dev + *a|34021');
-    should(defLines[4])
-    .equal('ī fem|fem|queen|||√div > dev + *a + ī\ndeva + ī|34161');
-    should(defLines[5])
-    .equal('ī fem|fem|goddess|||√div > dev + *a + ī\ndeva + ī|34162');
+    should(defLang[0])
+    .equal('deity; god||');
+    should(defPali[0])
+    .equal('a masc|masc|√div > dev+*a');
+    should(defLang[1])
+    .equal('king; lord||');
+    should(defPali[1])
+    .equal('a masc|masc|√div > dev+*a');
+    should(defLang[2])
+    .equal('rain cloud||');
+    should(defPali[2])
+    .equal('a masc|masc|√div > dev+*a');
+    should(defLang[3])
+    .equal('sky||');
+    should(defPali[3])
+    .equal('a masc|masc|√div > dev+*a');
+    should(defLang[4])
+    .equal('queen||');
+    should(defPali[4])
+    .equal('ī fem|fem|√div > dev+*a+ī\ndeva+ī');
+    should(defLang[5])
+    .equal('goddess||');
+    should(defPali[5])
+    .equal('ī fem|fem|√div > dev+*a+ī\ndeva+ī');
 
     // defMap maps pali word to file line number,
     // which is 2+array index

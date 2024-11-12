@@ -97,7 +97,11 @@ export default class SqlDpd {
       writable: true,
       value: {},
     });
-    Object.defineProperty(this, "defLines", {
+    Object.defineProperty(this, "defPali", {
+      writable: true,
+      value: [],
+    });
+    Object.defineProperty(this, "defLang", {
       writable: true,
       value: [],
     });
@@ -279,6 +283,8 @@ export default class SqlDpd {
           pos, source_1, construction,
         } = hw;
         if (headwordUsage[id] > 0) {
+          // Copmact construction by removing extra spaces (~3%)
+          construction = construction.split(/ ?\+ ?/).join('+');
           a[id] = {
             id, pattern, meaning_1, meaning_2, meaning_lit,
             pos, source_1, construction,
@@ -336,9 +342,16 @@ export default class SqlDpd {
       return (headwordUsage[b] - headwordUsage[a]) || (a-b);
     });
 
-    // Build map from headword-id to definition-line-number.
-    // Definitions lines are stored in a JSON array for
-    // ease of translation;
+    /* Headword to Line Map (hwIdMap)
+     * The DPD headword ids comprise all Pali words in the DPD. 
+     * However, Voice only uses the Mahāsaṅgīti words, 
+     * which is smaller that the entire Pali corpus.
+     *
+     * Compacting the sparse headword id range into consecutive
+     * integers shortens:
+     * - definition files by ~10% (3948359 vs. 4404682)
+     * - index file by ~3% (2489224 vs. 2558664)
+     */
     const FIRST_DEFINITION_LINE = 2;
     let hwIdMap = hwKeys.reduce((a,k,i)=>{
       // transform headword id => definition headword line number
@@ -359,33 +372,44 @@ export default class SqlDpd {
     console.error(msg, `[1]${fnMap}`, hwKeys.length+2);
     this.hwIdMap = hwIdMap;
 
-    // Write out definition lines
-    let defLines = hwKeys.map(k=>{
-      let {
-        id, pattern, meaning_1, meaning_2, meaning_lit, pos,
-        construction,
-      } = dpdHeadwords[k];
+    /* Pali Definitions (defPali)
+     * Write out common Pali definitions, which greatly
+     * decreases defLang size
+     */
+    let defPali = hwKeys.map(k=>{
+      let { pattern, pos, construction } = dpdHeadwords[k];
+      return [ pattern, pos, construction ].join('|');
+    });
+    let defPaliOut = [
+      'export const DEF_LANG=',
+      JSON.stringify(defPali, null, 1)
+    ].join('');
+    let fnPali = 'definition-pali.mjs';
+    let defPaliPath = path.join(dataDir, fnPali);
+    await fs.promises.writeFile(defPaliPath, defPaliOut);
+    console.error(msg, `[1]${defPaliPath}`, defPali.length+2);
+    this.defPali = defPali;
+
+    /* Write out definition lines for English, which is the
+     * template used for all DPD translations.
+     */
+    let defLang = hwKeys.map(k=>{
+      let { meaning_1, meaning_2, meaning_lit } = dpdHeadwords[k];
       return [
-        pattern,
-        pos,
         meaning_1,
         meaning_1.startsWith(meaning_2) ? '' : meaning_2,
         meaning_lit,
-        construction,
-        id,
       ].join('|');
     });
-
-    let defOut = [
-      'export const DEFINITIONS=',
-      JSON.stringify(defLines, null, 1)
-    ].join('\n');
-    let fnLines = 'definition-en.mjs';
-    let defPath = path.join(dataDir, fnLines);
-    await fs.promises.writeFile(defPath, defOut);
-    console.error(msg, `[1]${fnLines}`, defLines.length+2);
-
-    this.defLines = defLines;
+    let defLangOut = [
+      'export const DEF_LANG=',
+      JSON.stringify(defLang, null, 1)
+    ].join('');
+    let fnLang = 'definition-en.mjs';
+    let defLangPath = path.join(dataDir, fnLang);
+    await fs.promises.writeFile(defLangPath, defLangOut);
+    console.error(msg, `[2]${defLangPath}`, defLang.length+2);
+    this.defLang = defLang;
   }
 
   async #buildIndex() {
