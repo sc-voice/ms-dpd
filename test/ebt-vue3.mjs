@@ -64,7 +64,7 @@ typeof describe === "function" &&
       type: 'masc',
       meaning: 'nature; character',
       literal: '',
-      construction: '√dhar˖ma',
+      construction: '√dhar+ma',
     });
   });
 

@@ -6,44 +6,20 @@ import { ABBREVIATIONS } from '../data/en/abbreviations.mjs';
 import { DPD } from '../data/en/dpd.mjs';
 import { DPD_TEXTS } from '../data/en/dpd-text.mjs';
 
-import { INDEX } from '../data/index.mjs';
-import { DEF_PALI } from '../data/definition-pali.mjs';
- 
-const DEF = {} // definitions
-
-export default class Dictionary {
+export default class _Dictionary {
   static #CREATE = false;
   static #DPD; // cache
 
   constructor(opts={}) {
-    if (!Dictionary.#CREATE) {
+    if (!_Dictionary.#CREATE) {
       throw new Error(`Use Dictionary.create()`);
     }
 
     Object.assign(this, opts);
   }
 
-  static get LICENSE(){
-    return "https://digitalpalidictionary.github.io/titlepage.html";
-  }
-
   static get ABBREVIATIONS() {
     return ABBREVIATIONS;
-  }
-
-  static async definitions(lang = 'en') {
-    const msg = 'Dictionary.definitions()';
-    let dbg = DBG.LOADING;
-    if (DEF[lang] == null) {
-      let fname = `../data/definition-${lang}.mjs`;
-      let { DEF_LANG } = await import(fname);
-      DEF[lang] = DEF_LANG;
-      console.error(msg, '[1]loading', fname); 
-      dbg && console.error(msg, '[1.1]', 
-        DEF[lang].slice(0, DBG.VERBOSE_ROWS));
-    }
-
-    return DEF[lang];
   }
 
   static isAccented(word) {
@@ -51,7 +27,7 @@ export default class Dictionary {
   }
 
   static prefixOf(...strings) {
-    const msg = 'Dictionary.prefixOf()';
+    const msg = '_Dictionary.prefixOf()';
     strings = strings.flat();
 
     let prefix = strings.reduce((a,s)=>{
@@ -84,26 +60,15 @@ export default class Dictionary {
   }
 
   static async create(opts={}) {
-    const msg = 'Dictionary.create()';
+    const msg = '_Dictionary.create()';
     const dbg = DBG.DICTIONARY_CREATE;
     try {
       let { 
         lang='en',
-        dpd=Dictionary.#DPD,
+        dpd=_Dictionary.#DPD,
         dpdTexts,
-        defLang=await Dictionary.definitions(lang),
-        index=INDEX,
-        verboseRows=DBG.VERBOSE_ROWS,
       } = opts;
-      Dictionary.#CREATE = true;
-
-      let dict = new Dictionary({
-        lang,
-        index,
-        defLang,
-      });
-
-      /*
+      _Dictionary.#CREATE = true;
       if (dpd == null) {
         let keys = Object.keys(DPD);
         dpd = keys.reduce((a,word)=>{
@@ -113,65 +78,60 @@ export default class Dictionary {
             : rawEntry;
           return a;
         }, DPD); // overwrite imported DPD;
-        Dictionary.#DPD = dpd;
-        dbg && console.error(msg, '[1]DPD', {
+        _Dictionary.#DPD = dpd;
+        dbg && console.log(msg, '[1]DPD', {
           metadata: dpd?.__metadata, 
           keys: keys.length,
         });
       } else {
-        dbg && console.error(msg, '[2]dpd');
+        dbg && console.log(msg, '[2]dpd');
       }
       if (dpdTexts == null) {
         dpdTexts = DPD_TEXTS;
-        dbg && console.error(msg, '[3]dpdTexts', dpdTexts.length); 
+        dbg && console.log(msg, '[3]dpdTexts', dpdTexts.length); 
       }
-      let dict = new Dictionary({
+      let dict = new _Dictionary({
         lang,
         dpd,
         dpdTexts,
       });
-      */
-
 
       return dict;
     } catch (e) {
       throw e;
     } finally {
-      Dictionary.#CREATE = false;
+      _Dictionary.#CREATE = false;
     }
   }
 
   entryOf(word) {
-    const msg = "Dictionary.entryOf()";
+    const msg = "_Dictionary.entryOf()";
     const dbg = DBG.ENTRY_OF;
-    let { index, defLang, } = this;
+    let { dpd, dpdTexts } = this;
     word = word.toLowerCase();
-    let indexEntry = index[word];
-    dbg && console.error(msg, `[1]${word}`, indexEntry);
-    if (indexEntry == null) {
+    let rawEntry = dpd[word];
+    if (rawEntry == null) {
       return null;
     }
-    let definition = indexEntry.split(',').map(line=>{
-      let id = line-2;
-      return defLang[id]+'|'+DEF_PALI[id];
-    });
+    let { d } = rawEntry;
+    let definition = d.map(id=>dpdTexts[id]);
     return Object.assign({word}, {definition});
   }
 
   wordsWithPrefix(prefix, opts={}) {
-    const msg = "Dictionary.autocompleteWords()";
-    let { index } = this;
+    const msg = "_Dictionary.autocompleteWords()";
+    let { dpd } = this;
     let { 
       limit=0,
       strict=false,
     } = opts;
-    let keys = Object.keys(index);
+    let keys = Object.keys(dpd);
     let matching;
     let matchLen = prefix.length+1;
     if (strict) {
       matching = keys.filter(word=>word.startsWith(prefix));
-    } else if (Dictionary.isAccented(prefix)) {
-      let normPrefix = Dictionary.normalizePattern(prefix);
+    } else if (_Dictionary.isAccented(prefix)) {
+      let normPrefix = _Dictionary.normalizePattern(prefix);
       let re = new RegExp(`^${normPrefix}`, 'i');
       let map = keys.reduce((a,word)=>{
         if (re.test(word)) {
@@ -184,7 +144,7 @@ export default class Dictionary {
       }, {});
       matching = Object.keys(map);
     } else {
-      let pat = Dictionary.unaccentedPattern(prefix);
+      let pat = _Dictionary.unaccentedPattern(prefix);
       let re = new RegExp(`^${pat}`, 'i');
       let map = keys.reduce((a,word)=>{
         if (re.test(word)) {
@@ -206,19 +166,19 @@ export default class Dictionary {
   }
 
   relatedEntries(word, opts={}) {
-    const msg = "Dictionary.relatedEntries()";
+    const msg = "_Dictionary.relatedEntries()";
     const dbg = DBG.RELATED_ENTRIES;
-    let { index } = this;
+    let { dpd } = this;
     let { 
       overlap: minOverlap=0.1,
     } = opts;
     let stem = Pali.wordStem(word);
-    let keys = Object.keys(index)
+    let keys = Object.keys(dpd)
     let maxLen = word.length + Pali.ENDING_MAX_LEN;
     let stemKeys = keys.filter(k=>{
       return k.startsWith(stem) && k.length<=maxLen;
     });
-    dbg && console.error(msg, '[1]', {word, stemKeys});
+    //dbg && console.log(msg, '[1]', {word, stemKeys});
     let entry = this.entryOf(word);
     if (entry == null) {
       return undefined;
@@ -244,92 +204,77 @@ export default class Dictionary {
 
       return entries;
     }, []);
-    dbg && console.error(msg, '[2]', entries.map(e=>e.word));
+    dbg && console.log(msg, '[2]', entries.map(e=>e.word));
 
     return entries;
   }
 
   findWords(defPat) {
-    const msg="Dictionary.findWords()";
+    const msg="_Dictionary.findWords()";
     const dbg = DBG.FIND_WORDS;
-    let { index, defLang } = this;
+    let { dpd, dpdTexts } = this;
     let re = defPat instanceof RegExp 
       ? defPat 
       : new RegExp(`\\b${defPat}`, 'i');
-    dbg && console.error(msg, '[1]re', re);
-    let dpdKeys = Object.keys(index);
-    let idMatch = defLang.reduce((a,text,i)=>{
+    dbg && console.log(msg, '[1]re', re);
+    let textMap = {};
+    let dpdKeys = Object.keys(dpd);
+    let idMatch = dpdTexts.reduce((a,text,i)=>{
       if (re.test(text)) {
-        let line = i+2;
-        a[line] = text;
+        a[i] = text;
+        textMap[text] = i;
       }
       return a;
     }, {});
-    dbg && console.error(msg, '[2]idMatch', idMatch);
-    let dpdEntries = Object.entries(index);
+    let dpdEntries = Object.entries(dpd);
     let defWords = dpdEntries.reduce((a,entry,i) =>{
       let [ word, info ] = entry;
-      info = info.split(',');
-      info.forEach(line=>{
-        if (idMatch[line]) {
-          let i = line - 2;
-          let defText = defLang[i];
-          let words = a[line] || [];
+      (info.d instanceof Array) && info.d.forEach(id=>{
+        if (idMatch[id]) {
+          let defText = dpdTexts[id];
+          let words = a[id] || [];
           words.push(word);
-          a[line] = words;
+          a[id] = words;
         }
       });
       return a;
     }, {});
-    dbg && console.error(msg, '[3]defWords', defWords);
     let matches = Object.entries(defWords).map(entry=>{
-      let [line, words] = entry;
-      let id = line - 2;
+      let [id, words] = entry;
+      let d = dpdTexts[id];
       return {
-        definition:defLang[id],
+        definition:d,
         words,
       }
     });
-    dbg && console.error(msg, '[4]matches', matches);
+    dbg && console.log(msg, matches);
     return matches;
   }
 
   parseDefinition(d='type?|meaning?|literal?|construction?') {
-    const msg = 'Dictionary.parseDefinition()';
     if (d instanceof Array) {
       return d.map(line=>this.parseDefinition(line));
     }
     if (typeof d === 'string') {
-      let [ 
-        meaning_1, meaning_2, meaning_lit, 
-        pattern, pos, construction 
-      ] = d.split('|');
-      return { 
-        meaning_1, meaning_2, meaning_lit, 
-        pattern, pos, construction, 
-        type: pos,
-        meaning: meaning_1 || meaning_2,
-        literal: meaning_lit,
-      }
-      return result;
+      let [ type, meaning, literal, construction ] = d.split('|');
+      return { type, meaning, literal, construction };
     }
 
     return undefined; 
   }
 
   findDefinition(pattern) {
-    const msg = "Dictionary.findDefinition()";
+    const msg = "_Dictionary.findDefinition()";
     const dbg = DBG.FIND_DEFINITION;
     let result;
     let rows = this.findWords(pattern);
-    dbg && console.error(msg, '[1]pattern', pattern, rows.length);
     let data = rows.reduce((a,row)=>{
-      dbg>1 && console.error(msg, '[1.1]', row);
+      dbg && console.log(msg, '[1]', row);
       let { definition, words } = row;
       let parsed = this.parseDefinition(definition);
       words.forEach(word=>{
         let resultRow = Object.assign({}, parsed, {word});
-        dbg>1 && console.error(msg, '[1.2]', resultRow);
+        dbg && console.log(msg, '[2]', resultRow);
         a.push(resultRow);
       });
       return a;
@@ -337,20 +282,22 @@ export default class Dictionary {
 
     if (data.length) {
       result = { data, pattern, method: 'definition', };
-      dbg && console.error(msg, '[2]result', result);
+      dbg && console.log(msg, '[3]result', result);
+    } else {
+      dbg && console.log(msg, '[4]data?', {pattern});
     }
 
     return result;
   }
 
   findAltAnusvara(pattern, opts) {
-    let msg = 'Dictionary.findAltAnusvara:';
+    let msg = '_Dictionary.findAltAnusvara:';
     const dbg = DBG.FIND;
     let altPat = pattern.replace(/n’ti/, 'ṁ');
     let res;
     if (altPat !== pattern) {
       res = this.findMethod(altPat, opts);
-      dbg && console.error(msg, '[1]', altPat, !!res);
+      dbg && console.log(msg, '[1]', altPat, !!res);
     }
 
     return res;
@@ -367,9 +314,9 @@ export default class Dictionary {
   }
 
   findMethod(pattern, opts={}) {
-    const msg = "Dictionary.findMethod()";
-    const dbg = DBG.FIND || DBG.FIND_METHOD;
-    let { index } = this;
+    const msg = "_Dictionary,find()";
+    const dbg = DBG.FIND;
+    let { dpd } = this;
     let {
       method,
     } = opts;
@@ -393,7 +340,6 @@ export default class Dictionary {
       });
       pattern = words.join(' ');
     }
-    dbg && console.error(msg, '[1]pattern', pattern);
 
     let result;
     if (!result && (!method || method==='entry')) {
@@ -406,12 +352,11 @@ export default class Dictionary {
         });
         result = { data, pattern, method: 'entry', }
       }
-      dbg && result && console.error(msg, '[2]result', result);
     } 
     if (!result && (!method || method==='unaccented')) {
-      let rpattern = Dictionary.unaccentedPattern(pattern);
+      let rpattern = _Dictionary.unaccentedPattern(pattern);
       let re = new RegExp(`^${rpattern}\$`);
-      let data = Object.keys(index).reduce((a,word)=>{
+      let data = Object.keys(dpd).reduce((a,word)=>{
         if (re.test(word)) {
           let entry = this.entryOf(word);
           entry && entry.definition.forEach(def=>{
@@ -425,16 +370,14 @@ export default class Dictionary {
       if (data.length) {
         result = { data, pattern:rpattern, method: 'unaccented', };
       }
-      dbg && result && console.error(msg, '[3]result', result);
     }
     if (!result && (!method || method==='definition')) {
       result = this.findDefinition(pattern);
-      dbg && result && console.error(msg, '[4]result', result);
     }
     
     if (dbg) {
       if (result) {
-        result.data.forEach(row=>console.error(msg, '[4]',
+        result.data.forEach(row=>console.log(msg, '[1]',
           row.word,
           row.construction,
           row.type, 
@@ -442,7 +385,7 @@ export default class Dictionary {
           row.literal, 
         ));
       } else {
-        console.error(msg, "result?", {pattern, method});
+        console.log(msg, "result?", {pattern, method});
       }
     }
 
@@ -450,7 +393,7 @@ export default class Dictionary {
   }
 
   wordInflections(word, opts={}) { 
-    const msg = 'Dictionary.wordInflections()';
+    const msg = '_Dictionary.wordInflections()';
     const dbg = 0 || DBG.WORD_INFLECTIONS;
     const dbgv = dbg && DBG.VERBOSE;
     let {
@@ -459,10 +402,10 @@ export default class Dictionary {
     } = opts;
     let entry = this.find(word);
     let entries = this.relatedEntries(word, {overlap});
-    let stem = Dictionary.prefixOf(entries.map(e=>e.word));
+    let stem = _Dictionary.prefixOf(entries.map(e=>e.word));
     let w = word;
-    dbg && console.error(msg);
-    dbg & console.error(entries.map(e=>e.word).join('\n'));
+    dbg && console.log(msg);
+    dbg & console.log(entries.map(e=>e.word).join('\n'));
 
     let tblMatch = Inflection.TABLE.filter(inf=>{
       for (let ie=0; ie<entries.length; ie++) {
@@ -474,13 +417,13 @@ export default class Dictionary {
       return false;
     });
     let title = `${word} matching inflections`;
-    dbgv && console.error(tblMatch.format({title}));
+    dbgv && console.log(tblMatch.format({title}));
 
     let tblLike = tblMatch.groupBy(['like'], [
       {id:'id', aggregate:'count'},
     ]);
     title = `${word} grouped by like`;
-    dbgv && console.error(tblLike.format({title}));
+    dbgv && console.log(tblLike.format({title}));
     //return tblMatch;
 
     let likeMap = tblLike.rows.reduce((a,row)=>{
@@ -497,7 +440,7 @@ export default class Dictionary {
       new Inflection(Object.assign({word:stem+row.sfx}, row)));
     tblResult.addHeader({id:'word'});
     tblResult.sort(Inflection.compare);
-    dbg && console.error(tblResult.format({
+    dbg && console.log(tblResult.format({
       title:`tblResult ${word} group by:${Object.keys(likeMap)}`}));
     return tblResult;
   }

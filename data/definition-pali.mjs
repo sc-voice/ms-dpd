@@ -1,4 +1,4 @@
-export const DEF_LANG=[
+export const DEF_PALI=[
  "ta pron|pron|",
  "ima pron|pron|",
  "ati pr|pr|bhava+ti",

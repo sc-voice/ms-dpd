@@ -8,11 +8,11 @@ import should from "should";
 import { DBG } from '../src/defines.mjs';
 import {
   Pali,
-  Dictionary,
 } from '../main.mjs';
+import { default as Dictionary } from '../src/_dictionary.mjs';
 
 async function testDeclensions({word, infExpected, nbr}) {
-  const msg = "test.dictionary.testDeclensions()";
+  const msg = "test._dictionary.testDeclensions()";
   const dbg = 1;
   dbg && console.log(msg, '[1]word', word);
   let dict = await Dictionary.create();
@@ -39,7 +39,7 @@ async function testDeclensions({word, infExpected, nbr}) {
 }
 
 typeof describe === "function" && 
-  describe("dictionary", function () 
+  describe("__dictionary", function () 
 {
   it("default ctor", async() => {
     let eCaught;
@@ -53,57 +53,30 @@ typeof describe === "function" &&
   it("create()", async()=>{
     let dict = await Dictionary.create();
     should(dict.lang).equal('en');
-    should(Dictionary.LICENSE).match(/digitalpalidictionary/);
-    should(dict.defLang.length).above(51000).below(55000);
+    should(dict.dpd.__metadata.license).match(/digitalpali_dictionary/);
+    should(dict.dpdTexts.length).above(52000).below(55000);
   });
-  it("entryOf() dhamma", async()=>{
+  it("entryOf()", async()=>{
     let dict = await Dictionary.create();
     let dhamma = dict.entryOf("dhamma");
     should(dhamma).properties(["word", "definition"]);
     should(dhamma.word).equal("dhamma");
-
     let def0 = dict.parseDefinition(dhamma.definition[0]);
-    should(def0).properties({ // Pali properties
-      pos: 'masc',
-      pattern: 'a masc',
-      construction: '√dhar+ma', 
-    });
-    should(def0).properties({ // Language properties
-      meaning_1: 'nature; character',
-      meaning_2: '',
-      meaning_lit: '',
-    });
-    should(def0).properties({ // Legacy properties
+    should.deepEqual(def0, {
       type: 'masc',
       meaning: 'nature; character',
       literal: '',
+      construction: '√dhar˖ma',
     });
-
-    let def11 = dict.parseDefinition(dhamma.definition[11]);
-    should(def11).properties({ // Pali properties
-      pos: 'nt',
-      pattern: 'a nt',
-      construction: '√dhar+ma', 
-    });
-    should(def11).properties({ // Language properties
-      meaning_1: 'teaching; discourse; doctrine',
-      meaning_2: '',
-      meaning_lit: '',
-    });
-    //  .match(/nt.*teaching; discourse;/);
+    should(dhamma.definition[11])
+      .match(/nt.*teaching; discourse;/);
     let dhamma2 = dict.entryOf("dhamma");
     should.deepEqual(dhamma2, dhamma);
-  });
-  it("entryOf() no entry", async()=>{
-    let dict = await Dictionary.create();
 
     // No entry
     let asdf = dict.entryOf("asdf");
     should(asdf).equal(null);
-  });
-  it("entryOf() misc", async()=>{
-    let dict = await Dictionary.create();
-    let dhamma = dict.entryOf("dhamma");
+
     // dhammo (similar definition)
     let dhammo = dict.entryOf("dhammo");
     should(dhammo.word).equal("dhammo");
@@ -122,16 +95,14 @@ typeof describe === "function" &&
     let giddhe = dict.entryOf("giddhe");
     should(giddhe.word).equal("giddhe");
     should(giddhe.definition[0])
-      .match(/pp/)
-      .match(/greedy.*\|become greedy/)
-      .match(/\|√gidh\+ta/);
+      .match(/pp\|greedy.*\|become greedy\|√gidh˖ta/);
   });
   it("relatedEntries()", async()=>{
-    const msg = 'test.dictionary@73';
+    const msg = 'test._dictionary@73';
     let dict = await Dictionary.create();
     let entries = dict.relatedEntries("dhamma");
     //console.log(msg, entries);
-    should(entries.length).equal(14);
+    should(entries.length).equal(15);
     let dhammaya = entries.find(e=>e.word === 'dhammāya');
     should(dhammaya.overlap).equal(1);
     should(dhammaya.definition.length).equal(17);
@@ -141,37 +112,45 @@ typeof describe === "function" &&
   it("parseDefinition()", async()=>{
     let dict = await Dictionary.create();
     let entry = dict.entryOf("dhamma");
-    let parsed =  dict.parseDefinition(entry.definition[0]);
-    should(parsed).properties({
+    should.deepEqual(dict.parseDefinition(entry.definition[0]), {
       type: 'masc',
       meaning: 'nature; character',
       literal: '',
-      construction: '√dhar+ma',
+      construction: '√dhar˖ma',
     });
   });
   it("findWords()", async()=>{
-    const msg = 'test.dictionary@153';
     let dict = await Dictionary.create();
-    let matches = dict.findWords(/\bthe root of/i);
-    should(matches.length).equal(6);
+    let matches = dict.findWords(/\bto the Truth/i);
+    should(matches.length).equal(10);
 
     { // matches single word
-      let { definition, words } = matches[1];
-      should.deepEqual(words, ['aññāṇamūlappabhavā']);
-      should(definition).match(/born from the root of ignorance/);
+      let { definition, words } = matches[0];
+      //console.log(matches[0]);
+      should.deepEqual(words, ['saccagāmiṁ']);
+      should.deepEqual(dict.parseDefinition(definition), {
+        type: 'adj',
+        meaning: 'leading to the truth; going to the true',
+        literal: '',
+        construction: 'sacca˖gāmī',
+      });
     }
 
     { // matches multiple words
-      let { definition, words } = matches[0];
-      //console.log(matches[0]);
-      should.deepEqual(words, ['gaṇḍamūlaṁ', 'gaṇḍamūlo']);
-      should(definition).match(/the root of the boil/);
+      let { definition, words } = matches[7];
+      //console.log(matches[6]);
+      should.deepEqual(words, ['saccānubodhaṁ', 'saccānubodho']);
+      should.deepEqual(dict.parseDefinition(definition), {
+        type: 'masc',
+        meaning: 'awakening to the truth; understanding the truth; realizing reality',
+        literal: '',
+        construction: 'sacca˖anubodha',
+      });
     }
   });
   it("find() moral behaviour (definition)", async()=>{
     let dict = await Dictionary.create();
-    let word1
-    let pattern = 'moral behaviour'; 
+    let pattern = 'moral behaviour';
     let res = dict.find(pattern);
     should(res.method).equal('definition');
     should(res.pattern).equal(pattern);
@@ -179,21 +158,7 @@ typeof describe === "function" &&
       let { meaning } = res.data[i];
       should(meaning).match(new RegExp(`\\b${pattern}`, 'i'));
     }
-    should(res.data.length).equal(26);
-  });
-  it("find() something abides (not in dictionary)", async()=>{
-    let dict = await Dictionary.create();
-
-    // words are in dictionary
-    let patterns = [
-      'something', // actual definition word
-      'abides', // actual definition word
-    ];
-    should(dict.find(patterns[0])).not.equal(undefined);
-    should(dict.find(patterns[1])).not.equal(undefined);
-
-    // phrase is NOT in dictionary
-    should(dict.find(patterns.join(' '))).equal(undefined);
+    should(res.data.length).equal(25);
   });
   it("find() dhamma (entry)", async()=>{
     let dict = await Dictionary.create();
@@ -204,15 +169,15 @@ typeof describe === "function" &&
     should(dhamma.data[0]).properties([
       "word", "type", "meaning", "literal", "construction"
     ]);
-    should(dhamma.data[0]).properties({
+    should.deepEqual(dhamma.data[0], {
       word: 'dhamma',
       type: 'masc',
       literal: '',
-      construction: '√dhar+ma',
+      construction: '√dhar˖ma',
       meaning: 'nature; character',
     });
   });
-  it("TESTTESTnormalizePattern()", ()=>{
+  it("normalizePattern()", ()=>{
     let good = "abcdefghijklmnopqrstuvwxyz";
     let accented = [ 
       'ā', 'ī', 'ū', 'ṁ', 'ṃ', 'ḍ', 'ṅ', 'ñ', 'ṇ', 'ḷ', 'ṭ',
@@ -286,8 +251,6 @@ typeof describe === "function" &&
     should(Dictionary.isAccented("saṁvega")).equal(true);
   });
   it("wordsWithPrefix()", async ()=>{
-    let msg = 'test.dictionary@284';
-    DBG.TBD && console.log(msg, "TBD"); return;
     let dict = await Dictionary.create();
 
     // When strict is false (default), the output may have ellipses:
@@ -438,7 +401,7 @@ typeof describe === "function" &&
     await testDeclensions({word:'dhamma', infExpected});
   });
   it("TBDTESTTESTwordInflections devī", async()=>{ 
-    const msg = 'test.dictionary@404';
+    const msg = 'test._dictionary@404';
     DBG.TBD && console.log(msg, 'TBD'); return;
     const infExpected = [
       { gdr:'fem', case:'nom', nbr:'sg', word:'devī' }, 
@@ -462,7 +425,7 @@ typeof describe === "function" &&
     await testDeclensions({word:'devī', infExpected, });
   });
   it("TBDTESTTESTwordInflections aggi", async()=>{
-    const msg = 'test.dictionary@429';
+    const msg = 'test._dictionary@429';
     DBG.TBD && console.log(msg, 'TBD'); return;
     const infExpected = [
       { gdr:'nt', case:'nom', nbr:'sg', word:'aggi' }, 
@@ -499,7 +462,7 @@ typeof describe === "function" &&
     await testDeclensions({word:'aggi', infExpected});
   });
   it("TBDTESTTESTwordInflections akkhi", async()=>{
-    const msg = 'test.dictionary@467';
+    const msg = 'test._dictionary@467';
     DBG.TBD && console.log(msg, 'TBD'); return;
     const infExpected = [
       { gdr:'nt', case:'nom', nbr:'sg', word:'akkhi' }, 

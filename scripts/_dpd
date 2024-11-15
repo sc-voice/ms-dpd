@@ -1,0 +1,143 @@
+#!/bin/bash
+SCRIPT=$0
+DIRNAME=`dirname $SCRIPT`
+node - <<'JS' $DIRNAME "$@"
+let [ SCRIPT, DASH, DIRNAME, ...args] = process.argv;
+function help() {
+  console.log(`
+NAME
+        dpd - search Digital Pali Dictionary
+
+SYNOPSIS
+        dpd [OPTIONS] PATTERN
+
+DESCRIPTION
+        Searches Digital Pali Dictionary using following methods:
+        * entries by Pali word
+        * entries by matching unaccented Pali word(s)
+        * entries by matching definitions
+
+    -?, --help
+        Print this help.
+
+    -md
+        Use "definition" search method to show matching definitions
+
+    -me
+        Use "entry" search method to show definitions for given 
+        Pāli word.
+
+    -mu
+        Use "unaccented" search method to show definitions for all Pāli 
+        words matching unaccented letters with or without diacriticals
+
+EXAMPLES
+        dpd dhamma
+        dpd -mu dhamma
+        dpd -md 'superior virtue'
+  `);
+  process.exit(0);
+}
+async function main() {
+  const msg = 'dpd.main()';
+  const path = (await import('path'));
+  const fs = (await import('fs'));
+  const { promises: fsp } = fs;
+  const { fileURLToPath } = (await import('url'));
+  const util = require('util');
+  const exec = util.promisify(require('child_process').exec);
+  const { default:Dictionary } = (await import(
+    `${DIRNAME}/../src/_dictionary.mjs`));
+
+  let dbg = 0;
+  let dict = await Dictionary.create();
+  let method; // default
+  let textArgs = [];
+  for (let i=0; i<args.length; i++) {
+    let arg = args[i];
+    let argNext = args[i+1];
+    if (arg.startsWith('-')) {
+      switch (arg) {
+        case '-me':
+          method = 'entry';
+          break;
+        case '-mu':
+          method = 'unaccented';
+          break;
+        case '-md':
+          method = 'definition';
+          break;
+        case '-?':
+        case '--help':
+          help();
+          break;
+      }
+    } else {
+      textArgs.push(arg);
+    }
+  }
+  if (textArgs.length == 0) {
+    help();
+  }
+
+  if (textArgs.length > 1) {
+    if (!method || method==='definition') {
+      method = 'definition'
+      textArgs = [ textArgs.join(' ') ];
+    }
+  }
+  for (let i=0; i<textArgs.length; i++) {
+    let word = textArgs[i];
+    let info = dict.find(word, {method});
+    if (info == null) {
+      console.log(`${word} (not found)`);
+      let words = dict.wordsWithPrefix(word);
+      words.forEach(word=>{
+        console.log(`  ${word}?`);
+      });
+      return;
+    }
+    let { method:methodActual, pattern, data } = info;
+    let license = ' CC0 https://digitalpalidictionary.github.io/';
+    let title = ` find:"${word}" method:${methodActual}`
+    console.log("".padEnd(title.length+1, "-"));
+    console.log(title);
+    console.log("".padEnd(title.length+1, "-"));
+    let T_TYPE = 'TYPE';
+    let T_CONSTR = 'CONSTRUCT';
+    let T_MEANING ='MEANING';
+    let T_WORD = 'WORD';
+    let typePad = T_TYPE.length;
+    let constrPad = T_CONSTR.length;
+    let wordPad = T_WORD.length;;
+    let rows = data.map(row=>{
+      let { 
+        word='', type='', meaning='', literal='', construction='' 
+      } = row;
+      wordPad = Math.max(wordPad, word.length);
+      typePad = Math.max(typePad, type.length);
+      constrPad = Math.max(constrPad, construction.length);
+      return [word, type, meaning, literal, construction ];
+    });
+      console.log(
+        '#'.padStart(2),
+        T_WORD.padEnd(wordPad),
+        T_TYPE.padEnd(typePad),
+        T_CONSTR.padEnd(constrPad),
+        T_MEANING,
+      );
+    rows.forEach((row,i)=>{
+      let [ word, type, meaning, literal, construction ] = row;
+      let litOut = 
+      console.log(
+        `${i+1}`.padStart(2),
+        word.padEnd(wordPad),
+        type.padEnd(typePad),
+        construction.padEnd(constrPad),
+        literal ? `${meaning}; lit. ${literal}` : meaning,
+      );
+    });
+  }
+} //main
+main()
+JS

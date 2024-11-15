@@ -381,7 +381,7 @@ export default class SqlDpd {
       return [ pattern, pos, construction ].join('|');
     });
     let defPaliOut = [
-      'export const DEF_LANG=',
+      'export const DEF_PALI=',
       JSON.stringify(defPali, null, 1)
     ].join('');
     let fnPali = 'definition-pali.mjs';
