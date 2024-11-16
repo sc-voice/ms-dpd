@@ -106,11 +106,11 @@ typeof describe==="function" && describe("sql-dpd", function() {
       verboseRows,
     });
 
-    let { paliWords, dpdLookup, dpdHeadwords } = sqlDpd;
-    should(paliWords.length).equal(2); // devi, deva
+    let { dictWords, dpdLookup, dpdHeadwords } = sqlDpd;
+    should(dictWords.length).equal(2); // devi, deva
     let lookupKeys = Object.keys(dpdLookup);
-    should.deepEqual(paliWords, [ 'deva', 'devi' ]);
-    should.deepEqual(lookupKeys, paliWords);
+    should.deepEqual(dictWords, [ 'deva', 'devi' ]);
+    should.deepEqual(lookupKeys, dictWords);
 
     should.deepEqual(sqlDpd.dpdLookup.devi, [34161, 34162])
     should.deepEqual(sqlDpd.dpdLookup.deva, [34018, 34019, 34020, 34021])

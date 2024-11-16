@@ -83,12 +83,15 @@ export default class SqlDpd {
       writable: true,
       value: undefined,
     });
-    Object.defineProperty(this, "paliWords", {
+    Object.defineProperty(this, "dictWords", {
       writable: true,
       value: undefined,
     });
     Object.defineProperty(this, "paliMap", {
       value: paliMap,
+    });
+    Object.defineProperty(this, "paliWords", {
+      value: paliMap && Object.keys(paliMap).sort(Pali.compareRoman),
     });
     Object.defineProperty(this, "headwordUsage", {
       value: {},
@@ -126,6 +129,20 @@ export default class SqlDpd {
     await sqlDpd.#loadHeadwords();
 
     return sqlDpd;
+  }
+
+  isPaliWord(word) {
+    const msg = 'SqlDpd.isPaliWord';
+    let { paliMap, paliWords } = this;
+
+    if (paliMap == null) {
+      return true;
+    }
+    if (paliMap[word]) {
+      return true;
+    }
+
+    return false;
   }
 
   async #loadLookup() {
@@ -166,7 +183,7 @@ export default class SqlDpd {
         console.error(msg, {row}, e);
         throw e;
       }
-      if (!paliMap || paliMap[word]) {
+      if (this.isPaliWord(word)) {
         let hwrds = JSON.parse(headwords);
         a[word] = hwrds;
         for (let ihw=0; ihw<hwrds.length; ihw++) {
@@ -181,29 +198,24 @@ export default class SqlDpd {
       return a;
     }, {});
 
-    let paliWords = Object.keys(dpdLookup).sort(Pali.compareRoman);
-    let lookupMap = paliWords.reduce((a,w)=>{
+    let dictWords = Object.keys(dpdLookup).sort(Pali.compareRoman);
+    let lookupMap = dictWords.reduce((a,w)=>{
       a[w] = `{h:${JSON.stringify(dpdLookup[w])}}`;
       return a;
     }, {});
 
     dbg && console.error(msg, '[0.4]lookupMap.devi', 
-      lookupMap.devi, paliWords.slice(0, verboseRows)
+      lookupMap.devi, dictWords.slice(0, verboseRows)
     );
     dbg && console.error(msg, '[0.5]', {wAccept, wReject});
 
     this.dpdLookup = dpdLookup;
-    this.paliWords = paliWords;
+    this.dictWords = dictWords;
   }
 
   async build() {
     const msg = "SqlDpd.build:";
     let dbg = DBG.SQL_DPD_BUILD || this.dbg;
-    let {
-      headwordUsage,
-      paliMap,
-      verboseRows,
-    } = this;
 
     await this.#buildDefinitions();
     await this.#buildIndex();
@@ -414,10 +426,10 @@ export default class SqlDpd {
 
   async #buildIndex() {
     const msg = `SqlDpd.#buildIndex:`;
-    let { dataDir, paliWords, hwIdMap, dpdLookup, verboseRows } = this;
+    let { dataDir, dictWords, hwIdMap, dpdLookup, verboseRows } = this;
     let dbg = DBG.SQL_DPD_BUILD || this.dbg;
     console.log(msg, '[1]');
-    let defMap = paliWords.reduce((a,w,i)=>{
+    let defMap = dictWords.reduce((a,w,i)=>{
       let v = dpdLookup[w].map(id=>hwIdMap[id]);
       if (dbg && i <= verboseRows ) {
         console.error(msg, {w,v});
