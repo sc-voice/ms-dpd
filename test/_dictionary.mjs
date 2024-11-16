@@ -39,7 +39,7 @@ async function testDeclensions({word, infExpected, nbr}) {
 }
 
 typeof describe === "function" && 
-  describe("__dictionary", function () 
+  describe("_dictionary", function () 
 {
   it("default ctor", async() => {
     let eCaught;
@@ -53,7 +53,7 @@ typeof describe === "function" &&
   it("create()", async()=>{
     let dict = await Dictionary.create();
     should(dict.lang).equal('en');
-    should(dict.dpd.__metadata.license).match(/digitalpali_dictionary/);
+    should(dict.dpd.__metadata.license).match(/digitalpalidictionary/);
     should(dict.dpdTexts.length).above(52000).below(55000);
   });
   it("entryOf()", async()=>{

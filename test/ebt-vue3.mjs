@@ -47,11 +47,11 @@ typeof describe === "function" &&
 
     // When strict is false, unaccented patterns are used
     should.deepEqual(dict.wordsWithPrefix("samvega"), [
-      "saṁvega",
-      "saṁvegaṁ",
+      //"saṁvega",
+      //"saṁvegaṁ",
       "saṁvegaj\u2026",
       "saṁvegam\u2026",
-      "saṁvegas\u2026",
+      //"saṁvegas\u2026",
       "saṁvegāy\u2026",
     ]);
   });

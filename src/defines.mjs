@@ -6,7 +6,7 @@ export const DBG = {
   FIND: 0,
   FIND_METHOD: 0,
   FIND_DEFINITION: 0,
-  FIND_WORDS: 1,
+  FIND_WORDS: 0,
   INFLECTION_FIND: 0,
   LOADING: 0,
   RELATED_ENTRIES: 0,
@@ -16,5 +16,6 @@ export const DBG = {
   TBD: 0,
   VERBOSE_ROWS: 5,
   WORD_INFLECTIONS: 0,
+  WORDS_WITH_PREFIX: 0,
 }
 

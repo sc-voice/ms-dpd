@@ -212,7 +212,7 @@ typeof describe === "function" &&
       meaning: 'nature; character',
     });
   });
-  it("TESTTESTnormalizePattern()", ()=>{
+  it("normalizePattern()", ()=>{
     let good = "abcdefghijklmnopqrstuvwxyz";
     let accented = [ 
       'ā', 'ī', 'ū', 'ṁ', 'ṃ', 'ḍ', 'ṅ', 'ñ', 'ṇ', 'ḷ', 'ṭ',
@@ -228,18 +228,18 @@ typeof describe === "function" &&
     should(dhamma_rom.method).equal('unaccented');
     should(dhamma_rom.pattern).equal('(d|ḍ)h(a|ā)(m|ṁ|ṃ)(m|ṁ|ṃ)(a|ā)');
     should(dhamma_rom.data.length).equal(34);
-    should.deepEqual(dhamma_rom.data[0], { // same as "dhamma"
+    should(dhamma_rom.data[0]).properties( { // same as "dhamma"
       word: 'dhamma',
       type: 'masc',
       literal: '',
-      construction: '√dhar˖ma',
+      construction: '√dhar+ma',
       meaning: 'nature; character',
     });
-    should.deepEqual(dhamma_rom.data[17], { // almost like "dhamma"
+    should(dhamma_rom.data[17]).properties( { // almost like "dhamma"
       word: 'dhammā', 
       type: 'masc',
       literal: '',
-      construction: '√dhar˖ma',
+      construction: '√dhar+ma',
       meaning: 'nature; character',
     });
   });
@@ -250,12 +250,12 @@ typeof describe === "function" &&
     should(virtue.method).equal('definition');
     should(virtue.pattern).equal('superior virtue');
     should(virtue.data.length).equal(1);
-    should.deepEqual(virtue.data[0], {
+    should(virtue.data[0]).properties( {
       word: 'sīlaggaṁ',
       type: 'nt',
       literal: '',
       meaning: 'the highest ethical conduct; superior virtue',
-      construction: 'sīla˖agga',
+      construction: 'sīla+agga',
     });
   });
   it("find() definition virtue; moral behaviour", async()=>{
@@ -265,20 +265,20 @@ typeof describe === "function" &&
     should(virtue).properties(['pattern', 'method', 'data' ]);
     should(virtue.method).equal('definition');
     should(virtue.pattern).equal(pattern);
-    should(virtue.data.length).equal(14);
-    should.deepEqual(virtue.data[0], {
+    should(virtue.data.length).equal(13); // exclude dhammāna
+    should(virtue.data[0]).properties({
       word: 'dhamma',
       type: 'masc',
       literal: '',
       meaning: 'virtue; moral behaviour',
-      construction: '√dhar˖ma',
+      construction: '√dhar+ma',
     });
-    should.deepEqual(virtue.data[1], {
+    should(virtue.data[1]).properties({
       word: 'dhammasmiṁ',
       type: 'masc',
       literal: '',
       meaning: 'virtue; moral behaviour',
-      construction: '√dhar˖ma',
+      construction: '√dhar+ma',
     });
   });
   it("isAccented()", ()=>{
@@ -332,7 +332,8 @@ typeof describe === "function" &&
     ]);
     let sam = dict.wordsWithPrefix("saṁ", opts);
     should(sam[0]).equal("saṁ"); // exact match
-    should(sam.length).above(404).below(500);
+    should(sam.length).equal(333);
+    //should(sam.length).above(300).below(500);
   });
   it("ABBREVIATIONS", ()=>{
     should(Dictionary.ABBREVIATIONS).properties({

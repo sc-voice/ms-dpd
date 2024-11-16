@@ -141,6 +141,16 @@ export default class Dictionary {
     }
   }
 
+  #definitionLine(line) {
+    const msg = "Dictionary.#definitionLine";
+    let { defLang } = this;
+    let id = line-2;
+    return [
+      defLang[id],
+      DEF_PALI[id],
+    ].join('|');;
+  }
+
   entryOf(word) {
     const msg = "Dictionary.entryOf()";
     const dbg = DBG.ENTRY_OF;
@@ -152,14 +162,14 @@ export default class Dictionary {
       return null;
     }
     let definition = indexEntry.split(',').map(line=>{
-      let id = line-2;
-      return defLang[id]+'|'+DEF_PALI[id];
+      return this.#definitionLine(line);
     });
     return Object.assign({word}, {definition});
   }
 
   wordsWithPrefix(prefix, opts={}) {
-    const msg = "Dictionary.autocompleteWords()";
+    const msg = "Dictionary.wordsWithPrefix()";
+    let dbg = DBG.WORDS_WITH_PREFIX;
     let { index } = this;
     let { 
       limit=0,
@@ -170,6 +180,7 @@ export default class Dictionary {
     let matchLen = prefix.length+1;
     if (strict) {
       matching = keys.filter(word=>word.startsWith(prefix));
+      dbg && console.error(msg, '[1]matching', matching.length);
     } else if (Dictionary.isAccented(prefix)) {
       let normPrefix = Dictionary.normalizePattern(prefix);
       let re = new RegExp(`^${normPrefix}`, 'i');
@@ -183,6 +194,7 @@ export default class Dictionary {
         return a;
       }, {});
       matching = Object.keys(map);
+      dbg && console.error(msg, '[2]matching', matching.length);
     } else {
       let pat = Dictionary.unaccentedPattern(prefix);
       let re = new RegExp(`^${pat}`, 'i');
@@ -196,13 +208,18 @@ export default class Dictionary {
         return a;
       }, {});
       matching = Object.keys(map);
+      dbg && console.error(msg, '[3]matching', matching.length);
     }
     limit && (matching.slice(0,limit));
-
-    return matching.sort((a,b)=>{
+    matching =  matching.sort((a,b)=>{
       let cmp = a.length - b.length;
       return cmp || Pali.compareRoman(a,b);
-    });;
+    });
+
+    dbg && console.error(msg, '[4]matching', 
+      matching.slice(0,DBG.VERBOSE_ROWS));
+
+    return matching;
   }
 
   relatedEntries(word, opts={}) {
@@ -284,9 +301,8 @@ export default class Dictionary {
     dbg && console.error(msg, '[3]defWords', defWords);
     let matches = Object.entries(defWords).map(entry=>{
       let [line, words] = entry;
-      let id = line - 2;
       return {
-        definition:defLang[id],
+        definition:this.#definitionLine(line),
         words,
       }
     });
@@ -294,7 +310,7 @@ export default class Dictionary {
     return matches;
   }
 
-  parseDefinition(d='type?|meaning?|literal?|construction?') {
+  parseDefinition(d='meaning_1?|meaning_2?|meaning_litera?') {
     const msg = 'Dictionary.parseDefinition()';
     if (d instanceof Array) {
       return d.map(line=>this.parseDefinition(line));
@@ -304,13 +320,13 @@ export default class Dictionary {
         meaning_1, meaning_2, meaning_lit, 
         pattern, pos, construction 
       ] = d.split('|');
-      return { 
+      let result = JSON.parse(JSON.stringify({
         meaning_1, meaning_2, meaning_lit, 
         pattern, pos, construction, 
         type: pos,
         meaning: meaning_1 || meaning_2,
         literal: meaning_lit,
-      }
+      }));
       return result;
     }
 
