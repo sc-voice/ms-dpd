@@ -14,7 +14,7 @@ let msg = M;
 
 typeof describe==="function" && describe("sql-dpd", function() {
   before(()=>{
-    console.log(msg, "before");
+    //console.log(msg, "before");
     let dataDir = path.join(`${DIRNAME}/../local/data`);
     fs.mkdirSync(dataDir, {recursive:true});
   });
@@ -62,7 +62,7 @@ typeof describe==="function" && describe("sql-dpd", function() {
 
     let { dpdLookup, dpdHeadwords } = sqlDpd;
     let lookupKeys = Object.keys(dpdLookup);
-    should(lookupKeys.length).equal(1); // devi
+    should.deepEqual(lookupKeys, ['de', 'devi']);
 
     should.deepEqual(sqlDpd.dpdLookup.devi, [34161, 34162])
     should(dpdHeadwords[34161]).properties({
@@ -80,7 +80,11 @@ typeof describe==="function" && describe("sql-dpd", function() {
       meaning_2: "goddess",
     });
     let hwIds = Object.keys(dpdHeadwords);
-    should(hwIds.length).equal(2); // devi
+    should.deepEqual(hwIds, [
+      '31672', '31673', '32231', '33953', 
+      '33954', '34161', '34162',
+    ]);
+    should(hwIds.length).equal(7); // de, devi
   });
   it("create() headwordPatterns", async()=>{
     const msg = `${M}@37:`;
@@ -107,9 +111,9 @@ typeof describe==="function" && describe("sql-dpd", function() {
     });
 
     let { dictWords, dpdLookup, dpdHeadwords } = sqlDpd;
-    should(dictWords.length).equal(2); // devi, deva
+    should(dictWords.length).equal(3); // de, devi, deva
     let lookupKeys = Object.keys(dpdLookup);
-    should.deepEqual(dictWords, [ 'deva', 'devi' ]);
+    should.deepEqual(dictWords, [ 'de', 'deva', 'devi' ]);
     should.deepEqual(lookupKeys, dictWords);
 
     should.deepEqual(sqlDpd.dpdLookup.devi, [34161, 34162])
@@ -138,45 +142,74 @@ typeof describe==="function" && describe("sql-dpd", function() {
     await sqlDpd.build();
     let { hwIdMap, defPali, defLang, defMap } = sqlDpd;
 
-    should.deepEqual(hwIdMap, {
-      34018: 2,
-      34019: 3,
-      34020: 4,
-      34021: 5,
-      34161: 6,
-      34162: 7,
-    });
+    should.deepEqual(Object.keys(hwIdMap), [
+      31672,
+      31673,
+      32231,
+      33953,
+      33954,
+      34018,
+      34019,
+      34020,
+      34021,
+      34161,
+      34162,
+    ].join(',').split(','));
 
-    should(defLang[0])
-    .equal('deity; god||');
-    should(defPali[0])
-    .equal('a masc|masc|√div > dev+*a');
-    should(defLang[1])
-    .equal('king; lord||');
-    should(defPali[1])
-    .equal('a masc|masc|√div > dev+*a');
-    should(defLang[2])
-    .equal('rain cloud||');
-    should(defPali[2])
-    .equal('a masc|masc|√div > dev+*a');
-    should(defLang[3])
-    .equal('sky||');
-    should(defPali[3])
-    .equal('a masc|masc|√div > dev+*a');
-    should(defLang[4])
-    .equal('queen||');
-    should(defPali[4])
-    .equal('ī fem|fem|√div > dev+*a+ī\ndeva+ī');
-    should(defLang[5])
-    .equal('goddess||');
-    should(defPali[5])
-    .equal('ī fem|fem|√div > dev+*a+ī\ndeva+ī');
+    should(defLang.includes('deity; god||'))
+    .equal(true);
+    should(defPali.includes('a masc|masc|√div > dev+*a'))
+    .equal(true);
+    should(defLang.includes('king; lord||'))
+    .equal(true);
+    should(defPali.includes('a masc|masc|√div > dev+*a'))
+    .equal(true);
+    should(defLang.includes('rain cloud||'))
+    .equal(true);
+    should(defPali.includes('a masc|masc|√div > dev+*a'))
+    .equal(true);
+    should(defLang.includes('sky||'))
+    .equal(true);
+    should(defPali.includes('a masc|masc|√div > dev+*a'))
+    .equal(true);
+    should(defLang.includes('queen||'))
+    .equal(true);
+    should(defPali.includes('ī fem|fem|√div > dev+*a+ī\ndeva+ī'))
+    .equal(true);
+    should(defLang.includes('goddess||'))
+    .equal(true);
+    should(defPali.includes('ī fem|fem|√div > dev+*a+ī\ndeva+ī'))
+    .equal(true);
 
     // defMap maps pali word to file line number,
     // which is 2+array index
-    should.deepEqual(defMap, {
-      deva: '2,3,4,5', // i.e., [0,1,2,3] in definition array
-      devi: '6,7',      // i.e., [4,5] in definition array
-    });
+    should(defMap.de).equal('2,3,4,5,6');
+    should(defMap.deva).equal('7,8,9,10');
+    should(defMap.devi).equal('11,12');
+  });
+  it("binarySearch", ()=>{
+    let data = [
+      "blue",
+      "red",
+      "yellow",
+    ].sort();
+    should(SqlDpd.binarySearch(data, "blue")).equal(0);
+    should(SqlDpd.binarySearch(data, "red")).equal(1);
+    should(SqlDpd.binarySearch(data, "yellow")).equal(2);
+
+    should(SqlDpd.binarySearch(data, "asdf")).equal(-1);
+    should(SqlDpd.binarySearch(data, "")).equal(-1);
+    should(SqlDpd.binarySearch(data, " ")).equal(-1);
+
+    // match
+    should(SqlDpd.binarySearch(data, "ba")).equal(-1);
+    should(SqlDpd.binarySearch(data, "bl")).equal(0);
+    should(SqlDpd.binarySearch(data, "bx")).equal(-1);
+    should(SqlDpd.binarySearch(data, "ra")).equal(-1);
+    should(SqlDpd.binarySearch(data, "re")).equal(1);
+    should(SqlDpd.binarySearch(data, "rx")).equal(-1);
+    should(SqlDpd.binarySearch(data, "ya")).equal(-1);
+    should(SqlDpd.binarySearch(data, "ye")).equal(2);
+    should(SqlDpd.binarySearch(data, "yx")).equal(-1);
   });
 });

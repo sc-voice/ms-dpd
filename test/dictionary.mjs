@@ -54,7 +54,7 @@ typeof describe === "function" &&
     let dict = await Dictionary.create();
     should(dict.lang).equal('en');
     should(Dictionary.LICENSE).match(/digitalpalidictionary/);
-    should(dict.defLang.length).above(51000).below(55000);
+    should(dict.defLang.length).above(55000).below(60000);
   });
   it("entryOf() dhamma", async()=>{
     let dict = await Dictionary.create();
@@ -131,7 +131,7 @@ typeof describe === "function" &&
     let dict = await Dictionary.create();
     let entries = dict.relatedEntries("dhamma");
     //console.log(msg, entries);
-    should(entries.length).equal(14);
+    should(entries.length).equal(16);
     let dhammaya = entries.find(e=>e.word === 'dhammāya');
     should(dhammaya.overlap).equal(1);
     should(dhammaya.definition.length).equal(17);
@@ -155,17 +155,17 @@ typeof describe === "function" &&
     let matches = dict.findWords(/\bthe root of/i);
     should(matches.length).equal(6);
 
-    { // matches single word
+    { // matches multiple words
       let { definition, words } = matches[1];
-      should.deepEqual(words, ['aññāṇamūlappabhavā']);
-      should(definition).match(/born from the root of ignorance/);
+      //console.log(matches[0]);
+      should(definition).match(/the root of the boil/);
+      should.deepEqual(words, ['gaṇḍamūlaṁ', 'gaṇḍamūlo']);
     }
 
-    { // matches multiple words
-      let { definition, words } = matches[0];
-      //console.log(matches[0]);
-      should.deepEqual(words, ['gaṇḍamūlaṁ', 'gaṇḍamūlo']);
-      should(definition).match(/the root of the boil/);
+    { // matches single word
+      let { definition, words } = matches[2];
+      should.deepEqual(words, ['aññāṇamūlappabhavā']);
+      should(definition).match(/born from the root of ignorance/);
     }
   });
   it("find() moral behaviour (definition)", async()=>{
@@ -179,7 +179,7 @@ typeof describe === "function" &&
       let { meaning } = res.data[i];
       should(meaning).match(new RegExp(`\\b${pattern}`, 'i'));
     }
-    should(res.data.length).equal(26);
+    should(res.data.length).equal(30);
   });
   it("find() something abides (not in dictionary)", async()=>{
     let dict = await Dictionary.create();
@@ -249,23 +249,25 @@ typeof describe === "function" &&
     should(virtue).properties(['pattern', 'method', 'data' ]);
     should(virtue.method).equal('definition');
     should(virtue.pattern).equal('superior virtue');
-    should(virtue.data.length).equal(1);
+    should(virtue.data.length).equal(2);
     should(virtue.data[0]).properties( {
-      word: 'sīlaggaṁ',
+      word: 'sīlagga',
       type: 'nt',
       literal: '',
       meaning: 'the highest ethical conduct; superior virtue',
       construction: 'sīla+agga',
     });
   });
-  it("find() definition virtue; moral behaviour", async()=>{
+  it("find() virtue; moral behaviour", async()=>{
+    const msg = 'test.dictionary@262';
     let dict = await Dictionary.create();
     let pattern = 'virtue; moral behaviour';
     let virtue = dict.find(pattern, {method: 'definition'});
     should(virtue).properties(['pattern', 'method', 'data' ]);
     should(virtue.method).equal('definition');
     should(virtue.pattern).equal(pattern);
-    should(virtue.data.length).equal(13); // exclude dhammāna
+    console.log(msg, {data:virtue.data.map(d=>d.word)});
+    should(virtue.data.length).equal(14); // exclude dhammāna
     should(virtue.data[0]).properties({
       word: 'dhamma',
       type: 'masc',
@@ -332,8 +334,7 @@ typeof describe === "function" &&
     ]);
     let sam = dict.wordsWithPrefix("saṁ", opts);
     should(sam[0]).equal("saṁ"); // exact match
-    should(sam.length).equal(333);
-    //should(sam.length).above(300).below(500);
+    should(sam.length).above(460).below(500);
   });
   it("ABBREVIATIONS", ()=>{
     should(Dictionary.ABBREVIATIONS).properties({

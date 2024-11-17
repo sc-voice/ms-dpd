@@ -115,6 +115,41 @@ export default class SqlDpd {
     console.log(msg, '[2]this', JSON.stringify(this));
   }
 
+  static binarySearch(arr, target) {
+    const msg = "SqlDpd.binarySearch";
+    const dbg = DBG.BINARY_SEARCH;
+    let left = 0;
+    let right = arr.length - 1;
+    let mid = -1;
+
+    if (!target) {
+      return -1;
+    }
+
+    let lastMatch = -1;
+    while (left <= right) {
+      const mid = Math.floor((left+right) / 2);
+
+      if (arr[mid].startsWith(target)) {
+        lastMatch = mid;
+      }
+
+      if (arr[mid] === target) {
+        dbg && console.log(msg, `[1]${target} =>`, mid);
+        return mid; // Target found at index 'mid'
+      } else if (target > arr[mid]) {
+        left = mid + 1; // Search in the right half
+        dbg && console.log(msg, `[2]${target} >`, arr[mid]);
+      } else {
+        right = mid - 1; // Search in the left half
+        dbg && console.log(msg, `[3]${target} <`, arr[mid]);
+      }
+    }
+
+    dbg && console.log(msg, `[4]${target} =>`, lastMatch);
+    return lastMatch;
+  }
+
   static async create(opts={}) {
     const msg = "SqlDpd.create:";
     let {
@@ -141,7 +176,8 @@ export default class SqlDpd {
     if (paliMap[word]) {
       return true;
     }
-
+    let iMatch = SqlDpd.binarySearch(paliWords, word);
+    return iMatch !== -1;
     return false;
   }
 

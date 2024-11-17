@@ -223,13 +223,15 @@ typeof describe === "function" &&
       construction: 'sīla˖agga',
     });
   });
-  it("find() definition virtue; moral behaviour", async()=>{
+  it("find() virtue; moral behaviour", async()=>{
+    const msg = 'test.dictionary@227';
     let dict = await Dictionary.create();
     let pattern = 'virtue; moral behaviour';
     let virtue = dict.find(pattern, {method: 'definition'});
     should(virtue).properties(['pattern', 'method', 'data' ]);
     should(virtue.method).equal('definition');
     should(virtue.pattern).equal(pattern);
+    console.log(msg, {data:virtue.data.map(d=>d.word)});
     should(virtue.data.length).equal(14);
     should.deepEqual(virtue.data[0], {
       word: 'dhamma',
@@ -295,6 +297,7 @@ typeof describe === "function" &&
     ]);
     let sam = dict.wordsWithPrefix("saṁ", opts);
     should(sam[0]).equal("saṁ"); // exact match
+    console.log('sam', sam.length);
     should(sam.length).above(404).below(500);
   });
   it("ABBREVIATIONS", ()=>{
