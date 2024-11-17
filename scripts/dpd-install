@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-DMY=`date +%d%m%y`
+DMY=`date +%y%m%d`
 DBNAME=dpd.db
 DPDNAME=dpd.db.$DMY
 TARNAME=$DBNAME.$DMY.tar
