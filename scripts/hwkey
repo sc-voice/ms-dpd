@@ -1,0 +1,138 @@
+#!/usr/bin/bash
+DBNAME=dpd.db
+SCRIPT=`basename $0`
+DIRNAME=`dirname $0`
+
+node - <<'JS' $DIRNAME $SCRIPT "$@" 
+const util = require('util');
+const fs = require('fs');
+const fsp = fs.promises;
+const path = require('path');
+const exec = util.promisify(require('child_process').exec);
+const MIN_PARMS = 0;
+let [ NODE, DASH, DIRNAME, SCRIPT, ...args] = process.argv;
+const SRC=path.join(DIRNAME, '../src');
+
+const msg = `${SCRIPT}:`;
+
+function help() {
+  console.error(`
+NAME
+  ${SCRIPT} - command line for HeadwordKey
+
+SYNOPSIS
+  ${SCRIPT} [...VALUES]
+
+DESCRIPTION
+  create new bash script with nodejs wrapper
+
+  -?, --help
+    print this help text
+
+  -v, --verbose
+    print more information to stderr
+
+  -d 
+    Decode VALUES
+
+  -e 
+    Encode VALUE
+
+  VALUES
+    Keys or numbers
+
+EXAMPLES
+  ${SCRIPT} -e 12345
+  ${SCRIPT} -d AAA
+`);
+  process.exit(0);
+}
+
+function parseArgs() {
+  const msg = `${SCRIPT}.parseArgs:`;
+  // default values
+  let dbg = 0;
+  let op;;
+
+  let parms = args.reduce((a,arg,i)=>{
+    switch (arg) {
+      case '-?':
+      case '--help':
+        help();
+        break;
+      case "--verbose":
+      case "-v":
+        dbg = 1;
+        break;
+      case "--very-verbose":
+      case "-vv":
+        dbg = 2;
+        break;
+      case "-d":  
+        op = 'decode';
+        break;
+      case "-e":  
+        op = 'encode';
+        break;
+      default:
+        if (arg.at(0) === "-") {
+          console.error(`${msg} [ERROR] ignoring ${arg}`);
+          help();
+        } else {
+          a.push(arg);
+        }
+        break;
+    }
+    return a;
+  }, []);
+  if (op==null || parms.length<MIN_PARMS) {
+    help();
+  }
+
+  let result = {
+    dbg,
+    parms,
+    op,
+  }
+  dbg && console.error(msg, Object.assign({
+    NODE,DASH, DIRNAME, SCRIPT, parms, 
+  }, result));
+
+  return result;
+}
+let {
+  dbg,
+  op,
+  parms,
+} = parseArgs();
+
+async function main() {
+  const msg = `${SCRIPT}.main:`;
+  const HEADWORD_KEY = await import(`${DIRNAME}/../src/headword-key.mjs`);
+  const { default:HeadwordKey } = HEADWORD_KEY;
+
+  dbg &&console.error(msg, '[1]', {op,parms});
+
+  let result;
+  switch (op) {
+    case 'decode':
+      result = parms.map(p=>HeadwordKey.toNumber(p)).join(' ');
+      break;
+    case 'encode':
+      result = parms.map(p=>HeadwordKey.fromNumber(p)).join(' ');
+      break;
+  }
+
+  console.log(result);
+}
+
+(async function() {
+  try {
+    main()
+  } catch(e) {
+    console.error(msg, e);
+  }
+})()
+
+JS
+
