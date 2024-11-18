@@ -8,6 +8,7 @@ import { DBG } from '../src/defines.mjs';
 const M = "test.SqlDpd:";
 import * as Pali from '../src/pali.mjs';
 import { default as SqlDpd } from '../scripts/js/sql-dpd.mjs';
+import { default as HeadwordKey } from '../src/headword-key.mjs';
 const DIRNAME = import.meta.dirname;
 
 let msg = M;

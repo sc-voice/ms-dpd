@@ -97,7 +97,7 @@ export default class SqlDpd {
     Object.defineProperty(this, "headwordUsage", {
       value: {},
     });
-    Object.defineProperty(this, "hwKeys", {
+    Object.defineProperty(this, "hwIds", {
       writable: true,
       value: [],
     });
@@ -372,6 +372,27 @@ export default class SqlDpd {
     return json;
   }
 
+  async #writeMap(fpath, decl, map) {
+    const msg = 'SqlDpd.#writeMap';
+    let dbg = DBG.SQL_DPD_BUILD || this.dbg;
+    let { 
+      hwIds,
+    } = this;
+    let iLast = hwIds.length-1;
+    let aOut = [
+      decl + '{',
+      ...hwIds.map((id,i)=>{
+        let key = HeadwordKey.fromNumber(id);
+        let v = JSON.stringify(map[key]);
+        let sep = i<iLast ? ',' : '';
+        return ` "${key}": ${v}${sep}`;
+      }),
+      '}',
+    ];
+    await fs.promises.writeFile(fpath, aOut.join('\n'));
+    dbg && console.error(msg, `[1]${fpath}`, aOut.length);
+  }
+
   async #buildDefinitions() {
     const msg = `SqlDpd.#buildDefinitions:`;
     let dbg = DBG.SQL_DPD_BUILD || this.dbg;
@@ -381,80 +402,30 @@ export default class SqlDpd {
       verboseRows,
       headwordUsage,
     } = this;
-    let hwKeys = Object.keys(headwordUsage)
+    let hwIds = Object.keys(headwordUsage)
       .sort((a,b)=>Number(a) - Number(b));
-    this.hwKeys = hwKeys;
-
-    /*
-    let hwKeys = Object.keys(headwordUsage).sort((a,b)=>{
-      // Sort headwords with high usage to top,
-      // then sort by existing index as a coarse proxy for
-      // time of authorship as a crude metric for similarity
-      // between adjacent definitions authored at the same time.
-      // In theory, this adjacency should benefit translators
-      // by grouping related definitions
-      return (headwordUsage[b] - headwordUsage[a]) || (a-b);
-    });
-    */
-
-    /* DEPRECATED
-     * Headword to Line Map (hwIdMap)
-     * The DPD headword ids comprise all Pali words in the DPD. 
-     * However, Voice only uses the Mahāsaṅgīti words, 
-     * which is smaller that the entire Pali corpus.
-     *
-     * Compacting the sparse headword id range into consecutive
-     * integers shortens:
-     * - definition files by ~10% (3948359 vs. 4404682)
-     * - index file by ~3% (2489224 vs. 2558664)
-     */
-    /*
-    const FIRST_DEFINITION_LINE = 2;
-    let hwIdMap = hwKeys.reduce((a,k,i)=>{
-      // transform headword id => definition headword line number
-      let key = HeadwordKey.fromNumber(k);
-      a[k] = key;
-      if (dbg && i < verboseRows) {
-        console.error(msg, `[0.1] hwIdMap[${k}]:`, key);
-      }
-      return a;
-    }, {});
-
-    let hwMapOut = [
-      'export const HEADWORD_MAP=',
-      JSON.stringify(hwIdMap, null, 1)
-    ].join('\n');
-    let fnMap = 'headword-map.mjs';
-    let hwMapPath = path.join(dataDir, fnMap);
-    await fs.promises.writeFile(hwMapPath, hwMapOut);
-    console.error(msg, `[1]${fnMap}`, hwKeys.length+2);
-    this.hwIdMap = hwIdMap;
-    */
+    this.hwIds = hwIds;
 
     /* Pali Definitions (defPali)
      * Write out common Pali definitions, which greatly
      * decreases defLang size
      */
-    let defPali = hwKeys.reduce((a,n)=>{
+    let defPali = hwIds.reduce((a,n)=>{
       let key = HeadwordKey.fromNumber(n);
       let { pattern, pos, construction } = dpdHeadwords[n];
       a[key] = [ pattern, pos, construction ].join('|');
       return a;
     }, {});
-    let defPaliOut = [
-      'export const DEF_PALI=',
-      JSON.stringify(defPali, null, 1)
-    ].join('');
     let fnPali = 'definition-pali.mjs';
     let defPaliPath = path.join(dataDir, fnPali);
-    await fs.promises.writeFile(defPaliPath, defPaliOut);
-    console.error(msg, `[1]${defPaliPath}`, defPali.length+2);
+    await this.#writeMap(defPaliPath, 'export const DEF_PALI=', 
+      defPali);
     this.defPali = defPali;
 
     /* Write out definition lines for English, which is the
      * template used for all DPD translations.
      */
-    let defLang = hwKeys.reduce((a,n)=>{
+    let defLang = hwIds.reduce((a,n)=>{
       let key = HeadwordKey.fromNumber(n);
       let { meaning_1, meaning_2, meaning_lit } = dpdHeadwords[n];
       a[key] = [
@@ -464,14 +435,10 @@ export default class SqlDpd {
       ].join('|');
       return a;
     }, {});
-    let defLangOut = [
-      'export const DEF_LANG=',
-      JSON.stringify(defLang, null, 1)
-    ].join('');
     let fnLang = 'definition-en.mjs';
     let defLangPath = path.join(dataDir, fnLang);
-    await fs.promises.writeFile(defLangPath, defLangOut);
-    console.error(msg, `[2]${defLangPath}`, defLang.length+2);
+    await this.#writeMap(defLangPath, 'export const DEF_LANG=', 
+      defLang);
     this.defLang = defLang;
   }
 
