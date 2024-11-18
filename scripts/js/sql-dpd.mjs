@@ -8,6 +8,7 @@ const exec = util.promisify(child_process.exec);
 import { DBG } from '../../src/defines.mjs';
 const msg = "SqlDpd:";
 import * as Pali from '../../src/pali.mjs';
+import { default as HeadwordKey } from '../../src/headword-key.mjs';
 const VERBOSE_ROWS = 3;
 const DIRNAME = import.meta.dirname;
 
@@ -96,9 +97,9 @@ export default class SqlDpd {
     Object.defineProperty(this, "headwordUsage", {
       value: {},
     });
-    Object.defineProperty(this, "hwIdMap", {
+    Object.defineProperty(this, "hwKeys", {
       writable: true,
-      value: {},
+      value: [],
     });
     Object.defineProperty(this, "defPali", {
       writable: true,
@@ -380,6 +381,11 @@ export default class SqlDpd {
       verboseRows,
       headwordUsage,
     } = this;
+    let hwKeys = Object.keys(headwordUsage)
+      .sort((a,b)=>Number(a) - Number(b));
+    this.hwKeys = hwKeys;
+
+    /*
     let hwKeys = Object.keys(headwordUsage).sort((a,b)=>{
       // Sort headwords with high usage to top,
       // then sort by existing index as a coarse proxy for
@@ -389,8 +395,10 @@ export default class SqlDpd {
       // by grouping related definitions
       return (headwordUsage[b] - headwordUsage[a]) || (a-b);
     });
+    */
 
-    /* Headword to Line Map (hwIdMap)
+    /* DEPRECATED
+     * Headword to Line Map (hwIdMap)
      * The DPD headword ids comprise all Pali words in the DPD. 
      * However, Voice only uses the Mahāsaṅgīti words, 
      * which is smaller that the entire Pali corpus.
@@ -400,16 +408,18 @@ export default class SqlDpd {
      * - definition files by ~10% (3948359 vs. 4404682)
      * - index file by ~3% (2489224 vs. 2558664)
      */
+    /*
     const FIRST_DEFINITION_LINE = 2;
     let hwIdMap = hwKeys.reduce((a,k,i)=>{
       // transform headword id => definition headword line number
-      let hwLine = i+FIRST_DEFINITION_LINE; 
-      a[k] = hwLine;
+      let key = HeadwordKey.fromNumber(k);
+      a[k] = key;
       if (dbg && i < verboseRows) {
-        console.error(msg, `[0.1] hwIdMap[${k}]:`, hwLine);
+        console.error(msg, `[0.1] hwIdMap[${k}]:`, key);
       }
       return a;
     }, {});
+
     let hwMapOut = [
       'export const HEADWORD_MAP=',
       JSON.stringify(hwIdMap, null, 1)
@@ -419,15 +429,18 @@ export default class SqlDpd {
     await fs.promises.writeFile(hwMapPath, hwMapOut);
     console.error(msg, `[1]${fnMap}`, hwKeys.length+2);
     this.hwIdMap = hwIdMap;
+    */
 
     /* Pali Definitions (defPali)
      * Write out common Pali definitions, which greatly
      * decreases defLang size
      */
-    let defPali = hwKeys.map(k=>{
-      let { pattern, pos, construction } = dpdHeadwords[k];
-      return [ pattern, pos, construction ].join('|');
-    });
+    let defPali = hwKeys.reduce((a,n)=>{
+      let key = HeadwordKey.fromNumber(n);
+      let { pattern, pos, construction } = dpdHeadwords[n];
+      a[key] = [ pattern, pos, construction ].join('|');
+      return a;
+    }, {});
     let defPaliOut = [
       'export const DEF_PALI=',
       JSON.stringify(defPali, null, 1)
@@ -441,14 +454,16 @@ export default class SqlDpd {
     /* Write out definition lines for English, which is the
      * template used for all DPD translations.
      */
-    let defLang = hwKeys.map(k=>{
-      let { meaning_1, meaning_2, meaning_lit } = dpdHeadwords[k];
-      return [
+    let defLang = hwKeys.reduce((a,n)=>{
+      let key = HeadwordKey.fromNumber(n);
+      let { meaning_1, meaning_2, meaning_lit } = dpdHeadwords[n];
+      a[key] = [
         meaning_1,
         meaning_1.startsWith(meaning_2) ? '' : meaning_2,
         meaning_lit,
       ].join('|');
-    });
+      return a;
+    }, {});
     let defLangOut = [
       'export const DEF_LANG=',
       JSON.stringify(defLang, null, 1)
@@ -462,11 +477,14 @@ export default class SqlDpd {
 
   async #buildIndex() {
     const msg = `SqlDpd.#buildIndex:`;
-    let { dataDir, dictWords, hwIdMap, dpdLookup, verboseRows } = this;
+    let { dataDir, dictWords, dpdLookup, verboseRows } = this;
     let dbg = DBG.SQL_DPD_BUILD || this.dbg;
     console.log(msg, '[1]');
     let defMap = dictWords.reduce((a,w,i)=>{
-      let v = dpdLookup[w].map(id=>hwIdMap[id]);
+      let v = dpdLookup[w].map(id=>{
+        let key = HeadwordKey.fromNumber(id);
+        return key;
+      });
       if (dbg && i <= verboseRows ) {
         console.error(msg, {w,v});
       }

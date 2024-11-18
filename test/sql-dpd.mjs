@@ -136,56 +136,20 @@ typeof describe==="function" && describe("sql-dpd", function() {
     let hwIds = Object.keys(dpdHeadwords);
     should(hwIds.length).equal(2); // devi
   });
-  it("build()", async()=>{
-    let paliMap = { devi:1, deva:1 }; // test words
+  it("TESTTESTbuild()", async()=>{
+    const msg = 'test.sql-dpd@140';
+    let paliMap = { devi:1, aggi:1 }; // test words
     let sqlDpd = await SqlDpd.create({paliMap});
     await sqlDpd.build();
-    let { hwIdMap, defPali, defLang, defMap } = sqlDpd;
+    let { hwKeys, defPali, defLang, defMap } = sqlDpd;
 
-    should.deepEqual(Object.keys(hwIdMap), [
-      31672,
-      31673,
-      32231,
-      33953,
-      33954,
-      34018,
-      34019,
-      34020,
-      34021,
-      34161,
-      34162,
-    ].join(',').split(','));
+    should(defMap.aggi).equal('AS,BG');
+    should(defLang['AS']).equal('fire||');
+    should(defPali['AS']).equal("i masc|masc|√agg+i");
 
-    should(defLang.includes('deity; god||'))
-    .equal(true);
-    should(defPali.includes('a masc|masc|√div > dev+*a'))
-    .equal(true);
-    should(defLang.includes('king; lord||'))
-    .equal(true);
-    should(defPali.includes('a masc|masc|√div > dev+*a'))
-    .equal(true);
-    should(defLang.includes('rain cloud||'))
-    .equal(true);
-    should(defPali.includes('a masc|masc|√div > dev+*a'))
-    .equal(true);
-    should(defLang.includes('sky||'))
-    .equal(true);
-    should(defPali.includes('a masc|masc|√div > dev+*a'))
-    .equal(true);
-    should(defLang.includes('queen||'))
-    .equal(true);
-    should(defPali.includes('ī fem|fem|√div > dev+*a+ī\ndeva+ī'))
-    .equal(true);
-    should(defLang.includes('goddess||'))
-    .equal(true);
-    should(defPali.includes('ī fem|fem|√div > dev+*a+ī\ndeva+ī'))
-    .equal(true);
-
-    // defMap maps pali word to file line number,
-    // which is 2+array index
-    should(defMap.de).equal('2,3,4,5,6');
-    should(defMap.deva).equal('7,8,9,10');
-    should(defMap.devi).equal('11,12');
+    should(defMap.devi).equal('8sz,8t0');
+    should(defLang['8sz']).equal('queen||');
+    should(defPali['8sz']).equal('ī fem|fem|√div > dev+*a+ī\ndeva+ī');
   });
   it("binarySearch", ()=>{
     let data = [
