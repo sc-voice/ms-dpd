@@ -11,6 +11,8 @@ import {
   Dictionary,
 } from '../main.mjs';
 
+const dbg = 0;
+
 async function testDeclensions({word, infExpected, nbr}) {
   const msg = "test.dictionary.testDeclensions()";
   const dbg = 1;
@@ -54,9 +56,9 @@ typeof describe === "function" &&
     let dict = await Dictionary.create();
     should(dict.lang).equal('en');
     should(Dictionary.LICENSE).match(/digitalpalidictionary/);
-    should(dict.defLang.length).above(55000).below(60000);
+    should(Dictionary.DEFINITION_KEYS.length).above(55000).below(60000);
   });
-  it("entryOf() dhamma", async()=>{
+  it("TESTTESTentryOf() dhamma", async()=>{
     let dict = await Dictionary.create();
     let dhamma = dict.entryOf("dhamma");
     should(dhamma).properties(["word", "definition"]);
@@ -149,17 +151,16 @@ typeof describe === "function" &&
       construction: '√dhar+ma',
     });
   });
-  it("findWords()", async()=>{
+  it("TESTTESTfindWords()", async()=>{
     const msg = 'test.dictionary@153';
     let dict = await Dictionary.create();
     let matches = dict.findWords(/\bthe root of/i);
     should(matches.length).equal(6);
 
     { // matches multiple words
-      let { definition, words } = matches[1];
-      //console.log(matches[0]);
-      should(definition).match(/the root of the boil/);
-      should.deepEqual(words, ['gaṇḍamūlaṁ', 'gaṇḍamūlo']);
+      let re = /the root of the boil/;
+      let [def] = matches.filter(m=>re.test(m.definition));
+      should.deepEqual(def.words, ['gaṇḍamūlaṁ', 'gaṇḍamūlo']);
     }
 
     { // matches single word
@@ -266,7 +267,7 @@ typeof describe === "function" &&
     should(virtue).properties(['pattern', 'method', 'data' ]);
     should(virtue.method).equal('definition');
     should(virtue.pattern).equal(pattern);
-    console.log(msg, {data:virtue.data.map(d=>d.word)});
+    dbg && console.log(msg, {data:virtue.data.map(d=>d.word)});
     should(virtue.data.length).equal(14); // exclude dhammāna
     should(virtue.data[0]).properties({
       word: 'dhamma',

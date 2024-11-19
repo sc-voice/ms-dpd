@@ -3,13 +3,12 @@ import Pali from "./pali.mjs";
 import Inflection from "./inflection.mjs";
 
 import { ABBREVIATIONS } from '../data/en/abbreviations.mjs';
-import { DPD } from '../data/en/dpd.mjs';
-import { DPD_TEXTS } from '../data/en/dpd-text.mjs';
-
 import { INDEX } from '../data/index.mjs';
 import { DEF_PALI } from '../data/definition-pali.mjs';
  
 const DEF = {} // definitions
+const DEF_KEYS = Object.keys(DEF_PALI);
+const { VERBOSE_ROWS } = DBG;
 
 export default class Dictionary {
   static #CREATE = false;
@@ -31,6 +30,10 @@ export default class Dictionary {
     return ABBREVIATIONS;
   }
 
+  static get DEFINITION_KEYS() {
+    return DEF_KEYS;
+  }
+
   static async definitions(lang = 'en') {
     const msg = 'Dictionary.definitions()';
     let dbg = DBG.LOADING;
@@ -39,8 +42,7 @@ export default class Dictionary {
       let { DEF_LANG } = await import(fname);
       DEF[lang] = DEF_LANG;
       console.error(msg, '[1]loading', fname); 
-      dbg && console.error(msg, '[1.1]', 
-        DEF[lang].slice(0, DBG.VERBOSE_ROWS));
+      dbg && console.error(msg, '[1.1]', Object.keys(DEF[lang]).length);
     }
 
     return DEF[lang];
@@ -97,41 +99,13 @@ export default class Dictionary {
       } = opts;
       Dictionary.#CREATE = true;
 
+      dbg && console.error(msg, '[1]DEF_KEYS', DEF_KEYS.length, DEF_KEYS.slice(0, DBG.VERBOSE_ROWS));
+
       let dict = new Dictionary({
         lang,
         index,
         defLang,
       });
-
-      /*
-      if (dpd == null) {
-        let keys = Object.keys(DPD);
-        dpd = keys.reduce((a,word)=>{
-          let rawEntry = DPD[word];
-          a[word] = typeof rawEntry === 'string'
-            ? JSON.parse(rawEntry) 
-            : rawEntry;
-          return a;
-        }, DPD); // overwrite imported DPD;
-        Dictionary.#DPD = dpd;
-        dbg && console.error(msg, '[1]DPD', {
-          metadata: dpd?.__metadata, 
-          keys: keys.length,
-        });
-      } else {
-        dbg && console.error(msg, '[2]dpd');
-      }
-      if (dpdTexts == null) {
-        dpdTexts = DPD_TEXTS;
-        dbg && console.error(msg, '[3]dpdTexts', dpdTexts.length); 
-      }
-      let dict = new Dictionary({
-        lang,
-        dpd,
-        dpdTexts,
-      });
-      */
-
 
       return dict;
     } catch (e) {
@@ -141,13 +115,12 @@ export default class Dictionary {
     }
   }
 
-  #definitionLine(line) {
+  #definitionOfKey(key) {
     const msg = "Dictionary.#definitionLine";
     let { defLang } = this;
-    let id = line-2;
     return [
-      defLang[id],
-      DEF_PALI[id],
+      defLang[key],
+      DEF_PALI[key],
     ].join('|');;
   }
 
@@ -161,8 +134,8 @@ export default class Dictionary {
     if (indexEntry == null) {
       return null;
     }
-    let definition = indexEntry.split(',').map(line=>{
-      return this.#definitionLine(line);
+    let definition = indexEntry.split(',').map(key=>{
+      return this.#definitionOfKey(key);
     });
     return Object.assign({word}, {definition});
   }
@@ -274,11 +247,13 @@ export default class Dictionary {
       ? defPat 
       : new RegExp(`\\b${defPat}`, 'i');
     dbg && console.error(msg, '[1]re', re);
-    let dpdKeys = Object.keys(index);
-    let idMatch = defLang.reduce((a,text,i)=>{
+    let idMatch = DEF_KEYS.reduce((a,key,i)=>{
+      let text = defLang[key];
+      if (dbg && i<VERBOSE_ROWS) {
+        console.error(msg, '[1.1]', {key, text});
+      }
       if (re.test(text)) {
-        let line = i+2;
-        a[line] = text;
+        a[key] = text;
       }
       return a;
     }, {});
@@ -300,9 +275,9 @@ export default class Dictionary {
     }, {});
     dbg && console.error(msg, '[3]defWords', defWords);
     let matches = Object.entries(defWords).map(entry=>{
-      let [line, words] = entry;
+      let [key, words] = entry;
       return {
-        definition:this.#definitionLine(line),
+        definition:this.#definitionOfKey(key),
         words,
       }
     });
