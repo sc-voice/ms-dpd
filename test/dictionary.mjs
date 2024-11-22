@@ -59,6 +59,7 @@ typeof describe === "function" &&
     should(Dictionary.DEFINITION_KEYS.length).above(55000).below(60000);
   });
   it("TESTTESTentryOf() dhamma", async()=>{
+    const msg = "test.dictionary@62";
     let dict = await Dictionary.create();
     let dhamma = dict.entryOf("dhamma");
     should(dhamma).properties(["word", "definition"]);
@@ -69,6 +70,7 @@ typeof describe === "function" &&
       pos: 'masc',
       pattern: 'a masc',
       construction: '√dhar+ma', 
+      key: '90U',
     });
     should(def0).properties({ // Language properties
       meaning_1: 'nature; character',
@@ -86,6 +88,7 @@ typeof describe === "function" &&
       pos: 'nt',
       pattern: 'a nt',
       construction: '√dhar+ma', 
+      key: '90f',
     });
     should(def11).properties({ // Language properties
       meaning_1: 'teaching; discourse; doctrine',

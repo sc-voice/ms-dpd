@@ -121,7 +121,8 @@ export default class Dictionary {
     return [
       defLang[key],
       DEF_PALI[key],
-    ].join('|');;
+      key,
+    ].join('|');
   }
 
   entryOf(word) {
@@ -293,9 +294,10 @@ export default class Dictionary {
     if (typeof d === 'string') {
       let [ 
         meaning_1, meaning_2, meaning_lit, 
-        pattern, pos, construction 
+        pattern, pos, construction, key,
       ] = d.split('|');
       let result = JSON.parse(JSON.stringify({
+        key,
         meaning_1, meaning_2, meaning_lit, 
         pattern, pos, construction, 
         type: pos,
