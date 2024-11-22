@@ -3,6 +3,8 @@ SCRIPT=$0
 DIRNAME=`dirname $SCRIPT`
 node - <<'JS' $DIRNAME "$@"
 let [ SCRIPT, DASH, DIRNAME, ...args] = process.argv;
+const msg = `${SCRIPT}:`;
+
 function help() {
   console.log(`
 NAME
@@ -41,9 +43,6 @@ EXAMPLES
 async function main() {
   const msg = 'dpd.main()';
   const path = (await import('path'));
-  const fs = (await import('fs'));
-  const { promises: fsp } = fs;
-  const { fileURLToPath } = (await import('url'));
   const util = require('util');
   const exec = util.promisify(require('child_process').exec);
   const { default:Dictionary } = (await import(
@@ -139,5 +138,5 @@ async function main() {
     });
   }
 } //main
-main()
+main();
 JS

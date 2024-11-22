@@ -1,5 +1,5 @@
 {
-  "name": "@sc-voice/pali",
+  "name": "@sc-voice/ms-dpd",
   "new-name": "@sc-voice/ms-dpd",
   "version": "1.27.0",
   "description": "Mahāsaṅgīti Pali Javascript adapter for Digital Pali Dictionary",
@@ -39,11 +39,9 @@
   "devDependencies": {
     "eslint": "^9.4.0",
     "json": "^11.0.0",
-    "lz-string": "^1.5.0",
     "mocha": "^10.4.0",
     "should": "^13.2.3"
   },
   "dependencies": {
-    "shrink-string": "^3.1.9"
   }
 }
