@@ -1,8 +1,6 @@
 
 import { DBG } from './defines.mjs';
 import { ABBREVIATIONS } from '../data/en/abbreviations.mjs';
-import { DPD } from '../data/en/dpd.mjs';
-import { DPD_TEXTS } from '../data/en/dpd-text.mjs';
 import Table from './table.mjs';
 import Pali from './pali.mjs';
 
