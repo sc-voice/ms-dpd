@@ -53,8 +53,22 @@ The purpose of MS-DPD is to provide a small and compact
 version of the DPD as a multilingual Javascript library for DPD content.
 
 DPD itself is enormous.
-The DPD SQLite3 database alone is 1.8G.
+The DPD SQLite3 database alone is 2G.
 In fact, the DPD is too large for use as a JS library.
 THerefore, to create a JS library for the DPD, we need to drastically reduce DPD content to a manageable size.
 
+MS-DPD is currently less than 1/10th the size of DPD.
+MS-DPD is 14M for EN alone, with an expected increment of <4M for each additional contemporary translation.
+This drastic reduction from 1.8G is achieved as follows:
+* MS-DPD Pali lookup is restricted to the Mahāsańghīti corpus
+* 5 digit headword keys are converted to radix-62 as <=3 UTF-8 bytes.
+* HTML content is eliminated or reduced to semantic equivalent
+* Headwords are split into common content (e.g., Pali grammar) vs. language-specific content (e.g., meaning_1)
+* Uncommon headword fields are omitted (e.g., Sanskrit), since MS-DPD will will link users to the main DPD entries
+
+
+### References
+
+* [DPD tables used by MS-DPD](https://docs.google.com/drawings/d/1Vwx1OVHJUKU3vBxn1KSS4Ut-bdLQLl-WgtPpyVNIei4)
+* [MS-DPD data files](https://docs.google.com/drawings/d/1HXNbbGY82Ma6mP7z42bzfERGKFbOv4pBnPrRPnwnVxc)
 
