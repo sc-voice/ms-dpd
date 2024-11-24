@@ -33,6 +33,7 @@ typeof describe==="function" && describe("sql-dpd", function() {
     let sqlDpd = await SqlDpd.create();
     should(sqlDpd).properties({
       dbg: DBG.SQL_DPD > 1 ? 1 : 0,
+      lang: 'en',
       rowLimit: 0,
       dataDir: path.join(import.meta.dirname, '../local/data'),
       paliMap: undefined,

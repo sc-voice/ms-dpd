@@ -38,7 +38,7 @@ export default class Dictionary {
     const msg = 'Dictionary.definitions()';
     let dbg = DBG.LOADING;
     if (DEF[lang] == null) {
-      let fname = `../data/definition-${lang}.mjs`;
+      let fname = `../data/${lang}/definition-${lang}.mjs`;
       let { DEF_LANG } = await import(fname);
       DEF[lang] = DEF_LANG;
       console.error(msg, '[1]loading', fname); 

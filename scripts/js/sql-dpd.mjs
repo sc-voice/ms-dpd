@@ -48,6 +48,7 @@ export default class SqlDpd {
     if (!SqlDpd.#privateCtor) {
       throw new Error('use SqlDpd.create()');
     }
+    let lang = opts.lang || 'en';
     let {
       dataDir = path.join(`${DIRNAME}/../../local/data`),
       dbg = DBG.SQL_DPD,
@@ -68,6 +69,7 @@ export default class SqlDpd {
 
     Object.assign(this, {
       dbg,
+      lang,
       mode,
       rowLimit,
       dataDir,
@@ -186,7 +188,6 @@ export default class SqlDpd {
     const msg = `SqlDpd.#loadLookup:`;
     let {
       dbg,
-      dataDir,
       rowLimit,
       paliMap,
       headwordUsage,
@@ -389,6 +390,10 @@ export default class SqlDpd {
       }),
       '}',
     ];
+    let dirName = path.dirname(fpath);
+    if (!fs.existsSync(dirName)) {
+      fs.mkdirSync(dirName, {recursive:true});
+    }
     await fs.promises.writeFile(fpath, aOut.join('\n'));
     dbg && console.error(msg, `[1]${fpath}`, aOut.length);
   }
@@ -397,6 +402,7 @@ export default class SqlDpd {
     const msg = `SqlDpd.#buildDefinitions:`;
     let dbg = DBG.SQL_DPD_BUILD || this.dbg;
     let { 
+      lang,
       dataDir,
       dpdHeadwords,
       verboseRows,
@@ -435,8 +441,9 @@ export default class SqlDpd {
       ].join('|');
       return a;
     }, {});
-    let fnLang = 'definition-en.mjs';
-    let defLangPath = path.join(dataDir, fnLang);
+    let fnLang = `${lang}/definition-${lang}.mjs`;
+    let langDir = path.join(dataDir, lang);
+    let defLangPath = path.join(langDir, fnLang);
     await this.#writeMap(defLangPath, 'export const DEF_LANG=', 
       defLang);
     this.defLang = defLang;
