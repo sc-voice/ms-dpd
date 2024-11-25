@@ -96,7 +96,7 @@ npm install
 npm run test
 ```
 
-#### Design
+#### Design overview
 
 MS-DPD is a Javascript library built 
 upon a condensed version of the 
