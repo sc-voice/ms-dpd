@@ -141,6 +141,7 @@ Process:
 ```
 
 ### Support
+We welcome corrections and suggestions.
 Direct support inquiries to 
 email: sc.voice.friends@gmail.com
 
