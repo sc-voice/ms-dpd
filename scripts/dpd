@@ -108,20 +108,20 @@ async function main() {
     let T_TYPE = 'TYPE';
     let T_CONSTR = 'CONSTRUCT';
     let T_KEY = 'KEY';
+    let T_PATTERN = 'PAT';
     let T_POS = 'POS';
-    let T_PATTERN = 'PATTERN';
     let T_MEANING ='MEANING';
     let T_WORD = 'WORD';
     let typePad = T_TYPE.length;
     let constrPad = T_CONSTR.length;
     let keyPad = T_KEY.length;
-    let posPad = T_POS.length;
     let patternPad = T_PATTERN.length;
+    let posPad = T_POS.length;
     let wordPad = T_WORD.length;
     let rows = data.map(row=>{
       let { 
         key='', word='', type='', meaning='', literal='', 
-        construction='', pattern='', pos=''
+        construction='', pos='', pattern='', 
       } = row;
       wordPad = Math.max(wordPad, word.length);
       typePad = Math.max(typePad, type.length);
@@ -140,8 +140,8 @@ async function main() {
       T_KEY.padEnd(keyPad),
       T_WORD.padEnd(wordPad),
       //T_TYPE.padEnd(typePad),
-      T_POS.padEnd(posPad),
       T_PATTERN.padEnd(patternPad),
+      T_POS.padEnd(posPad),
       T_MEANING,
       //T_CONSTR.padEnd(constrPad),
     );
@@ -155,8 +155,8 @@ async function main() {
         key.padEnd(keyPad),
         word.padEnd(wordPad),
         //type.padEnd(typePad),
-        pos.padEnd(posPad),
         pattern.padEnd(patternPad),
+        pos.padEnd(posPad),
         //construction.padEnd(constrPad),
         literal ? `${meaning}; lit. ${literal}` : meaning,
       );
