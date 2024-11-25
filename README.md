@@ -64,21 +64,21 @@ Returns JS object if found:
 
 Data fields comprise [headword information](https://github.com/digitalpalidictionary/dpd-db/blob/main/docs/dpd_headwords_table.md):
 
-* **construction** how is the word constructed?
-* **meaning_1** contextual meaning in current language
-* **meaning_2** contextual meaning per Buddhadatta in current language
-* **meaning_lit** literal meaning in current language
-* **pattern** inflection pattern
-* **pos** part of speech
-* **stem** stem upon which the inflection pattern is built.
-* **word** Pali lookup word
+* `construction` how is the word constructed?
+* `meaning_1` contextual meaning in current language
+* `meaning_2` contextual meaning per Buddhadatta in current language
+* `meaning_lit` literal meaning in current language
+* `pattern` inflection pattern
+* `pos` part of speech
+* `stem` stem upon which the inflection pattern is built.
+* `word` Pali lookup word
 * ...
 
 Search methods include:
 
-* **entry** search for exact Pali word
-* **definition** search for definition pattern
-* **unaccented** search for Pali words ignoring accents
+* `entry` search for exact Pali word
+* `definition` search for definition pattern
+* `unaccented` search for Pali words ignoring accents
 
 ### Development
 The 
