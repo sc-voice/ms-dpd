@@ -1,6 +1,7 @@
 export const DBG = {
   BINARY_SEARCH: 0,
   DICTIONARY_CREATE: 0,
+  DPD: 0,
   ENTRY_OF: 0,
   EXPERIMENTAL: 0,
   FIND: 0,

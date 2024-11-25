@@ -83,14 +83,15 @@ typeof describe === "function" &&
       literal: '',
     });
 
-    let def11 = dict.parseDefinition(dhamma.definition[11]);
-    should(def11).properties({ // Pali properties
+    //console.log(msg, 'DHAMA', dhamma.definition.map((d,i)=>d));
+    let defAlt = dict.parseDefinition(dhamma.definition[11]);
+    should(defAlt).properties({ // Pali properties
       pos: 'nt',
       pattern: 'a nt',
       construction: '√dhar+ma', 
       key: '90f',
     });
-    should(def11).properties({ // Language properties
+    should(defAlt).properties({ // Language properties
       meaning_1: 'teaching; discourse; doctrine',
       meaning_2: '',
       meaning_lit: '',
@@ -291,22 +292,23 @@ typeof describe === "function" &&
     should(Dictionary.isAccented("samvega")).equal(false);
     should(Dictionary.isAccented("saṁvega")).equal(true);
   });
-  it("wordsWithPrefix()", async ()=>{
-    let msg = 'test.dictionary@284';
-    DBG.TBD && console.log(msg, "TBD"); return;
+  it("TESTTESTwordsWithPrefix()", async ()=>{
+    let msg = 'test.dictionary@295';
     let dict = await Dictionary.create();
 
     // When strict is false (default), the output may have ellipses:
-    should.deepEqual(dict.wordsWithPrefix("sam").slice(0,20), [
+    should.deepEqual(dict.wordsWithPrefix("sam").slice(0,22), [
       "saṁ",  // 3-letter exact
       "sama", // 4-letter exact
       "samā", // 4-letter exact
       "same", // 4-letter exact
       "sami", // 4-letter exact
+      "samī", // 4-letter exact
       "samo", // 4-letter exact
       "samū", // 4-letter exact
       "sāma", // 4-letter exact
       "sāmā", // 4-letter exact
+      "sāme", // 4-letter exact
       "sāmi", // 4-letter exact
       "sāmī", // 4-letter exact
       "sāmo", // 4-letter exact
@@ -323,10 +325,9 @@ typeof describe === "function" &&
     // When strict is false, unaccented patterns are used
     should.deepEqual(dict.wordsWithPrefix("samvega"), [
       "saṁvega",
-      "saṁvegaṁ",
+      "saṁvegā",
       "saṁvegaj\u2026",
       "saṁvegam\u2026",
-      "saṁvegas\u2026",
       "saṁvegāy\u2026",
     ]);
   });
@@ -443,25 +444,23 @@ typeof describe === "function" &&
     {}];
     await testDeclensions({word:'dhamma', infExpected});
   });
-  it("TBDTESTTESTwordInflections devī", async()=>{ 
-    const msg = 'test.dictionary@404';
-    DBG.TBD && console.log(msg, 'TBD'); return;
+  it("wordInflections devī", async()=>{ 
+    const msg = 'test.dictionary@447';
     const infExpected = [
       { gdr:'fem', case:'nom', nbr:'sg', word:'devī' }, 
       { gdr:'fem', case:'acc', nbr:'sg', word:'deviṁ' },
       { gdr:'fem', case:'instr', nbr:'sg', word:'deviyā' }, 
+      { gdr:'fem', case:'dat', nbr:'sg', word:'deviyā' },
+      { gdr:'fem', case:'abl', nbr:'sg', word:'deviyā' },
       { gdr:'fem', case:'gen', nbr:'sg', word:'deviyā' },
       { gdr:'fem', case:'loc', nbr:'sg', word:'deviyā' },
-      // !MS { gdr:'fem', case:'loc', nbr:'sg', word:'deviyāṁ' },
-      // !MS { gdr:'fem', case:'loc', nbr:'pl', word:'devisu' },
+      { gdr:'fem', case:'voc', nbr:'sg', word:'devi' },
+      { gdr:'fem', case:'voc', nbr:'sg', word:'devī' },
 
       { gdr:'fem', case:'nom', nbr:'pl', word:'deviyo' },
       { gdr:'fem', case:'nom', nbr:'pl', word:'devī' }, 
       { gdr:'fem', case:'acc', nbr:'pl', word:'deviyo' },
       { gdr:'fem', case:'acc', nbr:'pl', word:'devī' }, 
-      // !MS { gdr:'fem', case:'instr', nbr:'pl', word:'devīhi' }, 
-      // !MS { gdr:'fem', case:'abl', nbr:'pl', word:'devīhi' },
-      { gdr:'fem', case:'voc', nbr:'sg', word:'devi' },
       { gdr:'fem', case:'voc', nbr:'pl', word:'deviyo' },
       { gdr:'fem', case:'voc', nbr:'pl', word:'devī' },
     ];

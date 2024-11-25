@@ -444,12 +444,15 @@ export default class Dictionary {
 
   wordInflections(word, opts={}) { 
     const msg = 'Dictionary.wordInflections()';
-    const dbg = 0 || DBG.WORD_INFLECTIONS;
+    const dbg = DBG.WORD_INFLECTIONS;
     const dbgv = dbg && DBG.VERBOSE;
     let {
       overlap=0.5,
       nbr,
     } = opts;
+    let {
+      index,
+    } = this;
     let entry = this.find(word);
     let entries = this.relatedEntries(word, {overlap});
     let stem = Dictionary.prefixOf(entries.map(e=>e.word));
@@ -466,7 +469,7 @@ export default class Dictionary {
       }
       return false;
     });
-    let title = `${word} matching inflections`;
+    let title = `${msg} ${word} matching inflections`;
     dbgv && console.error(tblMatch.format({title}));
 
     let tblLike = tblMatch.groupBy(['like'], [
@@ -482,7 +485,12 @@ export default class Dictionary {
     }, {});
     let { like } = tblLike.rows[0] || {};
     let tblLikeOnly =  Inflection.TABLE.filter(inf=>{
-      return likeMap[inf.like];
+      let match =  likeMap[inf.like];
+      if (match) {
+        let word = stem + inf.sfx;
+        match = !!index[word];
+      }
+      return match;
     });
 
     let tblResult = tblLikeOnly;
@@ -491,7 +499,7 @@ export default class Dictionary {
     tblResult.addHeader({id:'word'});
     tblResult.sort(Inflection.compare);
     dbg && console.error(tblResult.format({
-      title:`tblResult ${word} group by:${Object.keys(likeMap)}`}));
+      title:`${msg} tblResult ${word} group by:${Object.keys(likeMap)}`}));
     return tblResult;
   }
 }

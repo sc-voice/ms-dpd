@@ -45,10 +45,12 @@ async function main() {
   const path = (await import('path'));
   const util = require('util');
   const exec = util.promisify(require('child_process').exec);
+  const { DBG } = (await import(
+    `${DIRNAME}/../src/defines.mjs`));
   const { default:Dictionary } = (await import(
     `${DIRNAME}/../src/dictionary.mjs`));
 
-  let dbg = 0;
+  let dbg = DBG.DPD;
   let dict = await Dictionary.create();
   let method; // default
   let textArgs = [];
@@ -96,6 +98,7 @@ async function main() {
       });
       return;
     }
+    dbg && console.log(msg, '[1]info', info);
     let { method:methodActual, pattern, data } = info;
     let license = ' CC0 https://digitalpalidictionary.github.io/';
     let title = ` find:"${word}" method:${methodActual}`
@@ -104,35 +107,57 @@ async function main() {
     console.log("".padEnd(title.length+1, "-"));
     let T_TYPE = 'TYPE';
     let T_CONSTR = 'CONSTRUCT';
+    let T_KEY = 'KEY';
+    let T_POS = 'POS';
+    let T_PATTERN = 'PATTERN';
     let T_MEANING ='MEANING';
     let T_WORD = 'WORD';
     let typePad = T_TYPE.length;
     let constrPad = T_CONSTR.length;
-    let wordPad = T_WORD.length;;
+    let keyPad = T_KEY.length;
+    let posPad = T_POS.length;
+    let patternPad = T_PATTERN.length;
+    let wordPad = T_WORD.length;
     let rows = data.map(row=>{
       let { 
-        word='', type='', meaning='', literal='', construction='' 
+        key='', word='', type='', meaning='', literal='', 
+        construction='', pattern='', pos=''
       } = row;
       wordPad = Math.max(wordPad, word.length);
       typePad = Math.max(typePad, type.length);
       constrPad = Math.max(constrPad, construction.length);
-      return [word, type, meaning, literal, construction ];
+      keyPad = Math.max(keyPad, key.length);
+      patternPad = Math.max(patternPad, pattern.length);
+      posPad = Math.max(posPad, pos.length);
+
+      return [
+        key, word, type, meaning, literal, 
+        construction, pattern, pos,
+      ];
     });
-      console.log(
-        '#'.padStart(2),
-        T_WORD.padEnd(wordPad),
-        T_TYPE.padEnd(typePad),
-        T_CONSTR.padEnd(constrPad),
-        T_MEANING,
-      );
+    console.log(
+      '#'.padStart(2),
+      T_KEY.padEnd(keyPad),
+      T_WORD.padEnd(wordPad),
+      //T_TYPE.padEnd(typePad),
+      T_POS.padEnd(posPad),
+      T_PATTERN.padEnd(patternPad),
+      T_MEANING,
+      //T_CONSTR.padEnd(constrPad),
+    );
     rows.forEach((row,i)=>{
-      let [ word, type, meaning, literal, construction ] = row;
-      let litOut = 
+      let [ 
+        key, word, type, meaning, literal, 
+        construction, pattern, pos
+      ] = row;
       console.log(
         `${i+1}`.padStart(2),
+        key.padEnd(keyPad),
         word.padEnd(wordPad),
-        type.padEnd(typePad),
-        construction.padEnd(constrPad),
+        //type.padEnd(typePad),
+        pos.padEnd(posPad),
+        pattern.padEnd(patternPad),
+        //construction.padEnd(constrPad),
         literal ? `${meaning}; lit. ${literal}` : meaning,
       );
     });
