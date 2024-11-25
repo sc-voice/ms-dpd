@@ -17,6 +17,7 @@ Pali lookup:
 # WORD PAT   MEANING
 1 devi ī fem queen
 2 devi ī fem goddess
+> ./scripts/dpd help
 ```
 
 The command line program requires 
@@ -33,6 +34,7 @@ npm install
 ./scripts/dpd -mu dhamma
 ./scripts/dpd -md 'superior virtue'
 ```
+
 
 ### Library
 For an existing Javascript project (browser or web),
@@ -94,11 +96,14 @@ npm install
 npm run test
 ```
 
+#### Design
+
 MS-DPD is a Javascript library built 
 upon a condensed version of the 
 [Digital Pali Dictionary (DPD)](https://digitalpalidictionary.github.io/titlepage.html).
 MS-DPD is multilingual by design: 
-headwords can be translated into multiple contemporary languages.
+headwords can be translated into multiple languages
+using individual translation files dedicated to a single contemporary language.
 
 #### Condensed content
 
@@ -125,6 +130,19 @@ which is a 25:1 reduction.
 In addition, since headword meaning is separated from Pali grammar,
 it is now possible to add multilingual translations
 at a cost of about 3-4M per contemporary language.
+
+### Updates
+MS-DPD is updated regularly following updates to the DPD itself.
+
+Process:
+```
+./scripts/dpd-install
+./scripts/build-dpd
+```
+
+### Support
+Direct support inquiries to 
+email: sc.voice.friends@gmail.com
 
 ### References
 
