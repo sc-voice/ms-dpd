@@ -4,11 +4,25 @@ a condensed version of the
 [Digital Pali Dictionary](https://digitalpalidictionary.github.io/titlepage.html)
 
 ### Command Line
+In its simplest form, MS-DPD can be installed as a command line
+script on a Linux disttribution.
+The command line MS-DPD gives users a quick access to
+Pali lookup:
+
+```
+> ./scripts/dpd devi
+--------------------------
+ find:"devi" method:entry
+--------------------------
+# WORD PAT   MEANING
+1 devi ī fem queen
+2 devi ī fem goddess
+```
+
 The command line program requires 
 NodeJS version 20 or later.
 If you do not have NodeJS installed, consider using 
 [nvm to install NodeJS](https://github.com/nvm-sh/nvm).
-For a command line program that gives quick access to DPD:
 
 ```
 git clone https://github.com/sc-voice/ms-dpd
