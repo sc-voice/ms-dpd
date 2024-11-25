@@ -441,7 +441,7 @@ export default class SqlDpd {
       ].join('|');
       return a;
     }, {});
-    let fnLang = `${lang}/definition-${lang}.mjs`;
+    let fnLang = `definition-${lang}.mjs`;
     let langDir = path.join(dataDir, lang);
     let defLangPath = path.join(langDir, fnLang);
     await this.#writeMap(defLangPath, 'export const DEF_LANG=', 
