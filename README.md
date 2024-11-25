@@ -1,5 +1,6 @@
 ### @sc-voice/ms-dpd
-MS-DPD: A JavaScript library for searching
+MS-DPD: A multilingual JavaScript library for searching
+a condensed version of the
 [Digital Pali Dictionary](https://digitalpalidictionary.github.io/titlepage.html)
 
 ### Command Line
