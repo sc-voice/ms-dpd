@@ -37,7 +37,8 @@ let dhamma = dict.find("dhamma", {method: 'entry'});
 ```
 
 ### Development
-The [Digital Pali Dictionary](https://digitalpalidictionary.github.io/titlepage.html)
+The 
+[Digital Pali Dictionary (DPD)](https://digitalpalidictionary.github.io/titlepage.html)
 (DPD) uses a SQLite3 database which needs to be
 downloaded for development:
 
@@ -49,25 +50,35 @@ npm install
 npm run test
 ```
 
-The purpose of MS-DPD is to provide a small and compact
-version of the DPD as a multilingual Javascript library for DPD content.
+MS-DPD is a Javascript library built 
+upon a condensed version of the 
+[Digital Pali Dictionary (DPD)](https://digitalpalidictionary.github.io/titlepage.html).
+MS-DPD is multilingual by design: 
+headwords can be translated into multiple contemporary languages.
 
-DPD itself is enormous.
-The DPD SQLite3 database alone is 2G.
-In fact, the DPD is too large for use as a JS library.
-Therefore, to create a JS library for the DPD, we need to drastically reduce DPD content to a manageable size.
+#### Condensed content
 
-MS-DPD is currently ~8MB, which is less than 1/25th the size of DPD.
-MS-DPD is multilingual, and each additional language will increase MS-DPD by about 3-4M.
-Although MS-DPD will grow as languages are added, 
-each language will only take 3-4M.
+The DPD itself is enormous, with a goal to span the entire Pali corpus.
+Indeed, the DPD SQLite3 database alone is 2G.
+Simply put, the full DPD is much too large to squeeze into a simple JS library.
+We need some way of condensing the content.
 
-MS-DPD's drastic size reduction from 2G is achieved as follows:
-* MS-DPD Pali lookup is restricted to the Mahāsańghīti corpus
-* 5 digit headword keys are converted to radix-62 as <=3 UTF-8 bytes.
-* HTML content is eliminated or reduced to semantic equivalent
-* Headwords are split into common content (e.g., Pali grammar) vs. language-specific content (e.g., meaning_1)
-* Uncommon headword fields are omitted (e.g., Sanskrit), since MS-DPD will will link users to the main DPD entries
+Fortunately, it is possible to select a minimal set of content
+that can be used in applications such as SuttaCentral or SC-Voice.
+Specifically, we can condense content as follows:
+
+* Restrict lookup to prefixes of words in the Mahāsańghīti corpus
+* Convert 5 digit headword keys to radix-62 as <=3 UTF-8 bytes.
+* Replace HTML content with concise semantic equivalent
+* Split headwords into two files: Pali grammar vs. language-specific meaning
+* Omit unused headword fields such as Sanskrit
+* Provide users with headword links back to main DPD website
+
+With the above condensation, we can reduce DPD content from 2G to ~8M,
+which is a 25:1 reduction.
+In addition, since headword meaning is separated from Pali grammar,
+it is now possible to add multilingual translations
+at a cost of about 3-4M per contemporary language.
 
 ### References
 
