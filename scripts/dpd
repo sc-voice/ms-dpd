@@ -116,6 +116,7 @@ async function main() {
     let T_KEY = 'KEY';
     let T_PATTERN = 'PAT';
     let T_POS = 'POS';
+    let T_STEM = 'STEM';
     let T_MEANING ='MEANING';
     let T_WORD = 'WORD';
     let typePad = T_TYPE.length;
@@ -123,11 +124,12 @@ async function main() {
     let keyPad = T_KEY.length;
     let patternPad = T_PATTERN.length;
     let posPad = T_POS.length;
+    let stemPad = T_STEM.length;
     let wordPad = T_WORD.length;
     let rows = data.map(row=>{
       let { 
         key='', word='', type='', meaning='', literal='', 
-        construction='', pos='', pattern='', 
+        construction='', pos='', pattern='', stem=''
       } = row;
       wordPad = Math.max(wordPad, word.length);
       typePad = Math.max(typePad, type.length);
@@ -135,10 +137,15 @@ async function main() {
       keyPad = Math.max(keyPad, key.length);
       patternPad = Math.max(patternPad, pattern.length);
       posPad = Math.max(posPad, pos.length);
+      stemPad = Math.max(stemPad, stem.length);
+      let constParts = construction.split('\n');
+      if (constParts.length>1) {
+        construction = JSON.stringify(construction);
+      }
 
       return [
         key, word, type, meaning, literal, 
-        construction, pattern, pos,
+        construction, pattern, pos, stem,
       ];
     });
     let titles = [ '#'.padStart(2), ];
@@ -146,19 +153,21 @@ async function main() {
     titles.push(T_WORD.padEnd(wordPad));
     titles.push(T_PATTERN.padEnd(patternPad));
     outLong && titles.push(T_POS.padEnd(posPad));
+    outLong && titles.push(T_STEM.padEnd(stemPad));
     outLong && titles.push(T_CONSTR.padEnd(constrPad));
     titles.push(T_MEANING);
     console.log.apply(console, titles);
     rows.forEach((row,i)=>{
       let [ 
         key, word, type, meaning, literal, 
-        construction, pattern, pos
+        construction, pattern, pos, stem,
       ] = row;
       let cols = [ `${i+1}`.padStart(2) ];
       outLong && cols.push(key.padEnd(keyPad));
       cols.push(word.padEnd(wordPad));
       cols.push(pattern.padEnd(patternPad));
       outLong && cols.push(pos.padEnd(posPad));
+      outLong && cols.push(stem.padEnd(stemPad));
       outLong && cols.push(construction.padEnd(constrPad));
       cols.push(literal ? `${meaning}; lit. ${literal}` : meaning);
       console.log.apply(console, cols);

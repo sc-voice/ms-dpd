@@ -147,11 +147,12 @@ typeof describe==="function" && describe("sql-dpd", function() {
 
     should(defMap.aggi).equal('AS,BG');
     should(defLang['AS']).equal('fire||');
-    should(defPali['AS']).equal("i masc|masc|√agg+i");
+    should(defPali['AS']).equal("i masc|masc|√agg+i|agg");
 
     should(defMap.devi).equal('8sz,8t0');
     should(defLang['8sz']).equal('queen||');
-    should(defPali['8sz']).equal('ī fem|fem|√div > dev+*a+ī\ndeva+ī');
+    should(defPali['8sz'])
+    .equal('ī fem|fem|√div > dev+*a+ī\ndeva+ī|dev');
   });
   it("binarySearch", ()=>{
     let data = [

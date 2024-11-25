@@ -20,6 +20,7 @@ const DPD_HEADWORD_COLS = [
   'meaning_2',
   'meaning_lit',
   'construction',
+  'stem',
 ];
 const HEADWORD_PATTERNS = [ // DEPRECATED
   ...('aāiī'.split('').reduce((a,l)=>{
@@ -291,7 +292,7 @@ export default class SqlDpd {
   async #fetchHeadwords(opts={}) {
     const msg = `SqlDpd.#fetchHeadwords()`;
     const {
-      dbg = this.dbg,
+      dbg = 1 || this.dbg,
       rowLimit = this.rowLimit,
       headwordPatterns = this.headwordPatterns, // DEPRECATED
     } = opts;
@@ -306,8 +307,9 @@ export default class SqlDpd {
       `order by id`,
       rowLimit ? `limit ${rowLimit}` : '',
     ].join(' ');
+    dbg && console.error(msg, '[1]sql', sql);
     let {stdout, stderr} = await this.bashSql(sql, opts);
-    console.error(msg, '[1]stdout,stderr', 
+    console.error(msg, '[2]stdout,stderr', 
       stdout?.length, stderr?.length);
     return {stdout, stderr};
   }
@@ -330,14 +332,14 @@ export default class SqlDpd {
       headwordMap = headwords.reduce((a,hw,i)=>{
         let {
           id, pattern, meaning_1, meaning_2, meaning_lit,
-          pos, source_1, construction,
+          pos, source_1, construction, stem,
         } = hw;
         if (headwordUsage[id] > 0) {
           // Copmact construction by removing extra spaces (~3%)
           construction = construction.split(/ ?\+ ?/).join('+');
           a[id] = {
             id, pattern, meaning_1, meaning_2, meaning_lit,
-            pos, source_1, construction,
+            pos, source_1, construction, stem
           };
         }
         return a;
@@ -418,8 +420,8 @@ export default class SqlDpd {
      */
     let defPali = hwIds.reduce((a,n)=>{
       let key = HeadwordKey.fromNumber(n);
-      let { pattern, pos, construction } = dpdHeadwords[n];
-      a[key] = [ pattern, pos, construction ].join('|');
+      let { pattern, pos, construction, stem } = dpdHeadwords[n];
+      a[key] = [ pattern, pos, construction, stem ].join('|');
       return a;
     }, {});
     let fnPali = 'definition-pali.mjs';

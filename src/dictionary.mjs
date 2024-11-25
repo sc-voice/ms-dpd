@@ -286,15 +286,18 @@ export default class Dictionary {
     return matches;
   }
 
-  parseDefinition(d='meaning_1?|meaning_2?|meaning_litera?') {
+  parseDefinition(d) {
     const msg = 'Dictionary.parseDefinition()';
+    if (d == null) {
+      throw new Error(`${msg} d?`);
+    }
     if (d instanceof Array) {
       return d.map(line=>this.parseDefinition(line));
     }
     if (typeof d === 'string') {
       let [ 
         meaning_1, meaning_2, meaning_lit, 
-        pattern, pos, construction, key,
+        pattern, pos, construction, stem, key
       ] = d.split('|');
       let result = JSON.parse(JSON.stringify({
         key,
@@ -303,6 +306,7 @@ export default class Dictionary {
         type: pos,
         meaning: meaning_1 || meaning_2,
         literal: meaning_lit,
+        stem,
       }));
       return result;
     }
