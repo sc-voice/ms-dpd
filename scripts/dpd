@@ -22,6 +22,8 @@ DESCRIPTION
     -?, --help
         Print this help.
 
+    -l  long format
+
     -md
         Use "definition" search method to show matching definitions
 
@@ -54,11 +56,15 @@ async function main() {
   let dict = await Dictionary.create();
   let method; // default
   let textArgs = [];
+  let outLong = false;
   for (let i=0; i<args.length; i++) {
     let arg = args[i];
     let argNext = args[i+1];
     if (arg.startsWith('-')) {
       switch (arg) {
+        case '-l':
+          outLong = true;
+          break;
         case '-me':
           method = 'entry';
           break;
@@ -135,31 +141,27 @@ async function main() {
         construction, pattern, pos,
       ];
     });
-    console.log(
-      '#'.padStart(2),
-      T_KEY.padEnd(keyPad),
-      T_WORD.padEnd(wordPad),
-      //T_TYPE.padEnd(typePad),
-      T_PATTERN.padEnd(patternPad),
-      T_POS.padEnd(posPad),
-      T_MEANING,
-      //T_CONSTR.padEnd(constrPad),
-    );
+    let titles = [ '#'.padStart(2), ];
+    outLong && titles.push(T_KEY.padEnd(keyPad));
+    titles.push(T_WORD.padEnd(wordPad));
+    titles.push(T_PATTERN.padEnd(patternPad));
+    outLong && titles.push(T_POS.padEnd(posPad));
+    outLong && titles.push(T_CONSTR.padEnd(constrPad));
+    titles.push(T_MEANING);
+    console.log.apply(console, titles);
     rows.forEach((row,i)=>{
       let [ 
         key, word, type, meaning, literal, 
         construction, pattern, pos
       ] = row;
-      console.log(
-        `${i+1}`.padStart(2),
-        key.padEnd(keyPad),
-        word.padEnd(wordPad),
-        //type.padEnd(typePad),
-        pattern.padEnd(patternPad),
-        pos.padEnd(posPad),
-        //construction.padEnd(constrPad),
-        literal ? `${meaning}; lit. ${literal}` : meaning,
-      );
+      let cols = [ `${i+1}`.padStart(2) ];
+      outLong && cols.push(key.padEnd(keyPad));
+      cols.push(word.padEnd(wordPad));
+      cols.push(pattern.padEnd(patternPad));
+      outLong && cols.push(pos.padEnd(posPad));
+      outLong && cols.push(construction.padEnd(constrPad));
+      cols.push(literal ? `${meaning}; lit. ${literal}` : meaning);
+      console.log.apply(console, cols);
     });
   }
 } //main
