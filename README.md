@@ -28,6 +28,7 @@ install the library as follows:
 npm install @sc-voice/ms-dpd@latest
 ```
 
+#### Dictionary
 The primary class of interest is Dictionary:
 
 ```
@@ -36,6 +37,34 @@ import { Dictionary } from '@sc-voice/pali/main.mjs'
 let dict = await Dictionary.create();
 let dhamma = dict.find("dhamma", {method: 'entry'});
 ```
+Returns `undefined` if not found.
+
+Returns JS object if found:
+```
+{
+  pattern: "dhamma",
+  method: "entry",
+  data: [...fields]
+}
+```
+
+Data fields comprise [headword information](https://github.com/digitalpalidictionary/dpd-db/blob/main/docs/dpd_headwords_table.md):
+
+* **construction** how is the word constructed?
+* **meaning_1** contextual meaning in current language
+* **meaning_2** contextual meaning per Buddhadatta in current language
+* **meaning_lit** literal meaning in current language
+* **pattern** inflection pattern
+* **pos** part of speech
+* **stem** stem upon which the inflection pattern is built.
+* **word** Pali lookup word
+* ...
+
+Search methods include:
+
+* **entry** search for exact Pali word
+* **definition** search for definition pattern
+* **unaccented** search for Pali words ignoring accents
 
 ### Development
 The 
@@ -74,6 +103,8 @@ Specifically, we can condense content as follows:
 * Split headwords into two files: Pali grammar vs. language-specific meaning
 * Omit unused headword fields such as Sanskrit
 * Provide users with headword links back to main DPD website
+* Only include meaning_2 if substantially different than meaning_1
+* (TBD) share unique grammar content in a separate file
 
 With the above condensation, we can reduce DPD content from 2G to ~8M,
 which is a 25:1 reduction.
@@ -82,6 +113,9 @@ it is now possible to add multilingual translations
 at a cost of about 3-4M per contemporary language.
 
 ### References
+
+Many thanks to Venerable Bodhirasa and the entire DPD team
+for the wonderful gift of the Digital Pali Dictionary.
 
 * [DPD tables used by MS-DPD](https://docs.google.com/drawings/d/1Vwx1OVHJUKU3vBxn1KSS4Ut-bdLQLl-WgtPpyVNIei4)
 * [MS-DPD data files](https://docs.google.com/drawings/d/1HXNbbGY82Ma6mP7z42bzfERGKFbOv4pBnPrRPnwnVxc)
