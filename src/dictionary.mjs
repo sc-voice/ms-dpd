@@ -196,6 +196,30 @@ export default class Dictionary {
     return matching;
   }
 
+  wordStem(word) {
+    const msg = 'Dictionary.wordStem';
+    let dbg = DBG.WORD_STEM;
+    let entry = this.entryOf(word);
+    let stem = word;
+    if (entry == null) {
+      return undefined; // Not in Mahāsańghīti
+    }
+    let { definition } = entry;
+    let stemMap = definition.reduce((a,def)=>{
+      let { stem } = this.parseDefinition(def);
+      a[stem] = (a[stem] || 0) + 1;
+      return a;
+    }, {});
+    let keys = Object.keys(stemMap).sort((a,b)=>{
+      return stemMap[b] - stemMap[a]; // descending
+    });
+
+    stem = keys.length && keys[0];
+    dbg && console.log(msg, '[1]stemMap', stemMap, stem);
+
+    return stem;
+  }
+
   relatedEntries(word, opts={}) {
     const msg = "Dictionary.relatedEntries()";
     const dbg = DBG.RELATED_ENTRIES;

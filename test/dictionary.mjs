@@ -58,7 +58,7 @@ typeof describe === "function" &&
     should(Dictionary.LICENSE).match(/digitalpalidictionary/);
     should(Dictionary.DEFINITION_KEYS.length).above(55000).below(60000);
   });
-  it("TESTTESTentryOf() dhamma", async()=>{
+  it("entryOf() dhamma", async()=>{
     const msg = "test.dictionary@62";
     let dict = await Dictionary.create();
     let dhamma = dict.entryOf("dhamma");
@@ -155,7 +155,7 @@ typeof describe === "function" &&
       construction: '√dhar+ma',
     });
   });
-  it("TESTTESTfindWords()", async()=>{
+  it("findWords()", async()=>{
     const msg = 'test.dictionary@153';
     let dict = await Dictionary.create();
     let matches = dict.findWords(/\bthe root of/i);
@@ -292,7 +292,7 @@ typeof describe === "function" &&
     should(Dictionary.isAccented("samvega")).equal(false);
     should(Dictionary.isAccented("saṁvega")).equal(true);
   });
-  it("TESTTESTwordsWithPrefix()", async ()=>{
+  it("wordsWithPrefix()", async ()=>{
     let msg = 'test.dictionary@295';
     let dict = await Dictionary.create();
 
@@ -547,5 +547,23 @@ typeof describe === "function" &&
     should(Dictionary.prefixOf('abc')).equal('abc');
     should(Dictionary.prefixOf('abcdef', 'abc', 'aba')).equal('ab');
     should(Dictionary.prefixOf(['a', 'abc', 'aba'])).equal('a');
+  });
+  it("TESTTESTwordStem", async ()=>{
+    let dict = await Dictionary.create();
+    // Singular
+    should(dict.wordStem("dhammo")).equal('dhamm');    // Nom
+    should(dict.wordStem("dhammassa")).equal('dhamm'); // Acc
+    should(dict.wordStem("dhammena")).equal('dhamm');  // Instr
+    should(dict.wordStem("dhammāya")).equal('dhamm');  // Dat
+    should(dict.wordStem("dhammā")).equal('dhamm');    // Abl
+    should(dict.wordStem("dhammassa")).equal('dhamm'); // Gen
+    should(dict.wordStem("dhamme")).equal('dhamm');    // Loc
+    should(dict.wordStem("dhammasmiṁ")).equal('dhamm');  // Loc
+    should(dict.wordStem("dhamma")).equal('dhamm');    // Voc
+
+    // not in Mahāsańghīti
+    should(dict.wordStem("dhammasmā")).equal(undefined); // Abl
+    should(dict.wordStem("dhammamhā")).equal(undefined); // Abl
+    should(dict.wordStem("dhammamhi")).equal(undefined); // Loc
   });
 });

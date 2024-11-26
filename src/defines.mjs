@@ -18,6 +18,7 @@ export const DBG = {
   TBD: 0,
   VERBOSE_ROWS: 5,
   WORD_INFLECTIONS: 0,
+  WORD_STEM: 0,
   WORDS_WITH_PREFIX: 0,
 
 }
