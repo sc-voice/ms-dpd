@@ -1,6 +1,5 @@
 {
   "name": "@sc-voice/ms-dpd",
-  "new-name": "@sc-voice/ms-dpd",
   "version": "1.27.0",
   "description": "Mahāsaṅgīti Pali Javascript adapter for Digital Pali Dictionary",
   "main": "index.js",
