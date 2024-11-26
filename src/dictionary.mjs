@@ -227,7 +227,7 @@ export default class Dictionary {
     let { 
       overlap: minOverlap=0.1,
     } = opts;
-    let stem = Pali.wordStem(word);
+    let stem = this.wordStem(word);
     let keys = Object.keys(index)
     let maxLen = word.length + Pali.ENDING_MAX_LEN;
     let stemKeys = keys.filter(k=>{

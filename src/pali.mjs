@@ -89,33 +89,6 @@ export default class Pali {
     return Pali.#ROMAN_ORDER;
   }
 
-  static compareStem(a, b) {
-    const msg = "Pali.compareStem()";
-    const dbg = 1;
-    console.log(dbg, "DEPRECATED");
-    let order = Pali.ROMAN_ORDER;
-    let a0 = a.charAt(0);
-    let b0 = b.charAt(0);
-    let cmp = order[a0] - order[b0];
-    if (cmp) {
-      dbg && console.log(msg, '[1]', {cmp, a,b});
-      return cmp;
-    }
-
-    let aStem = Pali.wordStem(a);
-    let bStem = Pali.wordStem(b);
-    cmp = Pali.compareRoman(aStem, bStem);
-    if (cmp) {
-      dbg && console.log(msg, '[2]', {cmp, a,b,aStem, bStem});
-      return cmp;
-    }
-
-    cmp = Pali.compareRoman(a,b);
-    dbg && console.log(msg, '[3]', {cmp, a,b});
-
-    return cmp;
-  }
-
   static compareOCBS(s1,s2) {
     let cmp = 0;
     let order = Pali.OCBS_CHAR_ORDER;
@@ -197,8 +170,9 @@ export default class Pali {
     return Pali.#ENDINGS;
   }
 
-  static wordStem(word) {
+  static wordStem(word) { // DEPRECATED
     const msg = 'Pali.wordStem()';
+    console.log(msg, "DEPRECATED");
     const dbg = DBG.PALI;
     if (Pali.#STEM_RE == null) {
       let rends = Pali.ENDINGS
