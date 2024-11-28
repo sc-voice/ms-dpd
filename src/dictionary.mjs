@@ -5,6 +5,7 @@ import Inflection from "./inflection.mjs";
 import { ABBREVIATIONS } from '../data/en/abbreviations.mjs';
 import { INDEX } from '../data/index.mjs';
 import { DEF_PALI } from '../data/definition-pali.mjs';
+import { DEF_LANG as DEF_EN } from '../data/en/definition-en.mjs';
  
 const DEF = {} // definitions
 const DEF_KEYS = Object.keys(DEF_PALI);
@@ -39,9 +40,15 @@ export default class Dictionary {
     let dbg = DBG.LOADING;
     if (DEF[lang] == null) {
       let fname = `../data/${lang}/definition-${lang}.mjs`;
-      let { DEF_LANG } = await import(fname);
-      DEF[lang] = DEF_LANG;
-      console.error(msg, '[1]loading', fname); 
+      // Does not work in library
+      //let { DEF_LANG } = await import(fname);
+      switch (lang) {
+        case 'en':
+        default:
+          DEF[lang] = DEF_EN;
+          break;
+      }
+      console.error(msg, '[1]loading', ); 
       dbg && console.error(msg, '[1.1]', Object.keys(DEF[lang]).length);
     }
 
