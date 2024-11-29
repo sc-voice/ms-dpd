@@ -9,11 +9,9 @@
     "main.mjs",
     "package.json",
     "README.md",
-    "scripts",
     "src"
   ],
   "scripts": {
-    "build": "vite build",
     "schedule-action": "scripts/schedule-action",
     "test": "npm run test:verbose",
     "test:test": "mocha --config test/mocha-config.json",
@@ -27,6 +25,7 @@
   "keywords": [
     "Pali",
     "DigitalPaliDictionary",
+    "Mahāsańghīti",
     "Javascript"
   ],
   "author": "Karl Lew",
@@ -42,6 +41,5 @@
     "should": "^13.2.3"
   },
   "dependencies": {
-    "vite": "^6.0.1"
   }
 }
