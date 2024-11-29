@@ -5,7 +5,6 @@ import Inflection from "./inflection.mjs";
 import { ABBREVIATIONS } from '../data/en/abbreviations.mjs';
 import { INDEX } from '../data/index.mjs';
 import { DEF_PALI } from '../data/definition-pali.mjs';
-import { DEF_LANG as DEF_EN } from '../data/en/definition-en.mjs';
  
 const DEF = {} // definitions
 const DEF_KEYS = Object.keys(DEF_PALI);
@@ -37,19 +36,18 @@ export default class Dictionary {
 
   static async definitions(lang = 'en') {
     const msg = 'Dictionary.definitions()';
-    let dbg = DBG.LOADING;
+    let dbg = 1 || DBG.LOADING;
     if (DEF[lang] == null) {
-      let fname = `../data/${lang}/definition-${lang}.mjs`;
-      // Does not work in library
-      //let { DEF_LANG } = await import(fname);
       switch (lang) {
         case 'en':
-        default:
-          DEF[lang] = DEF_EN;
+        default: {
+          let fname = `../data/en/definition-en.mjs`;
+          DEF[lang] = (await import(fname)).DEF_LANG;
+          let keys = Object.keys(DEF[lang]);
+          dbg && console.error(msg, `[1]${lang}`, keys.length, keys[0]);
           break;
+        }
       }
-      console.error(msg, '[1]loading', ); 
-      dbg && console.error(msg, '[1.1]', Object.keys(DEF[lang]).length);
     }
 
     return DEF[lang];

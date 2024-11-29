@@ -2,8 +2,7 @@
   "name": "@sc-voice/ms-dpd",
   "version": "2.1.0",
   "description": "Mahāsaṅgīti Pali Javascript adapter for Digital Pali Dictionary",
-  "main": "index.js",
-  "module": "main.mjs",
+  "main": "main.mjs",
   "files": [
     "data",
     "LICENSE",
@@ -14,6 +13,7 @@
     "src"
   ],
   "scripts": {
+    "build": "vite build",
     "schedule-action": "scripts/schedule-action",
     "test": "npm run test:verbose",
     "test:test": "mocha --config test/mocha-config.json",
@@ -41,5 +41,7 @@
     "mocha": "^10.4.0",
     "should": "^13.2.3"
   },
-  "dependencies": {}
+  "dependencies": {
+    "vite": "^6.0.1"
+  }
 }
