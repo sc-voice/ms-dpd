@@ -1,6 +1,6 @@
 {
   "name": "@sc-voice/ms-dpd",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "Mahāsaṅgīti Pali Javascript adapter for Digital Pali Dictionary",
   "main": "main.mjs",
   "files": [
@@ -10,7 +10,9 @@
     "README.md",
     "src"
   ],
-  "workspaces": [ "dpd/en" ],
+  "workspaces": [
+    "dpd/en"
+  ],
   "scripts": {
     "schedule-action": "scripts/schedule-action",
     "test": "npm run test:verbose",
