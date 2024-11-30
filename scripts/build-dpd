@@ -25,7 +25,7 @@ const VERBOSE_ROWS = 3;
 let [ NODE, DASH, DIRNAME, SCRIPT, ...args] = process.argv;
 const APPDIR = path.join(DIRNAME, '..');
 const LOCAL = path.join(APPDIR, 'local');
-const DATADIR = path.join(APPDIR, 'data'); 
+const DATADIR = path.join(APPDIR, 'dpd'); 
 const msg = `${SCRIPT}:`;
 
 async function main() {

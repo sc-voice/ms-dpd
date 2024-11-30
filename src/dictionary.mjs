@@ -41,8 +41,10 @@ export default class Dictionary {
       switch (lang) {
         case 'en':
         default: {
-          let fname = `../data/en/definition-en.mjs`;
-          DEF[lang] = (await import(fname)).DEF_LANG;
+          let pkg = "@sc-voice/ms-dpd-en";
+          DEF[lang] = (await import(pkg)).DEF_LANG;
+          //let fname = `../data/en/definition-en.mjs`;
+          //DEF[lang] = (await import(fname)).DEF_LANG;
           let keys = Object.keys(DEF[lang]);
           dbg && console.error(msg, `[1]${lang}`, keys.length, keys[0]);
           break;

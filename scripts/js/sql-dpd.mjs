@@ -51,7 +51,7 @@ export default class SqlDpd {
     }
     let lang = opts.lang || 'en';
     let {
-      dataDir = path.join(`${DIRNAME}/../../local/data`),
+      dataDir = path.join(`${DIRNAME}/../../local/dpd-test`),
       dbg = DBG.SQL_DPD,
       maxBuffer = 10 * 1024 * 1024,
       mode = 'json',
@@ -65,7 +65,7 @@ export default class SqlDpd {
       : 'none');
     dataDir = path.resolve(dataDir);
     if (!fs.existsSync(dataDir)) {
-      throw new Error(`${msg} dataDir? ${dataDir}`);
+      fs.mkdirSync(dataDir, {recursive:true});
     }
 
     Object.assign(this, {

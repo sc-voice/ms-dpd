@@ -4,13 +4,13 @@
   "description": "Mahāsaṅgīti Pali Javascript adapter for Digital Pali Dictionary",
   "main": "main.mjs",
   "files": [
-    "data",
     "LICENSE",
     "main.mjs",
     "package.json",
     "README.md",
     "src"
   ],
+  "workspaces": [ "dpd/en" ],
   "scripts": {
     "schedule-action": "scripts/schedule-action",
     "test": "npm run test:verbose",
@@ -40,5 +40,7 @@
     "mocha": "^10.4.0",
     "should": "^13.2.3"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@sc-voice/ms-dpd-en": "^2.3.2"
+  }
 }

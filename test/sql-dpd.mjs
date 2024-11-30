@@ -12,11 +12,12 @@ import { default as HeadwordKey } from '../src/headword-key.mjs';
 const DIRNAME = import.meta.dirname;
 
 let msg = M;
+let DATADIR = "../local/dpd-test";
 
 typeof describe==="function" && describe("sql-dpd", function() {
   before(()=>{
     //console.log(msg, "before");
-    let dataDir = path.join(`${DIRNAME}/../local/data`);
+    let dataDir = path.join(`${DIRNAME}/${DATADIR}`);
     fs.mkdirSync(dataDir, {recursive:true});
   });
   it("ctor", async()=>{
@@ -35,7 +36,7 @@ typeof describe==="function" && describe("sql-dpd", function() {
       dbg: DBG.SQL_DPD > 1 ? 1 : 0,
       lang: 'en',
       rowLimit: 0,
-      dataDir: path.join(import.meta.dirname, '../local/data'),
+      dataDir: path.join(import.meta.dirname, DATADIR),
       paliMap: undefined,
       verboseRows: 3,
     });
@@ -93,7 +94,7 @@ typeof describe==="function" && describe("sql-dpd", function() {
     let paliMap = { devi:1, deva:1 }; // test words
     let headwordPatterns = ['ī fem'];
     let verboseRows = 0;
-    let dataDir = path.join(import.meta.dirname, '../local/data');
+    let dataDir = path.join(import.meta.dirname, DATADIR);
     let dbg = 1;
 
     // DEPRECATED: headwordPatterns
