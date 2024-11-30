@@ -1,7 +1,7 @@
 import { DBG } from './defines.mjs';
 
 // DEPRECATED
-import { OCBS_INFLECTIONS } from '../data/ocbs-inflections.mjs';
+import { OCBS_INFLECTIONS } from './ocbs-inflections.mjs';
 
 export default class Pali {
 
