@@ -1,6 +1,6 @@
 
 import { DBG } from './defines.mjs';
-import { ABBREVIATIONS } from '../dpd/en/abbreviation-en.mjs';
+import { ABBREVIATIONS } from '@sc-voice/ms-dpd-en';
 import Table from './table.mjs';
 import Pali from './pali.mjs';
 
