@@ -1,0 +1,20 @@
+#!/bin/bash
+DIR=`dirname $0`
+SCRIPT=`basename $0 | tr abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ`
+APP=$DIR/..
+set -e
+
+echo $SCRIPT: BEGIN `date`
+
+pushd dpd/en > /dev/null
+pwd
+npm version minor
+npm publish
+popd > /dev/null
+
+npm install @sc-voice/ms-dpd-en@latest
+
+npm version --workspaces
+npm ls
+
+echo $SCRIPT: END `date`

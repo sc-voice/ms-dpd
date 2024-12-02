@@ -4,4 +4,4 @@ SCRIPT=`basename $0 | tr abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ`
 APP=$DIR/..
 set -e
 
-#npm run build:dist
+echo $SCRIPT: `npm ls | head -1`
