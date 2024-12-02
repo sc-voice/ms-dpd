@@ -153,3 +153,11 @@ for the wonderful gift of the Digital Pali Dictionary.
 * [DPD tables used by MS-DPD](https://docs.google.com/drawings/d/1Vwx1OVHJUKU3vBxn1KSS4Ut-bdLQLl-WgtPpyVNIei4)
 * [MS-DPD data files](https://docs.google.com/drawings/d/1HXNbbGY82Ma6mP7z42bzfERGKFbOv4pBnPrRPnwnVxc)
 
+### DPD Updates
+To update this library when DPD is updated:
+
+```
+./scripts/dpd-install
+./scripts/build-dpd
+./scripts/publish
+```
