@@ -10,6 +10,7 @@ npm version --workspaces --include-workspace-root minor
 
 pushd dpd/en > /dev/null
 pwd
+echo $SCRIPT: publish `cat package.json | grep '"name"'
 npm publish
 popd > /dev/null
 
@@ -19,6 +20,8 @@ git commit -am "$VER"
 
 echo $SCRIPT $VER
 
+echo $SCRIPT: publish `cat package.json | grep '"name"'
+npm publish
 npm ls
 
 echo $SCRIPT: END `date`
