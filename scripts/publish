@@ -6,12 +6,12 @@ set -e
 
 echo $SCRIPT: BEGIN `date`
 
-npm version -ws --include-workspace-root minor
+npm version -ws --include-workspace-root --get-tag-version minor
 
 ### Publish EN
 pushd dpd/en > /dev/null
 echo $SCRIPT directory `pwd`
-echo $SCRIPT: publishing `cat package.json | grep '"name"'
+echo $SCRIPT: publishing `json name < ./package.json`
 npm publish
 popd > /dev/null
 
@@ -27,7 +27,7 @@ git commit -am "$VER"
 
 echo $SCRIPT $VER
 
-echo $SCRIPT: publish `cat package.json | grep '"name"'
+echo $SCRIPT: publishing `json name < ./package.json`
 npm publish
 npm ls
 

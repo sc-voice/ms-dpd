@@ -1,6 +1,6 @@
 {
   "name": "@sc-voice/ms-dpd-en",
-  "version": "2.13.0",
+  "version": "2.14.0",
   "main": "main.mjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,6 +9,6 @@
   "license": "MIT",
   "description": "",
   "dependencies": {
-    "@sc-voice/ms-dpd-en": "^2.13.0"
+    "@sc-voice/ms-dpd-en": "^2.14.0"
   }
 }
