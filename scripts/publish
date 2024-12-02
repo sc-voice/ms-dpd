@@ -6,15 +6,19 @@ set -e
 
 echo $SCRIPT: BEGIN `date`
 
+npm version --workspaces --include-workspace-root minor
+
 pushd dpd/en > /dev/null
 pwd
-npm version minor
 npm publish
 popd > /dev/null
 
-npm install @sc-voice/ms-dpd-en@latest
+npm install --save @sc-voice/ms-dpd-en@latest
+VER=`npm ls | head -1 | sed 's/.*@\([0-9.]*\).*/\1/'`
+git commit -am "$VER"
 
-npm version --workspaces
+echo $SCRIPT $VER
+
 npm ls
 
 echo $SCRIPT: END `date`
