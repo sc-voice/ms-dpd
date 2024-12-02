@@ -18,6 +18,8 @@ const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 let [ NODE, DASH, DIRNAME, SCRIPT, ...args] = process.argv;
 
+const RE_RU = /.*[бвгджзклмнпрстфхцчшщёиыэюяйъь].*/;
+
 function help() {
   console.error(`
 NAME
@@ -32,6 +34,9 @@ DESCRIPTION
 
   -?, --help
     print this help text
+
+  -ab, --abbreviations
+    list abbreviations
 
   -ac, --all-columns
     print all table columns (Default is lookup_key, headwords, grammar)
@@ -52,13 +57,18 @@ EXAMPLES
 (async function() {
   const msg = `${SCRIPT}:`;
   let dbg = 0;
+  let abbrev = false;
   let limit = 1;
-  let columns = ['lookup_key', 'headwords', 'grammar'];
+  let columns = ['lookup_key', 'headwords', 'grammar', 'abbrev'];
   let words = args.reduce((a,arg,i)=>{
     switch (arg) {
       case '-?':
       case '--help':
         help();
+        break;
+      case "--abbreviations":
+      case "-ab":
+        abbrev = true;
         break;
       case "--all-columns":
       case "-ac":
@@ -78,18 +88,30 @@ EXAMPLES
     }
     return a;
   }, []);
-  if (words.length === 0) {
+  if (words.length===0 && !abbrev) {
     help();
   }
   let sqlWords = words.map(word=>`"${word}"`).join(",");
+  let sqlWhere = '';
+  if (sqlWords.length) {
+    sqlWhere += (sqlWhere ? ' and ' : 'where ') + 
+      `lookup_key in (${sqlWords})`
+  }
+  if (abbrev) {
+    sqlWhere += (sqlWhere ? ' and ' : 'where ') + 
+      'not abbrev = ""';
+  }
+  let sqlLimit = abbrev
+    ? ''
+    : `sqlLimit ${sqlWords.length}`;
   let cmd = [
     'sqlite3 --batch local/dpd.db',
     '".mode json"',
     `'select ${columns.join(',')}`,
     ` from lookup`,
-    ' where',
-     `lookup_key in (${sqlWords})`,
-    ` limit ${sqlWords.length}'`,
+    sqlWhere,
+    sqlLimit,
+    "'",
     '| json',
   ].join(' ');
   dbg && console.error(msg, {NODE,DASH, DIRNAME, SCRIPT, words});
@@ -100,11 +122,19 @@ EXAMPLES
       let json = JSON.parse(stdout);
       dbg && console.error(msg, json);
       let rows = json.map(row=>{
-        let {lookup_key, headwords, grammar} = row;
+        let {lookup_key, headwords, grammar, abbrev} = row;
         headwords = headwords && JSON.parse(headwords) || [];
+        abbrev = abbrev && JSON.parse(abbrev);
         grammar = grammar && JSON.parse(grammar);
-        return Object.assign({}, row, {headwords, grammar});
+        return Object.assign({}, row, {headwords, grammar, abbrev});
       });
+      let rowFilter = abbrev && (row=>{
+        let { lookup_key, } = row;
+        return !RE_RU.test(lookup_key);
+      });
+      if (rowFilter) {
+        rows = rows.filter(rowFilter);
+      }
       console.log('[');
       for (let i=0; i<rows.length-1; i++) {
         console.log(rows[i], ',');

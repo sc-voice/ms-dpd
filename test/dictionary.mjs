@@ -342,11 +342,10 @@ typeof describe === "function" &&
     should(sam.length).above(460).below(500);
   });
   it("ABBREVIATIONS", ()=>{
-    should(Dictionary.ABBREVIATIONS).properties({
-      pr: {
-        meaning: "present"
-      }
-    });
+    let { pr }= Dictionary.ABBREVIATIONS;
+    should(pr.abbreviation).equal('pr');
+    should(pr.meaning).match(/present tense/);
+    should(pr.explanation).match(/a verb tense/i);
   });
   it("find() -mu", async()=>{
     let dict = await Dictionary.create();

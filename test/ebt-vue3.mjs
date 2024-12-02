@@ -38,9 +38,9 @@ typeof describe === "function" &&
   });
   it("ABBREVIATIONS", ()=>{
     const { ABBREVIATIONS:ABB } = Dictionary;
-    should(ABB["masc"]).properties({ meaning: "masculine" });
-    should(ABB["fem"]).properties({ meaning: "feminine" });
-    should(ABB["nt"]).properties({ meaning: "neuter" });
+    should(ABB["masc"]).properties({ meaning: "masculine noun" });
+    should(ABB["fem"]).properties({ meaning: "feminine noun" });
+    should(ABB["nt"]).properties({ meaning: "neuter noun" });
   });
   it("wordsWithPrefix()", async ()=>{
     let dict = await Dictionary.create();

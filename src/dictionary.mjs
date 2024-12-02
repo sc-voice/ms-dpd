@@ -2,9 +2,9 @@ import { DBG } from './defines.mjs';
 import Pali from "./pali.mjs";
 import Inflection from "./inflection.mjs";
 
-import { ABBREVIATIONS } from '../data/en/abbreviations.mjs';
-import { INDEX } from '../data/index.mjs';
-import { DEF_PALI } from '../data/definition-pali.mjs';
+import { ABBREVIATIONS } from '../dpd/en/abbreviation-en.mjs';
+import { INDEX } from '../dpd/index.mjs';
+import { DEF_PALI } from '../dpd/definition-pali.mjs';
  
 const DEF = {} // definitions
 const DEF_KEYS = Object.keys(DEF_PALI);

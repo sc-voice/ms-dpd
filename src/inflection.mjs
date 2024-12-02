@@ -1,10 +1,10 @@
 
 import { DBG } from './defines.mjs';
-import { ABBREVIATIONS } from '../data/en/abbreviations.mjs';
+import { ABBREVIATIONS } from '../dpd/en/abbreviation-en.mjs';
 import Table from './table.mjs';
 import Pali from './pali.mjs';
 
-import DPD_INFLECTIONS from '../data/dpd-inflections.mjs';
+import DPD_INFLECTIONS from '../dpd/dpd-inflections.mjs';
 
 var INFLECTIONS;
 

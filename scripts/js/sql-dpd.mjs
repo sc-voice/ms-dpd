@@ -53,7 +53,7 @@ export default class SqlDpd {
     let {
       dataDir = path.join(`${DIRNAME}/../../local/dpd-test`),
       dbg = DBG.SQL_DPD,
-      maxBuffer = 10 * 1024 * 1024,
+      maxBuffer = 20 * 1024 * 1024,
       mode = 'json',
       paliMap,
       rowLimit = 0,
@@ -116,6 +116,10 @@ export default class SqlDpd {
       writable: true,
       value: undefined,
     });
+    Object.defineProperty(this, "enAbbr", {
+      writable: true,
+      value: {},
+    });
     console.log(msg, '[2]this', JSON.stringify(this));
   }
 
@@ -166,6 +170,7 @@ export default class SqlDpd {
 
     await sqlDpd.#loadLookup();
     await sqlDpd.#loadHeadwords();
+    await sqlDpd.#loadAbbreviations();
 
     return sqlDpd;
   }
@@ -258,6 +263,7 @@ export default class SqlDpd {
 
     await this.#buildDefinitions();
     await this.#buildIndex();
+    await this.#buildAbbreviations();
   }
 
   async bashSql(sql, opts={}) {
@@ -473,10 +479,59 @@ export default class SqlDpd {
       JSON.stringify(defMap, null, 1),
     ].join('\n');
     let indexPath = path.join(dataDir, 'index.mjs');
-    await fs.promises.writeFile(indexPath, indexOut);
+    await fsp.writeFile(indexPath, indexOut);
     console.error(msg, '[1]', indexPath, indexOut.length);
 
     this.defMap = defMap;
+  }
+
+  async #loadAbbreviations() {
+    const msg = `SqlDpd.#loadAbbreviations:`;
+    //const RE_RU = /.*[бвгджзклмнпрстфхцчшщёиыэюяйъь].*/;
+    let {
+      dbg,
+      rowLimit,
+      paliMap,
+      headwordUsage,
+      verboseRows,
+    } = this;
+    let sql = [
+      'select lookup_key, abbrev ',
+      'from lookup',
+      'where',
+      "lookup_key in (select distinct pos from dpd_headwords)",
+      "order by lookup_key",
+      rowLimit ? `limit ${rowLimit}` : '',
+    ].join(' ');
+    let {stdout, stderr} = await this.bashSql(sql);
+    let rows = JSON.parse(stdout);
+    let enAbbr = rows.reduce((a,row)=>{
+      let { lookup_key, abbrev } = row;
+      let json = abbrev && JSON.parse(abbrev) || {};
+      a[lookup_key] = { 
+        abbreviation: lookup_key,
+        meaning: json.meaning,
+        explanation: json.explanation,
+      }
+      return a;
+    }, {});
+    console.error(msg, '[1]rows', rows.length);
+    dbg>1 && console.error(msg, '[1.1]enAbbr', enAbbr);
+    this.enAbbr = enAbbr;
+  }
+
+  async #buildAbbreviations() {
+    const msg = 'SqlDpd.#buildAbbreviations';
+    let { enAbbr, dataDir } = this;
+    let fname = 'abbreviation-en.mjs';
+    let fpath = path.join(dataDir, 'en', fname);
+    let json = JSON.stringify(enAbbr, null, 2);
+    let mjs = [
+      'export const ABBREVIATIONS =',
+      json,
+    ].join(' ');
+    await fsp.writeFile(fpath, mjs);
+    console.error(msg, `[1]${fpath}`, json.length);
   }
 
 }

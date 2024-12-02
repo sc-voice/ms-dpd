@@ -115,7 +115,7 @@ let {
     sJson,
     'export default INFLECTIONS;',
   ].join('\n');
-  let outPath = path.join(__dirname, '../data/dpd-inflections.mjs');
+  let outPath = path.join(__dirname, '../dpd/dpd-inflections.mjs');
   await fsp.writeFile(outPath, sJson);
   console.log(msg, 'output:', outPath);
 })()
