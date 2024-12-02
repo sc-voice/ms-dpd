@@ -12,12 +12,12 @@ import { default as HeadwordKey } from '../src/headword-key.mjs';
 const DIRNAME = import.meta.dirname;
 
 let msg = M;
-let DATADIR = "../local/dpd-test";
+let DATADIR = path.join(DIRNAME, "../local/dpd-test");
 
 typeof describe==="function" && describe("sql-dpd", function() {
   before(()=>{
     //console.log(msg, "before");
-    let dataDir = path.join(`${DIRNAME}/${DATADIR}`);
+    let dataDir = DATADIR;
     fs.mkdirSync(dataDir, {recursive:true});
   });
   it("ctor", async()=>{
@@ -36,7 +36,7 @@ typeof describe==="function" && describe("sql-dpd", function() {
       dbg: DBG.SQL_DPD > 1 ? 1 : 0,
       lang: 'en',
       rowLimit: 0,
-      dataDir: path.join(import.meta.dirname, DATADIR),
+      dataDir: DATADIR,
       paliMap: undefined,
       verboseRows: 3,
     });
@@ -94,7 +94,7 @@ typeof describe==="function" && describe("sql-dpd", function() {
     let paliMap = { devi:1, deva:1 }; // test words
     let headwordPatterns = ['ī fem'];
     let verboseRows = 0;
-    let dataDir = path.join(import.meta.dirname, DATADIR);
+    let dataDir = DATADIR;
     let dbg = 1;
 
     // DEPRECATED: headwordPatterns
@@ -144,7 +144,7 @@ typeof describe==="function" && describe("sql-dpd", function() {
     let paliMap = { devi:1, aggi:1 }; // test words
     let sqlDpd = await SqlDpd.create({paliMap});
     await sqlDpd.build();
-    let { hwKeys, defPali, defLang, defMap } = sqlDpd;
+    let { enAbbr, hwKeys, defPali, defLang, defMap } = sqlDpd;
 
     should(defMap.aggi).equal('AS,BG');
     should(defLang['AS']).equal('fire||');
@@ -154,6 +154,11 @@ typeof describe==="function" && describe("sql-dpd", function() {
     should(defLang['8sz']).equal('queen||');
     should(defPali['8sz'])
     .equal('ī fem|fem|√div > dev+*a+ī\ndeva+ī|dev');
+
+    should(enAbbr.pr).properties({meaning:'present tense'});
+    let pAbbr = path.join(DATADIR, 'en', 'abbreviation-en.mjs');
+    console.log(pAbbr);
+    should(fs.existsSync(pAbbr)).equal(true);
   });
   it("binarySearch", ()=>{
     let data = [
