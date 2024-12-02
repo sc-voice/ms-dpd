@@ -5,6 +5,7 @@
   "main": "main.mjs",
   "files": [
     "LICENSE",
+    "dpd/*.mjs",
     "main.mjs",
     "package.json",
     "README.md",
