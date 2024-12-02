@@ -7,8 +7,5 @@
   },
   "author": "Karl Lew",
   "license": "MIT",
-  "description": "",
-  "dependencies": {
-    "@sc-voice/ms-dpd-en": "^2.14.0"
-  }
+  "description": ""
 }
