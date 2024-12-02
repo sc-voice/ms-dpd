@@ -2,7 +2,7 @@ import { DBG } from './defines.mjs';
 import Pali from "./pali.mjs";
 import Inflection from "./inflection.mjs";
 
-import { ABBREVIATIONS } from '../dpd/en/abbreviation-en.mjs';
+import { ABBREVIATIONS } from '@sc-voice/ms-dpd-en'
 import { INDEX } from '../dpd/index.mjs';
 import { DEF_PALI } from '../dpd/definition-pali.mjs';
  
