@@ -56,9 +56,9 @@ typeof describe === "function" &&
     let dict = await Dictionary.create();
     should(dict.lang).equal('en');
     should(Dictionary.LICENSE).match(/digitalpalidictionary/);
-    should(Dictionary.DEFINITION_KEYS.length).above(55000).below(60000);
+    should(Dictionary.DEFINITION_KEYS.length).above(60000).below(70000);
   });
-  it("TESTTESTentryOf() punctuation", async()=>{
+  it("entryOf() punctuation", async()=>{
     const msg = "test.dictionary@62";
     let dict = await Dictionary.create();
     let bhante = dict.entryOf("bhante", );
@@ -139,12 +139,12 @@ typeof describe === "function" &&
       .match(/greedy.*\|become greedy/)
       .match(/\|√gidh\+ta/);
   });
-  it("relatedEntries()", async()=>{
+  it("TESTTESTrelatedEntries()", async()=>{
     const msg = 'test.dictionary@73';
     let dict = await Dictionary.create();
     let entries = dict.relatedEntries("dhamma");
     //console.log(msg, entries);
-    should(entries.length).equal(16);
+    should(entries.length).equal(37);
     let dhammaya = entries.find(e=>e.word === 'dhammāya');
     should(dhammaya.overlap).equal(1);
     should(dhammaya.definition.length).equal(17);
@@ -162,25 +162,29 @@ typeof describe === "function" &&
       construction: '√dhar+ma',
     });
   });
-  it("findWords()", async()=>{
+  it("TESTTESTfindWords()", async()=>{
     const msg = 'test.dictionary@153';
     let dict = await Dictionary.create();
     let matches = dict.findWords(/\bthe root of/i);
-    should(matches.length).equal(6);
+    should(matches.length).equal(7);
 
     { // matches multiple words
       let re = /the root of the boil/;
       let [def] = matches.filter(m=>re.test(m.definition));
-      should.deepEqual(def.words, ['gaṇḍamūlaṁ', 'gaṇḍamūlo']);
+      should.deepEqual(def.words, [
+        'gaṇḍamūla', 'gaṇḍamūlanti', 'gaṇḍamūlaṁ', 'gaṇḍamūlo'
+      ]);
     }
 
     { // matches single word
-      let { definition, words } = matches[2];
-      should.deepEqual(words, ['aññāṇamūlappabhavā']);
-      should(definition).match(/born from the root of ignorance/);
+      let { definition, words } = matches[5];
+      should.deepEqual(words, [
+        'taṇhāmūlavisosano',
+      ]);
+      should(definition).match(/drying out the root/);
     }
   });
-  it("find() moral behaviour (definition)", async()=>{
+  it("TESTTESTfind() moral behaviour (definition)", async()=>{
     let dict = await Dictionary.create();
     let word1
     let pattern = 'moral behaviour'; 
@@ -191,7 +195,7 @@ typeof describe === "function" &&
       let { meaning } = res.data[i];
       should(meaning).match(new RegExp(`\\b${pattern}`, 'i'));
     }
-    should(res.data.length).equal(30);
+    should(res.data.length).above(50).below(60);
   });
   it("find() something abides (not in dictionary)", async()=>{
     let dict = await Dictionary.create();
@@ -270,7 +274,7 @@ typeof describe === "function" &&
       construction: 'sīla+agga',
     });
   });
-  it("find() virtue; moral behaviour", async()=>{
+  it("TESTTESTfind() virtue; moral behaviour", async()=>{
     const msg = 'test.dictionary@262';
     let dict = await Dictionary.create();
     let pattern = 'virtue; moral behaviour';
@@ -279,15 +283,18 @@ typeof describe === "function" &&
     should(virtue.method).equal('definition');
     should(virtue.pattern).equal(pattern);
     dbg && console.log(msg, {data:virtue.data.map(d=>d.word)});
-    should(virtue.data.length).equal(14); // exclude dhammāna
-    should(virtue.data[0]).properties({
+    let dhammanha = virtue.data.find(d=>d.word === "dhammamhā");
+    should(dhammanha).equal(undefined);
+    let dhamma = virtue.data.find(d=>d.word === "dhamma");
+    should(dhamma).properties({
       word: 'dhamma',
       type: 'masc',
       literal: '',
       meaning: 'virtue; moral behaviour',
       construction: '√dhar+ma',
     });
-    should(virtue.data[1]).properties({
+    let dhammasmim = virtue.data.find(d=>d.word === "dhammasmiṁ");
+    should(dhammasmim).properties({
       word: 'dhammasmiṁ',
       type: 'masc',
       literal: '',
@@ -299,7 +306,7 @@ typeof describe === "function" &&
     should(Dictionary.isAccented("samvega")).equal(false);
     should(Dictionary.isAccented("saṁvega")).equal(true);
   });
-  it("wordsWithPrefix()", async ()=>{
+  it("TESTTESTwordsWithPrefix()", async ()=>{
     let msg = 'test.dictionary@295';
     let dict = await Dictionary.create();
 
@@ -335,10 +342,11 @@ typeof describe === "function" &&
       "saṁvegā",
       "saṁvegaj\u2026",
       "saṁvegam\u2026",
+      "saṁvegas\u2026",
       "saṁvegāy\u2026",
     ]);
   });
-  it("wordsWithPrefix() strict", async ()=>{
+  it("TESTTESTwordsWithPrefix() strict", async ()=>{
     let dict = await Dictionary.create();
     let opts = { strict: true };
     should.deepEqual(dict.wordsWithPrefix("samvega", opts), [
@@ -346,7 +354,7 @@ typeof describe === "function" &&
     ]);
     let sam = dict.wordsWithPrefix("saṁ", opts);
     should(sam[0]).equal("saṁ"); // exact match
-    should(sam.length).above(460).below(500);
+    should(sam.length).above(460).below(600);
   });
   it("find() -mu", async()=>{
     let dict = await Dictionary.create();

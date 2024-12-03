@@ -206,8 +206,6 @@ export default class SqlDpd {
       'from lookup T1',
       'where',
       "T1.headwords is not ''",
-      'AND',
-      "T1.grammar is not ''",
       rowLimit ? `limit ${rowLimit}` : '',
     ].join(' ');
     let {stdout, stderr} = await this.bashSql(sql);

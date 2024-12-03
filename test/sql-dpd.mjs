@@ -31,7 +31,7 @@ typeof describe==="function" && describe("sql-dpd", function() {
 
     should(eCaught.message).match(/use SqlDpd.create/);
   });
-  it("create() default", async()=>{
+  it("TESTTESTcreate() default", async()=>{
     let sqlDpd = await SqlDpd.create();
     should(sqlDpd).properties({
       dbg: DBG.SQL_DPD > 1 ? 1 : 0,
@@ -42,9 +42,12 @@ typeof describe==="function" && describe("sql-dpd", function() {
       verboseRows: 3,
     });
 
-    let { dpdHeadwords } = sqlDpd;
+    let { dpdLookup, dpdHeadwords } = sqlDpd;
     let hwIds = Object.keys(dpdHeadwords);
     should(hwIds.length).above(70000); // no paliMap filter
+
+    should(dpdLookup.kho).instanceOf(Array);
+    should(dpdLookup.devi).instanceOf(Array);
   });
   it("create() paliMap, dataDir, verboseRows, dbg", async()=>{
     const msg = `${M}@37:`;
