@@ -46,7 +46,7 @@ export default class Dictionary {
 
   static async #loadLanguage(lang = 'en') {
     const msg = 'Dictionary.loadLanguage()';
-    let dbg = 1 || DBG.LOADING;
+    let dbg = DBG.LOADING;
     if (LANG_DEF[lang] == null) {
       switch (lang) {
         case 'en':
@@ -55,8 +55,8 @@ export default class Dictionary {
             await import("@sc-voice/ms-dpd-en");
           LANG_DEF[lang] = DEF_LANG;
           LANG_ABBR[lang] = ABBREVIATIONS;
-          let keys = Object.keys(LANG_DEF[lang]);
-          dbg && console.error(msg, `[1]${lang}`, keys.length, keys[0]);
+          let defKeys = Object.keys(LANG_DEF[lang]);
+          dbg && console.error(msg, `[1]${lang}-defKeys`, defKeys.length);
           break;
         }
       }
