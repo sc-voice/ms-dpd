@@ -44,6 +44,6 @@
     "should": "^13.2.3"
   },
   "dependencies": {
-    "@sc-voice/ms-dpd-en": "^2.20.0"
+    "@sc-voice/ms-dpd-en": "^2.21.0"
   }
 }
