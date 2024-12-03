@@ -14,7 +14,7 @@ const {
 typeof describe === "function" && 
   describe("r64", function () 
 {
-  it("TESTTESTfromNumber", () => {
+  it("fromNumber", () => {
     for (let i=0; i < SYMBOLS.length; i++) {
       should(HeadwordKey.fromNumber(i)).equal(SYMBOLS[i]);
     }
@@ -23,7 +23,7 @@ typeof describe === "function" &&
     should(HeadwordKey.fromNumber(75145)).equal('JY1');
     should(HeadwordKey.fromNumber(238327)).equal('zzz');
   });
-  it("TESTTESTtoNumber() string", () => {
+  it("toNumber() string", () => {
     for (let i=0; i < SYMBOLS.length; i++) {
       should(HeadwordKey.toNumber(SYMBOLS[i])).equal(i);
     }

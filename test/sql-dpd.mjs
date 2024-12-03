@@ -15,6 +15,7 @@ let msg = M;
 let DATADIR = path.join(DIRNAME, "../local/dpd-test");
 
 typeof describe==="function" && describe("sql-dpd", function() {
+  this.timeout(10*1000);
   before(()=>{
     //console.log(msg, "before");
     let dataDir = DATADIR;
@@ -139,8 +140,8 @@ typeof describe==="function" && describe("sql-dpd", function() {
     let hwIds = Object.keys(dpdHeadwords);
     should(hwIds.length).equal(2); // devi
   });
-  it("TESTTESTbuild()", async()=>{
-    const msg = 'test.sql-dpd@140';
+  it("build()", async()=>{
+    const msg = 'test.sql-dpd@144';
     let paliMap = { devi:1, aggi:1 }; // test words
     let sqlDpd = await SqlDpd.create({paliMap});
     await sqlDpd.build();

@@ -58,6 +58,13 @@ typeof describe === "function" &&
     should(Dictionary.LICENSE).match(/digitalpalidictionary/);
     should(Dictionary.DEFINITION_KEYS.length).above(55000).below(60000);
   });
+  it("TESTTESTentryOf() punctuation", async()=>{
+    const msg = "test.dictionary@62";
+    let dict = await Dictionary.create();
+    let bhante = dict.entryOf("bhante", );
+    let res = dict.entryOf("bhante-?!(),.:;…— –‘’”");
+    should.deepEqual(res, bhante);
+  });
   it("entryOf() dhamma", async()=>{
     const msg = "test.dictionary@62";
     let dict = await Dictionary.create();
@@ -547,7 +554,7 @@ typeof describe === "function" &&
     should(Dictionary.prefixOf('abcdef', 'abc', 'aba')).equal('ab');
     should(Dictionary.prefixOf(['a', 'abc', 'aba'])).equal('a');
   });
-  it("TESTTESTwordStem", async ()=>{
+  it("wordStem", async ()=>{
     let dict = await Dictionary.create();
     // Singular
     should(dict.wordStem("dhammo")).equal('dhamm');    // Nom

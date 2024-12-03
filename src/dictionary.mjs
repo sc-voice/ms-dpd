@@ -146,13 +146,15 @@ export default class Dictionary {
     return LANG_ABBR[lang][abbr];
   }
 
-  entryOf(word) {
+  entryOf(aWord) {
     const msg = "Dictionary.entryOf()";
     const dbg = DBG.ENTRY_OF;
+    const RE_PUNCT = /[-!?(),.:;…—– ‘’"'“”]/;
     let { index, defLang, } = this;
-    word = word.toLowerCase();
+    let wordParts = aWord.split(RE_PUNCT);
+    let word = wordParts.filter(w=>!!w)[0].toLowerCase();
     let indexEntry = index[word];
-    dbg && console.error(msg, `[1]${word}`, indexEntry);
+    dbg && console.error(msg, `[1]${word}`, indexEntry, wordParts);
     if (indexEntry == null) {
       return null;
     }
@@ -443,7 +445,7 @@ export default class Dictionary {
       if (entry) {
         let data = entry.definition.map(def=>{
           let parsed = this.parseDefinition(def);
-          let row = Object.assign(parsed, {word: pattern});
+          let row = Object.assign(parsed, {word: entry.word});
           return row;
         });
         result = { data, pattern, method: 'entry', }
