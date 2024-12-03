@@ -1,4 +1,5 @@
 export const DBG = {
+  ABBREVIATION_INFO: 0,
   BINARY_SEARCH: 0,
   DICTIONARY_CREATE: 0,
   DPD: 0,

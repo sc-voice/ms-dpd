@@ -6,7 +6,8 @@ import { ABBREVIATIONS } from '@sc-voice/ms-dpd-en'
 import { INDEX } from '../dpd/index.mjs';
 import { DEF_PALI } from '../dpd/definition-pali.mjs';
  
-const DEF = {} // definitions
+const LANG_DEF = {}   // headword definitions
+const LANG_ABBR = {}; // abbreviations
 const DEF_KEYS = Object.keys(DEF_PALI);
 const { VERBOSE_ROWS } = DBG;
 
@@ -15,18 +16,27 @@ export default class Dictionary {
   static #DPD; // cache
 
   constructor(opts={}) {
+    const msg = "Dictionary.constructor";
     if (!Dictionary.#CREATE) {
-      throw new Error(`Use Dictionary.create()`);
+      throw new Error(`${msg}: Use Dictionary.create()`);
     }
 
-    Object.assign(this, opts);
+    let keys = Object.keys(opts);
+    keys.forEach(key=>{
+      Object.defineProperty(this, key, {
+        writable: false, // dictionary is ummutable
+        value: opts[key],
+      });
+    });
   }
 
   static get LICENSE(){
     return "https://digitalpalidictionary.github.io/titlepage.html";
   }
 
-  static get ABBREVIATIONS() {
+  static get ABBREVIATIONS() { // DEPRECATED
+    const msg = "Dictionary.ABBREVIATIONS";
+    console.error(msg, "DEPRECATED");
     return ABBREVIATIONS;
   }
 
@@ -34,25 +44,25 @@ export default class Dictionary {
     return DEF_KEYS;
   }
 
-  static async definitions(lang = 'en') {
-    const msg = 'Dictionary.definitions()';
+  static async #loadLanguage(lang = 'en') {
+    const msg = 'Dictionary.loadLanguage()';
     let dbg = 1 || DBG.LOADING;
-    if (DEF[lang] == null) {
+    if (LANG_DEF[lang] == null) {
       switch (lang) {
         case 'en':
         default: {
-          let pkg = "@sc-voice/ms-dpd-en";
-          DEF[lang] = (await import(pkg)).DEF_LANG;
-          //let fname = `../data/en/definition-en.mjs`;
-          //DEF[lang] = (await import(fname)).DEF_LANG;
-          let keys = Object.keys(DEF[lang]);
+          let { DEF_LANG, ABBREVIATIONS } = 
+            await import("@sc-voice/ms-dpd-en");
+          LANG_DEF[lang] = DEF_LANG;
+          LANG_ABBR[lang] = ABBREVIATIONS;
+          let keys = Object.keys(LANG_DEF[lang]);
           dbg && console.error(msg, `[1]${lang}`, keys.length, keys[0]);
           break;
         }
       }
     }
 
-    return DEF[lang];
+    return LANG_DEF[lang];
   }
 
   static isAccented(word) {
@@ -100,13 +110,14 @@ export default class Dictionary {
         lang='en',
         dpd=Dictionary.#DPD,
         dpdTexts,
-        defLang=await Dictionary.definitions(lang),
+        defLang=await Dictionary.#loadLanguage(lang),
         index=INDEX,
         verboseRows=DBG.VERBOSE_ROWS,
       } = opts;
       Dictionary.#CREATE = true;
 
-      dbg && console.error(msg, '[1]DEF_KEYS', DEF_KEYS.length, DEF_KEYS.slice(0, DBG.VERBOSE_ROWS));
+      dbg && console.error(msg, '[1]DEF_KEYS', 
+        DEF_KEYS.length, DEF_KEYS.slice(0, DBG.VERBOSE_ROWS));
 
       let dict = new Dictionary({
         lang,
@@ -130,6 +141,15 @@ export default class Dictionary {
       DEF_PALI[key],
       key,
     ].join('|');
+  }
+
+  abbreviationInfo(abbr) {
+    const msg = "Dictionary.abbreviationInfo";
+    const dbg = DBG.ABBREVIATION_INFO;
+    let { lang } = this;
+    let info = LANG_ABBR[abbr];
+    dbg && console.log(msg, LANG_ABBR);
+    return LANG_ABBR[lang][abbr];
   }
 
   entryOf(word) {
@@ -533,8 +553,9 @@ export default class Dictionary {
       new Inflection(Object.assign({word:stem+row.sfx}, row)));
     tblResult.addHeader({id:'word'});
     tblResult.sort(Inflection.compare);
+    let likeKeys = Object.keys(likeMap);
     dbg && console.error(tblResult.format({
-      title:`${msg} tblResult ${word} group by:${Object.keys(likeMap)}`}));
+      title:`${msg} tblResult ${word} group by:${likeKeys}`}));
     return tblResult;
   }
 }

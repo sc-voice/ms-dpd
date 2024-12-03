@@ -565,4 +565,18 @@ typeof describe === "function" &&
     should(dict.wordStem("dhammamhā")).equal(undefined); // Abl
     should(dict.wordStem("dhammamhi")).equal(undefined); // Loc
   });
+  it("abbreviationInfo()", async()=>{
+    let dict = await Dictionary.create();
+
+    should(dict.abbreviationInfo("fem")).properties({
+      abbreviation: "fem",
+      meaning: "feminine noun",
+      explanation: "",
+    });
+
+    let fut = dict.abbreviationInfo("fut");
+    should(fut.abbreviation).equal("fut");
+    should(fut.meaning).equal("future tense");
+    should(fut.explanation).match(/in the future/);
+  });
 });

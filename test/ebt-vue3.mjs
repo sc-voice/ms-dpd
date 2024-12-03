@@ -42,6 +42,15 @@ typeof describe === "function" &&
     should(ABB["fem"]).properties({ meaning: "feminine noun" });
     should(ABB["nt"]).properties({ meaning: "neuter noun" });
   });
+  it("abbreviationInfo()", async()=>{
+    let dict = await Dictionary.create();
+
+    should(dict.abbreviationInfo("fem")).properties({
+      abbreviation: "fem",
+      meaning: "feminine noun",
+      explanation: "",
+    });
+  });
   it("wordsWithPrefix()", async ()=>{
     let dict = await Dictionary.create();
 

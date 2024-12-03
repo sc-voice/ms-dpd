@@ -103,7 +103,7 @@ EXAMPLES
   }
   let sqlLimit = abbrev
     ? ''
-    : `sqlLimit ${sqlWords.length}`;
+    : `limit ${sqlWords.length}`;
   let cmd = [
     'sqlite3 --batch local/dpd.db',
     '".mode json"',
