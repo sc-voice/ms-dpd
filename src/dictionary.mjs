@@ -22,15 +22,6 @@ export default class Dictionary {
     }
 
     Object.assign(this, opts);
-    /*
-    let keys = Object.keys(opts);
-    keys.forEach(key=>{
-      Object.defineProperty(this, key, {
-        writable: false, // dictionary is ummutable
-        value: opts[key],
-      });
-    });
-    */
   }
 
   static get LICENSE(){
@@ -47,7 +38,7 @@ export default class Dictionary {
     return DEF_KEYS;
   }
 
-  static async #loadLanguage(lang = 'en') {
+  static async loadLanguage(lang = 'en') { // PRIVATE
     const msg = 'Dictionary.loadLanguage()';
     let dbg = DBG.LOADING;
     if (LANG_DEF[lang] == null) {
@@ -113,7 +104,7 @@ export default class Dictionary {
         lang='en',
         dpd=Dictionary.#DPD,
         dpdTexts,
-        defLang=await Dictionary.#loadLanguage(lang),
+        defLang=await Dictionary.loadLanguage(lang),
         index=INDEX,
         verboseRows=DBG.VERBOSE_ROWS,
       } = opts;
@@ -136,8 +127,8 @@ export default class Dictionary {
     }
   }
 
-  #definitionOfKey(key) {
-    const msg = "Dictionary.#definitionLine";
+  definitionOfKey(key) { // PRIVATE
+    const msg = "Dictionary.definitionOfKey";
     let { defLang } = this;
     return [
       defLang[key],
@@ -166,7 +157,7 @@ export default class Dictionary {
       return null;
     }
     let definition = indexEntry.split(',').map(key=>{
-      return this.#definitionOfKey(key);
+      return this.definitionOfKey(key);
     });
     return Object.assign({word}, {definition});
   }
@@ -332,7 +323,7 @@ export default class Dictionary {
     let matches = Object.entries(defWords).map(entry=>{
       let [key, words] = entry;
       return {
-        definition:this.#definitionOfKey(key),
+        definition:this.definitionOfKey(key),
         words,
       }
     });
