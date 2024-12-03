@@ -21,6 +21,8 @@ export default class Dictionary {
       throw new Error(`${msg}: Use Dictionary.create()`);
     }
 
+    Object.assign(this, opts);
+    /*
     let keys = Object.keys(opts);
     keys.forEach(key=>{
       Object.defineProperty(this, key, {
@@ -28,6 +30,7 @@ export default class Dictionary {
         value: opts[key],
       });
     });
+    */
   }
 
   static get LICENSE(){
