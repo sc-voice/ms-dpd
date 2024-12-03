@@ -348,12 +348,6 @@ typeof describe === "function" &&
     should(sam[0]).equal("saṁ"); // exact match
     should(sam.length).above(460).below(500);
   });
-  it("ABBREVIATIONS", ()=>{
-    let { pr }= Dictionary.ABBREVIATIONS;
-    should(pr.abbreviation).equal('pr');
-    should(pr.meaning).match(/present tense/);
-    should(pr.explanation).match(/a verb tense/i);
-  });
   it("find() -mu", async()=>{
     let dict = await Dictionary.create();
     let dhamma = dict.find("dhamma -mu");

@@ -2,7 +2,6 @@ import { DBG } from './defines.mjs';
 import Pali from "./pali.mjs";
 import Inflection from "./inflection.mjs";
 
-import { ABBREVIATIONS } from '@sc-voice/ms-dpd-en'
 import { INDEX } from '../dpd/index.mjs';
 import { DEF_PALI } from '../dpd/definition-pali.mjs';
  
@@ -26,12 +25,6 @@ export default class Dictionary {
 
   static get LICENSE(){
     return "https://digitalpalidictionary.github.io/titlepage.html";
-  }
-
-  static get ABBREVIATIONS() { // DEPRECATED
-    const msg = "Dictionary.ABBREVIATIONS";
-    console.error(msg, "DEPRECATED");
-    return ABBREVIATIONS;
   }
 
   static get DEFINITION_KEYS() {
