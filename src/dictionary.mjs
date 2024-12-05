@@ -35,18 +35,30 @@ export default class Dictionary {
     const msg = 'Dictionary.loadLanguage()';
     let dbg = DBG.LOADING;
     if (LANG_DEF[lang] == null) {
+      let langModule;
       switch (lang) {
-        case 'en':
-        default: {
-          let { DEF_LANG, ABBREVIATIONS } = 
-            await import("@sc-voice/ms-dpd-en");
-          LANG_DEF[lang] = DEF_LANG;
-          LANG_ABBR[lang] = ABBREVIATIONS;
-          let defKeys = Object.keys(LANG_DEF[lang]);
-          dbg && console.error(msg, `[1]${lang}-defKeys`, defKeys.length);
+        case 'de':
+          langModule = await import("@sc-voice/ms-dpd-de");
           break;
-        }
+        case 'fr':
+          langModule = await import("@sc-voice/ms-dpd-fr");
+          break;
+        case 'es':
+          langModule = await import("@sc-voice/ms-dpd-es");
+          break;
+        case 'pt':
+          langModule = await import("@sc-voice/ms-dpd-pt");
+          break;
+        case 'en':
+        default: 
+          langModule = await import("@sc-voice/ms-dpd-en");
+          break;
       }
+      let { DEF_LANG, ABBREVIATIONS } = langModule;
+      LANG_DEF[lang] = DEF_LANG;
+      LANG_ABBR[lang] = ABBREVIATIONS;
+      let defKeys = Object.keys(LANG_DEF[lang]);
+      dbg && console.error(msg, `[1]${lang}-defKeys`, defKeys.length);
     }
 
     return LANG_DEF[lang];
@@ -118,6 +130,17 @@ export default class Dictionary {
     } finally {
       Dictionary.#CREATE = false;
     }
+  }
+
+  get lang() {
+    return this._lang;
+  }
+
+  set lang(value) {
+    const msg = "Dictionary.lang";
+    const dbg = DBG.LANG;
+    this._lang = value;
+    dbg && console.log(msg, '[1]', this._lang);
   }
 
   definitionOfKey(key) { // PRIVATE

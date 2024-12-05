@@ -10,6 +10,7 @@ export const DBG = {
   FIND_METHOD: 0,
   FIND_WORDS: 0,
   INFLECTION_FIND: 0,
+  LANG: 0,
   LOADING: 0,
   PALI: 0,
   RELATED_ENTRIES: 0,

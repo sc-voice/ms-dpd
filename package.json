@@ -12,7 +12,11 @@
     "src"
   ],
   "workspaces": [
-    "dpd/en"
+    "dpd/de",
+    "dpd/en",
+    "dpd/es",
+    "dpd/fr",
+    "dpd/pt"
   ],
   "scripts": {
     "schedule-action": "scripts/schedule-action",

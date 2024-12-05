@@ -588,4 +588,36 @@ typeof describe === "function" &&
     should(fut.meaning).equal("future tense");
     should(fut.explanation).match(/in the future/);
   });
+  it("entryOf() Evaṁa ES", async()=>{
+    const msg = "test.dictionary@592";
+    let lang = "es";
+    let dict = await Dictionary.create({lang});
+    should(dict.lang).equal(lang);
+    let evam = dict.entryOf("evaṁ");
+    should(evam.definition[0]).match(/de esta manera/);
+  });
+  it("entryOf() Evaṁa DE", async()=>{
+    const msg = "test.dictionary@600";
+    let lang = "de";
+    let dict = await Dictionary.create({lang});
+    should(dict.lang).equal(lang);
+    let evam = dict.entryOf("evaṁ");
+    should(evam.definition[0]).match(/Art und Weise/);
+  });
+  it("entryOf() Evaṁa FR", async()=>{
+    const msg = "test.dictionary@608";
+    let lang = "fr";
+    let dict = await Dictionary.create({lang});
+    should(dict.lang).equal(lang);
+    let evam = dict.entryOf("evaṁ");
+    should(evam.definition[0]).match(/comme ceci/);
+  });
+  it("entryOf() Evaṁa PT", async()=>{
+    const msg = "test.dictionary@600";
+    let lang = "pt";
+    let dict = await Dictionary.create({lang});
+    should(dict.lang).equal(lang);
+    let evam = dict.entryOf("evaṁ");
+    should(evam.definition[0]).match(/da mesma forma/);
+  });
 });
