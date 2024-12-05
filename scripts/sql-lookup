@@ -59,7 +59,9 @@ EXAMPLES
   let dbg = 0;
   let abbrev = false;
   let limit = 1;
-  let columns = ['lookup_key', 'headwords', 'grammar', 'abbrev'];
+  let columns = [
+    'lookup_key', 'headwords', 'grammar', 'abbrev', 'deconstructor',
+  ];
   let words = args.reduce((a,arg,i)=>{
     switch (arg) {
       case '-?':
