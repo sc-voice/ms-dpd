@@ -62,8 +62,8 @@ EXAMPLES
 let dbg = 0;
 
 let COLS_DFLT = [
-  //'lemma_1',
-  //'lemma_2',
+  'lemma_1',
+  'lemma_2',
   //'grammar',
   //'derived_from',
   'neg',

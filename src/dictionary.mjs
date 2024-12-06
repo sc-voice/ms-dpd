@@ -570,4 +570,14 @@ export default class Dictionary {
       title:`${msg} tblResult ${word} group by:${likeKeys}`}));
     return tblResult;
   }
+  
+  deconstruct(word) { // TBD
+    let output = [
+    ]
+    
+    return {
+      word,
+      output,
+    }
+  }
 }
