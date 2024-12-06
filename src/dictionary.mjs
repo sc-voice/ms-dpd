@@ -165,15 +165,16 @@ export default class Dictionary {
   entryOf(aWord) {
     const msg = "Dictionary.entryOf()";
     const dbg = DBG.ENTRY_OF;
-    const RE_PUNCT = /[-!?(),.:;…—– ‘’"'“”]/;
+    const RE_PUNCT = /[-!?(),.:;…—– ‘’"'“”]/g;
     let { index, defLang, } = this;
     let wordParts = aWord.split(RE_PUNCT);
     let word = wordParts.filter(w=>!!w)[0].toLowerCase();
     let indexEntry = index[word];
-    dbg && console.error(msg, `[1]${word}`, indexEntry, wordParts);
     if (indexEntry == null) {
-      return null;
+      dbg && console.error(msg, `[1]${word}?`);
+      return undefined;
     }
+    dbg && console.error(msg, `[2]${word}`, indexEntry, wordParts);
     let definition = indexEntry.split(',').map(key=>{
       return this.definitionOfKey(key);
     });

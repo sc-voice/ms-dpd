@@ -31,7 +31,7 @@ typeof describe==="function" && describe("sql-dpd", function() {
 
     should(eCaught.message).match(/use SqlDpd.create/);
   });
-  it("TESTTESTcreate() default", async()=>{
+  it("create() default", async()=>{
     let sqlDpd = await SqlDpd.create();
     should(sqlDpd).properties({
       dbg: DBG.SQL_DPD > 1 ? 1 : 0,

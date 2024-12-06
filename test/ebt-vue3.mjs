@@ -26,7 +26,7 @@ typeof describe === "function" &&
     should(re.test('nibbānaṁ')).equal(true);
     should(re.test('dukkhassa')).equal(false);
   });
-  it("TESTTESTfind() mūlan’ti", async()=>{
+  it("find() mūlan’ti", async()=>{
     let msg = "test.ebt-vue3@31";
     let dict = await Dictionary.create();
     let resExpected = dict.find("mūlaṁ");
@@ -48,7 +48,7 @@ typeof describe === "function" &&
       explanation: "",
     });
   });
-  it("TESTTESTwordsWithPrefix()", async ()=>{
+  it("wordsWithPrefix()", async ()=>{
     let dict = await Dictionary.create();
 
     // When strict is false, unaccented patterns are used

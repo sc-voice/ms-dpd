@@ -163,13 +163,12 @@ async function ebtWords() {
     let buf = await fsp.readFile(fpath);
     let doc = JSON.parse(buf);
     let keys = Object.keys(doc);
+    const RE_PUNCT = /[- ,."'()\[\]:;!?0-9‘’“”–…—]+/g;
     keys.forEach(key=>{
       let text = doc[key]
         .toLowerCase()
         .replace(/<.?b>/g, ' ')
-        .replace(
-          /[- ,."'()\[\]:;!?0-9‘’“”–…—]+/g,
-          ' ')
+        .replace( RE_PUNCT, ' ')
         .trim();
       if (text) {
         let words = text.split(' ');

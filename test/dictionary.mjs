@@ -112,7 +112,7 @@ typeof describe === "function" &&
 
     // No entry
     let asdf = dict.entryOf("asdf");
-    should(asdf).equal(null);
+    should(asdf).equal(undefined);
   });
   it("entryOf() misc", async()=>{
     let dict = await Dictionary.create();
@@ -139,7 +139,7 @@ typeof describe === "function" &&
       .match(/greedy.*\|become greedy/)
       .match(/\|√gidh\+ta/);
   });
-  it("TESTTESTrelatedEntries()", async()=>{
+  it("relatedEntries()", async()=>{
     const msg = 'test.dictionary@73';
     let dict = await Dictionary.create();
     let entries = dict.relatedEntries("dhamma");
@@ -162,7 +162,7 @@ typeof describe === "function" &&
       construction: '√dhar+ma',
     });
   });
-  it("TESTTESTfindWords()", async()=>{
+  it("findWords()", async()=>{
     const msg = 'test.dictionary@153';
     let dict = await Dictionary.create();
     let matches = dict.findWords(/\bthe root of/i);
@@ -184,7 +184,7 @@ typeof describe === "function" &&
       should(definition).match(/drying out the root/);
     }
   });
-  it("TESTTESTfind() moral behaviour (definition)", async()=>{
+  it("find() moral behaviour (definition)", async()=>{
     let dict = await Dictionary.create();
     let word1
     let pattern = 'moral behaviour'; 
@@ -274,7 +274,7 @@ typeof describe === "function" &&
       construction: 'sīla+agga',
     });
   });
-  it("TESTTESTfind() virtue; moral behaviour", async()=>{
+  it("find() virtue; moral behaviour", async()=>{
     const msg = 'test.dictionary@262';
     let dict = await Dictionary.create();
     let pattern = 'virtue; moral behaviour';
@@ -306,7 +306,7 @@ typeof describe === "function" &&
     should(Dictionary.isAccented("samvega")).equal(false);
     should(Dictionary.isAccented("saṁvega")).equal(true);
   });
-  it("TESTTESTwordsWithPrefix()", async ()=>{
+  it("wordsWithPrefix()", async ()=>{
     let msg = 'test.dictionary@295';
     let dict = await Dictionary.create();
 
@@ -346,7 +346,7 @@ typeof describe === "function" &&
       "saṁvegāy\u2026",
     ]);
   });
-  it("TESTTESTwordsWithPrefix() strict", async ()=>{
+  it("wordsWithPrefix() strict", async ()=>{
     let dict = await Dictionary.create();
     let opts = { strict: true };
     should.deepEqual(dict.wordsWithPrefix("samvega", opts), [
@@ -619,5 +619,13 @@ typeof describe === "function" &&
     should(dict.lang).equal(lang);
     let evam = dict.entryOf("evaṁ");
     should(evam.definition[0]).match(/da mesma forma/);
+  });
+  it("TESTTESTentryOf() upanidhāyā”ti.", async()=>{
+    const msg = "test.dictionary@600";
+    let dict = await Dictionary.create();
+    let uppanidhayati = dict.entryOf("upanidhāyā”ti.");
+    let uppanidhaya = dict.entryOf("upanidhāya");
+    should(uppanidhaya.definition[0]).match(/comparison/);
+    should.deepEqual(uppanidhayati, uppanidhaya, "TBD");
   });
 });
