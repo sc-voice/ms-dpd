@@ -1,68 +1,68 @@
 export const ABBREVIATIONS = {
   "abbrev": {
-    "abbreviation": "abbrev",
-    "meaning": "abbreviation",
+    "abbreviation": "Abk.",
+    "meaning": "Abkürzung",
     "explanation": ""
   },
   "abs": {
-    "abbreviation": "abs",
-    "meaning": "absolutive verb",
-    "explanation": "A verb, often a combination of having + past participle, expressing completed action (e.g. having approached; having made)"
+    "abbreviation": "Abs.",
+    "meaning": "Absolutivum",
+    "explanation": "Adverbialpartizip, bezeichnet eine abgeschlossene Handlung bei gleichem Subjekt wie im Hauptsatz (z. B. „Gekommen seiend, setzte er sich.“)."
   },
   "adj": {
-    "abbreviation": "adj",
-    "meaning": "adjective",
-    "explanation": "A word that expresses an attribute of something; usually qualify a noun (e.g. bad, good, impermanent)"
+    "abbreviation": "Adj.",
+    "meaning": "Adjektiv",
+    "explanation": "Eigenschaftswort, das gewöhnlich ein Substantiv näher bestimmt (z. b. gut, schlecht, unbeständig)."
   },
   "aor": {
-    "abbreviation": "aor",
-    "meaning": "aorist verb",
-    "explanation": "A form of a verb that, in the indicative mood, expresses past action. (e.g. was; sat down; arose)"
+    "abbreviation": "Aor.",
+    "meaning": "Aorist",
+    "explanation": "Erzählende Zeitform der Vergangenheit für Verben im Indikativ (z. B. war, setzte sich, stand auf)."
   },
   "card": {
-    "abbreviation": "card",
-    "meaning": "cardinal number",
-    "explanation": "The number of elements in a mathematical set; denotes a quantity but not the order (e.g. four, five; one)"
+    "abbreviation": "Grundz.",
+    "meaning": "Grundzahl",
+    "explanation": "Anzahl von Elementen in einer mathematischen Menge; bezeichnet eine Menge, aber keine Reihenfolge (z. b. vier, fünf, eins)."
   },
   "cond": {
-    "abbreviation": "cond",
-    "meaning": "conditional mood",
-    "explanation": "Imposing or depending on or containing a condition (e.g. if would be; if could have been; would have gone)"
+    "abbreviation": "Kond.",
+    "meaning": "Konditional",
+    "explanation": "Modus, der die Bedingung ausdrückt (z. B. ich käme, ich würde kommen, wenn …)."
   },
   "cs": {
-    "abbreviation": "cs",
-    "meaning": "conjugational sign",
+    "abbreviation": "Konj.-Z.",
+    "meaning": "Konjugationszeichen",
     "explanation": ""
   },
   "fem": {
-    "abbreviation": "fem",
-    "meaning": "feminine noun",
+    "abbreviation": "f.",
+    "meaning": "Feminines Substantiv, Adjektiv usw.",
     "explanation": ""
   },
   "fut": {
-    "abbreviation": "fut",
-    "meaning": "future tense",
-    "explanation": "A verb tense that expresses actions or states in the future"
+    "abbreviation": "Fut.",
+    "meaning": "Futur",
+    "explanation": "Zeitform eines Verbs, mit der etwas als zukünftig dargestellt wird."
   },
   "ger": {
-    "abbreviation": "ger",
-    "meaning": "gerund",
-    "explanation": "A verb (or verbal adjective), often ending in -ing, expressing ongoing action (eg. doing; making; going)."
+    "abbreviation": "Ger.",
+    "meaning": "Gerundium",
+    "explanation": "Verbalsubstantiv (z. B. das Gehen, das Tun)."
   },
   "idiom": {
-    "abbreviation": "idiom",
-    "meaning": "idiomatic expression",
-    "explanation": "A manner of speaking that is natural to native speakers of a language or an expression whose meanings cannot be inferred from the meanings of the words that make it up"
+    "abbreviation": "idiom.",
+    "meaning": "idiomatische Wendung",
+    "explanation": "Eine Redewendung, deren Gesamtbedeutung nicht aus der Bedeutung der Einzelwörter erschlossen werden kann oder  die für Muttersprachler natürlich ist. "
   },
   "imp": {
-    "abbreviation": "imp",
-    "meaning": "imperative mood",
-    "explanation": "Mood that expresses an intention to influence the listener's behavior or expresses wish. (e.g. begone! may there be! may it be!)"
+    "abbreviation": "Imp.",
+    "meaning": "Imperativ",
+    "explanation": "Befehlsform; Verbmodus, mit dem ein Befehl, eine Aufforderung, eine Bitte o. Ä. ausgedrückt wird (z. B. „Fort mit dir!“, „So soll es sein!“)."
   },
   "imperf": {
-    "abbreviation": "imperf",
-    "meaning": "imperfect past tense",
-    "explanation": "Past tense which is used for events which happened before yesterday, but were seen by the speaker."
+    "abbreviation": "Prät.",
+    "meaning": "Präteritum (Imperfekt)",
+    "explanation": "Zeitform eines Verbs, mit der etwas als vergangen dargestellt wird (im Unterschied zum Perfekt ohne Bezug zur Gegenwart)."
   },
   "ind": {
     "abbreviation": "n-fl.",
@@ -70,84 +70,85 @@ export const ABBREVIATIONS = {
     "explanation": "Nicht-flektierbare Wortarten wie Adverb, Konjunktion, Präposition, Partikel usw."
   },
   "inf": {
-    "abbreviation": "inf",
-    "meaning": "infinitive verb",
-    "explanation": "The uninflected form of the verb. It most commonly expresses a purpose."
+    "abbreviation": "Inf.",
+    "meaning": "Infinitiv",
+    "explanation": "Grundform des Verbs, die nicht durch Person, Numerus, Zeit und Modus näher bestimmt ist."
   },
   "letter": {
-    "abbreviation": "letter"
+    "abbreviation": "Buchst.",
+    "meaning": "Buchstabe"
   },
   "masc": {
-    "abbreviation": "masc",
-    "meaning": "masculine noun",
+    "abbreviation": "m.",
+    "meaning": "Maskulines Substantiv, Adjektiv usw.",
     "explanation": ""
   },
   "nt": {
-    "abbreviation": "nt",
-    "meaning": "neuter noun",
+    "abbreviation": "n.",
+    "meaning": "Neutrales Substantiv, Adjektiv usw.",
     "explanation": ""
   },
   "opt": {
-    "abbreviation": "opt",
-    "meaning": "optative mood",
-    "explanation": "A mood that expresses a wish, probability, advice or capability; expressed in English by modal verbs (should / could / may / might)"
+    "abbreviation": "Opt.",
+    "meaning": "Optativ",
+    "explanation": "Wunschform; Verbmodus, mit dem ein Wunsch, eine Möglichkeit, ein Rat oder eine Fähigkeit ausgedrückt wird (z. B. sollte, könnte, würde)."
   },
   "ordin": {
-    "abbreviation": "ordin",
-    "meaning": "ordinal number",
-    "explanation": "The number designating place in an ordered sequence (e.g. first; second; third)"
+    "abbreviation": "Ordinalz.",
+    "meaning": "Ordinalzahl",
+    "explanation": "Zahl, die die Reihenfolge kennzeichnet, die Stelle, an der etwas in einer nach bestimmten Gesichtspunkten geordneten Menge steht (z. B. erstes, zweites, drittes)."
   },
   "perf": {
-    "abbreviation": "perf",
-    "meaning": "perfect past tense",
-    "explanation": "express something that happened a long time ago, a completed action, something you personally did not witness."
+    "abbreviation": "Perf.",
+    "meaning": "Perfekt",
+    "explanation": "Zeitform eines Verbs, mit der etwas als vergangen und aus der Sicht des Sprechenden als volldendet dargestellt wird."
   },
   "pp": {
-    "abbreviation": "pp",
-    "meaning": "past participle",
-    "explanation": "Verbal adjective which describes the action that a noun did (in the past) (e.g. have said; have seated; have heard)"
+    "abbreviation": "P.P.",
+    "meaning": "Partizip Perfekt",
+    "explanation": "Auf die Vergangenheit bezogene Verbform, die eine Mittelstellung zwischen Verb und Adjektiv einnimmt, Mittelwort der Vergangenheit (gesagt, gesetzt, gehört)."
   },
   "pr": {
-    "abbreviation": "pr",
-    "meaning": "present tense",
-    "explanation": "A verb tense that expresses actions or states at the time of speaking (e.g. lives; appears; sees)"
+    "abbreviation": "Pr.",
+    "meaning": "Präsens",
+    "explanation": "Zeitform eines Verbs, mit der etwas als gegenwärtig dargestellt wird (lebt, erscheint, sieht)."
   },
   "prefix": {
-    "abbreviation": "prefix",
-    "meaning": "prefix",
-    "explanation": "An affix that is added in front of the word"
+    "abbreviation": "Vors.",
+    "meaning": "Vorsilbe",
+    "explanation": "Wortteil, der vorne an den Wortstamm angefügt wird."
   },
   "pron": {
-    "abbreviation": "pron",
+    "abbreviation": "Pron.",
     "meaning": "Pronomen, pronominales Adjektiv",
-    "explanation": "Ein Funktionswort, das anstelle eines Substantivs oder einer Substantivphrase verwendet wird (er; dieser; ein anderer; alle)"
+    "explanation": "Wort, das ein Nomen (Substantiv) vertritt oder ein Nomen, mit dem es zusammen auftritt, näher bestimmt; Fürwort (z. B. er, dieses, sein, welches)."
   },
   "prp": {
-    "abbreviation": "prp",
-    "meaning": "present participle",
-    "explanation": "Verbal adjective, which describes the action that a noun is doing. (seeing; dwelling; knowing)"
+    "abbreviation": "P.Pr.",
+    "meaning": "Partizip Präsens",
+    "explanation": "Auf die Gegenwart bezogene Verbform, die eine Mittelstellung zwischen Verb und Adjektiv einnimmt, Mittelwort der Gegenwart (sehend, wohnend, erkennend)."
   },
   "ptp": {
-    "abbreviation": "ptp",
-    "meaning": "potential participle, future passive participle",
-    "explanation": "Verbal adjectives, they give more information about the noun they are describing. (e.g. ought to be done; can be known; should be practised)"
+    "abbreviation": "P.F.P.",
+    "meaning": "Partizip Futur Passiv, Partizip der Möglichkeit",
+    "explanation": "Auf die Zukunft bezogene passive Verbform, die eine Mittelstellung zwischen Verb und Adjektiv einnimmt, passives Mittelwort der Zukunft; muss im Deutschen umschrieben werden (z. B. sollte getan werden, kann erkannt werden, muss geübt werden, wird gesehen werden)."
   },
   "root": {
-    "abbreviation": "root"
+    "abbreviation": "Wurzel"
   },
   "sandhi": {
-    "abbreviation": "sandhi",
-    "meaning": "sandhi compound",
-    "explanation": "It refers to the changes that take place when the different parts of the speech are joined together."
+    "abbreviation": "Sandhi",
+    "meaning": "Sandhi-Kompositum",
+    "explanation": "Zusammengesetztes Wort der Sandhi-Form, bezieht sich auf Änderungen an den einzelnen Wortteilen beim Zusammensetzen."
   },
   "suffix": {
-    "abbreviation": "suffix",
-    "meaning": "suffix",
-    "explanation": "an affix that is added at the end of the word"
+    "abbreviation": "Nachs.",
+    "meaning": "Nachsilbe",
+    "explanation": "Wortteil, der hinten an den Wortstamm angefügt wird."
   },
   "ve": {
-    "abbreviation": "ve",
-    "meaning": "verbal ending",
+    "abbreviation": "V.E.",
+    "meaning": "Verbendung",
     "explanation": ""
   }
 }
