@@ -31,6 +31,14 @@ export default class Dictionary {
     return DEF_KEYS;
   }
 
+  static loadEN() {
+    return import("@sc-voice/ms-dpd-en");
+  }
+
+  static loadPT() {
+    return import("@sc-voice/ms-dpd-pt");
+  }
+
   static async loadLanguage(lang = 'en') { // PRIVATE
     const msg = 'Dictionary.loadLanguage()';
     let dbg = DBG.LOADING;
@@ -47,11 +55,11 @@ export default class Dictionary {
           langModule = await import("@sc-voice/ms-dpd-es");
           break;
         case 'pt':
-          langModule = await import("@sc-voice/ms-dpd-pt");
+          langModule = await Dictionary.loadPT();
           break;
         case 'en':
         default: 
-          langModule = await import("@sc-voice/ms-dpd-en");
+          langModule = await Dictionary.loadEN();
           break;
       }
       let { DEF_LANG, ABBREVIATIONS } = langModule;
