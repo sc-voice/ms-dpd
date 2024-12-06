@@ -1,6 +1,6 @@
 {
   "name": "@sc-voice/ms-dpd-en",
-  "version": "2.24.0",
+  "version": "2.25.0",
   "main": "main.mjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
