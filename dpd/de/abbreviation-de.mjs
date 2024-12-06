@@ -65,9 +65,9 @@ export const ABBREVIATIONS = {
     "explanation": "Past tense which is used for events which happened before yesterday, but were seen by the speaker."
   },
   "ind": {
-    "abbreviation": "ofl",
-    "meaning": "Ohne Flexionen",
-    "explanation": "Es hat keine Deklinationen oder Konjugationen."
+    "abbreviation": "n-fl.",
+    "meaning": "nicht-flektierbar",
+    "explanation": "Nicht-flektierbare Wortarten wie Adverb, Konjunktion, Präposition, Partikel usw."
   },
   "inf": {
     "abbreviation": "inf",
