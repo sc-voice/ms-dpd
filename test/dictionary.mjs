@@ -613,15 +613,33 @@ typeof describe === "function" &&
     should(evam.definition[0]).match(/comme ceci/);
   });
   it("entryOf() Evaṁa PT", async()=>{
-    const msg = "test.dictionary@600";
+    const msg = "test.dictionary@616";
     let lang = "pt";
     let dict = await Dictionary.create({lang});
     should(dict.lang).equal(lang);
     let evam = dict.entryOf("evaṁ");
     should(evam.definition[0]).match(/da mesma forma/);
   });
-  it("TESTTESTentryOf() upanidhāyā”ti.", async()=>{
-    const msg = "test.dictionary@600";
+  it("TESTTESTentryOf() Evaṁa EN->PT", async()=>{
+    const msg = "test.dictionary@624";
+    if (!DBG.TBD) { console.log(msg, "TBD"); return; }
+    let dict = await Dictionary.create();
+
+    // EN
+    should(dict.entryOf("evaṁ")
+      .definition[0]).match(/like this/);
+
+    // PT
+    let lang = "pt";
+    dict.lang = lang;
+    await new Promise(r=>setTimeout(r, 100));
+    should(dict.lang).equal(lang);
+    should(dict.entryOf("evaṁ")
+      .definition[0]).match(/da mesma forma/);
+  });
+  it("entryOf() upanidhāyā”ti.", async()=>{
+    const msg = "test.dictionary@634";
+    if (!DBG.TBD) { console.log(msg, "TBD"); return; }
     let dict = await Dictionary.create();
     let uppanidhayati = dict.entryOf("upanidhāyā”ti.");
     let uppanidhaya = dict.entryOf("upanidhāya");

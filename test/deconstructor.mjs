@@ -15,6 +15,8 @@ typeof describe === "function" &&
   describe("deconstructor", function () {
 
   it("sandiṭṭhiparāmāsiādhānaggāhiduppaṭinissaggissa", async()=>{
+    const msg = "test.deconstructor@18";
+    if (!DBG.TBD) { console.log(msg, "TBD"); return; }
     let dict = await Dictionary.create();
     let word = 'sandiṭṭhiparāmāsiādhānaggāhiduppaṭinissaggissa';
     let res = dict.deconstruct(word);

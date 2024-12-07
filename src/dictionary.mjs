@@ -117,7 +117,7 @@ export default class Dictionary {
         lang='en',
         dpd=Dictionary.#DPD,
         dpdTexts,
-        defLang=await Dictionary.loadLanguage(lang),
+        defLang = (await Dictionary.loadLanguage(lang)),
         index=INDEX,
         verboseRows=DBG.VERBOSE_ROWS,
       } = opts;
@@ -144,11 +144,18 @@ export default class Dictionary {
     return this._lang;
   }
 
-  set lang(value) {
+  set lang(lang) {
     const msg = "Dictionary.lang";
     const dbg = DBG.LANG;
-    this._lang = value;
-    dbg && console.log(msg, '[1]', this._lang);
+    if (lang != this._lang) {
+        Dictionary.loadLanguage(lang).then(defLang=>{
+          this.defLang = defLang;
+          this._lang = lang;
+          dbg && console.log(msg, '[1]', this._lang);
+        });
+    } else {
+      dbg && console.log(msg, '[2]', this._lang);
+    }
   }
 
   definitionOfKey(key) { // PRIVATE
