@@ -8,12 +8,15 @@ echo $SCRIPT: BEGIN `date`
 
 npm version -ws --include-workspace-root --get-tag-version minor
 
+echo $SCRIPT: publishing workspaces
+npm publish --workspaces
+
 ### Publish EN
-pushd dpd/en > /dev/null
-echo $SCRIPT directory `pwd`
-echo $SCRIPT: publishing `json name < ./package.json`
-npm publish
-popd > /dev/null
+#pushd dpd/en > /dev/null
+#echo $SCRIPT directory `pwd`
+#echo $SCRIPT: publishing `json name < ./package.json`
+#npm publish 
+#popd > /dev/null
 
 ### Publish main
 echo $SCRIPT directory `pwd`
