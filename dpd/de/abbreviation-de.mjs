@@ -36,7 +36,7 @@ export const ABBREVIATIONS = {
   },
   "fem": {
     "abbreviation": "f.",
-    "meaning": "Feminines Substantiv, Adjektiv usw.",
+    "meaning": "Feminines Nomen (Substantiv, Adjektiv usw.)",
     "explanation": ""
   },
   "fut": {
@@ -80,12 +80,12 @@ export const ABBREVIATIONS = {
   },
   "masc": {
     "abbreviation": "m.",
-    "meaning": "Maskulines Substantiv, Adjektiv usw.",
+    "meaning": "Maskulines Nomen (Substantiv, Adjektiv usw.)",
     "explanation": ""
   },
   "nt": {
     "abbreviation": "n.",
-    "meaning": "Neutrales Substantiv, Adjektiv usw.",
+    "meaning": "Neutrales Nomen (Substantiv, Adjektiv usw.)",
     "explanation": ""
   },
   "opt": {
