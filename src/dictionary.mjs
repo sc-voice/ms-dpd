@@ -172,9 +172,12 @@ export default class Dictionary {
     const msg = "Dictionary.abbreviationInfo";
     const dbg = DBG.ABBREVIATION_INFO;
     let { lang } = this;
-    let info = LANG_ABBR[abbr];
-    dbg && console.log(msg, LANG_ABBR);
-    return LANG_ABBR[lang][abbr];
+    let abbrLang = LANG_ABBR[lang];
+    dbg && console.log(msg, '[1]LANG_ABBR', Object.keys(LANG_ABBR));
+    return abbrLang && abbrLang[abbr] || {
+      abbreviation: abbr,
+      meaning: `(${lang}?)`,
+    };
   }
 
   entryOf(aWord) {

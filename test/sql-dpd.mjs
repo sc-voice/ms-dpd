@@ -152,12 +152,12 @@ typeof describe==="function" && describe("sql-dpd", function() {
 
     should(defMap.aggi).equal('AS,BG');
     should(defLang['AS']).equal('fire||');
-    should(defPali['AS']).equal("i masc|masc|√agg+i|agg");
+    should(defPali['AS']).equal("i masc|masc|√agg+i|agg|aggi");
 
     should(defMap.devi).equal('8sz,8t0');
     should(defLang['8sz']).equal('queen||');
     should(defPali['8sz'])
-    .equal('ī fem|fem|√div > dev+*a+ī\ndeva+ī|dev');
+    .equal('ī fem|fem|√div > dev+*a+ī\ndeva+ī|dev|devī 1');
 
     should(enAbbr.pr).properties({meaning:'present tense'});
     let pAbbr = path.join(DATADIR, 'en', 'abbreviation-en.mjs');

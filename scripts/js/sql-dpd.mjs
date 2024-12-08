@@ -21,6 +21,7 @@ const DPD_HEADWORD_COLS = [
   'meaning_lit',
   'construction',
   'stem',
+  'lemma_1',
 ];
 const HEADWORD_PATTERNS = [ // DEPRECATED
   ...('aāiī'.split('').reduce((a,l)=>{
@@ -336,14 +337,14 @@ export default class SqlDpd {
       headwordMap = headwords.reduce((a,hw,i)=>{
         let {
           id, pattern, meaning_1, meaning_2, meaning_lit,
-          pos, source_1, construction, stem,
+          pos, source_1, construction, stem, lemma_1,
         } = hw;
         if (headwordUsage[id] > 0) {
           // Copmact construction by removing extra spaces (~3%)
           construction = construction.split(/ ?\+ ?/).join('+');
           a[id] = {
             id, pattern, meaning_1, meaning_2, meaning_lit,
-            pos, source_1, construction, stem
+            pos, source_1, construction, stem, lemma_1
           };
         }
         return a;
@@ -424,8 +425,8 @@ export default class SqlDpd {
      */
     let defPali = hwIds.reduce((a,n)=>{
       let key = HeadwordKey.fromNumber(n);
-      let { pattern, pos, construction, stem } = dpdHeadwords[n];
-      a[key] = [ pattern, pos, construction, stem ].join('|');
+      let { pattern, pos, construction, stem, lemma_1 } = dpdHeadwords[n];
+      a[key] = [ pattern, pos, construction, stem, lemma_1 ].join('|');
       return a;
     }, {});
     let fnPali = 'definition-pali.mjs';
