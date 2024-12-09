@@ -74,6 +74,7 @@ Data fields comprise [headword information](https://github.com/digitalpalidictio
 * `pos` part of speech
 * `stem` stem upon which the inflection pattern is built.
 * `word` Pali lookup word
+* `lemma_1` unique headword and number
 * ...
 
 Search methods include:
@@ -161,6 +162,14 @@ To update this library when DPD is updated:
 ./scripts/build-dpd
 ./scripts/publish
 ```
+
+### Multilingual
+
+Multilingual content is split out by language code in the
+[dpd](https://github.com/sc-voice/ms-dpd/tree/main/dpd)
+directory.
+The English meanings come directly from the DPD and should not be 
+changed manualy since they are updated by whien building this library.
 
 ### Acknowledgements
 
