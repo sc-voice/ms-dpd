@@ -221,7 +221,7 @@ export default class SqlDpd {
     let dpdLookup = lookupJson.reduce((a,row,i)=>{
       let { word, headwords } = row;
       try {
-        word = word.replace('ṃ', 'ṁ');
+        word = word.replaceAll('ṃ', 'ṁ');
       } catch(e) {
         console.error(msg, {row}, e);
         throw e;
@@ -392,7 +392,7 @@ export default class SqlDpd {
       ...hwIds.map((id,i)=>{
         let key = HeadwordKey.fromNumber(id);
         let v = JSON.stringify(map[key]);
-        v = v.replace('ṃ', 'ṁ');
+        v = v.replaceAll('ṃ', 'ṁ');
         let sep = i<iLast ? ',' : '';
         return ` "${key}": ${v}${sep}`;
       }),
