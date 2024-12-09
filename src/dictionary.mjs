@@ -379,7 +379,7 @@ export default class Dictionary {
     if (typeof d === 'string') {
       let [ 
         meaning_1, meaning_2, meaning_lit, 
-        pattern, pos, construction, stem, key
+        pattern, pos, construction, stem, lemma_1, key
       ] = d.split('|');
       let result = JSON.parse(JSON.stringify({
         key,
@@ -389,6 +389,7 @@ export default class Dictionary {
         meaning: meaning_1 || meaning_2,
         literal: meaning_lit,
         stem,
+        lemma_1,
       }));
       return result;
     }

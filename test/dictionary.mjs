@@ -65,7 +65,7 @@ typeof describe === "function" &&
     let res = dict.entryOf("bhante-?!(),.:;…— –‘’”");
     should.deepEqual(res, bhante);
   });
-  it("entryOf() dhamma", async()=>{
+  it("TESTTESTentryOf() dhamma", async()=>{
     const msg = "test.dictionary@62";
     let dict = await Dictionary.create();
     let dhamma = dict.entryOf("dhamma");

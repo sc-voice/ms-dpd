@@ -26,7 +26,7 @@ typeof describe === "function" &&
     should(re.test('nibbānaṁ')).equal(true);
     should(re.test('dukkhassa')).equal(false);
   });
-  it("find() mūlan’ti", async()=>{
+  it("TESTTESTfind() mūlan’ti", async()=>{
     let msg = "test.ebt-vue3@31";
     let dict = await Dictionary.create();
     let resExpected = dict.find("mūlaṁ");
@@ -62,7 +62,7 @@ typeof describe === "function" &&
       "saṁvegāy\u2026",
     ]);
   });
-  it("entryOf()", async()=>{
+  it("TESTTESTentryOf()", async()=>{
     let dict = await Dictionary.create();
     let dhamma = dict.entryOf("dhamma");
     should(dhamma).properties({word:"dhamma"});
@@ -72,6 +72,7 @@ typeof describe === "function" &&
       meaning: 'nature; character',
       literal: '',
       construction: '√dhar+ma',
+      lemma_1: 'dhamma 1.01',
     });
   });
 
