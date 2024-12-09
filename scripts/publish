@@ -13,8 +13,8 @@ VER=`npm ls | head -1 | sed 's/.*@\([0-9.]*\).*/\1/'`
 sed \
   "s/\(@sc-voice\/ms-dpd-[a-z]*.: .^\)[0-9][0-9.]*/\1$VER/" \
   -i package.json
-
-exit
+ 
+git commit -am "$VER dependencies"
 
 echo $SCRIPT: publishing workspaces
 npm publish --workspaces
