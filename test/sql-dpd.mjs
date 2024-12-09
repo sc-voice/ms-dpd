@@ -143,7 +143,7 @@ typeof describe==="function" && describe("sql-dpd", function() {
     let hwIds = Object.keys(dpdHeadwords);
     should(hwIds.length).equal(2); // devi
   });
-  it("TESTTESTbuild()", async()=>{
+  it("build()", async()=>{
     const msg = 'test.sql-dpd@144';
     let paliMap = { devi:1, aggi:1, "evaṁ":1 }; // test words
     let sqlDpd = await SqlDpd.create({paliMap});

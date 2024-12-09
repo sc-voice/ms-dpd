@@ -65,7 +65,7 @@ typeof describe === "function" &&
     let res = dict.entryOf("bhante-?!(),.:;…— –‘’”");
     should.deepEqual(res, bhante);
   });
-  it("TESTTESTentryOf() dhamma", async()=>{
+  it("entryOf() dhamma", async()=>{
     const msg = "test.dictionary@62";
     let dict = await Dictionary.create();
     let dhamma = dict.entryOf("dhamma");
@@ -197,16 +197,16 @@ typeof describe === "function" &&
     }
     should(res.data.length).above(50).below(60);
   });
-  it("find() something abides (not in dictionary)", async()=>{
+  it("TESTTESTfind() something abides (not in dictionary)", async()=>{
     let dict = await Dictionary.create();
 
     // words are in dictionary
     let patterns = [
       'something', // actual definition word
-      'abides', // actual definition word
+      'lives', // actual definition word
     ];
-    should(dict.find(patterns[0])).not.equal(undefined);
     should(dict.find(patterns[1])).not.equal(undefined);
+    should(dict.find(patterns[0])).not.equal(undefined);
 
     // phrase is NOT in dictionary
     should(dict.find(patterns.join(' '))).equal(undefined);
@@ -621,7 +621,7 @@ typeof describe === "function" &&
     let evam = dict.entryOf("evaṁ");
     should(evam.definition[0]).match(/da mesma forma/);
   });
-  it("TESTTESTentryOf() Evaṁa EN->PT", async()=>{
+  it("entryOf() Evaṁa EN->PT", async()=>{
     const msg = "test.dictionary@624";
     if (!DBG.TBD) { console.log(msg, "TBD"); return; }
     let dict = await Dictionary.create();

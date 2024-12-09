@@ -443,8 +443,8 @@ export default class SqlDpd {
       let key = HeadwordKey.fromNumber(n);
       let { meaning_1, meaning_2, meaning_lit } = dpdHeadwords[n];
       a[key] = [
-        meaning_1,
-        meaning_1.startsWith(meaning_2) ? '' : meaning_2,
+        meaning_1 || meaning_2,
+        '',
         meaning_lit,
       ].join('|');
       return a;
