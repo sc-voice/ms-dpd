@@ -340,6 +340,7 @@ typeof describe === "function" &&
     should.deepEqual(dict.wordsWithPrefix("samvega"), [
       "saṁvega",
       "saṁvegā",
+      "saṁvegaṁ",
       "saṁvegaj\u2026",
       "saṁvegam\u2026",
       "saṁvegas\u2026",
@@ -354,7 +355,7 @@ typeof describe === "function" &&
     ]);
     let sam = dict.wordsWithPrefix("saṁ", opts);
     should(sam[0]).equal("saṁ"); // exact match
-    should(sam.length).above(460).below(600);
+    should(sam.length).above(460).below(700);
   });
   it("find() -mu", async()=>{
     let dict = await Dictionary.create();

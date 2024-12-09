@@ -55,7 +55,7 @@ typeof describe === "function" &&
     should.deepEqual(dict.wordsWithPrefix("samvega"), [
       "saṁvega",
       "saṁvegā",
-      //"saṁvegaṁ",
+      "saṁvegaṁ",
       "saṁvegaj\u2026",
       "saṁvegam\u2026",
       "saṁvegas\u2026",
