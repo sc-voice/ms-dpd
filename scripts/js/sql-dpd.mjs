@@ -392,6 +392,7 @@ export default class SqlDpd {
       ...hwIds.map((id,i)=>{
         let key = HeadwordKey.fromNumber(id);
         let v = JSON.stringify(map[key]);
+        v = v.replace('ṃ', 'ṁ');
         let sep = i<iLast ? ',' : '';
         return ` "${key}": ${v}${sep}`;
       }),

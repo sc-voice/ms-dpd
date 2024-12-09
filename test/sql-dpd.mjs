@@ -143,9 +143,9 @@ typeof describe==="function" && describe("sql-dpd", function() {
     let hwIds = Object.keys(dpdHeadwords);
     should(hwIds.length).equal(2); // devi
   });
-  it("build()", async()=>{
+  it("TESTTESTbuild()", async()=>{
     const msg = 'test.sql-dpd@144';
-    let paliMap = { devi:1, aggi:1 }; // test words
+    let paliMap = { devi:1, aggi:1, "evaṁ":1 }; // test words
     let sqlDpd = await SqlDpd.create({paliMap});
     await sqlDpd.build();
     let { enAbbr, hwKeys, defPali, defLang, defMap } = sqlDpd;
@@ -158,6 +158,11 @@ typeof describe==="function" && describe("sql-dpd", function() {
     should(defLang['8sz']).equal('queen||');
     should(defPali['8sz'])
     .equal('ī fem|fem|√div > dev+*a+ī\ndeva+ī|dev|devī 1');
+
+    should(defMap['evaṁ']).equal('4iU,4iV');
+    should(defLang['4iU']).match(/thus; this/);
+    should(defPali['4iU'])
+    .equal('|ind|eva+aṃ|-|evaṃ 1');
 
     should(enAbbr.pr).properties({meaning:'present tense'});
     let pAbbr = path.join(DATADIR, 'en', 'abbreviation-en.mjs');
