@@ -161,3 +161,18 @@ To update this library when DPD is updated:
 ./scripts/build-dpd
 ./scripts/publish
 ```
+
+### Acknowledgements
+
+This work would not have been possible without the help of many others.
+Their kindness, dedication, thoroughness and energy are sources of 
+inpiration to all of us. 
+In particular, we would like to thank:
+
+* Venerable Bodhirasa and the Digital Pali Dictionary team for all their past and ongoing efforts to provide the world with the great gift of the Digital Pali Dictionary. 
+
+* Venerable Sujato and the SuttaCentral team for the their impeccable efforts to translate and collect in one place the teachings of the Buddha found in the Early Buddhist Texts (EBT).
+
+* All of the users of sc-voice.net, who are constantly teaching us better ways to access the wisdom found in the EBTs.
+
+
