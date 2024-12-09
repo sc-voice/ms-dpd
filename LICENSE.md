@@ -1,4 +1,4 @@
-The MS-DPD Javascript library is an open-source non-commercial project, proving hi-quality Pāḷi dictionary lookup in multiple formats for the Early Buddhist Texts found in SuttaCentral.net.
+The MS-DPD Javascript library is an open-source non-commercial project, proving hi-quality Pāḷi dictionary lookup in multiple formats for the Early Buddhist Texts found in [SuttaCentral](https://SuttaCentral.net).
 
 It is made available publicly through a [Creative Commons Attribution-NonCommercial 4.0 International License](https://creativecommons.org/licenses/by-nc/4.0/)
 
