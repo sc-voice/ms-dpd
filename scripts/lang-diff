@@ -1,0 +1,127 @@
+#!/usr/bin/bash
+DBNAME=dpd.db
+SCRIPT=`basename $0`
+DIRNAME=`dirname $0`
+BASH_JS_STDOUT=/tmp/$SCRIPT-cmd
+
+node - <<'JS' $DIRNAME $SCRIPT "$@" > $BASH_JS_STDOUT
+const util = require('util');
+const fs = require('fs');
+const fsp = fs.promises;
+const path = require('path');
+const exec = util.promisify(require('child_process').exec);
+const MIN_PARMS = 0;
+let [ NODE, DASH, DIRNAME, SCRIPT, ...args] = process.argv;
+const DPD_DIR = path.join(DIRNAME, '../dpd');
+
+const msg = `${SCRIPT}:`;
+
+function help() {
+  console.error(`
+NAME
+  ${SCRIPT} - show git changes to language files 
+
+SYNOPSIS
+  ${SCRIPT} LANGUAGE
+
+DESCRIPTION
+  Show git changes to language files since base-commit.json
+
+  -?, --help
+    print this help text
+
+  -v, --verbose
+    print more information to stderr
+
+  LANGUAGE
+    2-letter ISO language code e.g.: **es, pt, fr, de, en**. 
+    Default is "en".
+
+EXAMPLES
+  ${SCRIPT} es
+`);
+  process.exit(0);
+}
+
+function parseArgs() {
+  const msg = `${SCRIPT}.parseArgs:`;
+  // default values
+  let dbg = 0;
+
+  let parms = args.reduce((a,arg,i)=>{
+    switch (arg) {
+      case '-?':
+      case '--help':
+        help();
+        break;
+      case "--verbose":
+      case "-v":
+        dbg = 1;
+        break;
+      case "--very-verbose":
+      case "-vv":
+        dbg = 2;
+        break;
+      default:
+        if (arg.at(0) === "-") {
+          console.error(`${msg} [ERROR] ignoring ${arg}`);
+          help();
+        } else {
+          a.push(arg);
+        }
+        break;
+    }
+    return a;
+  }, []);
+  if (parms.length < MIN_PARMS) {
+    help();
+  }
+
+  let result = {
+    dbg,
+    parms,
+  }
+  dbg>1 && console.error(msg, Object.assign({
+    NODE,DASH, DIRNAME, SCRIPT, parms, 
+  }, result));
+
+  return result;
+}
+let {
+  dbg,
+  parms,
+} = parseArgs();
+
+async function main() {
+  const msg = `${SCRIPT}.main:`;
+
+  // REPLACE WITH YOUR JS [BEGIN]
+  let [ lang='en' ] = parms;
+  let baseCommitPath = path.join(DPD_DIR, lang, 'base-commit.json');
+  dbg>1 && console.error(msg, '[1]baseCommitPath', baseCommitPath);
+  let json = JSON.parse(await fsp.readFile(baseCommitPath));
+  dbg && console.error(msg, '[2]base-commit', json.definition);
+  let defPath = `dpd/${lang}/definition-${lang}.mjs`;
+  let cmd = `git diff -p ${json.definition} -- ${defPath}`;
+  let maxBuffer = 20 * 1024 * 1024;
+  dbg>1 && console.error(msg, '[3]cmd', cmd);
+  let res = await exec(cmd, {maxBuffer});
+  let {stdout, stderr} = res;
+  dbg && console.error();
+  console.log(stdout);
+  // REPLACE WITH YOUR JS [END]
+}
+
+(async function() {
+  try {
+    main()
+  } catch(e) {
+    console.error(msg, e);
+  }
+})()
+
+JS
+
+# REPLACE WITH YOUR POST_BASH [BEGIN]
+cat $BASH_JS_STDOUT
+# REPLACE WITH YOUR POST_BASH [END]
