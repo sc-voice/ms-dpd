@@ -139,7 +139,7 @@ export const ABBREVIATIONS = {
   "sandhi": {
     "abbreviation": "Sandhi",
     "meaning": "Sandhi-Kompositum",
-    "explanation": "Zusammengesetztes Wort der Sandhi-Form, bezieht sich auf Änderungen an den einzelnen Wortteilen beim Zusammensetzen."
+    "explanation": "Bezeichnet die Tatsache, dass  beim Zusammensetzen an den Berührungsstellen zwischen den einzelnen Wortteilen Änderungen entstehen."
   },
   "suffix": {
     "abbreviation": "Nachs.",

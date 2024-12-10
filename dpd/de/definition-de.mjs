@@ -13713,7 +13713,7 @@ export const DEF_LANG={
  "4iI": "just like that; exactly like this||just this form",
  "4iK": "thus they would be||",
  "4iU": "so; dies; solcherart; ähnlich; in derselben Art und Weise|genau so wie, auf diese Weise|",
- "4iV": "ja; das ist richtig!; genau!||",
+ "4iV": "ja!; das ist richtig!; genau!||",
  "4iW": "having such intention; of such disposition||",
  "4iX": "not past this; subject to this in future; yet to experience this||thus not past",
  "4iY": "so obstructive; as impeding as (for)||",
