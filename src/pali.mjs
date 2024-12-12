@@ -170,21 +170,4 @@ export default class Pali {
     return Pali.#ENDINGS;
   }
 
-  static wordStem(word) { // DEPRECATED
-    const msg = 'Pali.wordStem()';
-    console.log(msg, "DEPRECATED");
-    const dbg = DBG.PALI;
-    if (Pali.#STEM_RE == null) {
-      let rends = Pali.ENDINGS
-        .map(e=>e.split('').reverse().join(''))
-        .sort(Pali.compareRoman)
-        .reverse();
-      let pat = `^(${rends.join('|')})`;
-      Pali.#STEM_RE = new RegExp(pat);
-      dbg && console.log(msg, '[1]#STEM_RE', Pali.#STEM_RE);
-    }
-    let rw = word.split('').reverse().join('');
-    return rw.replace(Pali.#STEM_RE, '').split('').reverse().join('');
-  }
-
 }

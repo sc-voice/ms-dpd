@@ -647,4 +647,13 @@ typeof describe === "function" &&
     should(uppanidhaya.definition[0]).match(/comparison/);
     should.deepEqual(uppanidhayati, uppanidhaya, "TBD");
   });
+  it("TESTTESTdpdLink()", ()=>{
+    let ebtWord = 'Evaṁ';
+    let dpdWord = 'evaṃ';
+    should.deepEqual(Dictionary.dpdLink(ebtWord), {
+      ebtWord,
+      dpdWord,
+      url: `https://www.dpdict.net/?q=${dpdWord}`,
+    });
+  });
 });

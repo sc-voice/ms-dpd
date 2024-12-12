@@ -31,6 +31,16 @@ export default class Dictionary {
     return DEF_KEYS;
   }
 
+  static dpdLink(ebtWord) {
+    let dpdWord = ebtWord.toLowerCase()
+      .replace(/ṁ/g, 'ṃ');
+    return {
+      url: `https://www.dpdict.net/?q=${dpdWord}`,
+      ebtWord,
+      dpdWord,
+    };
+  }
+
   static loadEN() {
     return import("@sc-voice/ms-dpd-en");
   }
