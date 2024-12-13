@@ -13116,7 +13116,7 @@ export const DEF_LANG={
  "4WD": "name of a river||",
  "4WE": "(gram) letter e; 7th letter of the alphabet; gutturo-palatal vowel||",
  "4WF": "(gram) vuddhi form of the letters i and ī||",
- "4WG": "Eins (1)||",
+ "4WG": "eins (1)||",
  "4WH": "ein; ein gewisser; ein einzelner||",
  "4WI": "allein; einzeln; alleinig||",
  "4WJ": "nur||",
