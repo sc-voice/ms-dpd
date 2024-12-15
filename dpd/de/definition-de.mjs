@@ -42909,7 +42909,7 @@ export const DEF_LANG={
  "EZ3": "worldly language; common expression||",
  "EZ4": "ending of the world; cessation of the world; (comm) truth of cessation||",
  "EZ6": "leading to the end of the world||",
- "EZ8": "end of the world||",
+ "EZ8": "Ende der Welt||",
  "EZ9": "Saṁyutta Nikāya 35.116 (SN35.116)||",
  "EZA": "who has gone to the end of the world||",
  "EZC": "situated between worlds||",
