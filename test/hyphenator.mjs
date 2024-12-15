@@ -47,11 +47,21 @@ typeof describe === "function" && describe("hyphenator", function () {
   it("TESTTESThyphenate()", async()=>{
     const msg = "test.hyphenator@41";
     let words = Object.keys(EBT_TEST_MAP);
-    let TEST_COUNT = 1; // words.length
+    let TEST_START = 1;
+    let TEST_END = 2; // words.length
     dict = await dict;
-    for (let i=0; i<TEST_COUNT; i++) {
+    for (let i=TEST_START; i<TEST_END; i++) {
       let word = words[i];
-      let expected = EBT_TEST_MAP[word].split('-');
+      // DPD test expectations are more detailed
+      // and may include words not in EBT.
+      // Therefore we need to have EBT expectations
+      // that correspond to words actually in EBT.
+      // The two expectations are separated by the "!".
+      let dpdExpected = EBT_TEST_MAP[word];
+      let ebtExpected = dpdExpected.replace(/!.*/,""); // dpd is better
+      let expected = ebtExpected.split("-");
+
+      console.log(msg, word);
       let parts = dict.hyphenate(word);
       try {
         should(parts).not.equal(undefined); 

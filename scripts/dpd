@@ -22,6 +22,9 @@ DESCRIPTION
     -?, --help
         Print this help.
 
+    -hy, --hyphenate WORD
+        Hyphenate given word
+
     -ol, --output-long 
         Write out all available fields (KEY, WORD, PAT, POS, STEM, 
         CONSTRUCT, MEANING)
@@ -59,12 +62,18 @@ async function main() {
   let textArgs = [];
   let outLong = false;
   let lang = 'en';
+  let hyphenateWord;
   for (let i=0; i<args.length; i++) {
     let arg = args[i];
     let argNext = args[i+1];
     dbg && console.log(msg, '[1]arg', i, arg);
     if (arg.startsWith('-')) {
       switch (arg) {
+        case '-hy':
+        case '--hyphenate':
+          hyphenateWord = argNext;
+          i++;
+          break;
         case '-ol':
           outLong = true;
           break;
@@ -92,7 +101,7 @@ async function main() {
       textArgs.push(arg);
     }
   }
-  if (textArgs.length == 0) {
+  if (!hyphenateWord && textArgs.length==0) {
     help();
   }
 
@@ -103,6 +112,11 @@ async function main() {
     }
   }
   let dict = await Dictionary.create({lang});
+
+  if (hyphenateWord) {
+    console.log(dict.hyphenate(hyphenateWord));
+    return;
+  }
 
   for (let i=0; i<textArgs.length; i++) {
     let word = textArgs[i];
