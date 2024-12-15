@@ -610,4 +610,43 @@ export default class Dictionary {
       output,
     }
   }
+
+  hyphenate(word, opts={}) {
+    const msg = "Dictionary.hyphenate";
+    const dbg = DBG.HYPHENATE;
+    return this.hyphenatePlain(word, opts);
+  }
+
+  hyphenatePlain(word, opts={}) {
+    const msg = "Dictionary.hyphenatePlain";
+    const dbg = DBG.HYPHENATE;
+    let parts;
+    let wl = word.length;
+    let {
+      minLength=5, // minimum length of word parts
+    } = opts;
+    for (let pl=Math.floor(wl/2); !parts && minLength<=pl; pl--) {
+      let left = word.substring(0,pl);
+      let right = word.substring(pl);
+      let eLeft = this.entryOf(left);
+      let eRight = this.entryOf(right);
+      let lparts = eLeft && 
+        ( this.hyphenatePlain(left, opts) || [left] );
+      let rparts = lparts && 
+        ( this.hyphenatePlain(right, opts) || eRight && [right] );
+
+      if (lparts && rparts) {
+        parts = [ ...lparts, ...rparts ];
+        dbg && console.log(msg, '[1]both', word, parts);
+      } else if (lparts) {
+        dbg && console.log(msg, '[1.1]left', left, right);
+      } else if (rparts) {
+        dbg && console.log(msg, '[1.2]right', left, right);
+      } else {
+        dbg && console.log(msg, '[1.3]skip', left, right);
+      }
+    }
+
+    return parts;
+  }
 }
