@@ -32,6 +32,11 @@ export default class Dictionary {
   }
 
   static dpdLink(ebtWord) {
+    if (!ebtWord) {
+      return {
+        url: `https://www.dpdict.net/`,
+      }
+    }
     let dpdWord = ebtWord.toLowerCase()
       .replace(/ṁ/g, 'ṃ');
     return {
@@ -629,7 +634,7 @@ export default class Dictionary {
 
   hyphenatePlain(word, opts={}) {
     const msg = "Dictionary.hyphenatePlain";
-    const dbg = DBG.HYPHENATE;
+    const dbg = 1 || DBG.HYPHENATE;
     let parts;
     let wl = word.length;
     let {
@@ -649,11 +654,11 @@ export default class Dictionary {
         parts = [ ...lparts, ...rparts ];
         dbg && console.log(msg, '[1]both', word, parts);
       } else if (lparts) {
-        dbg && console.log(msg, '[1.1]left', left, right);
+        dbg && console.log(msg, '[1.1]left', left, right+'?');
       } else if (rparts) {
-        dbg && console.log(msg, '[1.2]right', left, right);
+        dbg && console.log(msg, '[1.2]right', left+'?', right);
       } else {
-        dbg && console.log(msg, '[1.3]skip', left, right);
+        dbg>1 && console.log(msg, '[1.3]skip', left, right);
       }
     }
 

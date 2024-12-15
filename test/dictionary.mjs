@@ -655,5 +655,9 @@ typeof describe === "function" &&
       dpdWord,
       url: `https://www.dpdict.net/?q=${dpdWord}`,
     });
+
+    should.deepEqual(Dictionary.dpdLink(), {
+      url: `https://www.dpdict.net/`,
+    });
   });
 });
