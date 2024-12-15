@@ -48,7 +48,7 @@ typeof describe === "function" && describe("hyphenator", function () {
     const msg = "test.hyphenator@41";
     let words = Object.keys(EBT_TEST_MAP);
     let TEST_START = 0;
-    let TEST_END = 2; // words.length
+    let TEST_END = 4; // words.length
     dict = await dict;
     for (let i=TEST_START; i<TEST_END; i++) {
       let word = words[i];
@@ -75,7 +75,7 @@ typeof describe === "function" && describe("hyphenator", function () {
   it("TESTTESThyphenate() (single)", async()=>{
     const msg = "test.hyphenator@41";
     let words = Object.keys(EBT_TEST_MAP);
-    let TEST_START = 1;
+    let TEST_START = 4;
     let TEST_END = TEST_START+1; 
     dict = await dict;
     for (let i=TEST_START; i<TEST_END; i++) {

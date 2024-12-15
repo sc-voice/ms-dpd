@@ -616,7 +616,15 @@ export default class Dictionary {
   hyphenate(word, opts={}) {
     const msg = "Dictionary.hyphenate";
     const dbg = DBG.HYPHENATE;
-    return this.hyphenatePlain(word, opts);
+    let parts = this.hyphenatePlain(word, opts);
+    if (parts == null) {
+      let entry = this.entryOf(word);
+      if (entry) {
+        parts = [word];
+      }
+    }
+
+    return parts;
   }
 
   hyphenatePlain(word, opts={}) {
