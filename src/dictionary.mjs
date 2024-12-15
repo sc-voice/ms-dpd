@@ -9,14 +9,14 @@ const LANG_DEF = {}   // headword definitions
 const LANG_ABBR = {}; // abbreviations
 const DEF_KEYS = Object.keys(DEF_PALI);
 const { VERBOSE_ROWS } = DBG;
+var DICT_CREATE = false;
 
 export default class Dictionary {
-  static #CREATE = false;
   static #DPD; // cache
 
   constructor(opts={}) {
     const msg = "Dictionary.constructor";
-    if (!Dictionary.#CREATE) {
+    if (!DICT_CREATE) {
       throw new Error(`${msg}: Use Dictionary.create()`);
     }
 
@@ -136,24 +136,23 @@ export default class Dictionary {
         index=INDEX,
         verboseRows=DBG.VERBOSE_ROWS,
       } = opts;
-      Dictionary.#CREATE = true;
-      defLang = defLang || (await Dictionary.loadLanguage(lang));
 
-      dbg && console.error(msg, '[1]DEF_KEYS', 
-        DEF_KEYS.length, DEF_KEYS.slice(0, DBG.VERBOSE_ROWS));
       dbg && console.error(msg, '[2]opts', {lang, verboseRows});
 
+      DICT_CREATE = true;
       let dict = new Dictionary({
         lang,
         index,
-        defLang,
       });
+      DICT_CREATE = false;
+
+      dict.defLang = defLang || (await Dictionary.loadLanguage(lang));
+      dbg && console.error(msg, '[1]DEF_KEYS', 
+        DEF_KEYS.length, DEF_KEYS.slice(0, DBG.VERBOSE_ROWS));
 
       return dict;
     } catch (e) {
       throw e;
-    } finally {
-      Dictionary.#CREATE = false;
     }
   }
 
