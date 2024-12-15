@@ -22,7 +22,9 @@ DESCRIPTION
     -?, --help
         Print this help.
 
-    -l  long format
+    -ol, --output-long 
+        Write out all available fields (KEY, WORD, PAT, POS, STEM, 
+        CONSTRUCT, MEANING)
 
     -md
         Use "definition" search method to show matching definitions
@@ -53,17 +55,24 @@ async function main() {
     `${DIRNAME}/../src/dictionary.mjs`));
 
   let dbg = DBG.DPD;
-  let dict = await Dictionary.create();
   let method; // default
   let textArgs = [];
   let outLong = false;
+  let lang = 'en';
   for (let i=0; i<args.length; i++) {
     let arg = args[i];
     let argNext = args[i+1];
+    dbg && console.log(msg, '[1]arg', i, arg);
     if (arg.startsWith('-')) {
       switch (arg) {
-        case '-l':
+        case '-ol':
           outLong = true;
+          break;
+        case '-l':
+        case '--language':
+          lang = argNext;
+          dbg && console.log(msg, '[1]lang', lang);
+          i++;
           break;
         case '-me':
           method = 'entry';
@@ -93,6 +102,8 @@ async function main() {
       textArgs = [ textArgs.join(' ') ];
     }
   }
+  let dict = await Dictionary.create({lang});
+
   for (let i=0; i<textArgs.length; i++) {
     let word = textArgs[i];
     let info = dict.find(word, {method});

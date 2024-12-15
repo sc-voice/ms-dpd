@@ -127,14 +127,16 @@ export default class Dictionary {
         lang='en',
         dpd=Dictionary.#DPD,
         dpdTexts,
-        defLang = (await Dictionary.loadLanguage(lang)),
+        defLang,
         index=INDEX,
         verboseRows=DBG.VERBOSE_ROWS,
       } = opts;
       Dictionary.#CREATE = true;
+      defLang = defLang || (await Dictionary.loadLanguage(lang));
 
       dbg && console.error(msg, '[1]DEF_KEYS', 
         DEF_KEYS.length, DEF_KEYS.slice(0, DBG.VERBOSE_ROWS));
+      dbg && console.error(msg, '[2]opts', {lang, verboseRows});
 
       let dict = new Dictionary({
         lang,
