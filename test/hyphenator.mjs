@@ -44,11 +44,39 @@ typeof describe === "function" && describe("hyphenator", function () {
     let parts = dict.hyphenate('sajjhāyadhanadhaññā');
     should.deepEqual(parts, [ 'sajjhāya', 'dhana', 'dhaññā' ]);
   });
-  it("TESTTESThyphenate()", async()=>{
+  it("hyphenate()", async()=>{
+    const msg = "test.hyphenator@41";
+    let words = Object.keys(EBT_TEST_MAP);
+    let TEST_START = 0;
+    let TEST_END = 2; // words.length
+    dict = await dict;
+    for (let i=TEST_START; i<TEST_END; i++) {
+      let word = words[i];
+      // DPD test expectations are more detailed
+      // and may include words not in EBT.
+      // Therefore we need to have EBT expectations
+      // that correspond to words actually in EBT.
+      // The two expectations are separated by the "!".
+      let dpdExpected = EBT_TEST_MAP[word];
+      let ebtExpected = dpdExpected.replace(/!.*/,""); // dpd is better
+      let expected = ebtExpected.split("-");
+
+      console.log(msg, word);
+      let parts = dict.hyphenate(word);
+      try {
+        should(parts).not.equal(undefined); 
+        should.deepEqual(parts, expected);
+      } catch (e) {
+        console.error(msg, 'FAIL', {i, word, parts, expected});
+        throw e;
+      }
+    }
+  });
+  it("TESTTESThyphenate() (single)", async()=>{
     const msg = "test.hyphenator@41";
     let words = Object.keys(EBT_TEST_MAP);
     let TEST_START = 1;
-    let TEST_END = 2; // words.length
+    let TEST_END = TEST_START+1; 
     dict = await dict;
     for (let i=TEST_START; i<TEST_END; i++) {
       let word = words[i];
