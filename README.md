@@ -83,6 +83,30 @@ Search methods include:
 * `definition` search for definition pattern
 * `unaccented` search for Pali words ignoring accents
 
+### MS-DPD Command Line Interface
+MS-DPD has a several scripts for command line use in a Linux
+environment. In particular, the `dpd` script provides a
+subset of the full capability of the Digital Pali Dictionary.
+
+```
+git clone https://github.com/sc-voice/ms-dpd
+cd ms-dpd
+npm install
+./scripts/dpd --help
+```
+
+Sample output for finding the meaning of `evaṁ`:
+
+```
+./scripts/dpd -l de evam
+-------------------------------
+ find:"evam" method:unaccented
+ -------------------------------
+# WORD PAT MEANING
+1 evaṁ     so; dies; solcherart; ähnlich; in derselben Art und Weise
+2 evaṁ     ja!; das ist richtig!; genau!
+```
+
 ### Development
 The 
 [Digital Pali Dictionary (DPD)](https://digitalpalidictionary.github.io/titlepage.html)
