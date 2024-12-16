@@ -60,7 +60,9 @@ Sample output for finding the meaning of `evaṁ` in German:
 
 #### English query
 Sample output for finding the meaning of `devi` in the default language
-English:
+English. The PAT field, if present, shows the group of inflections
+that pertain to the word 
+(e.g. "feminine word with suffixes ending in -i"):
 
 ```
 > ./scripts/dpd devi
