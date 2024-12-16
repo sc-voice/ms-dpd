@@ -54,7 +54,7 @@ typeof describe==="function" && describe("sql-dpd", function() {
     let paliMap = {devi:1};
     let verboseRows = 0;
     let dataDir = path.join(import.meta.dirname, '../local/data');
-    let dbg = 1;
+    let dbg = 0;
 
     let sqlDpd = await SqlDpd.create({
       paliMap, verboseRows, dataDir, dbg,
@@ -93,13 +93,13 @@ typeof describe==="function" && describe("sql-dpd", function() {
     ]);
     should(hwIds.length).equal(7); // de, devi
   });
-  it("create() headwordPatterns", async()=>{
+  it("TESTTESTcreate() headwordPatterns", async()=>{
     const msg = `${M}@37:`;
     let paliMap = { devi:1, deva:1 }; // test words
     let headwordPatterns = ['ī fem'];
     let verboseRows = 0;
     let dataDir = DATADIR;
-    let dbg = 1;
+    let dbg = 0;
 
     // DEPRECATED: headwordPatterns
     // Restricts headwords to the specified patterns.

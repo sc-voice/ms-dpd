@@ -633,13 +633,15 @@ export default class Dictionary {
 
   hyphenatePlain(word, opts={}) {
     const msg = "Dictionary.hyphenatePlain";
-    const dbg = 1 || DBG.HYPHENATE;
+    const dbg = DBG.HYPHENATE;
     let parts;
     let wl = word.length;
     let {
       minLength=5, // minimum length of word parts
+      splitFactor=0.51,
     } = opts;
-    for (let pl=Math.floor(wl/2); !parts && minLength<=pl; pl--) {
+    let pl=Math.floor(wl*splitFactor);
+    for (; !parts && minLength<=pl; pl--) {
       let left = word.substring(0,pl);
       let right = word.substring(pl);
       let eLeft = this.entryOf(left);

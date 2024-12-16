@@ -12737,6 +12737,7 @@ export const DEF_LANG={
  "4Nw": "both of these; both of them||",
  "4Nx": "Aṅguttara Nikāya 4.166 (AN4.166)||",
  "4Ny": "both mixed up; both mingled together; combined with both||",
+ "4Nz": "benefit of both; welfare of both||",
  "4O0": "also, as well (usually following ca)||",
  "4O1": "both parts; both sides; both aspects||",
  "4O2": "developed in both parts; practiced for both aspects or objects; (ubhayaṁsa)||",

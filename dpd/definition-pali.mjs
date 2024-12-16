@@ -12737,6 +12737,7 @@ export const DEF_PALI={
  "4Nw": "|sandhi|ubhayaṁ+etaṁ|-|ubhayametaṁ",
  "4Nx": "a nt|nt||ubhayasutt|ubhayasutta",
  "4Ny": "a adj|adj|ubhaya+vokiṇṇa|ubhayavokiṇṇ|ubhayavokiṇṇa",
+ "4Nz": "a nt|nt|ubhaya+hita|ubhayahit|ubhayahita",
  "4O0": "|ind||-|ubhayaṁ",
  "4O1": "a masc|masc|ubhaya+aṁsa|ubhayaṁs|ubhayaṁsa",
  "4O2": "a adj|adj||ubhayaṁsabhāvit|ubhayaṁsabhāvita",

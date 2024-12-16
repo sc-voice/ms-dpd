@@ -61,7 +61,7 @@ export default class SqlDpd {
       verboseRows = VERBOSE_ROWS,
       headwordPatterns, // DEPRECATED
     } = opts;
-    console.error(msg, '[1]paliMap filtering:', paliMap
+    dbg && console.error(msg, '[1]paliMap filtering:', paliMap
       ? Object.keys(paliMap).length
       : 'none');
     dataDir = path.resolve(dataDir);
@@ -121,7 +121,7 @@ export default class SqlDpd {
       writable: true,
       value: {},
     });
-    console.log(msg, '[2]this', JSON.stringify(this));
+    dbg && console.log(msg, '[2]this', JSON.stringify(this));
   }
 
   static binarySearch(arr, target) {
@@ -297,7 +297,7 @@ export default class SqlDpd {
   async #fetchHeadwords(opts={}) {
     const msg = `SqlDpd.#fetchHeadwords()`;
     const {
-      dbg = 1 || this.dbg,
+      dbg = this.dbg,
       rowLimit = this.rowLimit,
       headwordPatterns = this.headwordPatterns, // DEPRECATED
     } = opts;
@@ -314,7 +314,7 @@ export default class SqlDpd {
     ].join(' ');
     dbg && console.error(msg, '[1]sql', sql);
     let {stdout, stderr} = await this.bashSql(sql, opts);
-    console.error(msg, '[2]stdout,stderr', 
+    dbg && console.error(msg, '[2]stdout,stderr', 
       stdout?.length, stderr?.length);
     return {stdout, stderr};
   }
@@ -331,9 +331,9 @@ export default class SqlDpd {
         headwordUsage,
       } = this;
       let {stdout,stderr} = await this.#fetchHeadwords();
-      console.error(msg, '[0.1]stdout', stdout.length);
+      dbg && console.error(msg, '[0.1]stdout', stdout.length);
       headwords = JSON.parse(stdout);
-      console.error(msg, '[1]headwords', headwords.length);
+      dbg && console.error(msg, '[1]headwords', headwords.length);
       headwordMap = headwords.reduce((a,hw,i)=>{
         let {
           id, pattern, meaning_1, meaning_2, meaning_lit,
@@ -461,7 +461,7 @@ export default class SqlDpd {
     const msg = `SqlDpd.#buildIndex:`;
     let { dataDir, dictWords, dpdLookup, verboseRows } = this;
     let dbg = DBG.SQL_DPD_BUILD || this.dbg;
-    console.log(msg, '[1]');
+    dbg && console.log(msg, '[1]');
     let defMap = dictWords.reduce((a,w,i)=>{
       let v = dpdLookup[w].map(id=>{
         let key = HeadwordKey.fromNumber(id);
@@ -480,7 +480,7 @@ export default class SqlDpd {
     ].join('\n');
     let indexPath = path.join(dataDir, 'index.mjs');
     await fsp.writeFile(indexPath, indexOut);
-    console.error(msg, '[1]', indexPath, indexOut.length);
+    dbg && console.error(msg, '[1]', indexPath, indexOut.length);
 
     this.defMap = defMap;
   }
@@ -515,14 +515,14 @@ export default class SqlDpd {
       }
       return a;
     }, {});
-    console.error(msg, '[1]rows', rows.length);
+    dbg && console.error(msg, '[1]rows', rows.length);
     dbg>1 && console.error(msg, '[1.1]enAbbr', enAbbr);
     this.enAbbr = enAbbr;
   }
 
   async #buildAbbreviations() {
     const msg = 'SqlDpd.#buildAbbreviations';
-    let { enAbbr, dataDir } = this;
+    let { dbg, enAbbr, dataDir } = this;
     let fname = 'abbreviation-en.mjs';
     let fpath = path.join(dataDir, 'en', fname);
     let json = JSON.stringify(enAbbr, null, 2);
@@ -531,7 +531,7 @@ export default class SqlDpd {
       json,
     ].join(' ');
     await fsp.writeFile(fpath, mjs);
-    console.error(msg, `[1]${fpath}`, json.length);
+    dbg && console.error(msg, `[1]${fpath}`, json.length);
   }
 
 }
