@@ -72,7 +72,6 @@ that apply to the word
 # WORD PAT   MEANING
 1 devi ī fem queen
 2 devi ī fem goddess
-> ./scripts/dpd help
 ```
 
 ### Library
