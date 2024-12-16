@@ -147,16 +147,23 @@ async function main() {
   } = parseArgs();
 
   // Generate Pali word count from ebt-data/root/pli
-  async function buildPaliMap() {
+  async function buildPaliMap(rebuild=false) {
     const msg = `${SCRIPT}.buildPaliMap:`;
-    let cmd_ms = path.join('.', 'pli-words');
-    console.log(msg, '[2]exec', cmd_ms);
-    let { stdout, stderr } = await exec(cmd_ms, {cwd:APPDIR});
-    dbg>1 && console.error(msg, '[2.1]stdout', stdout);
-    stderr && console.error(msg, '[2.2]stderr', stderr);
-    let fnMS = path.join(LOCAL, 'words/ms.json');
-    let json = JSON.parse( await fsp.readFile(fnMS) );
-    console.error(msg, '[3]readFile', fnMS, Object.keys(json).length);
+    let json;
+    if (rebuild) {
+      let cmd_ms = path.join('.', 'pli-words');
+      console.log(msg, '[1]exec', cmd_ms);
+      let { stdout, stderr } = await exec(cmd_ms, {cwd:APPDIR});
+      dbg>1 && console.error(msg, '[2.1]stdout', stdout);
+      stderr && console.error(msg, '[2.2]stderr', stderr);
+      let fnMS = path.join(LOCAL, 'words/ms.json');
+      let json = JSON.parse( await fsp.readFile(fnMS) );
+      console.error(msg, '[2]readFile', fnMS, Object.keys(json).length);
+    } else {
+      let fnMS = path.join(APPDIR, 'scripts/js/ms.json');
+      json = JSON.parse( await fsp.readFile(fnMS) );
+      console.error(msg, '[3]readFile', fnMS, Object.keys(json).length);
+    }
     return json;
   }
   let paliMap = await buildPaliMap();
