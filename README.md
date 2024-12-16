@@ -15,14 +15,32 @@ NodeJS version 20 or later.
 If you do not have NodeJS installed, consider using 
 [nvm to install NodeJS](https://github.com/nvm-sh/nvm).
 
+The first step in installing the CLI is to clone
+the MS-DPD repository. 
+If you are a contributor to MS-DPD itself, you should
+use a read/write clone of MS-DPD:
+
+```
+git clone git@github.com:sc-voice/ms-dpd.git
+```
+
+However, for most users, the a read-only clone will
+be fine:
+
 ```
 git clone https://github.com/sc-voice/ms-dpd
+```
+
+Once you have cloned the repository, complete the
+installation:
+
+```
 cd ms-dpd
 npm install
 ./scripts/dpd --help
 ```
 
-After installing the CLI, ou can call it 
+After installing the CLI, you can call it 
 to find the meaning of a Pali word in supported
 languages. The default language is EN, but we
 are also working towards DE,PT,ES and FR translations.
@@ -112,7 +130,7 @@ The
 downloaded for development:
 
 ```
-git clone https://github.com/sc-voice/ms-dpd
+git clone git@github.com:sc-voice/ms-dpd.git
 cd ms-dpd
 npm install
 ./scripts/dpd-install
