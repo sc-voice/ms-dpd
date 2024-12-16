@@ -3,11 +3,46 @@ MS-DPD: A multilingual JavaScript library for searching
 a condensed version of the
 [Digital Pali Dictionary](https://digitalpalidictionary.github.io/titlepage.html)
 
-### Command Line
+### MS-DPD Command Line Interface
 In its simplest form, MS-DPD can be installed as a command line
-script on a Linux disttribution.
-The command line MS-DPD gives users a quick access to
-Pali lookup:
+script on a Linux distribution.
+In particular, the `dpd` script provides a
+subset of the full capability of the Digital Pali Dictionary.
+
+#### Install CLI
+The Command Line Interpreter (CLI) requires 
+NodeJS version 20 or later.
+If you do not have NodeJS installed, consider using 
+[nvm to install NodeJS](https://github.com/nvm-sh/nvm).
+
+```
+git clone https://github.com/sc-voice/ms-dpd
+cd ms-dpd
+npm install
+./scripts/dpd --help
+```
+
+After installing the CLI, ou can call it 
+to find the meaning of a Pali word in supported
+languages. The default language is EN, but we
+are also working towards DE,PT,ES and FR translations.
+
+#### German query
+Sample output for finding the meaning of `evaṁ` in German:
+
+```
+./scripts/dpd -l de evam
+-------------------------------
+ find:"evam" method:unaccented
+ -------------------------------
+# WORD PAT MEANING
+1 evaṁ     so; dies; solcherart; ähnlich; in derselben Art und Weise
+2 evaṁ     ja!; das ist richtig!; genau!
+```
+
+#### English query
+Sample output for finding the meaning of `devi` in the default language
+English:
 
 ```
 > ./scripts/dpd devi
@@ -20,23 +55,10 @@ Pali lookup:
 > ./scripts/dpd help
 ```
 
-The command line program requires 
-NodeJS version 20 or later.
-If you do not have NodeJS installed, consider using 
-[nvm to install NodeJS](https://github.com/nvm-sh/nvm).
-
-```
-git clone https://github.com/sc-voice/ms-dpd
-cd ms-dpd
-npm install
-./scripts/dpd --help
-./scripts/dpd dhamma
-./scripts/dpd -mu dhamma
-./scripts/dpd -md 'superior virtue'
-```
-
-
 ### Library
+MS-DPD is also a Javascript library ready for web use.
+MS-DPD has dynamically loaded language modules for
+supported languages.
 For an existing Javascript project (browser or web),
 install the library as follows:
 
@@ -82,30 +104,6 @@ Search methods include:
 * `entry` search for exact Pali word
 * `definition` search for definition pattern
 * `unaccented` search for Pali words ignoring accents
-
-### MS-DPD Command Line Interface
-MS-DPD has a several scripts for command line use in a Linux
-environment. In particular, the `dpd` script provides a
-subset of the full capability of the Digital Pali Dictionary.
-
-```
-git clone https://github.com/sc-voice/ms-dpd
-cd ms-dpd
-npm install
-./scripts/dpd --help
-```
-
-Sample output for finding the meaning of `evaṁ`:
-
-```
-./scripts/dpd -l de evam
--------------------------------
- find:"evam" method:unaccented
- -------------------------------
-# WORD PAT MEANING
-1 evaṁ     so; dies; solcherart; ähnlich; in derselben Art und Weise
-2 evaṁ     ja!; das ist richtig!; genau!
-```
 
 ### Development
 The 
