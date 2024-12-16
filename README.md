@@ -62,7 +62,7 @@ Sample output for finding the meaning of `evaṁ` in German:
 Sample output for finding the meaning of `devi` in the default language
 English. The PAT field, if present, identifies the pattern of inflections
 that apply to the word
-(e.g. _inflections for feminine word with primary suffix `-i`_):
+(e.g. _feminine inflections with primary suffix `-i`_):
 
 ```
 > ./scripts/dpd devi
