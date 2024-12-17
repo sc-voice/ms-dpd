@@ -42,13 +42,13 @@ typeof describe === "function" && describe("hyphenator", function () {
     let words = Object.keys(EBT_TEST_MAP);
     dict = await dict;
     let parts = dict.hyphenate('sajjhāyadhanadhaññā');
-    should.deepEqual(parts, [ 'sajjhāya', 'dhana', 'dhaññā' ]);
+    should.deepEqual(parts, [ 'sajjhāya', 'dhanadhaññā' ]);
   });
-  it("hyphenate()", async()=>{
+  it("TESTTESThyphenate()", async()=>{
     const msg = "test.hyphenator@41";
     let words = Object.keys(EBT_TEST_MAP);
     let TEST_START = 0;
-    let TEST_END = 7; // words.length
+    let TEST_END = 8; // words.length
     dict = await dict;
     for (let i=TEST_START; i<TEST_END; i++) {
       let word = words[i];
@@ -72,10 +72,10 @@ typeof describe === "function" && describe("hyphenator", function () {
       }
     }
   });
-  it("TESTTESThyphenate() (single)", async()=>{
+  it("hyphenate() (single)", async()=>{
     const msg = "test.hyphenator@41";
     let words = Object.keys(EBT_TEST_MAP);
-    let TEST_START = 6;
+    let TEST_START = 7;
     let TEST_END = TEST_START+1; 
     dict = await dict;
     for (let i=TEST_START; i<TEST_END; i++) {

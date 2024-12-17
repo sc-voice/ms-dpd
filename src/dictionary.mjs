@@ -638,18 +638,28 @@ export default class Dictionary {
     let wl = word.length;
     let {
       minLength=5, // minimum length of word parts
-      splitFactor=0.51,
+      maxLength=17, // maximum length of word parts
+      splitFactor=0.50,
     } = opts;
-    let pl=Math.floor(wl*splitFactor);
-    for (; !parts && minLength<=pl; pl--) {
+    let pl=Math.floor(wl*splitFactor)+1;
+    let split = (word)=>{
+      let parts;
+      let entry = this.entryOf(word);
+
+      if (entry) {
+        parts = word.length<=maxLength 
+          ? [word] 
+          : (this.hyphenatePlain(word, opts) || [word]);
+      } else {
+        parts = this.hyphenatePlain(word, opts);
+      }
+      return parts;
+    }
+    for (; !parts && (minLength<=pl) && (minLength<=wl-pl); pl--) {
       let left = word.substring(0,pl);
       let right = word.substring(pl);
-      let eLeft = this.entryOf(left);
-      let eRight = this.entryOf(right);
-      let lparts = eLeft && 
-        ( this.hyphenatePlain(left, opts) || [left] );
-      let rparts = lparts && 
-        ( this.hyphenatePlain(right, opts) || eRight && [right] );
+      let lparts = split(left);
+      let rparts = split(right);
 
       if (lparts && rparts) {
         parts = [ ...lparts, ...rparts ];
