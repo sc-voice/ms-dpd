@@ -620,6 +620,7 @@ export default class Dictionary {
   hyphenate(word, opts={}) {
     const msg = "Dictionary.hyphenate";
     const dbg = DBG.HYPHENATE;
+
     let parts = this.hyphenatePlain(word, opts);
     if (parts == null) {
       let entry = this.entryOf(word);
@@ -634,13 +635,74 @@ export default class Dictionary {
   hyphenatePlain(word, opts={}) {
     const msg = "Dictionary.hyphenatePlain";
     const dbg = DBG.HYPHENATE;
-    let parts;
     let wl = word.length;
     let {
       minLength=5, // minimum length of word parts
       maxLength=17, // maximum length of word parts
-      splitFactor=0.5,
+      splitFactor=0.5, // initial split
+      splitThreshold=2*maxLength,
     } = opts;
+    let pl=Math.floor(wl*splitFactor)+1;
+    let entry = this.entryOf(word);
+
+    if (entry && word.length<=maxLength) {
+      return [word];
+    }
+
+    let lPart;
+    let iLft = maxLength + 1;
+    for (iLft=maxLength+1; minLength<iLft; iLft--) {
+      let hw = word.substring(0, iLft);
+      if (this.entryOf(hw)) {
+        lPart = hw;
+        break;
+      }
+    }
+    let parts;
+    let rPart = word.substring(iLft);
+    let rParts;
+
+    if (rPart.length<=maxLength && this.entryOf(rPart)) {
+      rParts = [ rPart ];
+    } else if (splitThreshold < rPart.length) {
+      rParts = this.hyphenatePlain(rPart, {
+        minLength, maxLength, splitFactor,
+      });
+    } else {
+      rParts = this.#hyphenatePlainSplit(rPart, {
+        minLength, maxLength, splitFactor,
+      });
+    }
+    if (lPart) {
+      if (rParts) {
+        parts = [lPart, ...rParts];
+      } else if (this.entryOf(rPart)) {
+        parts = [lPart, rPart];
+      }
+    }
+    let lastPart = rParts && rParts[rParts.length-1];
+    lastPart && console.log(msg, 'lastPart', lastPart.length, lastPart);
+
+    if (!parts) {
+      dbg && console.log(msg, '[1]fail', {
+        word, 
+        lPart, 
+        rPart, 
+        rPartLen:rPart&&rPart.length, 
+        rParts,
+        splitThreshold,
+      });
+    }
+    return parts;
+  }
+
+  #hyphenatePlainSplit(word, opts={}) {
+    const msg = "Dictionary.#hyphenatePlainSplit";
+    const dbg = DBG.HYPHENATE;
+    let { minLength, maxLength, splitFactor, } = opts;
+    let parts;
+    let wl = word.length;
+
     let pl=Math.floor(wl*splitFactor)+1;
     let split = (word)=>{
       let splitParts;
@@ -649,9 +711,9 @@ export default class Dictionary {
       if (entry) {
         splitParts = word.length<=maxLength 
           ? [word] 
-          : (this.hyphenatePlain(word, opts) || [word]);
+          : (this.#hyphenatePlainSplit(word, opts) || [word]);
       } else {
-        splitParts = this.hyphenatePlain(word, opts);
+        splitParts = this.#hyphenatePlainSplit(word, opts);
       }
       return splitParts;
     }
@@ -665,11 +727,11 @@ export default class Dictionary {
         parts = [ ...lparts, ...rparts ];
         dbg && console.log(msg, '[1]both', word, parts);
       } else if (lparts) {
-        dbg>1 && console.log(msg, '[1.1]left', left, right+'?');
+        dbg && console.log(msg, '[1.1]left', left, right+'?');
       } else if (rparts) {
-        dbg>2 && console.log(msg, '[1.2]right', left+'?', right);
+        dbg && console.log(msg, '[1.2]right', left+'?', right);
       } else {
-        dbg>3 && console.log(msg, '[1.3]skip', left, right);
+        dbg>1 && console.log(msg, '[1.3]skip', left, right);
       }
     }
 

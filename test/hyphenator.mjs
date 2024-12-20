@@ -4,6 +4,7 @@ import path from 'path';
 import { Pali } from "../main.mjs";
 import should from "should";
 import { Dictionary } from "../main.mjs";
+import { DBG } from "../src/defines.mjs";
 const { dirname:DIRNAME, filename:FILENAME } = import.meta;
 
 var EBT_TEST_MAP;
@@ -44,11 +45,11 @@ typeof describe === "function" && describe("hyphenator", function () {
     let parts = dict.hyphenate('sajjhāyadhanadhaññā');
     should.deepEqual(parts, [ 'sajjhāya', 'dhanadhaññā' ]);
   });
-  it("TESTTESThyphenate()", async()=>{
+  it("hyphenate()", async()=>{
     const msg = "test.hyphenator@48";
     let words = Object.keys(EBT_TEST_MAP);
     let TEST_START = 0;
-    let TEST_END = 15; // words.length
+    let TEST_END = 17; // words.length
     dict = await dict;
     for (let i=TEST_START; i<TEST_END; i++) {
       let word = words[i];
@@ -71,10 +72,11 @@ typeof describe === "function" && describe("hyphenator", function () {
       }
     }
   });
-  it("hyphenate() (single)", async()=>{
+  it("TESTTESThyphenate() (single)", async()=>{
     const msg = "test.hyphenator@76";
+    let dbg = 0 && DBG.HYPHENATE;
     let words = Object.keys(EBT_TEST_MAP);
-    let TEST_START = 14;
+    let TEST_START = 17;
     let TEST_END = TEST_START+1; 
     dict = await dict;
     for (let i=TEST_START; i<TEST_END; i++) {
@@ -88,7 +90,7 @@ typeof describe === "function" && describe("hyphenator", function () {
       let ebtExpected = dpdExpected.replace(/!.*/,""); // dpd is better
       let expected = ebtExpected.split("-");
 
-      console.log(msg, word);
+      dbg && console.log(msg, 'TEST', i, word);
       let parts = dict.hyphenate(word);
       try {
         should(parts).not.equal(undefined); 
