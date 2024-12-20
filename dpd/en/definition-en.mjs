@@ -52477,6 +52477,7 @@ export const DEF_LANG={
  "Hly": "who has wrong view; with perverted belief||",
  "Hlz": "who has wrong views||",
  "Hm0": "gone wrong in morals||",
+ "Hm2": "highway robbery; ambush||",
  "Hm3": "highway robbery and stealing||",
  "Hm4": "overturned; refuted; reversed||",
  "Hm5": "changed; altered||bent all around",

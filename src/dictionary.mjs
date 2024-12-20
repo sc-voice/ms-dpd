@@ -639,21 +639,21 @@ export default class Dictionary {
     let {
       minLength=5, // minimum length of word parts
       maxLength=17, // maximum length of word parts
-      splitFactor=0.50,
+      splitFactor=0.5,
     } = opts;
     let pl=Math.floor(wl*splitFactor)+1;
     let split = (word)=>{
-      let parts;
+      let splitParts;
       let entry = this.entryOf(word);
 
       if (entry) {
-        parts = word.length<=maxLength 
+        splitParts = word.length<=maxLength 
           ? [word] 
           : (this.hyphenatePlain(word, opts) || [word]);
       } else {
-        parts = this.hyphenatePlain(word, opts);
+        splitParts = this.hyphenatePlain(word, opts);
       }
-      return parts;
+      return splitParts;
     }
     for (; !parts && (minLength<=pl) && (minLength<=wl-pl); pl--) {
       let left = word.substring(0,pl);
@@ -665,11 +665,11 @@ export default class Dictionary {
         parts = [ ...lparts, ...rparts ];
         dbg && console.log(msg, '[1]both', word, parts);
       } else if (lparts) {
-        dbg && console.log(msg, '[1.1]left', left, right+'?');
+        dbg>1 && console.log(msg, '[1.1]left', left, right+'?');
       } else if (rparts) {
-        dbg && console.log(msg, '[1.2]right', left+'?', right);
+        dbg>2 && console.log(msg, '[1.2]right', left+'?', right);
       } else {
-        dbg>1 && console.log(msg, '[1.3]skip', left, right);
+        dbg>3 && console.log(msg, '[1.3]skip', left, right);
       }
     }
 

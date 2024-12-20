@@ -52477,6 +52477,7 @@ export const DEF_PALI={
  "Hly": "i adj|adj|vipanna+diṭṭhi|vipannadiṭṭh|vipannadiṭṭhi",
  "Hlz": "ī adj|adj|vipanna+diṭṭhi+ī\nvipannadiṭṭhi+ī|vipannadiṭṭh|vipannadiṭṭhī",
  "Hm0": "a adj|adj||vipannasīl|vipannasīla",
+ "Hm2": "a masc|masc|vi+parā+√mus > mos+*a|viparāmos|viparāmosa",
  "Hm3": "a masc|masc|viparā(mosa)+ālopa|viparālop|viparālopa",
  "Hm4": "a pp|pp|vi+parā+√vatt+ta|viparāvatt|viparāvatta",
  "Hm5": "a pp|pp|vi+pari+√nam+ta|vipariṇat|vipariṇata 1",

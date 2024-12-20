@@ -153,10 +153,10 @@ async function main() {
     let wordPad = T_WORD.length;
     let rows = data.map(row=>{
       let { 
-        key='', word='', type='', meaning='', literal='', 
-        construction='', pos='', pattern='', stem=''
+        key='', lemma_1='', type='', meaning='', literal='', 
+        construction='', pos='', pattern='', stem='', 
       } = row;
-      wordPad = Math.max(wordPad, word.length);
+      wordPad = Math.max(wordPad, lemma_1.length);
       typePad = Math.max(typePad, type.length);
       constrPad = Math.max(constrPad, construction.length);
       keyPad = Math.max(keyPad, key.length);
@@ -169,7 +169,7 @@ async function main() {
       }
 
       return [
-        key, word, type, meaning, literal, 
+        key, lemma_1, type, meaning, literal, 
         construction, pattern, pos, stem,
       ];
     });
@@ -184,12 +184,12 @@ async function main() {
     console.log.apply(console, titles);
     rows.forEach((row,i)=>{
       let [ 
-        key, word, type, meaning, literal, 
+        key, lemma_1, type, meaning, literal, 
         construction, pattern, pos, stem,
       ] = row;
       let cols = [ `${i+1}`.padStart(2) ];
       outLong && cols.push(key.padEnd(keyPad));
-      cols.push(word.padEnd(wordPad));
+      cols.push(lemma_1.padEnd(wordPad));
       cols.push(pattern.padEnd(patternPad));
       outLong && cols.push(pos.padEnd(posPad));
       outLong && cols.push(stem.padEnd(stemPad));
