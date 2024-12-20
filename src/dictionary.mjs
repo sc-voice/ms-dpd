@@ -681,7 +681,8 @@ export default class Dictionary {
       }
     }
     let lastPart = rParts && rParts[rParts.length-1];
-    lastPart && console.log(msg, 'lastPart', lastPart.length, lastPart);
+    dbg && lastPart && 
+      console.log(msg, 'lastPart', lastPart.length, lastPart);
 
     if (!parts) {
       dbg && console.log(msg, '[1]fail', {
