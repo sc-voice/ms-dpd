@@ -45,7 +45,7 @@ typeof describe === "function" && describe("hyphenator", function () {
     should.deepEqual(parts, [ 'sajjhāya', 'dhanadhaññā' ]);
   });
   it("TESTTESThyphenate()", async()=>{
-    const msg = "test.hyphenator@41";
+    const msg = "test.hyphenator@48";
     let words = Object.keys(EBT_TEST_MAP);
     let TEST_START = 0;
     let TEST_END = 15; // words.length
@@ -61,7 +61,6 @@ typeof describe === "function" && describe("hyphenator", function () {
       let ebtExpected = dpdExpected.replace(/!.*/,""); // dpd is better
       let expected = ebtExpected.split("-");
 
-      console.log(msg, word);
       let parts = dict.hyphenate(word);
       try {
         should(parts).not.equal(undefined); 
@@ -72,8 +71,8 @@ typeof describe === "function" && describe("hyphenator", function () {
       }
     }
   });
-  it("TESTTESThyphenate() (single)", async()=>{
-    const msg = "test.hyphenator@41";
+  it("hyphenate() (single)", async()=>{
+    const msg = "test.hyphenator@76";
     let words = Object.keys(EBT_TEST_MAP);
     let TEST_START = 14;
     let TEST_END = TEST_START+1; 
