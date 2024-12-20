@@ -669,7 +669,7 @@ export default class Dictionary {
         minLength, maxLength, splitFactor,
       });
     } else {
-      rParts = this.#hyphenatePlainSplit(rPart, {
+      rParts = this.hyphenatePlainSplit(rPart, {
         minLength, maxLength, splitFactor,
       });
     }
@@ -697,8 +697,8 @@ export default class Dictionary {
     return parts;
   }
 
-  #hyphenatePlainSplit(word, opts={}) {
-    const msg = "Dictionary.#hyphenatePlainSplit";
+  hyphenatePlainSplit(word, opts={}) {
+    const msg = "Dictionary.hyphenatePlainSplit";
     const dbg = DBG.HYPHENATE;
     let { minLength, maxLength, splitFactor, } = opts;
     let parts;
@@ -712,9 +712,9 @@ export default class Dictionary {
       if (entry) {
         splitParts = word.length<=maxLength 
           ? [word] 
-          : (this.#hyphenatePlainSplit(word, opts) || [word]);
+          : (this.hyphenatePlainSplit(word, opts) || [word]);
       } else {
-        splitParts = this.#hyphenatePlainSplit(word, opts);
+        splitParts = this.hyphenatePlainSplit(word, opts);
       }
       return splitParts;
     }
