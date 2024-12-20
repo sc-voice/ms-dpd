@@ -48,10 +48,10 @@
     "should": "^13.2.3"
   },
   "dependencies": {
-    "@sc-voice/ms-dpd-de": "^2.42.0",
-    "@sc-voice/ms-dpd-en": "^2.42.0",
-    "@sc-voice/ms-dpd-es": "^2.42.0",
-    "@sc-voice/ms-dpd-fr": "^2.42.0",
-    "@sc-voice/ms-dpd-pt": "^2.42.0"
+    "@sc-voice/ms-dpd-de": "^2.43.0",
+    "@sc-voice/ms-dpd-en": "^2.43.0",
+    "@sc-voice/ms-dpd-es": "^2.43.0",
+    "@sc-voice/ms-dpd-fr": "^2.43.0",
+    "@sc-voice/ms-dpd-pt": "^2.43.0"
   }
 }
