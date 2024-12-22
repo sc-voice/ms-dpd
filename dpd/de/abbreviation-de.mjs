@@ -135,7 +135,7 @@ export const ABBREVIATIONS = {
   },
   "root": {
     "abbreviation": "Wrz.",
-    "meaning": "Wurzel",
+    "meaning": "Wurzel, Wortwurzel",
     "explanation": ""
   },
   "sandhi": {
