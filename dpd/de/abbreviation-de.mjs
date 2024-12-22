@@ -134,8 +134,8 @@ export const ABBREVIATIONS = {
     "explanation": "Auf die Zukunft bezogene passive Verbform, die eine Mittelstellung zwischen Verb und Adjektiv einnimmt, passives Mittelwort der Zukunft; muss im Deutschen umschrieben werden (z. B. sollte getan werden, kann erkannt werden, muss geübt werden, wird gesehen werden)."
   },
   "root": {
-    "abbreviation": "Wurzel",
-    "meaning": "Wortwurzel",
+    "abbreviation": "Wrz.",
+    "meaning": "Wurzel",
     "explanation": ""
   },
   "sandhi": {
