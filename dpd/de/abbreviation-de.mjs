@@ -36,7 +36,7 @@ export const ABBREVIATIONS = {
   },
   "fem": {
     "abbreviation": "f.",
-    "meaning": "Feminines Nomen (Substantiv, Adjektiv usw.)",
+    "meaning": "Feminines Nomen (Substantiv)",
     "explanation": ""
   },
   "fut": {
@@ -80,12 +80,12 @@ export const ABBREVIATIONS = {
   },
   "masc": {
     "abbreviation": "m.",
-    "meaning": "Maskulines Nomen (Substantiv, Adjektiv usw.)",
+    "meaning": "Maskulines Nomen (Substantiv)",
     "explanation": ""
   },
   "nt": {
     "abbreviation": "n.",
-    "meaning": "Neutrales Nomen (Substantiv, Adjektiv usw.)",
+    "meaning": "Neutrales Nomen (Substantiv)",
     "explanation": ""
   },
   "opt": {
@@ -134,7 +134,9 @@ export const ABBREVIATIONS = {
     "explanation": "Auf die Zukunft bezogene passive Verbform, die eine Mittelstellung zwischen Verb und Adjektiv einnimmt, passives Mittelwort der Zukunft; muss im Deutschen umschrieben werden (z. B. sollte getan werden, kann erkannt werden, muss geübt werden, wird gesehen werden)."
   },
   "root": {
-    "abbreviation": "Wurzel"
+    "abbreviation": "Wurzel",
+    "meaning": "Wortwurzel",
+    "explanation": ""
   },
   "sandhi": {
     "abbreviation": "Sandhi",
@@ -148,7 +150,7 @@ export const ABBREVIATIONS = {
   },
   "ve": {
     "abbreviation": "V.E.",
-    "meaning": "Verbendung",
+    "meaning": "Verb-Endung",
     "explanation": ""
   }
 }
