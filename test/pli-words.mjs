@@ -12,7 +12,7 @@ let RE_TI = /[”’"'\b]ti/g;
 typeof describe === "function" && 
   describe("pli-words", function () {
 
-  it("TESTTESTupanidhāyā_ ti", ()=>{
+  it("upanidhāyā_ ti", ()=>{
     let text1 = "asdf upanidhāyā”ti. wxyz";
     let norm1 = text1.replace(RE_TI, "ti");
     should(norm1).equal('asdf upanidhāyāti. wxyz');
