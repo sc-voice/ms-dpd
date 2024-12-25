@@ -143,7 +143,6 @@ async function loadBase(basePath, baseCommit) {
   /* Load base file */ {
     let cmd = [
       `cp ${basePath} ${baseTmp}`,
-      //`git checkout HEAD -- ${basePath}`,
       `git checkout ${baseCommit} -- ${basePath}`
     ].join(';');
     let res = await exec(cmd, {maxBuffer});
@@ -159,6 +158,7 @@ async function loadBase(basePath, baseCommit) {
 
   /* Load patch */ {
     let cmd = [
+      `git checkout HEAD -- ${basePath}`,
       `cp ${baseTmp} ${basePath}`,
       `git diff ${baseCommit} -- ${basePath}`,
     ].join(';');
