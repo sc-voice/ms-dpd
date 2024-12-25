@@ -1,4 +1,5 @@
 import { DBG } from './defines.mjs';
+import { default as HeadwordKey } from './headword-key.mjs';
 
 const dbg = DBG.MERGE;
 

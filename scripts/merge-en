@@ -159,8 +159,10 @@ async function loadBase(basePath, baseCommit) {
 async function updateFile(dstPath, srcBase, srcPatch) {
   const msg = `updateFile:`;
   const { Merge, Patch } = await import(`${DIRNAME}/../src/merge.mjs`);
+  const { default:HeadwordKey } = await 
+    import(`${DIRNAME}/../src/headword-key.mjs`);
 
-  let dstFname = dstPath.split('/').pop();
+  let [ lang, dstFname ] = dstPath.split('/').slice(-2);
   let dstHead = await loadDefinitions(dstPath);
   let merge = new Merge({srcBase, srcPatch});
   let res = merge.patch(dstHead);
@@ -171,6 +173,41 @@ async function updateFile(dstPath, srcBase, srcPatch) {
     added, deleted, updated
   });
   nConflicts && (msg, '[2]', conflicts);
+  let date = new Date();
+  let status = {
+    date,
+    baseCommit,
+    dstPath,
+    added: added.reduce((a,k)=>{a[k]=dst[k];return a}, {}), 
+    updated: updated.reduce((a,k)=>{a[k]=dst[k];return a}, {}), 
+    deleted: deleted.reduce((a,k)=>{ a[k]=dstHead[k];return a }, {}), 
+    conflicts, 
+  }
+  let dstDir = path.dirname(dstPath);
+  let nowStr = [
+    String(date.getYear()%100).padStart(2,'0'),
+    String(date.getUTCMonth()+1).padStart(2,'0'),
+    String(date.getUTCDate()).padStart(2,'0'),
+  ].join('');
+  let statusPath = path.join(dstDir, 
+    `merged-${lang}-${nowStr}.json`);
+  await fsp.writeFile(statusPath, JSON.stringify(status,null,2));
+  let hwKeys = Object.keys(dst).sort((a,b)=>{
+    let an = HeadwordKey.toNumber(a);
+    let bn = HeadwordKey.toNumber(b);
+    return an - bn;
+  });
+  let iLast = hwKeys.length-1;
+  let json = [
+    'export const DEF_LANG={\n',
+    ...hwKeys.map((k,i)=>{
+      let sep = i===iLast ? "" : ",";
+      return ` "${k}": "${dst[k]}"${sep}\n`;
+    }),
+    '}\n',
+  ].join('');
+  await fsp.writeFile(dstPath, json);
+  console.log(msg, statusPath, status);
 }
 
 async function main() {
@@ -194,6 +231,3 @@ async function main() {
 })()
 
 JS
-
-# REPLACE WITH YOUR POST_BASH [BEGIN]
-# REPLACE WITH YOUR POST_BASH [END]
