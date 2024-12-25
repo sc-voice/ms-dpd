@@ -106,7 +106,11 @@ typeof describe === "function" &&
       6: "six EN new",      // src:new,    dst:---    => add
     });
     should.deepEqual(res.conflicts, {
-      1: { dst: 'one PT', src: 'one EN changed' },
+      1: { 
+        dstHead: 'one PT', 
+        srcBase: 'one EN',
+        srcNew: 'one EN changed',
+      },
     });
     should.deepEqual(res.added, [ '6', ]);
     should.deepEqual(res.deleted, [ '4', ]);

@@ -103,8 +103,9 @@ export class Merge {
 
       if (valDstHead !== valSrcBase) {
         conflicts[key] = {
-          dst: valDstHead,
-          src: valSrcNew,
+          dstHead: valDstHead,
+          srcNew: valSrcNew,
+          srcBase: valSrcBase,
         }
       } else if (valSrcNew) { 
         dst[key] = valSrcNew;
