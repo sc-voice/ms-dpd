@@ -72,7 +72,7 @@ typeof describe === "function" && describe("hyphenator", function () {
       }
     }
   });
-  it("TESTTESThyphenate() (single)", async()=>{
+  it("hyphenate() (single)", async()=>{
     const msg = "test.hyphenator@76";
     let dbg = 0 && DBG.HYPHENATE;
     let words = Object.keys(EBT_TEST_MAP);

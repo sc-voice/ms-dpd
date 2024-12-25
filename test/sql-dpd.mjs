@@ -93,7 +93,7 @@ typeof describe==="function" && describe("sql-dpd", function() {
     ]);
     should(hwIds.length).equal(7); // de, devi
   });
-  it("TESTTESTcreate() headwordPatterns", async()=>{
+  it("create() headwordPatterns", async()=>{
     const msg = `${M}@37:`;
     let paliMap = { devi:1, deva:1 }; // test words
     let headwordPatterns = ['ī fem'];

@@ -1,6 +1,6 @@
 {
   "name": "@sc-voice/ms-dpd",
-  "version": "2.43.0",
+  "version": "2.44.0",
   "description": "Mahāsaṅgīti Pali Javascript adapter for Digital Pali Dictionary",
   "main": "main.mjs",
   "files": [
@@ -48,10 +48,11 @@
     "should": "^13.2.3"
   },
   "dependencies": {
-    "@sc-voice/ms-dpd-de": "^2.43.0",
-    "@sc-voice/ms-dpd-en": "^2.43.0",
-    "@sc-voice/ms-dpd-es": "^2.43.0",
-    "@sc-voice/ms-dpd-fr": "^2.43.0",
-    "@sc-voice/ms-dpd-pt": "^2.43.0"
+    "@sc-voice/ms-dpd-de": "^2.44.0",
+    "@sc-voice/ms-dpd-en": "^2.44.0",
+    "@sc-voice/ms-dpd-es": "^2.44.0",
+    "@sc-voice/ms-dpd-fr": "^2.44.0",
+    "@sc-voice/ms-dpd-pt": "^2.44.0",
+    "tmp": "^0.2.3"
   }
 }

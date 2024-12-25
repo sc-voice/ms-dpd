@@ -380,8 +380,8 @@ export default class SqlDpd {
     return json;
   }
 
-  async #writeMap(fpath, decl, map) {
-    const msg = 'SqlDpd.#writeMap';
+  async writeMap(fpath, decl, map) {
+    const msg = 'SqlDpd.writeMap';
     let dbg = DBG.SQL_DPD_BUILD || this.dbg;
     let { 
       hwIds,
@@ -432,7 +432,7 @@ export default class SqlDpd {
     }, {});
     let fnPali = 'definition-pali.mjs';
     let defPaliPath = path.join(dataDir, fnPali);
-    await this.#writeMap(defPaliPath, 'export const DEF_PALI=', 
+    await this.writeMap(defPaliPath, 'export const DEF_PALI=', 
       defPali);
     this.defPali = defPali;
 
@@ -452,7 +452,7 @@ export default class SqlDpd {
     let fnLang = `definition-${lang}.mjs`;
     let langDir = path.join(dataDir, lang);
     let defLangPath = path.join(langDir, fnLang);
-    await this.#writeMap(defLangPath, 'export const DEF_LANG=', 
+    await this.writeMap(defLangPath, 'export const DEF_LANG=', 
       defLang);
     this.defLang = defLang;
   }

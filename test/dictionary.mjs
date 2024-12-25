@@ -197,7 +197,7 @@ typeof describe === "function" &&
     }
     should(res.data.length).above(50).below(60);
   });
-  it("TESTTESTfind() something abides (not in dictionary)", async()=>{
+  it("find() something abides (not in dictionary)", async()=>{
     let dict = await Dictionary.create();
 
     // words are in dictionary
@@ -647,7 +647,7 @@ typeof describe === "function" &&
     should(uppanidhaya.definition[0]).match(/comparison/);
     should.deepEqual(uppanidhayati, uppanidhaya, "TBD");
   });
-  it("TESTTESTdpdLink()", ()=>{
+  it("dpdLink()", ()=>{
     let ebtWord = 'Evaṁ';
     let dpdWord = 'evaṃ';
     should.deepEqual(Dictionary.dpdLink(ebtWord), {

@@ -13,6 +13,7 @@ export const DBG = {
   INFLECTION_FIND: 0,
   LANG: 0,
   LOADING: 0,
+  MERGE: 0,
   PALI: 0,
   RELATED_ENTRIES: 0,
   SANKEY: 0,

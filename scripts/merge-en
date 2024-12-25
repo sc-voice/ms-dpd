@@ -1,0 +1,264 @@
+#!/usr/bin/bash
+SCRIPT=`basename $0`
+DIRNAME=`dirname $0`
+
+node - <<'JS' $DIRNAME $SCRIPT "$@" 
+const util = require('util');
+const fs = require('fs');
+const fsp = fs.promises;
+const path = require('path');
+const exec = util.promisify(require('child_process').exec);
+const MIN_PARMS = 1;
+const MAX_BUFFER = 20 * 1024 * 1024;
+let [ NODE, DASH, DIRNAME, SCRIPT, ...args] = process.argv;
+const DPD_DIR = path.join(DIRNAME, '../dpd');
+
+const msg = `${SCRIPT}:`;
+
+function help() {
+  console.error(`
+NAME
+  ${SCRIPT} - Merge EN definition changes into other language
+
+SYNOPSIS
+  ${SCRIPT} [...OPTIONS] FILES...
+
+DESCRIPTION
+  create new bash script with nodejs wrapper
+
+  -?, --help
+    print this help text
+
+  -bc, --base-commit COMMIT_ID
+    Git commit id of base file (HEAD)
+
+  -bp, --base-path BASE_FILE
+    name of merge base file (dpd/en/definition_en.mjs)
+
+  -v, --verbose
+    print more information to stderr
+
+  FILE
+    language file to update 
+
+EXAMPLES
+  ${SCRIPT} dpd/en/definition-en.mjs
+`);
+  process.exit(0);
+}
+
+function parseArgs() {
+  const msg = `parseArgs:`;
+  // default values
+  let dbg = 0;
+  let maxBuffer = MAX_BUFFER;
+  let basePath = 'dpd/en/definition-en.mjs';
+  let baseCommit = 'HEAD'
+
+  let parms = [];
+  for (let i=0; i<args.length; i++) {
+    let arg = args[i];
+    switch (arg) {
+      case '-?':
+      case '--help':
+        help();
+        break;
+      case '-bc':
+      case '--base-commit':
+        baseCommit = args[++i];
+        break;
+      case '-bp':
+      case '--base-path':
+        basePath = args[++i];
+        break;
+      case '-mb':
+      case '--max-buffer':
+        maxBuffer = Number(args[++i]);
+        break;
+      case "--verbose":
+      case "-v":
+        dbg = 1;
+        break;
+      case "--very-verbose":
+      case "-vv":
+        dbg = 2;
+        break;
+      default:
+        if (arg.at(0) === "-") {
+          console.error(`${msg} [ERROR] ignoring ${arg}`);
+          help();
+        } else {
+          parms.push(arg);
+        }
+        break;
+    }
+  }
+  if (parms.length < MIN_PARMS) {
+    help();
+  }
+
+  let result = {
+    baseCommit,
+    basePath,
+    dbg,
+    maxBuffer,
+    parms,
+  }
+  dbg && console.error(msg, Object.assign({
+    NODE,DASH, DIRNAME, SCRIPT, parms, maxBuffer, basePath,
+  }, result));
+
+  return result;
+}
+let {
+  baseCommit,
+  basePath,
+  dbg,
+  maxBuffer,
+  parms,
+} = parseArgs();
+
+async function loadDefinitions(defPath) {
+  const msg = `loadDefinitions:`;
+  if (!fs.existsSync(defPath)) {
+    throw new Error(`${msg} defPath? ${defPath}`);
+  }
+  let defModule = await import(`./${defPath}`);
+  let { DEF_LANG } = defModule;
+  console.error(msg, `[1]defPath`, defPath, 
+    Object.keys(DEF_LANG).length);
+
+  return DEF_LANG;
+}
+
+async function loadBase(basePath, baseCommit) {
+  const msg = `loadBase:`;
+  const { Patch } = await import(`${DIRNAME}/../src/merge.mjs`);
+  const tmp = await import("tmp");
+  let srcBase;
+  let srcPatch;
+  tmp.setGracefulCleanup();
+  let { name:baseTmp } = tmp.fileSync();
+
+  /* Load base file */ {
+    let cmd = [
+      `cp ${basePath} ${baseTmp}`,
+      `git checkout ${baseCommit} -- ${basePath}`
+    ].join(';');
+    let res = await exec(cmd, {maxBuffer});
+    let { stdout, stderr } = res;
+    if (stderr) {
+      console.error(msg, stderr);
+      throw new Error(`${msg} FAIL => ${cmd}`);
+    }
+    srcBase = await loadDefinitions(basePath);
+    console.error(msg, `[1]srcBase`, Object.keys(srcBase).length);
+    dbg && console.log(msg, '[1.1]baseTmp', baseTmp);
+  }
+
+  /* Load patch */ {
+    let cmd = [
+      `git checkout HEAD -- ${basePath}`,
+      `cp ${baseTmp} ${basePath}`,
+      `git diff ${baseCommit} -- ${basePath}`,
+    ].join(';');
+    let res = await exec(cmd, {maxBuffer});
+    let { stdout, stderr } = res;
+    if (stderr) {
+      console.error(msg, stderr);
+      throw new Error(`${msg} FAIL => ${cmd}`);
+    }
+    srcPatch = Patch.from(stdout);
+    console.error(msg, `[2]srcPatch`, 
+      baseCommit,
+      `+${Object.keys(srcPatch.add).length}/`+
+      `-${Object.keys(srcPatch.delete).length}`,
+    );
+  }
+
+  return { srcPatch, srcBase }
+}
+
+async function updateFile(dstPath, srcBase, srcPatch) {
+  const msg = `updateFile:`;
+  const { Merge, Patch } = await import(`${DIRNAME}/../src/merge.mjs`);
+  const { default:HeadwordKey } = await 
+    import(`${DIRNAME}/../src/headword-key.mjs`);
+
+  let [ lang, dstFname ] = dstPath.split('/').slice(-2);
+  let dstHead = await loadDefinitions(dstPath);
+  let merge = new Merge({srcBase, srcPatch});
+  let res = merge.patch(dstHead);
+  let { dst, conflicts, added, deleted, updated } = res;
+  let nConflicts = Object.keys(conflicts).length;
+  let dstDir = path.dirname(dstPath);
+  let date = new Date();
+  let nowStr = [
+    String(date.getYear()%100).padStart(2,'0'),
+    String(date.getUTCMonth()+1).padStart(2,'0'),
+    String(date.getUTCDate()).padStart(2,'0'),
+    String(date.getUTCHours()).padStart(2,'0'),
+    String(date.getUTCMinutes()).padStart(2,'0'),
+  ].join('');
+  let statusPath = path.join(dstDir, 
+    `merged-${lang}-${nowStr}.json`);
+
+  console.error(msg, `[1]updated:`, dstFname);
+  console.error(msg, `[2]status:`, statusPath);
+  nConflicts && (msg, '[2]', conflicts);
+  let status = {
+    date,
+    baseCommit,
+    dstPath,
+    added: added.reduce((a,k)=>{a[k]=dst[k];return a}, {}), 
+    updated: updated.reduce((a,k)=>{a[k]=dst[k];return a}, {}), 
+    deleted: deleted.reduce((a,k)=>{ a[k]=dstHead[k];return a }, {}), 
+    conflicts, 
+  }
+  await fsp.writeFile(statusPath, JSON.stringify(status,null,2));
+  let hwKeys = Object.keys(dst).sort((a,b)=>{
+    let an = HeadwordKey.toNumber(a);
+    let bn = HeadwordKey.toNumber(b);
+    return an - bn;
+  });
+  let iLast = hwKeys.length-1;
+  let json = [
+    'export const DEF_LANG={\n',
+    ...hwKeys.map((k,i)=>{
+      let sep = i===iLast ? "" : ",";
+      return ` "${k}": "${dst[k]}"${sep}\n`;
+    }),
+    '}\n',
+  ].join('');
+  await fsp.writeFile(dstPath, json);
+  console.error(msg, '[3]summary', 
+    `added:${added.length}`,
+    `updated:${updated.length}`,
+    `deleted:${deleted.length}`,
+    `conflicts:${nConflicts}`,
+  );
+}
+
+async function main() {
+  const msg = `main:`;
+  const { 
+    srcBase, srcPatch 
+  } = await loadBase(basePath, baseCommit);
+
+  for (let i=0; i<parms.length; i++) {
+    let dstPath = parms[i];
+    if (basePath !== dstPath) {
+      await updateFile(dstPath, srcBase, srcPatch);
+    }
+  }
+}
+
+(async function() {
+  try {
+    await main()
+  } catch(e) {
+    console.error(msg, e);
+  }
+})()
+
+JS
