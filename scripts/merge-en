@@ -152,7 +152,7 @@ async function loadBase(basePath, baseCommit) {
       throw new Error(`${msg} FAIL => ${cmd}`);
     }
     srcBase = await loadDefinitions(basePath);
-    console.error(msg, `[1]srcBase`, Object.keys(srcBase));
+    console.error(msg, `[1]srcBase`, Object.keys(srcBase).length);
     dbg && console.log(msg, '[1.1]baseTmp', baseTmp);
   }
 
@@ -191,22 +191,8 @@ async function updateFile(dstPath, srcBase, srcPatch) {
   let res = merge.patch(dstHead);
   let { dst, conflicts, added, deleted, updated } = res;
   let nConflicts = Object.keys(conflicts).length;
-
-  console.error(msg, `[1]conflicts`, nConflicts, dstFname, {
-    added, deleted, updated
-  });
-  nConflicts && (msg, '[2]', conflicts);
-  let date = new Date();
-  let status = {
-    date,
-    baseCommit,
-    dstPath,
-    added: added.reduce((a,k)=>{a[k]=dst[k];return a}, {}), 
-    updated: updated.reduce((a,k)=>{a[k]=dst[k];return a}, {}), 
-    deleted: deleted.reduce((a,k)=>{ a[k]=dstHead[k];return a }, {}), 
-    conflicts, 
-  }
   let dstDir = path.dirname(dstPath);
+  let date = new Date();
   let nowStr = [
     String(date.getYear()%100).padStart(2,'0'),
     String(date.getUTCMonth()+1).padStart(2,'0'),
@@ -216,6 +202,19 @@ async function updateFile(dstPath, srcBase, srcPatch) {
   ].join('');
   let statusPath = path.join(dstDir, 
     `merged-${lang}-${nowStr}.json`);
+
+  console.error(msg, `[1]updated:`, dstFname);
+  console.error(msg, `[2]status:`, statusPath);
+  nConflicts && (msg, '[2]', conflicts);
+  let status = {
+    date,
+    baseCommit,
+    dstPath,
+    added: added.reduce((a,k)=>{a[k]=dst[k];return a}, {}), 
+    updated: updated.reduce((a,k)=>{a[k]=dst[k];return a}, {}), 
+    deleted: deleted.reduce((a,k)=>{ a[k]=dstHead[k];return a }, {}), 
+    conflicts, 
+  }
   await fsp.writeFile(statusPath, JSON.stringify(status,null,2));
   let hwKeys = Object.keys(dst).sort((a,b)=>{
     let an = HeadwordKey.toNumber(a);
@@ -232,7 +231,12 @@ async function updateFile(dstPath, srcBase, srcPatch) {
     '}\n',
   ].join('');
   await fsp.writeFile(dstPath, json);
-  console.log(msg, statusPath, status);
+  console.error(msg, '[3]summary', 
+    `added:${added.length}`,
+    `updated:${updated.length}`,
+    `deleted:${deleted.length}`,
+    `conflicts:${nConflicts}`,
+  );
 }
 
 async function main() {
