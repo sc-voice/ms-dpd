@@ -134,13 +134,17 @@ async function loadDefinitions(defPath) {
 async function loadBase(basePath, baseCommit) {
   const msg = `loadBase:`;
   const { Patch } = await import(`${DIRNAME}/../src/merge.mjs`);
+  const tmp = await import("tmp");
   let srcBase;
   let srcPatch;
+  tmp.setGracefulCleanup();
+  let { name:baseTmp } = tmp.fileSync();
 
   /* Load base file */ {
     let cmd = [
-      `git stash -- ${basePath}`,
-      `git checkout ${baseCommit}`
+      `cp ${basePath} ${baseTmp}`,
+      //`git checkout HEAD -- ${basePath}`,
+      `git checkout ${baseCommit} -- ${basePath}`
     ].join(';');
     let res = await exec(cmd, {maxBuffer});
     let { stdout, stderr } = res;
@@ -150,13 +154,13 @@ async function loadBase(basePath, baseCommit) {
     }
     srcBase = await loadDefinitions(basePath);
     console.error(msg, `[1]srcBase`, Object.keys(srcBase));
+    dbg && console.log(msg, '[1.1]baseTmp', baseTmp);
   }
 
   /* Load patch */ {
     let cmd = [
-      `git checkout HEAD`
-      `git stash apply -- ${basePath}`,
-      `git diff ${baseCommit} -- ${basePath}`
+      `cp ${baseTmp} ${basePath}`,
+      `git diff ${baseCommit} -- ${basePath}`,
     ].join(';');
     let res = await exec(cmd, {maxBuffer});
     let { stdout, stderr } = res;
