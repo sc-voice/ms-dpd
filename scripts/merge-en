@@ -218,7 +218,9 @@ async function main() {
 
   for (let i=0; i<parms.length; i++) {
     let dstPath = parms[i];
-    await updateFile(dstPath, srcBase, srcPatch);
+    if (basePath !== dstPath) {
+      await updateFile(dstPath, srcBase, srcPatch);
+    }
   }
 }
 
