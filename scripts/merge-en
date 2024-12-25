@@ -188,6 +188,8 @@ async function updateFile(dstPath, srcBase, srcPatch) {
     String(date.getYear()%100).padStart(2,'0'),
     String(date.getUTCMonth()+1).padStart(2,'0'),
     String(date.getUTCDate()).padStart(2,'0'),
+    String(date.getUTCHours()).padStart(2,'0'),
+    String(date.getUTCMinutes()).padStart(2,'0'),
   ].join('');
   let statusPath = path.join(dstDir, 
     `merged-${lang}-${nowStr}.json`);
