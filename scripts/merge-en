@@ -134,26 +134,45 @@ async function loadDefinitions(defPath) {
 async function loadBase(basePath, baseCommit) {
   const msg = `loadBase:`;
   const { Patch } = await import(`${DIRNAME}/../src/merge.mjs`);
-  let DEF_LANG = await loadDefinitions(basePath);
+  let srcBase;
+  let srcPatch;
 
-  let cmd = `git diff ${baseCommit} -- ${basePath}`
-  let res = await exec(cmd, {maxBuffer});
-  let { stdout, stderr } = res;
-  if (stderr) {
-    console.error(msg, stderr);
-    throw new Error(`${msg} FAIL => ${cmd}`);
+  /* Load base file */ {
+    let cmd = [
+      `git stash -- ${basePath}`,
+      `git checkout ${baseCommit}`
+    ].join(';');
+    let res = await exec(cmd, {maxBuffer});
+    let { stdout, stderr } = res;
+    if (stderr) {
+      console.error(msg, stderr);
+      throw new Error(`${msg} FAIL => ${cmd}`);
+    }
+    srcBase = await loadDefinitions(basePath);
+    console.error(msg, `[1]srcBase`, Object.keys(srcBase));
   }
-  let srcPatch = Patch.from(stdout);
-  console.error(msg, `[2]srcPatch`, 
-    baseCommit,
-    `+${Object.keys(srcPatch.add).length}/`+
-    `-${Object.keys(srcPatch.delete).length}`,
-  );
 
-  return {
-    srcPatch,
-    srcBase: DEF_LANG,
+  /* Load patch */ {
+    let cmd = [
+      `git checkout HEAD`
+      `git stash apply -- ${basePath}`,
+      `git diff ${baseCommit} -- ${basePath}`
+    ].join(';');
+    let res = await exec(cmd, {maxBuffer});
+    let { stdout, stderr } = res;
+    if (stderr) {
+      console.error(msg, stderr);
+      throw new Error(`${msg} FAIL => ${cmd}`);
+    }
+    srcPatch = Patch.from(stdout);
+    console.error(msg, `[2]srcPatch`, 
+      baseCommit,
+      `+${Object.keys(srcPatch.add).length}/`+
+      `-${Object.keys(srcPatch.delete).length}`,
+    );
   }
+
+  return { srcPatch, srcBase }
 }
 
 async function updateFile(dstPath, srcBase, srcPatch) {
