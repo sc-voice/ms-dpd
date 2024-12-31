@@ -27,18 +27,25 @@ export default class Dictionary {
     return "https://digitalpalidictionary.github.io/titlepage.html";
   }
 
+  static normalizeWord(word) {
+    const RE_PUNCT = /[-!?(),.:;…—– ‘’"'“”]/g;
+    let wordParts = word.split(RE_PUNCT);
+    return wordParts.filter(w=>!!w)[0].toLowerCase();
+  }
+
   static get DEFINITION_KEYS() {
     return DEF_KEYS;
   }
 
-  static dpdLink(ebtWord) {
-    if (!ebtWord) {
+  static dpdLink(word) {
+    if (!word) {
       return {
         url: `https://www.dpdict.net/`,
       }
     }
-    let dpdWord = ebtWord.toLowerCase()
-      .replace(/ṁ/g, 'ṃ');
+    let ebtWord = Dictionary.normalizeWord(word);
+    let dpdWord = ebtWord.replace(/ṁ/g, 'ṃ');
+
     return {
       url: `https://www.dpdict.net/?q=${dpdWord}`,
       ebtWord,
@@ -201,8 +208,7 @@ export default class Dictionary {
     const dbg = DBG.ENTRY_OF;
     const RE_PUNCT = /[-!?(),.:;…—– ‘’"'“”]/g;
     let { index, defLang, } = this;
-    let wordParts = aWord.split(RE_PUNCT);
-    let word = wordParts.filter(w=>!!w)[0].toLowerCase();
+    let word = Dictionary.normalizeWord(aWord);
     let indexEntry = index[word];
     if (indexEntry == null) {
       dbg && console.error(msg, `[1]${word}?`);
@@ -561,7 +567,7 @@ export default class Dictionary {
     let stem = Dictionary.prefixOf(entries.map(e=>e.word));
     let w = word;
     dbg && console.error(msg);
-    dbg & console.error(entries.map(e=>e.word).join('\n'));
+    dbg && console.error(entries.map(e=>e.word).join('\n'));
 
     let tblMatch = Inflection.TABLE.filter(inf=>{
       for (let ie=0; ie<entries.length; ie++) {

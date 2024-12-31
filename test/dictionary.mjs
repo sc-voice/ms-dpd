@@ -15,7 +15,7 @@ const dbg = 0;
 
 async function testDeclensions({word, infExpected, nbr}) {
   const msg = "test.dictionary.testDeclensions()";
-  const dbg = 1;
+  const dbg = DBG.DECLENSIONS;
   dbg && console.log(msg, '[1]word', word);
   let dict = await Dictionary.create();
   let infTable = dict.wordInflections(word, {nbr});
@@ -455,7 +455,7 @@ typeof describe === "function" &&
     {}];
     await testDeclensions({word:'dhamma', infExpected});
   });
-  it("wordInflections devī", async()=>{ 
+  it("TESTTESTwordInflections devī", async()=>{
     const msg = 'test.dictionary@447';
     const infExpected = [
       { gdr:'fem', case:'nom', nbr:'sg', word:'devī' }, 
@@ -647,10 +647,11 @@ typeof describe === "function" &&
     should(uppanidhaya.definition[0]).match(/comparison/);
     should.deepEqual(uppanidhayati, uppanidhaya, "TBD");
   });
-  it("dpdLink()", ()=>{
-    let ebtWord = 'Evaṁ';
-    let dpdWord = 'evaṃ';
-    should.deepEqual(Dictionary.dpdLink(ebtWord), {
+  it("TESTTESTdpdLink()", ()=>{
+    let word = 'Saṁvāso,';
+    let ebtWord = 'saṁvāso';
+    let dpdWord = 'saṃvāso';
+    should.deepEqual(Dictionary.dpdLink(word), {
       ebtWord,
       dpdWord,
       url: `https://www.dpdict.net/?q=${dpdWord}`,

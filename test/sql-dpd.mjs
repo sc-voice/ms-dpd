@@ -166,7 +166,6 @@ typeof describe==="function" && describe("sql-dpd", function() {
 
     should(enAbbr.pr).properties({meaning:'present tense'});
     let pAbbr = path.join(DATADIR, 'en', 'abbreviation-en.mjs');
-    console.log(pAbbr);
     should(fs.existsSync(pAbbr)).equal(true);
   });
   it("binarySearch", ()=>{
