@@ -107,6 +107,7 @@ typeof describe === "function" && describe("hyphenator", function () {
     dict = await dict;
     let word = 'jhāyinomhā';
     let parts = dict.hyphenate(word);
+    // jhāyino + amhā
     console.log(msg, `TBD-sandhi: ${word}=>`, parts);
   });
 });
