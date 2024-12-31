@@ -101,4 +101,12 @@ typeof describe === "function" && describe("hyphenator", function () {
       }
     }
   });
+  it("TESTTESThyphenate() jhāyinomhā", async()=>{
+    const msg = "test.hyphenator@105";
+    let dbg = DBG.HYPHENATE;
+    dict = await dict;
+    let word = 'jhāyinomhā';
+    let parts = dict.hyphenate(word);
+    console.log(msg, `TBD-sandhi: ${word}=>`, parts);
+  });
 });
