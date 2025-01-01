@@ -1,5 +1,5 @@
 ### Deutsche Übersetzung des DPD
 
-**Hauptübersetzer:** Sabbamitta Silashin
+**Hauptübersetzerin:** Silashin Sabbamitta
 
-(Noch Offen)
+(Inhalt wird erstellt.)
