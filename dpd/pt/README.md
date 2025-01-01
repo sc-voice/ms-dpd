@@ -2,7 +2,7 @@
 
 **tradutor principal** Karl Lew
 
-### Technoologia
+### Tecnologia
 
 * Apple Translate
 * DeepL 
