@@ -16,7 +16,8 @@
     "dpd/en",
     "dpd/es",
     "dpd/fr",
-    "dpd/pt"
+    "dpd/pt",
+    "dpd/ru"
   ],
   "scripts": {
     "schedule-action": "scripts/schedule-action",
@@ -53,6 +54,7 @@
     "@sc-voice/ms-dpd-es": "^2.46.0",
     "@sc-voice/ms-dpd-fr": "^2.46.0",
     "@sc-voice/ms-dpd-pt": "^2.46.0",
+    "@sc-voice/ms-dpd-ru": "^2.46.0",
     "tmp": "^0.2.3"
   }
 }

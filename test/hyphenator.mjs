@@ -101,7 +101,7 @@ typeof describe === "function" && describe("hyphenator", function () {
       }
     }
   });
-  it("TESTTESThyphenate() jhāyinomhā", async()=>{
+  it("hyphenate() jhāyinomhā", async()=>{
     const msg = "test.hyphenator@105";
     let dbg = DBG.HYPHENATE;
     dict = await dict;

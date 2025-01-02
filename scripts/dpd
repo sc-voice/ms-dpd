@@ -25,6 +25,10 @@ DESCRIPTION
     -hy, --hyphenate WORD
         Hyphenate given word
 
+    -l, --language LANG_CODE
+        Write out definition is given language specified by 
+        2-letter LANG_CODE (en)
+
     -ol, --output-long 
         Write out all available fields (KEY, WORD, PAT, POS, STEM, 
         CONSTRUCT, MEANING)

@@ -455,7 +455,7 @@ typeof describe === "function" &&
     {}];
     await testDeclensions({word:'dhamma', infExpected});
   });
-  it("TESTTESTwordInflections devī", async()=>{
+  it("wordInflections devī", async()=>{
     const msg = 'test.dictionary@447';
     const infExpected = [
       { gdr:'fem', case:'nom', nbr:'sg', word:'devī' }, 
@@ -647,7 +647,7 @@ typeof describe === "function" &&
     should(uppanidhaya.definition[0]).match(/comparison/);
     should.deepEqual(uppanidhayati, uppanidhaya, "TBD");
   });
-  it("TESTTESTdpdLink()", ()=>{
+  it("dpdLink()", ()=>{
     let word = 'Saṁvāso,';
     let ebtWord = 'saṁvāso';
     let dpdWord = 'saṃvāso';

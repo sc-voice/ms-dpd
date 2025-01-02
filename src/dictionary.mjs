@@ -73,6 +73,9 @@ export default class Dictionary {
         case 'fr':
           langModule = await import("@sc-voice/ms-dpd-fr");
           break;
+        case 'ru':
+          langModule = await import("@sc-voice/ms-dpd-ru");
+          break;
         case 'es':
           langModule = await import("@sc-voice/ms-dpd-es");
           break;

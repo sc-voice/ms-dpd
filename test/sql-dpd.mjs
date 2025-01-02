@@ -12,7 +12,7 @@ import { default as HeadwordKey } from '../src/headword-key.mjs';
 const DIRNAME = import.meta.dirname;
 
 let msg = M;
-let DATADIR = path.join(DIRNAME, "../local/dpd-test");
+let DATADIR = path.join(DIRNAME, "../local/dpd-test1");
 
 typeof describe==="function" && describe("sql-dpd", function() {
   this.timeout(10*1000);
@@ -53,7 +53,7 @@ typeof describe==="function" && describe("sql-dpd", function() {
     const msg = `${M}@37:`;
     let paliMap = {devi:1};
     let verboseRows = 0;
-    let dataDir = path.join(import.meta.dirname, '../local/data');
+    let dataDir = path.join(import.meta.dirname, '../local/dpd-test2');
     let dbg = 0;
 
     let sqlDpd = await SqlDpd.create({
@@ -192,5 +192,35 @@ typeof describe==="function" && describe("sql-dpd", function() {
     should(SqlDpd.binarySearch(data, "ya")).equal(-1);
     should(SqlDpd.binarySearch(data, "ye")).equal(2);
     should(SqlDpd.binarySearch(data, "yx")).equal(-1);
+  });
+  it("TESTTESTbuild() ru", async()=>{
+    const msg = `${M}@197:`;
+    let paliMap = {devi:1};
+    let verboseRows = 0;
+    let dataDir = path.join(import.meta.dirname, '../local/dpd-test-ru');
+
+    let sqlDpd = await SqlDpd.create({ paliMap, verboseRows, dataDir });
+    await sqlDpd.build();
+
+    let { dpdLookup, langHeadwords, defLangDPD } = sqlDpd;
+    should(defLangDPD).properties('ru');
+    should(langHeadwords).properties('ru');
+    let ruHeadwords = langHeadwords.ru;
+    let lookupKeys = Object.keys(dpdLookup);
+    should.deepEqual(lookupKeys, ['de', 'devi']);
+
+    should.deepEqual(sqlDpd.dpdLookup.devi, [34161, 34162])
+    should(ruHeadwords[34161]).properties({
+      id: 34161,
+      meaning_1: "королева",
+      meaning_2: "",
+      meaning_lit: "",
+    });
+    should(ruHeadwords[34162]).properties({
+      id: 34162,
+      meaning_1: "",
+      meaning_2: "богиня",
+      meaning_lit: "",
+    });
   });
 });

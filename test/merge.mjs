@@ -59,14 +59,14 @@ index c00c188..480cfe9 100644
 typeof describe === "function" && 
   describe("merge", function () 
 {
-  it("TESTTESTMerge.ctor()", ()=>{
+  it("Merge.ctor()", ()=>{
     let srcBase = EN_BASE;
     let srcPatch = Patch.fromString(DIFF_EN);
     let mrg = new Merge({ srcBase, srcPatch });
     should(mrg.srcBase).equal(srcBase);
     should(mrg.srcPatch).equal(srcPatch);
   });
-  it("TESTTESTPatch.fromString(DIFF_EN)", () => {
+  it("Patch.fromString(DIFF_EN)", () => {
     should.deepEqual(Patch.fromString(DIFF_EN), new Patch({
       add: {
         '1': 'one EN changed',
@@ -80,7 +80,7 @@ typeof describe === "function" &&
       },
     }));
   });
-  it("TESTTESTPatch.from()", ()=>{
+  it("Patch.from()", ()=>{
     let patch1 = Patch.fromString(DIFF_EN);
     should.deepEqual(Patch.from(DIFF_EN), patch1);
     should(Patch.from(patch1)).equal(patch1);
@@ -91,7 +91,7 @@ typeof describe === "function" &&
     should(eCaught instanceof Error);
     should(eCaught.message).match(/string or Patch/);
   });
-  it("TESTTESTpatch() pt", ()=>{
+  it("patch() pt", ()=>{
     let srcBase = EN_BASE;
     let srcPatch = DIFF_EN;
     let mrg = new Merge({ srcBase, srcPatch });

@@ -23,6 +23,15 @@ const DPD_HEADWORD_COLS = [
   'stem',
   'lemma_1',
 ];
+const DPD_HEADWORD_COLS_LANG = {
+  ru: [
+    'T1.id',
+    'T1.ru_meaning meaning_1',
+    'T1.ru_meaning_raw meaning_2',
+    'T1.ru_meaning_lit meaning_lit',
+  ],
+}
+
 const HEADWORD_PATTERNS = [ // DEPRECATED
   ...('aāiī'.split('').reduce((a,l)=>{
     a.push(`${l} masc`);
@@ -50,7 +59,6 @@ export default class SqlDpd {
     if (!SqlDpd.#privateCtor) {
       throw new Error('use SqlDpd.create()');
     }
-    let lang = opts.lang || 'en';
     let {
       dataDir = path.join(`${DIRNAME}/../../local/dpd-test`),
       dbg = DBG.SQL_DPD,
@@ -71,7 +79,6 @@ export default class SqlDpd {
 
     Object.assign(this, {
       dbg,
-      lang,
       mode,
       rowLimit,
       dataDir,
@@ -80,6 +87,9 @@ export default class SqlDpd {
     });
 
     // Non-enumerable properties
+    Object.defineProperty(this, "langHeadwords", {
+      value: {},
+    });
     Object.defineProperty(this, "dpdHeadwords", {
       writable: true,
       value: undefined,
@@ -113,11 +123,15 @@ export default class SqlDpd {
       writable: true,
       value: [],
     });
+    Object.defineProperty(this, "defLangDPD", {
+      writable: true,
+      value: {},
+    });
     Object.defineProperty(this, "defMap", {
       writable: true,
       value: undefined,
     });
-    Object.defineProperty(this, "enAbbr", {
+    Object.defineProperty(this, "langAbbr", {
       writable: true,
       value: {},
     });
@@ -171,6 +185,7 @@ export default class SqlDpd {
 
     await sqlDpd.#loadLookup();
     await sqlDpd.#loadHeadwords();
+    await sqlDpd.#loadHeadwordsLang('ru');
     await sqlDpd.#loadAbbreviations();
 
     return sqlDpd;
@@ -294,13 +309,9 @@ export default class SqlDpd {
     }
   }
 
-  async #fetchHeadwords(opts={}) {
+  async #fetchHeadwords() {
     const msg = `SqlDpd.#fetchHeadwords()`;
-    const {
-      dbg = this.dbg,
-      rowLimit = this.rowLimit,
-      headwordPatterns = this.headwordPatterns, // DEPRECATED
-    } = opts;
+    const { dbg, rowLimit, headwordPatterns, } = this;
     let where = headwordPatterns
       ?  `where T1.pattern in ('${headwordPatterns.join("','")}')`
       : '';
@@ -313,7 +324,30 @@ export default class SqlDpd {
       rowLimit ? `limit ${rowLimit}` : '',
     ].join(' ');
     dbg && console.error(msg, '[1]sql', sql);
-    let {stdout, stderr} = await this.bashSql(sql, opts);
+    let {stdout, stderr} = await this.bashSql(sql);
+    dbg && console.error(msg, '[2]stdout,stderr', 
+      stdout?.length, stderr?.length);
+    return {stdout, stderr};
+  }
+
+  async #fetchHeadwordsLang(lang) {
+    const msg = `SqlDpd.#fetchHeadwordsRU()`;
+    const { dbg, rowLimit, } = this;
+    let where = '';
+    let cols = DPD_HEADWORD_COLS_LANG[lang];
+    if (cols == null) {
+      throw new Error(`${msg} lang?`);
+    }
+    let sql = [
+      'select',
+      cols.join(','),
+      'from russian T1',
+      where,
+      `order by id`,
+      rowLimit ? `limit ${rowLimit}` : '',
+    ].join(' ');
+    dbg && console.error(msg, '[1]sql', sql);
+    let {stdout, stderr} = await this.bashSql(sql);
     dbg && console.error(msg, '[2]stdout,stderr', 
       stdout?.length, stderr?.length);
     return {stdout, stderr};
@@ -363,6 +397,46 @@ export default class SqlDpd {
     return (this.dpdHeadwords = headwordMap);
   }
 
+  async #loadHeadwordsLang(lang) {
+    const msg = 'SqlDpd.#loadHeadwordsRU:';
+
+    let headwords;
+    let headwordMap;
+    try {
+      let {
+        dbg,
+        verboseRows,
+        headwordUsage,
+      } = this;
+      let {stdout,stderr} = await this.#fetchHeadwordsLang(lang);
+      dbg && console.error(msg, '[0.1]stdout', stdout.length);
+      headwords = JSON.parse(stdout);
+      dbg && console.error(msg, '[1]headwords', headwords.length);
+      headwordMap = headwords.reduce((a,hw,i)=>{
+        let {
+          id, pattern, meaning_1, meaning_2, meaning_lit,
+        } = hw;
+        if (headwordUsage[id] > 0) {
+          a[id] = {
+            id, meaning_1, meaning_2, meaning_lit,
+          };
+        }
+        return a;
+      }, {});
+      if (dbg && verboseRows) {
+        for (let i=0; i<verboseRows; i++) {
+          let hwi = JSON.stringify(headwords[i], (k,v)=>v||undefined);
+          console.error(' ', hwi);
+        }
+        console.error('  ...');
+      }
+    } catch(e) {
+      console.error(msg, e);
+      throw e;
+    }
+    return (this.langHeadwords[lang] = headwordMap);
+  }
+
   async loadPatterns(opts={}) {
     const msg = `SqlDpd.loadPatterns()`;
     let { 
@@ -408,11 +482,11 @@ export default class SqlDpd {
 
   async #buildDefinitions() {
     const msg = `SqlDpd.#buildDefinitions:`;
-    let dbg = DBG.SQL_DPD_BUILD || this.dbg;
+    let dbg = DBG.BUILD_DEFINITIONS || DBG.SQL_DPD_BUILD || this.dbg;
     let { 
-      lang,
       dataDir,
       dpdHeadwords,
+      langHeadwords,
       verboseRows,
       headwordUsage,
     } = this;
@@ -437,7 +511,7 @@ export default class SqlDpd {
     this.defPali = defPali;
 
     /* Write out definition lines for English, which is the
-     * template used for all DPD translations.
+     * template used for all MS-DPD translations.
      */
     let defLang = hwIds.reduce((a,n)=>{
       let key = HeadwordKey.fromNumber(n);
@@ -449,12 +523,37 @@ export default class SqlDpd {
       ].join('|');
       return a;
     }, {});
-    let fnLang = `definition-${lang}.mjs`;
-    let langDir = path.join(dataDir, lang);
+    let fnLang = `definition-en.mjs`;
+    let langDir = path.join(dataDir, 'en');
     let defLangPath = path.join(langDir, fnLang);
     await this.writeMap(defLangPath, 'export const DEF_LANG=', 
       defLang);
     this.defLang = defLang;
+
+    // Write out definition lines for RU
+    const DPD_LANGS = ['ru'];
+    for (let i=0; i<DPD_LANGS.length; i++) {
+      let lang = DPD_LANGS[i];
+      let dpdLangHeadwords = langHeadwords[lang];
+      let defLang = hwIds.reduce((a,n)=>{
+        let key = HeadwordKey.fromNumber(n);
+        let headword = dpdLangHeadwords[n] || dpdHeadwords[n];
+        let { meaning_1, meaning_2, meaning_lit } = headword;
+        a[key] = [
+          meaning_1 || meaning_2,
+          '',
+          meaning_lit,
+        ].join('|');
+        return a;
+      }, {});
+      let fnLang = `definition-${lang}.mjs`;
+      let langDir = path.join(dataDir, lang);
+      let defLangPath = path.join(langDir, fnLang);
+      await this.writeMap(defLangPath, 'export const DEF_LANG=', 
+        defLang);
+      this.defLangDPD[lang] = defLang;
+    }
+
   }
 
   async #buildIndex() {
@@ -515,23 +614,38 @@ export default class SqlDpd {
       }
       return a;
     }, {});
+    this.langAbbr.en = enAbbr;
+    let ruAbbr = rows.reduce((a,row)=>{
+      let { lookup_key, abbrev } = row;
+      let json = abbrev && JSON.parse(abbrev) || {};
+      a[lookup_key] = { 
+        abbreviation: json.ru_abbrev,
+        meaning: json.ru_meaning,
+      }
+      return a;
+    }, {});
     dbg && console.error(msg, '[1]rows', rows.length);
-    dbg>1 && console.error(msg, '[1.1]enAbbr', enAbbr);
-    this.enAbbr = enAbbr;
+    dbg>1 && console.error(msg, '[1.1]ruAbbr', ruAbbr);
+    this.langAbbr.ru = ruAbbr;
   }
 
   async #buildAbbreviations() {
     const msg = 'SqlDpd.#buildAbbreviations';
-    let { dbg, enAbbr, dataDir } = this;
-    let fname = 'abbreviation-en.mjs';
-    let fpath = path.join(dataDir, 'en', fname);
-    let json = JSON.stringify(enAbbr, null, 2);
-    let mjs = [
-      'export const ABBREVIATIONS =',
-      json,
-    ].join(' ');
-    await fsp.writeFile(fpath, mjs);
-    dbg && console.error(msg, `[1]${fpath}`, json.length);
+    let { langAbbr, dataDir } = this;
+    let dbg = DBG.BUILD_ABBREVIATIONS || this.dbg;
+    let langs = Object.keys(langAbbr);
+    for (let i=0; i<langs.length; i++) {
+      let lang = langs[i];
+      let fname = `abbreviation-${lang}.mjs`;
+      let fpath = path.join(dataDir, lang, fname);
+      let json = JSON.stringify(langAbbr[lang], null, 2);
+      let mjs = [
+        'export const ABBREVIATIONS =',
+        json,
+      ].join(' ');
+      await fsp.writeFile(fpath, mjs);
+      dbg && console.error(msg, `[1]${fpath}`, json.length);
+    }
   }
 
 }
