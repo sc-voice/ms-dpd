@@ -147,7 +147,7 @@ async function main() {
     let T_POS = 'POS';
     let T_STEM = 'STEM';
     let T_MEANING ='MEANING';
-    let T_WORD = 'WORD';
+    let T_WORD = 'LEMMA';
     let typePad = T_TYPE.length;
     let constrPad = T_CONSTR.length;
     let keyPad = T_KEY.length;
@@ -186,6 +186,7 @@ async function main() {
     outLong && titles.push(T_CONSTR.padEnd(constrPad));
     titles.push(T_MEANING);
     console.log.apply(console, titles);
+    rows.sort((a,b)=>a[1].localeCompare(b[1]));
     rows.forEach((row,i)=>{
       let [ 
         key, lemma_1, type, meaning, literal, 
