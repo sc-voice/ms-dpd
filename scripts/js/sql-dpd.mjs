@@ -63,6 +63,7 @@ export default class SqlDpd {
       dataDir = path.join(`${DIRNAME}/../../local/dpd-test`),
       dbg = DBG.SQL_DPD,
       maxBuffer = 20 * 1024 * 1024,
+      lang = 'en',
       mode = 'json',
       paliMap,
       rowLimit = 0,
@@ -79,6 +80,7 @@ export default class SqlDpd {
 
     Object.assign(this, {
       dbg,
+      lang,
       mode,
       rowLimit,
       dataDir,
@@ -176,11 +178,29 @@ export default class SqlDpd {
   static async create(opts={}) {
     const msg = "SqlDpd.create:";
     let {
+      dataDir = path.join(`${DIRNAME}/../../local/dpd-test`),
+      dbg = DBG.SQL_DPD,
+      maxBuffer = 20 * 1024 * 1024,
+      lang = 'en',
+      mode = 'json',
+      paliMap,
+      rowLimit = 0,
       verboseRows = VERBOSE_ROWS,
+      headwordPatterns, // DEPRECATED
     } = opts;
 
     SqlDpd.#privateCtor = true;
-    let sqlDpd = new SqlDpd(opts);
+    let sqlDpd = new SqlDpd({
+      dataDir,
+      dbg,
+      maxBuffer,
+      lang,
+      mode,
+      paliMap,
+      rowLimit,
+      verboseRows,
+      headwordPatterns, // DEPRECATED
+    });
     SqlDpd.#privateCtor = false;
 
     await sqlDpd.#loadLookup();

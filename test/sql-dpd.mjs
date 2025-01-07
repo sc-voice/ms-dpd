@@ -12,7 +12,7 @@ import { default as HeadwordKey } from '../src/headword-key.mjs';
 const DIRNAME = import.meta.dirname;
 
 let msg = M;
-let DATADIR = path.join(DIRNAME, "../local/dpd-test1");
+let DATADIR = path.join(DIRNAME, "../local/dpd-test");
 
 typeof describe==="function" && describe("sql-dpd", function() {
   this.timeout(10*1000);
@@ -31,7 +31,7 @@ typeof describe==="function" && describe("sql-dpd", function() {
 
     should(eCaught.message).match(/use SqlDpd.create/);
   });
-  it("create() default", async()=>{
+  it("TESTTESTcreate() default", async()=>{
     let sqlDpd = await SqlDpd.create();
     should(sqlDpd).properties({
       dbg: DBG.SQL_DPD > 1 ? 1 : 0,
@@ -53,7 +53,7 @@ typeof describe==="function" && describe("sql-dpd", function() {
     const msg = `${M}@37:`;
     let paliMap = {devi:1};
     let verboseRows = 0;
-    let dataDir = path.join(import.meta.dirname, '../local/dpd-test2');
+    let dataDir = DATADIR+'2';
     let dbg = 0;
 
     let sqlDpd = await SqlDpd.create({
@@ -143,12 +143,12 @@ typeof describe==="function" && describe("sql-dpd", function() {
     let hwIds = Object.keys(dpdHeadwords);
     should(hwIds.length).equal(2); // devi
   });
-  it("build()", async()=>{
+  it("TESTTESTbuild()", async()=>{
     const msg = 'test.sql-dpd@144';
     let paliMap = { devi:1, aggi:1, "evaṁ":1 }; // test words
     let sqlDpd = await SqlDpd.create({paliMap});
     await sqlDpd.build();
-    let { enAbbr, hwKeys, defPali, defLang, defMap } = sqlDpd;
+    let { langAbbr, hwKeys, defPali, defLang, defMap } = sqlDpd;
 
     should(defMap.aggi).equal('AS,BG');
     should(defLang['AS']).equal('fire||');
@@ -164,6 +164,7 @@ typeof describe==="function" && describe("sql-dpd", function() {
     should(defPali['4iU'])
     .equal('|ind|eva+aṃ|-|evaṃ 1');
 
+    let { en:enAbbr } = langAbbr;
     should(enAbbr.pr).properties({meaning:'present tense'});
     let pAbbr = path.join(DATADIR, 'en', 'abbreviation-en.mjs');
     should(fs.existsSync(pAbbr)).equal(true);
@@ -197,7 +198,7 @@ typeof describe==="function" && describe("sql-dpd", function() {
     const msg = `${M}@197:`;
     let paliMap = {devi:1};
     let verboseRows = 0;
-    let dataDir = path.join(import.meta.dirname, '../local/dpd-test-ru');
+    let dataDir = DATADIR+"-ru";
 
     let sqlDpd = await SqlDpd.create({ paliMap, verboseRows, dataDir });
     await sqlDpd.build();
