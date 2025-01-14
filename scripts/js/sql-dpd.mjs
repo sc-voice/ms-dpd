@@ -17,7 +17,7 @@ const DPD_HEADWORD_COLS = [
   'pos',
   'pattern',
   'meaning_1',
-  'meaning_2',
+  'meaning_2 meaning_raw',
   'meaning_lit',
   'construction',
   'stem',
@@ -27,7 +27,7 @@ const DPD_HEADWORD_COLS_LANG = {
   ru: [
     'T1.id',
     'T1.ru_meaning meaning_1',
-    'T1.ru_meaning_raw meaning_2',
+    'T1.ru_meaning_raw meaning_raw',
     'T1.ru_meaning_lit meaning_lit',
   ],
 }
@@ -390,14 +390,14 @@ export default class SqlDpd {
       dbg && console.error(msg, '[1]headwords', headwords.length);
       headwordMap = headwords.reduce((a,hw,i)=>{
         let {
-          id, pattern, meaning_1, meaning_2, meaning_lit,
+          id, pattern, meaning_1, meaning_raw, meaning_lit,
           pos, source_1, construction, stem, lemma_1,
         } = hw;
         if (headwordUsage[id] > 0) {
           // Copmact construction by removing extra spaces (~3%)
           construction = construction.split(/ ?\+ ?/).join('+');
           a[id] = {
-            id, pattern, meaning_1, meaning_2, meaning_lit,
+            id, pattern, meaning_1, meaning_raw, meaning_lit,
             pos, source_1, construction, stem, lemma_1
           };
         }
@@ -434,11 +434,11 @@ export default class SqlDpd {
       dbg && console.error(msg, '[1]headwords', headwords.length);
       headwordMap = headwords.reduce((a,hw,i)=>{
         let {
-          id, pattern, meaning_1, meaning_2, meaning_lit,
+          id, pattern, meaning_1, meaning_raw, meaning_lit,
         } = hw;
         if (headwordUsage[id] > 0) {
           a[id] = {
-            id, meaning_1, meaning_2, meaning_lit,
+            id, meaning_1, meaning_raw, meaning_lit,
           };
         }
         return a;
@@ -535,10 +535,10 @@ export default class SqlDpd {
      */
     let defLang = hwIds.reduce((a,n)=>{
       let key = HeadwordKey.fromNumber(n);
-      let { meaning_1, meaning_2, meaning_lit } = dpdHeadwords[n];
+      let { meaning_1, meaning_raw, meaning_lit } = dpdHeadwords[n];
       a[key] = [
-        meaning_1 || meaning_2,
-        '',
+        meaning_1,
+        meaning_1 ? '' : meaning_raw,
         meaning_lit,
       ].join('|');
       return a;
@@ -558,10 +558,10 @@ export default class SqlDpd {
       let defLang = hwIds.reduce((a,n)=>{
         let key = HeadwordKey.fromNumber(n);
         let headword = dpdLangHeadwords[n] || dpdHeadwords[n];
-        let { meaning_1, meaning_2, meaning_lit } = headword;
+        let { meaning_1, meaning_raw, meaning_lit } = headword;
         a[key] = [
-          meaning_1 || meaning_2,
-          '',
+          meaning_1,
+          meaning_1 ? '' : meaning_raw,
           meaning_lit,
         ].join('|');
         return a;

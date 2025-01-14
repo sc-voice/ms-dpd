@@ -77,14 +77,14 @@ typeof describe==="function" && describe("sql-dpd", function() {
       pos: "fem",
       id: 34161,
       meaning_1: "queen",
-      meaning_2: "queen",
+      meaning_raw: "queen",
     });
     should(dpdHeadwords[34162]).properties({
       pattern: "ī fem",
       pos: "fem",
       id: 34162,
       meaning_1: "goddess",
-      meaning_2: "goddess",
+      meaning_raw: "goddess",
     });
     let hwIds = Object.keys(dpdHeadwords);
     should.deepEqual(hwIds, [
@@ -131,22 +131,23 @@ typeof describe==="function" && describe("sql-dpd", function() {
       pos: "fem",
       id: 34161,
       meaning_1: "queen",
-      meaning_2: "queen",
+      meaning_raw: "queen",
     });
     should(dpdHeadwords[34162]).properties({
       pattern: "ī fem",
       pos: "fem",
       id: 34162,
       meaning_1: "goddess",
-      meaning_2: "goddess",
+      meaning_raw: "goddess",
     });
     let hwIds = Object.keys(dpdHeadwords);
     should(hwIds.length).equal(2); // devi
   });
   it("TESTTESTbuild()", async()=>{
     const msg = 'test.sql-dpd@144';
+    let dataDir = DATADIR+"-aggi";
     let paliMap = { devi:1, aggi:1, "evaṁ":1 }; // test words
-    let sqlDpd = await SqlDpd.create({paliMap});
+    let sqlDpd = await SqlDpd.create({paliMap, dataDir});
     await sqlDpd.build();
     let { langAbbr, hwKeys, defPali, defLang, defMap } = sqlDpd;
 
@@ -214,13 +215,13 @@ typeof describe==="function" && describe("sql-dpd", function() {
     should(ruHeadwords[34161]).properties({
       id: 34161,
       meaning_1: "королева",
-      meaning_2: "",
+      meaning_raw: "",
       meaning_lit: "",
     });
     should(ruHeadwords[34162]).properties({
       id: 34162,
       meaning_1: "",
-      meaning_2: "богиня",
+      meaning_raw: "богиня",
       meaning_lit: "",
     });
   });

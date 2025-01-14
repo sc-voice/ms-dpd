@@ -25,6 +25,9 @@ DESCRIPTION
     -hy, --hyphenate WORD
         Hyphenate given word
 
+    -hr, --hide-meaning_raw
+        Hide unreviewed meanings (false)
+
     -l, --language LANG_CODE
         Write out definition is given language specified by 
         2-letter LANG_CODE (en)
@@ -43,6 +46,9 @@ DESCRIPTION
     -mu
         Use "unaccented" search method to show definitions for all Pāli 
         words matching unaccented letters with or without diacriticals
+
+    -v, --verbose
+        Verbose output
 
 EXAMPLES
         dpd dhamma
@@ -63,12 +69,14 @@ async function main() {
   const { default:HeadwordKey } = (await import(
     `${DIRNAME}/../src/headword-key.mjs`));
 
-  let dbg = DBG.DPD;
   let method; // default
   let textArgs = [];
   let outLong = false;
   let lang = 'en';
   let hyphenateWord;
+  let verbose = false;
+  let showMeaningRaw = true;
+  let dbg = DBG.DPD;
   for (let i=0; i<args.length; i++) {
     let arg = args[i];
     let argNext = args[i+1];
@@ -86,8 +94,13 @@ async function main() {
         case '-l':
         case '--language':
           lang = argNext;
-          dbg && console.log(msg, '[1]lang', lang);
+          dbg && console.error(msg, '[1]lang', lang);
           i++;
+          break;
+        case '-hr':
+        case '--hide-meaning_raw':
+          showMeaningRaw = false;
+          dbg & console.error(msg, '[2]showMeaningRaw', showMeaningRaw);
           break;
         case '-me':
           method = 'entry';
@@ -97,6 +110,11 @@ async function main() {
           break;
         case '-md':
           method = 'definition';
+          break;
+        case '-v':
+        case '--verbose':
+          verbose = true;
+          dbg = 1;
           break;
         case '-?':
         case '--help':
@@ -117,7 +135,7 @@ async function main() {
       textArgs = [ textArgs.join(' ') ];
     }
   }
-  let dict = await Dictionary.create({lang});
+  let dict = await Dictionary.create({lang, showMeaningRaw});
 
   if (hyphenateWord) {
     console.log(dict.hyphenate(hyphenateWord));

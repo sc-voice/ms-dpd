@@ -52,7 +52,7 @@ typeof describe === "function" &&
     }
     should(eCaught?.message).match(/Use Dictionary.create/);
   });
-  it("TESTTESTcreate()", async()=>{
+  it("create()", async()=>{
     let dict = await Dictionary.create();
     should(dict.lang).equal('en');
     should(dict.showMeaningRaw).equal(true);
@@ -151,7 +151,7 @@ typeof describe === "function" &&
     let dhammani = entries.find(e=>e.word === 'dhammāni');
     should(dhammani.definition.length).equal(3);
   });
-  it("TESTTESTparseDefinition()", async()=>{
+  it("parseDefinition()", async()=>{
     let dict = await Dictionary.create();
     let entry = dict.entryOf("dhamma");
     let parsed =  dict.parseDefinition(entry.definition[0]);
