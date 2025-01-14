@@ -52,9 +52,11 @@ typeof describe === "function" &&
     }
     should(eCaught?.message).match(/Use Dictionary.create/);
   });
-  it("create()", async()=>{
+  it("TESTTESTcreate()", async()=>{
     let dict = await Dictionary.create();
     should(dict.lang).equal('en');
+    should(dict.showMeaningRaw).equal(true);
+
     should(Dictionary.LICENSE).match(/digitalpalidictionary/);
     should(Dictionary.DEFINITION_KEYS.length).above(60000).below(70000);
   });
@@ -80,14 +82,12 @@ typeof describe === "function" &&
       key: '90U',
     });
     should(def0).properties({ // Language properties
-      meaning_1: 'nature; character',
-      meaning_2: '',
-      meaning_lit: '',
+      meaning_1: 'nature; character', // reviewed meaning
+      meaning_raw: '',  // unreviewed meaning (AI, Buddhadatta, etc.)
+      meaning_lit: '',  // literal meaning
     });
-    should(def0).properties({ // Legacy properties
-      type: 'masc',
+    should(def0).properties({ // virtual properties
       meaning: 'nature; character',
-      literal: '',
     });
 
     //console.log(msg, 'DHAMA', dhamma.definition.map((d,i)=>d));
@@ -100,7 +100,7 @@ typeof describe === "function" &&
     });
     should(defAlt).properties({ // Language properties
       meaning_1: 'teaching; discourse; doctrine',
-      meaning_2: '',
+      meaning_raw: '',
       meaning_lit: '',
     });
     //  .match(/nt.*teaching; discourse;/);
@@ -151,16 +151,43 @@ typeof describe === "function" &&
     let dhammani = entries.find(e=>e.word === 'dhammāni');
     should(dhammani.definition.length).equal(3);
   });
-  it("parseDefinition()", async()=>{
+  it("TESTTESTparseDefinition()", async()=>{
     let dict = await Dictionary.create();
     let entry = dict.entryOf("dhamma");
     let parsed =  dict.parseDefinition(entry.definition[0]);
     should(parsed).properties({
-      type: 'masc',
+      pos: 'masc',
       meaning: 'nature; character',
-      literal: '',
+      meaning_lit: '',
       construction: '√dhar+ma',
     });
+    should.deepEqual(dict.parseDefinition("|a|b|c|d|e|f|g|h|i|j|k"), {
+      meaning_1: '',
+      meaning_raw: 'a',
+      meaning_lit: 'b', // literal meaning
+      pattern: 'c', 
+      pos: 'd',
+      construction: 'e',
+      stem: 'f',
+      lemma_1: 'g', 
+      key:'h',
+
+      // virtual fields
+      type: 'd DEPRECATED',
+      literal: 'b DEPRECATED', // literal meaning
+      meaning: 'a', // displayed meaning (meaning_raw)
+    })
+
+    dict.showMeaningRaw = false;
+    should.deepEqual(dict.parseDefinition("|a|b"), {
+      literal: 'b DEPRECATED', // literal meaning
+      meaning: '',  // displayed meaning (meaning_1)
+      meaning_1: '',  // reviewed content
+      meaning_raw: 'a', // unreviewed content
+      meaning_lit: 'b',
+      type: 'DEPRECATED',
+    });
+
   });
   it("findWords()", async()=>{
     const msg = 'test.dictionary@153';
@@ -222,8 +249,8 @@ typeof describe === "function" &&
     ]);
     should(dhamma.data[0]).properties({
       word: 'dhamma',
-      type: 'masc',
-      literal: '',
+      pos: 'masc',
+      meaning_lit: '',
       construction: '√dhar+ma',
       meaning: 'nature; character',
     });
@@ -246,15 +273,15 @@ typeof describe === "function" &&
     should(dhamma_rom.data.length).equal(34);
     should(dhamma_rom.data[0]).properties( { // same as "dhamma"
       word: 'dhamma',
-      type: 'masc',
-      literal: '',
+      pos: 'masc',
+      meaning_lit: '',
       construction: '√dhar+ma',
       meaning: 'nature; character',
     });
     should(dhamma_rom.data[17]).properties( { // almost like "dhamma"
       word: 'dhammā', 
-      type: 'masc',
-      literal: '',
+      pos: 'masc',
+      meaning_lit: '',
       construction: '√dhar+ma',
       meaning: 'nature; character',
     });
@@ -268,8 +295,8 @@ typeof describe === "function" &&
     should(virtue.data.length).equal(2);
     should(virtue.data[0]).properties( {
       word: 'sīlagga',
-      type: 'nt',
-      literal: '',
+      pos: 'nt',
+      meaning_lit: '',
       meaning: 'the highest ethical conduct; superior virtue',
       construction: 'sīla+agga',
     });
@@ -288,16 +315,16 @@ typeof describe === "function" &&
     let dhamma = virtue.data.find(d=>d.word === "dhamma");
     should(dhamma).properties({
       word: 'dhamma',
-      type: 'masc',
-      literal: '',
+      pos: 'masc',
+      meaning_lit: '',
       meaning: 'virtue; moral behaviour',
       construction: '√dhar+ma',
     });
     let dhammasmim = virtue.data.find(d=>d.word === "dhammasmiṁ");
     should(dhammasmim).properties({
       word: 'dhammasmiṁ',
-      type: 'masc',
-      literal: '',
+      pos: 'masc',
+      meaning_lit: '',
       meaning: 'virtue; moral behaviour',
       construction: '√dhar+ma',
     });

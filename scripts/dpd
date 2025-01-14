@@ -60,6 +60,8 @@ async function main() {
     `${DIRNAME}/../src/defines.mjs`));
   const { default:Dictionary } = (await import(
     `${DIRNAME}/../src/dictionary.mjs`));
+  const { default:HeadwordKey } = (await import(
+    `${DIRNAME}/../src/headword-key.mjs`));
 
   let dbg = DBG.DPD;
   let method; // default
@@ -140,30 +142,32 @@ async function main() {
     console.log("".padEnd(title.length+1, "-"));
     console.log(title);
     console.log("".padEnd(title.length+1, "-"));
-    let T_TYPE = 'TYPE';
-    let T_CONSTR = 'CONSTRUCT';
+    let T_CONSTR = outLong ? 'CONSTRUCTION' : 'CNSTR';
+    let T_HWID = outLong ? 'HEADWORD' : 'HWID';
     let T_KEY = 'KEY';
-    let T_PATTERN = 'PAT';
+    let T_PATTERN = outLong ? 'PATTERN' : 'PAT';
     let T_POS = 'POS';
     let T_STEM = 'STEM';
     let T_MEANING ='MEANING';
-    let T_WORD = 'LEMMA';
-    let typePad = T_TYPE.length;
+    let T_WORD = outLong ? 'LEMMA_1' : 'LEMMA';
     let constrPad = T_CONSTR.length;
     let keyPad = T_KEY.length;
+    let hwidPad = T_HWID.length;
     let patternPad = T_PATTERN.length;
     let posPad = T_POS.length;
     let stemPad = T_STEM.length;
     let wordPad = T_WORD.length;
     let rows = data.map(row=>{
       let { 
-        key='', lemma_1='', type='', meaning='', literal='', 
+        key='', lemma_1='', meaning='', meaning_lit='', 
         construction='', pos='', pattern='', stem='', 
       } = row;
+      let hwid = HeadwordKey.toNumber(key)+'';
       wordPad = Math.max(wordPad, lemma_1.length);
-      typePad = Math.max(typePad, type.length);
+      posPad = Math.max(posPad, pos.length);
       constrPad = Math.max(constrPad, construction.length);
       keyPad = Math.max(keyPad, key.length);
+      hwidPad = Math.max(hwidPad, hwid.length);
       patternPad = Math.max(patternPad, pattern.length);
       posPad = Math.max(posPad, pos.length);
       stemPad = Math.max(stemPad, stem.length);
@@ -173,12 +177,13 @@ async function main() {
       }
 
       return [
-        key, lemma_1, type, meaning, literal, 
-        construction, pattern, pos, stem,
+        key, lemma_1, pos, meaning, meaning_lit, 
+        construction, pattern, stem, hwid
       ];
     });
     let titles = [ '#'.padStart(2), ];
     outLong && titles.push(T_KEY.padEnd(keyPad));
+    outLong && titles.push(T_HWID.padEnd(hwidPad));
     titles.push(T_WORD.padEnd(wordPad));
     titles.push(T_PATTERN.padEnd(patternPad));
     outLong && titles.push(T_POS.padEnd(posPad));
@@ -189,17 +194,20 @@ async function main() {
     rows.sort((a,b)=>a[1].localeCompare(b[1]));
     rows.forEach((row,i)=>{
       let [ 
-        key, lemma_1, type, meaning, literal, 
-        construction, pattern, pos, stem,
+        key, lemma_1, pos, meaning, meaning_lit, 
+        construction, pattern, stem, hwid
       ] = row;
       let cols = [ `${i+1}`.padStart(2) ];
       outLong && cols.push(key.padEnd(keyPad));
+      outLong && cols.push(hwid.padEnd(hwidPad));
       cols.push(lemma_1.padEnd(wordPad));
       cols.push(pattern.padEnd(patternPad));
       outLong && cols.push(pos.padEnd(posPad));
       outLong && cols.push(stem.padEnd(stemPad));
       outLong && cols.push(construction.padEnd(constrPad));
-      cols.push(literal ? `${meaning}; lit. ${literal}` : meaning);
+      cols.push(meaning_lit 
+        ? `${meaning}; lit. ${meaning_lit}` 
+        : meaning);
       console.log.apply(console, cols);
     });
   }

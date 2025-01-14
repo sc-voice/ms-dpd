@@ -68,9 +68,9 @@ typeof describe === "function" &&
     should(dhamma).properties({word:"dhamma"});
     let def0 = dict.parseDefinition(dhamma.definition[0]);
     should(def0).properties({
-      type: 'masc',
+      pos: 'masc',
       meaning: 'nature; character',
-      literal: '',
+      meaning_lit: '',
       construction: '√dhar+ma',
       lemma_1: 'dhamma 1.01',
     });

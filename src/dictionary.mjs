@@ -144,6 +144,7 @@ export default class Dictionary {
         dpdTexts,
         defLang,
         index=INDEX,
+        showMeaningRaw = true,
         verboseRows=DBG.VERBOSE_ROWS,
       } = opts;
 
@@ -153,6 +154,7 @@ export default class Dictionary {
       let dict = new Dictionary({
         lang,
         index,
+        showMeaningRaw,
       });
       DICT_CREATE = false;
 
@@ -395,6 +397,7 @@ export default class Dictionary {
 
   parseDefinition(d) {
     const msg = 'Dictionary.parseDefinition()';
+    let { showMeaningRaw } = this;
     if (d == null) {
       throw new Error(`${msg} d?`);
     }
@@ -403,16 +406,20 @@ export default class Dictionary {
     }
     if (typeof d === 'string') {
       let [ 
-        meaning_1, meaning_2, meaning_lit, 
+        meaning_1,  // reviewed meaning
+        meaning_raw, // unreviewed meaning (Bodhidatta, AI, etc.)
+        meaning_lit, // literal meaning
         pattern, pos, construction, stem, lemma_1, key
       ] = d.split('|');
       let result = JSON.parse(JSON.stringify({
         key,
-        meaning_1, meaning_2, meaning_lit, 
+        meaning_1, meaning_raw, meaning_lit, 
         pattern, pos, construction, 
-        type: pos,
-        meaning: meaning_1 || meaning_2,
-        literal: meaning_lit,
+        type: pos ? `${pos} DEPRECATED` : 'DEPRECATED',
+        meaning: showMeaningRaw
+          ? meaning_1 || meaning_raw
+          : meaning_1,
+        literal: meaning_lit ? `${meaning_lit} DEPRECATED` : 'DEPRECATED',
         stem,
         lemma_1,
       }));
