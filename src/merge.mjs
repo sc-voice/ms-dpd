@@ -87,12 +87,13 @@ export class Merge {
     let delKeys =  Object.keys(srcPatch.delete);
     let addKeys =  Object.keys(srcPatch.add);
     dbg && console.log({delKeys, addKeys});
+    let ignored = 0;
 
     let conflicts = {};
+    let updated = {};
     let result = {
       conflicts,
       deleted:[], 
-      updated:[], 
       added:[],
       dst,
     };
@@ -101,20 +102,27 @@ export class Merge {
       let valSrcBase = srcBase[key];
       let valSrcNew = srcPatch.add[key];
 
-      if (valDstHead !== valSrcBase) {
-        conflicts[key] = {
+      if (valDstHead === valSrcNew) {
+        if (valSrcNew == null) { // really a delete
+          ignored++; // already patched
+          dbg>1 && console.log(msg, '[1]ignore', key, valDstHead);
+        }
+      } else if (valDstHead !== valSrcBase) {
+        let conf = {
           dstHead: valDstHead,
           srcNew: valSrcNew,
           srcBase: valSrcBase,
         }
+        dbg>1 && console.log(msg, '[2]conflict', key, conf);
+        conflicts[key] = conf;
       } else if (valSrcNew) { 
         dst[key] = valSrcNew;
-        a.updated.push(key);
-        dbg && console.log(msg, '[1]update', key);
+        updated[key] = true;
+        dbg && console.log(msg, '[3]update', key);
       } else {
         delete dst[key];
         a.deleted.push(key);
-        dbg && console.log(msg, '[2]delete', key);
+        dbg && console.log(msg, '[4]delete', key);
       }
       return a;
     }, result);
@@ -124,22 +132,31 @@ export class Merge {
       if (valDstHead == null) {
         dst[key] = valSrcNew;
         result.added.push(key);
-        dbg && console.log(msg, '[3]add', key);
-      } else if (valDstHead === valSrcNew ) {
-        dbg>1 && console.log(msg, '[4]ignore', key, valDstHead);
+        dbg && console.log(msg, '[5]add', key);
+      } else if (valDstHead === valSrcNew) {
+        if (!updated[key]) {
+          ignored++;
+          dbg>1 && console.log(msg, '[6]ignore', key, valDstHead);
+        }
       } else if (conflicts[key]==null) {
         conflicts[key] = {
           dst: valDstHead,
           src: valSrcNew,
         }
         // unexpected conflict should never happen
-        console.log(msg, '[5]CONFLICT?', key, {
+        console.log(msg, '[7]CONFLICT?', key, {
           valDstHead, valSrcNew});
       }
     });
     let { added } = this.patchHead(dst, srcPatch);
 
     result.added = [...result.added, ...added ];
+    result.ignored = ignored;
+    result.updated = Object.keys(updated);
+    result.changed = 
+      result.added.length + 
+      result.deleted.length + 
+      result.updated.length;
 
     return result;
   }

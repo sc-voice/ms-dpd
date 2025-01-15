@@ -189,7 +189,9 @@ async function updateFile(dstPath, srcBase, srcPatch) {
   let dstHead = await loadDefinitions(dstPath);
   let merge = new Merge({srcBase, srcPatch});
   let res = merge.patch(dstHead);
-  let { dst, conflicts, added, deleted, updated } = res;
+  let { 
+    dst, conflicts, added, deleted, updated, ignored, changed,
+  } = res;
   let nConflicts = Object.keys(conflicts).length;
   let dstDir = path.dirname(dstPath);
   let date = new Date();
@@ -214,6 +216,8 @@ async function updateFile(dstPath, srcBase, srcPatch) {
     updated: updated.reduce((a,k)=>{a[k]=dst[k];return a}, {}), 
     deleted: deleted.reduce((a,k)=>{ a[k]=dstHead[k];return a }, {}), 
     conflicts, 
+    changed,
+    ignored,
   }
   await fsp.writeFile(statusPath, JSON.stringify(status,null,2));
   let hwKeys = Object.keys(dst).sort((a,b)=>{
@@ -235,6 +239,8 @@ async function updateFile(dstPath, srcBase, srcPatch) {
     `added:${added.length}`,
     `updated:${updated.length}`,
     `deleted:${deleted.length}`,
+    `ignored: ${ignored}`,
+    `changed: ${changed}`,
     `conflicts:${nConflicts}`,
   );
 }

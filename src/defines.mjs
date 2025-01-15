@@ -20,6 +20,7 @@ export const DBG = {
   PALI: 0,
   RELATED_ENTRIES: 0,
   SANKEY: 0,
+  SKIP_SLOW_TESTS: 0,
   SQL_DPD: 0,
   SQL_DPD_BUILD: 0,
   TBD: 0,

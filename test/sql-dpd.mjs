@@ -15,6 +15,10 @@ let msg = M;
 let DATADIR = path.join(DIRNAME, "../local/dpd-test");
 
 typeof describe==="function" && describe("sql-dpd", function() {
+  if (DBG.SKIP_SLOW_TESTS) {
+    console.log("Skipping test/sql-dpd.mjs");
+    return;
+  }
   this.timeout(10*1000);
   before(()=>{
     //console.log(msg, "before");
@@ -31,7 +35,7 @@ typeof describe==="function" && describe("sql-dpd", function() {
 
     should(eCaught.message).match(/use SqlDpd.create/);
   });
-  it("TESTTESTcreate() default", async()=>{
+  it("create() default", async()=>{
     let sqlDpd = await SqlDpd.create();
     should(sqlDpd).properties({
       dbg: DBG.SQL_DPD > 1 ? 1 : 0,
@@ -143,7 +147,7 @@ typeof describe==="function" && describe("sql-dpd", function() {
     let hwIds = Object.keys(dpdHeadwords);
     should(hwIds.length).equal(2); // devi
   });
-  it("TESTTESTbuild()", async()=>{
+  it("build()", async()=>{
     const msg = 'test.sql-dpd@144';
     let dataDir = DATADIR+"-aggi";
     let paliMap = { devi:1, aggi:1, "evaṁ":1 }; // test words
@@ -195,7 +199,7 @@ typeof describe==="function" && describe("sql-dpd", function() {
     should(SqlDpd.binarySearch(data, "ye")).equal(2);
     should(SqlDpd.binarySearch(data, "yx")).equal(-1);
   });
-  it("TESTTESTbuild() ru", async()=>{
+  it("build() ru", async()=>{
     const msg = `${M}@197:`;
     let paliMap = {devi:1};
     let verboseRows = 0;

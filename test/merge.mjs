@@ -35,6 +35,14 @@ const PT_HEAD = {
   5: "five EN",
 }
 
+const PT_PATCHED = {
+  1: "one PT",          // src:---,    dst:update => update
+  2: "two EN changed",  // src:update, dst:---    => update
+  3: "three EN (oops)", // src:---, d  dst:delete => restore
+  //4: "four EN (del)", // src:delete, dst:---    => delete
+  5: "five EN",         // src:---,    dst:---    => ---
+  6: "six EN new",      // src:new,    dst:---    => add
+}
 
 const DIFF_EN = `
 CMD	: sync
@@ -91,20 +99,15 @@ typeof describe === "function" &&
     should(eCaught instanceof Error);
     should(eCaught.message).match(/string or Patch/);
   });
-  it("patch() pt", ()=>{
+  it("TESTTESTpatch() pt", ()=>{
     let srcBase = EN_BASE;
     let srcPatch = DIFF_EN;
     let mrg = new Merge({ srcBase, srcPatch });
 
     let res = mrg.patch(PT_HEAD);
-    should.deepEqual(res.dst, {
-      1: "one PT",          // src:---,    dst:update => update
-      2: "two EN changed",  // src:update, dst:---    => update
-      3: "three EN (oops)", // src:---, d  dst:delete => restore
-      //4: "four EN (del)", // src:delete, dst:---    => delete
-      5: "five EN",         // src:---,    dst:---    => ---
-      6: "six EN new",      // src:new,    dst:---    => add
-    });
+    should.deepEqual(res.dst, PT_PATCHED);
+    should(res.ignored).equal(0);
+    should(res.changed).equal(3);
     should.deepEqual(res.conflicts, {
       1: { 
         dstHead: 'one PT', 
@@ -115,5 +118,27 @@ typeof describe === "function" &&
     should.deepEqual(res.added, [ '6', ]);
     should.deepEqual(res.deleted, [ '4', ]);
     should.deepEqual(res.updated, [ '2', ]);
+  });
+  it("patch() pt (twice)", ()=>{
+    let srcBase = EN_BASE;
+    let srcPatch = DIFF_EN;
+    let mrg = new Merge({ srcBase, srcPatch });
+
+    // patching something twice should be benign
+    let res = mrg.patch(PT_PATCHED);
+    should.deepEqual(res.dst, PT_PATCHED);
+    should(res.ignored).equal(3);
+    should(res.changed).equal(0);
+    // even with no changes, EN/PT conflict remains
+    should.deepEqual(res.conflicts, {
+      1: { // changed in both EN/PT
+        dstHead: 'one PT', 
+        srcBase: 'one EN',
+        srcNew: 'one EN changed',
+      },
+    });
+    should.deepEqual(res.added, []);
+    should.deepEqual(res.deleted, []);
+    should.deepEqual(res.updated, []);
   });
 });
