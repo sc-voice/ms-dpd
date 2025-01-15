@@ -242,8 +242,15 @@ async function updateFile(dstPath, srcBase, srcPatch) {
     `deleted:${deleted.length}`,
     `ignored: ${ignored}`,
     `changed: ${changed}`,
-    `conflicts:${nConflicts}`,
   );
+  if (conflicts) {
+    console.error(msg, '///////////////// WARNING ////////');
+    console.error(msg, `/// conflicts:${nConflicts}`);
+    console.error(msg, `/// see ${statusPath}`);
+    console.error(msg, '//////////////////////////////////');
+  } else {
+    console.error(msg, `conflicts:0 (OK)`);
+  }
 }
 
 async function main() {
