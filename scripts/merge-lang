@@ -1,0 +1,36 @@
+#!/usr/bin/bash
+SCRIPT=`basename $0`
+DIRNAME=`dirname $0`
+
+echo $SCRIPT BEGIN `date`
+COMMIT=$1
+
+function MERGE_LANG () {
+  FNAME=dpd/$1/definition-$1.mjs
+  read -p "$SCRIPT: Update $FNAME with EN changes? (y/n)" yn
+  if [[ "$yn" == "y" || "$yn" == "" ]]; then
+    echo $SCRIPT: Merging $FNAME...
+    $DIRNAME/merge-en -bc $COMMIT $FNAME
+  fi
+}
+
+if [[ "$COMMIT" == "" ]]; then
+  echo $SCRIPT: NAME
+  echo $SCRIPT: "  $SCRIPT - Merge EN changes into other language definitions"
+  echo $SCRIPT: SYNOPSIS
+  echo $SCRIPT: "  $SCRIPT ENBASECOMMIT"
+  echo $SCRIPT:
+  echo $SCRIPT: DESCRIPTION
+  echo $SCRIPT: "  Merges changes from dpd/en/defintion.en.mjs since"
+  echo $SCRIPT: "  since ENBASECOMMIT into dpd/* (excluding dpd/ru)."
+  echo $SCRIPT: "  ENBASECOMMIT is required".
+  exit 1
+fi
+echo $SCRIPT Merging changes from EN base commit $COMMIT
+
+MERGE_LANG de
+MERGE_LANG es
+MERGE_LANG fr
+MERGE_LANG pt
+
+echo $SCRIPT END `date`

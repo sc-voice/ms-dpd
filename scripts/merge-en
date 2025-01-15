@@ -211,6 +211,7 @@ async function updateFile(dstPath, srcBase, srcPatch) {
   let status = {
     date,
     baseCommit,
+    comment: "(replace this text as desired)",
     dstPath,
     added: added.reduce((a,k)=>{a[k]=dst[k];return a}, {}), 
     updated: updated.reduce((a,k)=>{a[k]=dst[k];return a}, {}), 
