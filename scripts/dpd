@@ -25,7 +25,7 @@ DESCRIPTION
     -hy, --hyphenate WORD
         Hyphenate given word
 
-    -hr, --hide-meaning_raw
+    -hr, --hide-meaning_raw, --hide-raw
         Hide unreviewed meanings (false)
 
     -l, --language LANG_CODE
@@ -98,7 +98,7 @@ async function main() {
           i++;
           break;
         case '-hr':
-        case '--hide-meaning_raw':
+        case '--hide-raw':
           showMeaningRaw = false;
           dbg & console.error(msg, '[2]showMeaningRaw', showMeaningRaw);
           break;
