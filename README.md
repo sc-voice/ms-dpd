@@ -195,15 +195,6 @@ for the wonderful gift of the Digital Pali Dictionary.
 * [DPD tables used by MS-DPD](https://docs.google.com/drawings/d/1Vwx1OVHJUKU3vBxn1KSS4Ut-bdLQLl-WgtPpyVNIei4)
 * [MS-DPD data files](https://docs.google.com/drawings/d/1HXNbbGY82Ma6mP7z42bzfERGKFbOv4pBnPrRPnwnVxc)
 
-### DPD Updates
-To update this library when DPD is updated:
-
-```
-./scripts/dpd-install
-./scripts/build-dpd
-./scripts/publish
-```
-
 ### Multilingual
 
 Multilingual content is split out by language code in the
@@ -225,4 +216,8 @@ In particular, we would like to thank:
 
 * All of the users of [SC-Voice](https://sc-voice.net), who are constantly teaching us better ways to access the wisdom found in the EBTs.
 
+
+### MS-DPD Wiki
+
+* [DPD Update Process](https://github.com/sc-voice/ms-dpd/wiki/MS%E2%80%93DPD-Update-Process)
 
