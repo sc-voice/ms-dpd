@@ -4,6 +4,10 @@ DIRNAME=`dirname $SCRIPT`
 node - <<'JS' $DIRNAME "$@"
 let [ SCRIPT, DASH, DIRNAME, ...args] = process.argv;
 const msg = `${SCRIPT}:`;
+//const CLR_RAW = "\u001b[31m"; // red
+//const CLR_RAW = "\u001b[35m"; // magenta
+let CLR_RAW = "\u001b[36m"; // cyan
+const CLR_NONE = "\u001b[0m";
 
 function help() {
   console.log(`
@@ -47,6 +51,11 @@ DESCRIPTION
         Use "unaccented" search method to show definitions for all Pāli 
         words matching unaccented letters with or without diacriticals
 
+    -rc, --raw-color COLOR
+        Color to use for meaning_raw. Color codes are numeric:
+        30:black, 31:red, 32:green, 33:yellow, 34:green, 35:magenta, 
+        36:cyan, 37:white, 0:off.  Default is 31.
+
     -v, --verbose
         Verbose output
 
@@ -86,6 +95,11 @@ async function main() {
         case '-hy':
         case '--hyphenate':
           hyphenateWord = argNext;
+          i++;
+          break;
+        case '-rc':
+        case '--raw-color':
+          CLR_RAW = `\u001b[${argNext}m`;
           i++;
           break;
         case '-ol':
@@ -177,7 +191,8 @@ async function main() {
     let wordPad = T_WORD.length;
     let rows = data.map(row=>{
       let { 
-        key='', lemma_1='', meaning='', meaning_lit='', 
+        key='', lemma_1='', 
+        meaning_1='', meaning_raw='', meaning_lit='', 
         construction='', pos='', pattern='', stem='', 
       } = row;
       let hwid = HeadwordKey.toNumber(key)+'';
@@ -194,13 +209,23 @@ async function main() {
         construction = JSON.stringify(construction);
       }
 
+      let meaning = [];
+      if (meaning_1) {
+        meaning.push(meaning_1);
+      }
+      if (meaning_raw) {
+        meaning.push(
+          `${CLR_RAW}${meaning_raw}${CLR_NONE}`
+        );
+      }
+
       return [
-        key, lemma_1, pos, meaning, meaning_lit, 
+        key, lemma_1, pos, meaning.join('; '), meaning_lit, 
         construction, pattern, stem, hwid
       ];
     });
     let titles = [ '#'.padStart(2), ];
-    outLong && titles.push(T_KEY.padEnd(keyPad));
+    titles.push(T_KEY.padEnd(keyPad));
     outLong && titles.push(T_HWID.padEnd(hwidPad));
     titles.push(T_WORD.padEnd(wordPad));
     titles.push(T_PATTERN.padEnd(patternPad));
@@ -216,7 +241,7 @@ async function main() {
         construction, pattern, stem, hwid
       ] = row;
       let cols = [ `${i+1}`.padStart(2) ];
-      outLong && cols.push(key.padEnd(keyPad));
+      cols.push(key.padEnd(keyPad));
       outLong && cols.push(hwid.padEnd(hwidPad));
       cols.push(lemma_1.padEnd(wordPad));
       cols.push(pattern.padEnd(patternPad));

@@ -243,7 +243,7 @@ async function updateFile(dstPath, srcBase, srcPatch) {
     `ignored: ${ignored}`,
     `changed: ${changed}`,
   );
-  if (conflicts) {
+  if (nConflicts) {
     console.error(msg, '///////////////// WARNING ////////');
     console.error(msg, `/// conflicts:${nConflicts}`);
     console.error(msg, `/// see ${statusPath}`);

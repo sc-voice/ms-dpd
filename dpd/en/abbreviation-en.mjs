@@ -47,7 +47,7 @@ export const ABBREVIATIONS = {
   "ger": {
     "abbreviation": "ger",
     "meaning": "gerund",
-    "explanation": "A verb (or verbal adjective), often ending in -ing, expressing ongoing action (eg. doing; making; going)."
+    "explanation": "A verb (or verbal adjective), often ending in -ing, expressing ongoing action (eg. doing; making; going). Also some time can be translated with a combination of having + past participle, expressing completed action (e.g. having approached; having made)."
   },
   "idiom": {
     "abbreviation": "idiom",
