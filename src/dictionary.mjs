@@ -549,9 +549,10 @@ export default class Dictionary {
         result.data.forEach(row=>console.error(msg, '[4]',
           row.word,
           row.construction,
-          row.type, 
-          row.meaning, 
-          row.literal, 
+          row.pos, 
+          row.meaning_1, 
+          row.meaning_raw,
+          row.meaning_lit, 
         ));
       } else {
         console.error(msg, "result?", {pattern, method});

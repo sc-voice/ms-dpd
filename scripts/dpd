@@ -66,26 +66,18 @@ EXAMPLES
   `);
   process.exit(0);
 }
-async function main() {
-  const msg = 'dpd.main()';
-  const path = (await import('path'));
-  const util = require('util');
-  const exec = util.promisify(require('child_process').exec);
-  const { DBG } = (await import(
-    `${DIRNAME}/../src/defines.mjs`));
-  const { default:Dictionary } = (await import(
-    `${DIRNAME}/../src/dictionary.mjs`));
-  const { default:HeadwordKey } = (await import(
-    `${DIRNAME}/../src/headword-key.mjs`));
 
-  let method; // default
-  let textArgs = [];
-  let outLong = false;
-  let lang = 'en';
-  let hyphenateWord;
-  let verbose = false;
-  let showMeaningRaw = true;
-  let dbg = DBG.DPD;
+let method; // default
+let textArgs = [];
+let outLong = false;
+let outJson = false;
+let lang = 'en';
+let hyphenateWord;
+let verbose = false;
+let showMeaningRaw = true;
+let dbg;
+
+function parseArgs() {
   for (let i=0; i<args.length; i++) {
     let arg = args[i];
     let argNext = args[i+1];
@@ -102,7 +94,12 @@ async function main() {
           CLR_RAW = `\u001b[${argNext}m`;
           i++;
           break;
+        case '-oj':
+        case '--out-json':
+          outJson = true;
+          break;
         case '-ol':
+        case '--out-long':
           outLong = true;
           break;
         case '-l':
@@ -139,34 +136,23 @@ async function main() {
       textArgs.push(arg);
     }
   }
-  if (!hyphenateWord && textArgs.length==0) {
-    help();
-  }
+}
 
-  if (textArgs.length > 1) {
-    if (!method || method==='definition') {
-      method = 'definition'
-      textArgs = [ textArgs.join(' ') ];
-    }
-  }
-  let dict = await Dictionary.create({lang, showMeaningRaw});
+async function main() {
+  const msg = 'dpd.main()';
+  const path = (await import('path'));
+  const util = require('util');
+  const exec = util.promisify(require('child_process').exec);
+  const { DBG } = (await import(
+    `${DIRNAME}/../src/defines.mjs`));
+  const { default:Dictionary } = (await import(
+    `${DIRNAME}/../src/dictionary.mjs`));
+  const { default:HeadwordKey } = (await import(
+    `${DIRNAME}/../src/headword-key.mjs`));
+  let dict;
+  let json = [];
 
-  if (hyphenateWord) {
-    console.log(dict.hyphenate(hyphenateWord));
-    return;
-  }
-
-  for (let i=0; i<textArgs.length; i++) {
-    let word = textArgs[i];
-    let info = dict.find(word, {method});
-    if (info == null) {
-      console.log(`${word} (not found)`);
-      let words = dict.wordsWithPrefix(word);
-      words.forEach(word=>{
-        console.log(`  ${word}?`);
-      });
-      return;
-    }
+  function writeTable(word, info) {
     dbg && console.log(msg, '[1]info', info);
     let { method:methodActual, pattern, data } = info;
     let license = ' CC0 https://digitalpalidictionary.github.io/';
@@ -253,6 +239,111 @@ async function main() {
         : meaning);
       console.log.apply(console, cols);
     });
+  } // outLong
+
+  function writeJson(word, info) {
+    let {
+      key, 
+      lemma_1, 
+      pattern,
+      pos,
+      stem, 
+      meaning_1, 
+      meaning_raw, 
+      meaning_lit,
+      construction,
+    } = info;
+    json.push({
+      key, 
+      word, 
+      lemma_1, 
+      pattern,
+      pos,
+      stem, 
+      meaning_1, 
+      meaning_raw, 
+      meaning_lit,
+      construction,
+    })
+  } // writeJson
+
+  parseArgs();
+
+  if (!hyphenateWord && textArgs.length==0) {
+    help();
+  }
+
+  if (textArgs.length > 1) {
+    if (!method || method==='definition') {
+      method = 'definition'
+      textArgs = [ textArgs.join(' ') ];
+    }
+  }
+  dict = await Dictionary.create({lang, showMeaningRaw});
+
+  if (hyphenateWord) {
+    console.log(dict.hyphenate(hyphenateWord));
+    return;
+  }
+
+  for (let i=0; i<textArgs.length; i++) {
+    let word = textArgs[i];
+    let info = dict.find(word, {method});
+    if (info == null) {
+      console.log(`${word} (not found)`);
+      let words = dict.wordsWithPrefix(word);
+      words.forEach(word=>{
+        console.log(`  ${word}?`);
+      });
+      return;
+    }
+
+    if (outJson) {
+      let entries = info.data.map(d=>{
+        let {
+          key, meaning_1, meaning_raw, meaning_lit,
+          pattern, pos, construction, stem, lemma_1, word 
+        } = d;
+        let result = {
+          word,
+          lemma_1,
+          stem,
+          pos,
+          pattern, 
+          construction,
+          key,
+        }
+        meaning_1 && (result.meaning_1 = meaning_1);
+        meaning_raw && (result.meaning_raw = meaning_raw);
+        meaning_lit && (result.meaning_lit = meaning_lit);
+        return result;
+      });
+        
+      json = [ ...json, ...entries];
+    } else {
+      writeTable(word, info);
+    }
+  } // textArgs
+
+  if (outJson) {
+    let cmpOpts = { sensitivity: 'variant'};
+    json.sort((a,b)=>{
+      let cmp = a.word.localeCompare(b.word, undefined, cmpOpts);
+      if (cmp === 0) {
+        cmp = a.lemma_1.localeCompare(b.lemma_1, undefined, cmpOpts);
+      }
+      if (cmp === 0) {
+        cmp = a.stem.localeCompare(b.stem, 'en', cmpOpts);
+      }
+      if (cmp === 0) {
+        cmp = a.pos.localeCompare(b.pos, 'en', cmpOpts);
+      }
+      if (cmp === 0) {
+        cmp = a.pattern.localeCompare(a.pattern, 'en', cmpOpts);
+      }
+      return cmp;
+    });
+    console.log(JSON.stringify(json, null, 2));
   }
 } //main
 main();
