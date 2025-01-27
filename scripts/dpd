@@ -156,10 +156,9 @@ async function main() {
     dbg && console.log(msg, '[1]info', info);
     let { method:methodActual, pattern, data } = info;
     let license = ' CC0 https://digitalpalidictionary.github.io/';
-    let title = ` find:"${word}" method:${methodActual}`
-    console.log("".padEnd(title.length+1, "-"));
-    console.log(title);
-    console.log("".padEnd(title.length+1, "-"));
+    let title = `find:${word} method:${methodActual}`
+    let bar = '==========';
+    console.log(bar, title, bar);
     let T_CONSTR = outLong ? 'CONSTRUCTION' : 'CNSTR';
     let T_HWID = outLong ? 'HEADWORD' : 'HWID';
     let T_KEY = 'KEY';
@@ -321,6 +320,7 @@ async function main() {
         
       json = [ ...json, ...entries];
     } else {
+      i && console.log('');
       writeTable(word, info);
     }
   } // textArgs
