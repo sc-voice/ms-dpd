@@ -27,6 +27,7 @@ export class Translator {
   static async create(opts={}) {
     const msg = 't8r.create:';
     let {
+      deeplAdapter,
       translateTexts,
       authKey = AUTH_KEY,
       srcLang = 'en',
@@ -35,20 +36,24 @@ export class Translator {
       srcDefs,
       dict,
     } = opts;
-    let deeplAdapter;
     if (translateTexts == null) {
+      const dbg = DBG.TRANSLATE_TEXTS;
       if (deeplAdapter == null) {
         if (dstLang == null) {
           throw new Error(`${msg} dstLang?`);
         }
+        dbg && console.log(msg, '[1]deeplAdapter', {srcLang, dstLang});
         deeplAdapter = await 
           DeepLAdapter.create({ authKey, srcLang, dstLang });
       }
+      dbg && console.log(msg, '[2]translateTexts');
       translateTexts = async (texts) => {
-        return deeplAdapter.translate(texts);
+        const msg = 't8r.translateTexts';
+        let translated = await deeplAdapter.translate(texts);
+        dbg && console.log(msg, '[3]translated', {texts, translated});
+        return translated;
       }
     }
-
     if (dict == null) {
       dict = await Dictionary.create();
     }
@@ -82,24 +87,44 @@ export class Translator {
     return DEF_LANG;
   }
 
-  async translateWordDefs(paliWord) {
+  async translateWordDefs(paliWord, translated={}) {
     const msg = 't8r.translateWordDefs:';
+    const dbg = DBG.TRANSLATE_WORD_DEFS;
     let { translateTexts, dict, srcDefs, dstDefs } = this;
     let { word, keys } = dict.wordDefinitionKeys(paliWord);
-    let translated = {};
     for (let i = 0; i < keys.length; i++) {
       let key = keys[i];
-      let srcVal = srcDefs[key];
-      let dstVal = dstDefs[key];
-      if (srcVal == dstVal || dstVal.charAt(0) === '|') {
-        let transVal = translateTexts(srcVal.split('|'));
-        if (transVal) {
-          let [ cooked, raw, lit ] = transVal;
-          translated[key] = `|${cooked || raw}|${lit}`;
-        }
+      let srcVal = srcDefs[key] || '||';
+      let dstVal = dstDefs[key] || '||';
+      let unchanged = srcVal === dstVal;
+      let isCooked = dstVal.charAt(0) !== '|'; 
+      if (unchanged || !isCooked) {
+        let [ meaning_1, meaning_raw, meaning_lit ] = srcVal.split('|');
+        let cooked = meaning_1 && await translateTexts([meaning_1]);
+        let raw = !cooked && meaning_raw && 
+          await translateTexts([meaning_raw]);
+        let lit = meaning_lit && await translateTexts([meaning_lit]);
+        dbg && console.log(msg, '[1]translate', 
+          {srcVal, dstVal, cooked, raw, lit});
+        translated[key] = `|${cooked[0] || raw[0]}|${lit&&lit[0]}`;
+      } else {
+        dbg && console.log(msg, '[2]!translate', 
+          {unchanged, isCooked, srcVal, dstVal});
       }
     }
 
     return translated;
+  }
+
+  async translateTextDefs(paliText, translated={}) {
+    const msg = 't8r.translateTextDefs:';
+    const dbg = DBG.TRANSLATE_TEXT_DEFS;
+    let text = Dictionary.normalizePattern(paliText);
+    let words = text.split(/ +/);
+    dbg && console.log(msg, words);
+    for (let i = 0; i < words.length; i++) {
+      let word = words[i];
+      await this.translateWordDefs(word, translated);
+    }
   }
 }

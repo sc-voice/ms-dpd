@@ -115,10 +115,9 @@ export default class Dictionary {
     return prefix;
   }
 
-  static normalizePattern(pattern) {
-    pattern = pattern.toLowerCase();
-    pattern = pattern.replace(/[^a-zA-zāḍīḷṁṃṅñṇṭū]/, '');
-    return pattern;
+  static normalizePattern(aPattern) {
+    return aPattern.toLowerCase()
+      .replace(/[^ a-zA-zāḍīḷṁṃṅñṇṭū]/, '');
   }
 
   static unaccentedPattern(pattern) {

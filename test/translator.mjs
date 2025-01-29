@@ -79,6 +79,7 @@ describe("translator", function () {
   });
   it('translateWordDefs() cooked', async()=>{
     const msg = 'tt8r.translateWordDefs-cooked:';
+    let translated = {};
     let dstLang = 'fr';
     let srcDefs = {
     //'4iU': 'u-cooked0|u-raw0|u-lit0', // src original
@@ -95,9 +96,96 @@ describe("translator", function () {
       translateTexts, srcDefs, dstLang, dstDefs,
     });
     let paliWord = 'evaṁ';
-    let translated = await trans.translateWordDefs(paliWord);
+    await trans.translateWordDefs(paliWord, translated);
     should.deepEqual(translated, {
       '4iV': '|v-cooked0-t2|v-lit0-t2',
+    });
+  });
+  it('translateWordDefs() deepl', async()=>{
+    const msg = 'tt8r.translateWordDefs-deepl:';
+    let translated = {};
+    let dstLang = 'pt';
+    let dstDefs = {}; //force translation
+    let trans = await Translator.create({ dstLang, dstDefs });
+    let paliWord = 'evaṁ';
+    if (DBG.DEEPL_TEST_API) {
+      await trans.translateWordDefs(paliWord, translated);
+      should.deepEqual(translated, {
+        '4iU': '|assim; este; como este; similarmente; da mesma maneira; tal como; tal|',
+        '4iV': '|sim!; é isso mesmo!; correto!|',
+      });
+      console.log(msg, {paliWord, translated});
+    } else {
+      console.log(msg, '!DEEPL_TEST_API');
+    }
+  });
+  it('TESTTESTtranslateTextDefs() mock', async()=>{
+    const msg = 'tt8r.translateTextDefs:';
+    let translated = {};
+    let paliText = 'Evaṁ me sutaṁ.';
+    let dstDefs = {};
+    let dstLang = 'pt';
+    let translateTexts = // mock translation 
+      (texts)=>texts.map(t=>t?`${t}-pt`:t);
+    let trans = await Translator.create({
+      translateTexts, dstLang, dstDefs,
+    });
+    await trans.translateTextDefs(paliText, translated);
+    //console.log(msg, {translated});
+    should.deepEqual(translated, {
+      '4iU': '|thus; this; like this; similarly; in the same manner; just as; such-pt|',
+      '4iV': '|yes!; that is right!; correct!-pt|',
+      '2pI': '|I-pt|', 
+      D7K: '|(gram) ma; verbal ending of the present tense 1st person plural-pt|', 
+      D7N: '|(gram) letter m; 31st letter of the alphabet; nasal consonant-pt|',  
+      DYr: '|moon-pt|',
+      DYs: '|(gram) √mā (measure)-pt|',
+      DpT: '|myself; me (object)-pt|',
+      DpU: '|by me-pt|',
+      DpV: '|to me; for me-pt|',
+      DpW: '|from me-pt|',
+      DpX: '|my; mine-pt|',
+      DpY: '|when I; since I-pt|',
+      GaX: '|heard-pt|',
+      GaY: '|learned-pt|heard-pt',
+      GaZ: '|what is heard; something heard-pt|heard-pt',
+      Gaa: '|learning; knowledge-pt|heard-pt',
+      Gab: '|son-pt|',
+      Gb7: '|daughter-pt|'
+    });
+  });
+  it('TESTTESTtranslateTextDefs() cooked', async()=>{
+    const msg = 'tt8r.translateTextDefs:';
+    let translated = {};
+    let paliText = 'Evaṁ me sutaṁ.';
+    let dstLang = 'pt';
+    let translateTexts = // mock translation 
+      (texts)=>texts.map(t=>t?`${t}-pt`:t);
+    let trans = await Translator.create({
+      translateTexts, dstLang, 
+    });
+    await trans.translateTextDefs(paliText, translated);
+    //console.log(msg, {translated});
+    should.deepEqual(translated, {
+      //'4iU': '|thus; this; like this; similarly; in the same manner; just as; such-pt|',
+      //'4iV': '|yes!; that is right!; correct!-pt|',
+      '2pI': '|I-pt|', 
+      D7K: '|(gram) ma; verbal ending of the present tense 1st person plural-pt|', 
+      D7N: '|(gram) letter m; 31st letter of the alphabet; nasal consonant-pt|',  
+      DYr: '|moon-pt|',
+      DYs: '|(gram) √mā (measure)-pt|',
+      DpT: '|myself; me (object)-pt|',
+      DpU: '|by me-pt|',
+      DpV: '|to me; for me-pt|',
+      DpW: '|from me-pt|',
+      DpX: '|my; mine-pt|',
+      DpY: '|when I; since I-pt|',
+      GaX: '|heard-pt|',
+      GaY: '|learned-pt|heard-pt',
+      GaZ: '|what is heard; something heard-pt|heard-pt',
+      Gaa: '|learning; knowledge-pt|heard-pt',
+      Gab: '|son-pt|',
+      Gb7: '|daughter-pt|'
     });
   });
 });

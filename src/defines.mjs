@@ -18,7 +18,7 @@ export const DBG = {
   LANG: 0,
   LOADING: 0,
   MERGE: 0,
-  DEEPL_TEST_API: 0,
+  DEEPL_TEST_API: 0, // Test with LIVE API ($$$)
   PALI: 0,
   RELATED_ENTRIES: 0,
   SANKEY: 0,
@@ -26,6 +26,9 @@ export const DBG = {
   SQL_DPD: 0,
   SQL_DPD_BUILD: 0,
   TBD: 0,
+  TRANSLATE_TEXTS: 0,
+  TRANSLATE_TEXT_DEFS: 0,
+  TRANSLATE_WORD_DEFS: 0,
   VERBOSE_ROWS: 5,
   WORD_INFLECTIONS: 0,
   WORD_STEM: 0,
