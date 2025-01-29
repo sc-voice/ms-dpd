@@ -173,19 +173,15 @@ typeof describe === "function" &&
       key:'h',
 
       // virtual fields
-      type: 'd DEPRECATED',
-      literal: 'b DEPRECATED', // literal meaning
       meaning: 'a', // displayed meaning (meaning_raw)
     })
 
     dict.showMeaningRaw = false;
     should.deepEqual(dict.parseDefinition("|a|b"), {
-      literal: 'b DEPRECATED', // literal meaning
       meaning: '',  // displayed meaning (meaning_1)
       meaning_1: '',  // reviewed content
       meaning_raw: 'a', // unreviewed content
       meaning_lit: 'b',
-      type: 'DEPRECATED',
     });
 
   });
@@ -213,7 +209,6 @@ typeof describe === "function" &&
   });
   it("find() moral behaviour (definition)", async()=>{
     let dict = await Dictionary.create();
-    let word1
     let pattern = 'moral behaviour'; 
     let res = dict.find(pattern);
     should(res.method).equal('definition');
@@ -245,7 +240,7 @@ typeof describe === "function" &&
     should(dhamma.method).equal('entry');
     should(dhamma.pattern).equal('dhamma');
     should(dhamma.data[0]).properties([
-      "word", "type", "meaning", "literal", "construction"
+      "word", "meaning", "construction"
     ]);
     should(dhamma.data[0]).properties({
       word: 'dhamma',
@@ -638,6 +633,7 @@ typeof describe === "function" &&
     let dict = await Dictionary.create({lang});
     should(dict.lang).equal(lang);
     let evam = dict.entryOf("evaṁ");
+    console.log(msg, evam);
     should(evam.definition[0]).match(/comme ceci/);
   });
   it("entryOf() Evaṁa PT", async()=>{
@@ -686,6 +682,14 @@ typeof describe === "function" &&
 
     should.deepEqual(Dictionary.dpdLink(), {
       url: `https://www.dpdict.net/`,
+    });
+  });
+  it("wordDefinitionKeys()", async()=>{
+    let dict = await Dictionary.create();
+    let word = 'Evaṁ';
+    should.deepEqual(dict.wordDefinitionKeys(word), {
+      word: word.toLowerCase(),
+      keys: ['4iU', '4iV']
     });
   });
 });

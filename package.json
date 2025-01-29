@@ -43,6 +43,8 @@
   },
   "homepage": "https://github.com/sc-voice/ms-dpd#readme",
   "devDependencies": {
+    "@sc-voice/tools": "^1.2.0",
+    "deepl-node": "^1.16.0",
     "eslint": "^9.4.0",
     "json": "^11.0.0",
     "mocha": "^10.4.0",

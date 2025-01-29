@@ -208,21 +208,26 @@ export default class Dictionary {
     };
   }
 
+  wordDefinitionKeys(aWord) {
+    let { index } = this;
+    let word = Dictionary.normalizeWord(aWord);
+    let indexEntry = index[word];
+    let keys = indexEntry?.split(',');
+    return { word, keys };
+  }
+
   entryOf(aWord) {
     const msg = "Dictionary.entryOf()";
     const dbg = DBG.ENTRY_OF;
     const RE_PUNCT = /[-!?(),.:;…—– ‘’"'“”]/g;
     let { index, defLang, } = this;
-    let word = Dictionary.normalizeWord(aWord);
-    let indexEntry = index[word];
-    if (indexEntry == null) {
+    let { word, keys } = this.wordDefinitionKeys(aWord);
+    if (keys == null) {
       dbg && console.error(msg, `[1]${word}?`);
       return undefined;
     }
     dbg && console.error(msg, `[2]${word}`, indexEntry, wordParts);
-    let definition = indexEntry.split(',').map(key=>{
-      return this.definitionOfKey(key);
-    });
+    let definition = keys.map(key=>this.definitionOfKey(key));
     return Object.assign({word}, {definition});
   }
 
@@ -415,11 +420,12 @@ export default class Dictionary {
         key,
         meaning_1, meaning_raw, meaning_lit, 
         pattern, pos, construction, 
-        type: pos ? `${pos} DEPRECATED` : 'DEPRECATED',
+        //type: pos ? `${pos} DEPRECATED` : 'DEPRECATED',
         meaning: showMeaningRaw
           ? meaning_1 || meaning_raw
           : meaning_1,
-        literal: meaning_lit ? `${meaning_lit} DEPRECATED` : 'DEPRECATED',
+        //literal: meaning_lit 
+        //  ? `${meaning_lit} DEPRECATED` : 'DEPRECATED',
         stem,
         lemma_1,
       }));
@@ -427,7 +433,7 @@ export default class Dictionary {
     }
 
     return undefined; 
-  }
+  } // parseDefinition
 
   findDefinition(pattern) {
     const msg = "Dictionary.findDefinition()";
@@ -453,7 +459,7 @@ export default class Dictionary {
     }
 
     return result;
-  }
+  } // findDefinition
 
   findAltAnusvara(pattern, opts) {
     let msg = 'Dictionary.findAltAnusvara:';
@@ -476,7 +482,7 @@ export default class Dictionary {
     }
 
     return res;
-  }
+  } // find
 
   findMethod(pattern, opts={}) {
     const msg = "Dictionary.findMethod()";
@@ -560,7 +566,7 @@ export default class Dictionary {
     }
 
     return result;
-  }
+  } // findMethod
 
   wordInflections(word, opts={}) { 
     const msg = 'Dictionary.wordInflections()';

@@ -99,7 +99,7 @@ typeof describe === "function" &&
     should(eCaught instanceof Error);
     should(eCaught.message).match(/string or Patch/);
   });
-  it("TESTTESTpatch() pt", ()=>{
+  it("patch() pt", ()=>{
     let srcBase = EN_BASE;
     let srcPatch = DIFF_EN;
     let mrg = new Merge({ srcBase, srcPatch });
