@@ -490,7 +490,7 @@ export default class SqlDpd {
         let sep = i<iLast ? ',' : '';
         return ` "${key}": ${v}${sep}`;
       }),
-      '}',
+      '}\n',
     ];
     let dirName = path.dirname(fpath);
     if (!fs.existsSync(dirName)) {

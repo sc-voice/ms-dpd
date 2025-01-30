@@ -1,0 +1,112 @@
+
+#!/usr/bin/bash
+SCRIPT=`basename $0`
+DIRNAME=`dirname $0`
+
+node - <<'JS' $DIRNAME $SCRIPT $*
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
+let [ NODE, DASH, DIRNAME, SCRIPT, ...args] = process.argv;
+
+const msg = `${SCRIPT}:`;
+
+function help() {
+  console.error(`
+NAME
+  ${SCRIPT} - Translated dictionary headwords in given sutta
+
+SYNOPSIS
+  ${SCRIPT} [OPTIONS] SUTTA_REFS...
+
+DESCRIPTION
+  Translate the MS-DPD definitions of all the Pali words in the segments
+  specified by the given sutta references (e.g., "mn8", "mn8:1.1").
+
+  -?, --help
+    print this help text
+
+  -l, --lang LANG
+    Two letter language code (required)
+
+  -v, --verbose
+    print more information to stderr
+
+EXAMPLES
+  scripts/${SCRIPT} -l fr mn8:1.1
+`);
+  process.exit(0);
+}
+
+let dbg = 0;
+let lang;
+let srefs = [];
+let SuttaRef;
+let SuidMap;
+import fs from 'node:fs';
+
+async function translateSuttaRef(sref) {
+  const msg = 't16f:';
+  let { sutta_uid } = sref;
+  let pliPath = [
+    'local/ebt-data',
+    SuidMap[sutta_uid]?.['root/pli/ms'],
+    `${sutta_uid}_root-pli-ms.json`,
+  ].join('/');
+  console.log(msg, sref.toString(), pliPath);
+  
+}
+
+async function main() {
+  let srefs = [];
+  let SCV_ESM = await import('scv-esm/main.mjs');
+  SuttaRef = SCV_ESM.SuttaRef;
+  SuidMap = SCV_ESM.SuidMap;
+
+  for (let i = 0; i < args.length; i++) {
+    let arg = args[i];
+    switch (arg) {
+      case '-?':
+      case '--help':
+        help();
+        break;
+      case "--lang":
+      case "-l":
+        lang = args[++i];
+        break;
+      case "--verbose":
+      case "-v":
+        dbg = 1;
+        break;
+      default:
+        if (arg.at(0) === "-") {
+          console.error(`${msg} [ERROR] ignoring ${arg}`);
+        } else {
+          let sref = SuttaRef.create(arg);
+          srefs.push(sref);
+        }
+        break;
+    }
+  }
+  if (srefs.length === 0) {
+    help();
+  }
+
+  dbg && console.error(msg, {
+    //NODE,DASH, 
+    DIRNAME, SCRIPT, srefs, lang, verbose:dbg,
+  });
+
+  for (let i = 0; i < srefs.length; i++) {
+    let sref = srefs[i];
+    await translateSuttaRef(sref);
+  }
+}
+(async function() {
+  try {
+    main()
+  } catch(e) {
+    console.error(msg, e);
+  }
+})()
+
+JS
