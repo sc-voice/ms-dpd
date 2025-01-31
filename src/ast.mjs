@@ -10,35 +10,36 @@ export default class AST {
     });
   }
 
-  static get S_SWITCH() { return "switch"; }
-  static get E_CODE() { return "code"; }
+  static get S_SWITCH() {
+    return 'switch';
+  }
+  static get E_CODE() {
+    return 'code';
+  }
 
   static indent(n) {
-    let s = "                ";
+    let s = '                ';
     while (s.length < n) {
-      s = s+s;
+      s = s + s;
     }
 
     return s.substring(0, n);
   }
 
-  generate(s=0, opts={}) {
+  generate(s = 0, opts = {}) {
     const msg = 'AST.generate()';
-    let { step=2 } = opts;
+    let { step = 2 } = opts;
     let { nodeType, args } = this;
     switch (nodeType) {
-      case AST.E_CODE: {
-        return typeof args === 'string'
-          ? args
-          : JSON.stringify(args);
-      } break;
+      case AST.E_CODE:
+        return typeof args === 'string' ? args : JSON.stringify(args);
       case AST.S_SWITCH: {
-        let [ svar, cases ] = args;
+        let [svar, cases] = args;
         let lines = [];
         let keys = Object.keys(cases);
         lines.push(`${AST.indent(s)}switch (${svar}) {`);
         let s1 = s + step;
-        for (let i=0; i<keys.length; i++) {
+        for (let i = 0; i < keys.length; i++) {
           let key = keys[i];
           let value = cases[key];
           value = value.generate(s1, opts);
@@ -50,8 +51,8 @@ export default class AST {
         }
         lines.push(`${AST.indent(s)}}`);
         return lines.join('\n');
-      } break;
-      default: 
+      }
+      default:
         throw new Error(`${msg} nodeType: ${nodeType}?`);
     }
   }

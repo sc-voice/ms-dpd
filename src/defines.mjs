@@ -25,6 +25,7 @@ export const DBG = {
   SKIP_SLOW_TESTS: 0,
   SQL_DPD: 0,
   SQL_DPD_BUILD: 0,
+  TABLE_AS_COLUMNS: 0,
   TBD: 0,
   TRANSLATE_SUTTA_REF: 0,
   TRANSLATE_TEXTS: 0,
@@ -34,5 +35,4 @@ export const DBG = {
   WORD_INFLECTIONS: 0,
   WORD_STEM: 0,
   WORDS_WITH_PREFIX: 0,
-
-}
+};

@@ -1,22 +1,23 @@
 import { DBG } from './defines.mjs';
- 
-const SYMBOLS = 
+
+const SYMBOLS =
   '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 const RADIX = SYMBOLS.length;
-let VALUES = SYMBOLS.split('').reduce((a,s,i)=>{
+let VALUES = SYMBOLS.split('').reduce((a, s, i) => {
   a[s] = i;
   return a;
 }, {});
 
 export default class HeadwordKey {
-
-  static get SYMBOLS() { return SYMBOLS };
+  static get SYMBOLS() {
+    return SYMBOLS;
+  }
 
   static fromNumber(num) {
     const msg = 'HeadwordKey.fromNumber';
 
     num = Number(num);
-    if (isNaN(num)) {
+    if (Number.isNaN(num)) {
       throw new Error(`${msg} NaN ${num}`);
     }
     if (num < 0) {
@@ -26,9 +27,9 @@ export default class HeadwordKey {
       return '0';
     }
 
-    var s = '';
-    for (let n=num; n >= 1;) {
-      let iSym = n - (RADIX * Math.floor(n / RADIX));
+    let s = '';
+    for (let n = num; n >= 1; ) {
+      let iSym = n - RADIX * Math.floor(n / RADIX);
       s = SYMBOLS.at(iSym) + s;
       n = Math.floor(n / RADIX);
     }
@@ -44,14 +45,14 @@ export default class HeadwordKey {
 
     let n = 0;
     let place = 1;
-    for (let i=key.length-1; i>=0; i--) {
+    for (let i = key.length - 1; i >= 0; i--) {
       let c = key[i];
       let v = VALUES[c];
       if (v === undefined) {
         throw new Error(`${msg} invalid ${key}`);
       }
       n += v * place;
-      place = place * RADIX
+      place = place * RADIX;
     }
 
     return n;

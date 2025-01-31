@@ -2,9 +2,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 const { dirname:__dirname } = import.meta;
 import { SuidMap, SuttaRef } from 'scv-esm/main.mjs';
-import { Translate } from '@sc-voice/tools';
+import { ScvMath, Translate } from '@sc-voice/tools';
 import { DBG } from '../../src/defines.mjs';
 import { HeadwordKey, Dictionary } from '../../main.mjs';
+const { Fraction } = ScvMath;
 
 const {
   DeepLAdapter,
@@ -28,14 +29,15 @@ export class Translator {
   static async create(opts={}) {
     const msg = 't8r.create:';
     let {
-      deeplAdapter,
-      translateTexts,
-      authKey = AUTH_KEY,
-      srcLang = 'en',
-      dstLang,
-      dstDefs,
-      srcDefs,
-      dict,
+      authKey = AUTH_KEY, // local/deepl.auth
+      deeplAdapter, // DeepLAdapter
+      dict,     // Dictionary
+      dstDefs,  // dstLang definition map
+      dstLang,  // translation destination language
+      srcDefs,  // srcLang definition map
+      srcLang = 'en', // DPD language (EN, RU)
+      translateTexts, // function to translate String array
+      forceTranslation = false, // retranslate translated texts
     } = opts;
     if (translateTexts == null) {
       const dbg = DBG.TRANSLATE_TEXTS;
@@ -73,10 +75,11 @@ export class Translator {
       srcDefs,
       dstDefs,
       dict,
-      charCount: 0,
+      charsTranslated: new Fraction(0,0,'chars'),
+      forceTranslation, 
     });
     let fCountChars = (texts) => {
-      instance.charCount += texts.reduce((a,t)=>a+t.length, 0);
+      instance.charsTranslated.n += texts.reduce((a,t)=>a+t.length, 0);
       return translateTexts(texts);
     }
     instance.translateTexts = fCountChars;
@@ -104,11 +107,12 @@ export class Translator {
     let { word, keys } = dict.wordDefinitionKeys(paliWord);
     for (let i = 0; i < keys.length; i++) {
       let key = keys[i];
+      let srcVal = srcDefs[key] || '||';
+      this.charsTranslated.d += srcVal.length - 2; // disregard vertical bars
       if (translatedDefs[key]) {
         dbg && console.log(msg, '[1]skip', key);
         continue;
       }
-      let srcVal = srcDefs[key] || '||';
       let dstVal = dstDefs[key] || '||';
       let unchanged = srcVal === dstVal;
       let isCooked = dstVal.charAt(0) !== '|'; 
@@ -167,8 +171,8 @@ export class Translator {
       dbg>1 && console.log(msg, '[2]translateTextDefs', {scid, pli});
       await this.translateTextDefs(pli, translatedDefs);
     }
-    dbg && console.log(msg, '[3]charCount', this.charCount,
-      sref.toString())
+    dbg && console.log(msg, '[3]translated', 
+      this.charsTranslated.toString(), sref.toString())
     dbg>1 && console.log(msg, '[3.1]translatedDefs', translatedDefs);
     return translatedDefs;
   }
