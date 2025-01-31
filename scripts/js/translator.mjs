@@ -35,9 +35,8 @@ export class Translator {
       srcDefs, // srcLang definition map
       srcLang = 'en', // DPD language (EN, RU)
       translateTexts, // function to translate String array
-      forceTranslation = false, // retranslate translated texts
+      forceRaw = false, // retranslate raw translated texts
     } = opts;
-    let asdf = 'asdf';
     if (translateTexts == null) {
       const dbg = DBG.TRANSLATE_TEXTS;
       if (deeplAdapter == null) {
@@ -78,7 +77,7 @@ export class Translator {
       dstDefs,
       dict,
       charsTranslated: new Fraction(0, 0, 'chars'),
-      forceTranslation,
+      forceRaw,
     });
     let fCountChars = (texts) => {
       instance.charsTranslated.n += texts.reduce(
@@ -108,47 +107,43 @@ export class Translator {
   async translateWordDefs(paliWord, translatedDefs = {}) {
     const msg = 't8r.translateWordDefs:';
     const dbg = DBG.TRANSLATE_WORD_DEFS;
-    let { translateTexts, dict, srcDefs, dstDefs } = this;
+    const VERT_BARS  = 2;
+    let { 
+      forceRaw, translateTexts, dict, srcDefs, dstDefs 
+    } = this;
     let { word, keys } = dict.wordDefinitionKeys(paliWord);
     for (let i = 0; i < keys.length; i++) {
       let key = keys[i];
       let srcVal = srcDefs[key] || '||';
-      this.charsTranslated.d += srcVal.length - 2; // disregard vertical bars
-      if (translatedDefs[key]) {
+      let dstVal = dstDefs[key] || '||';
+      let same = srcVal === dstVal;
+      let isCooked = dstVal.charAt(0) !== '|';
+      this.charsTranslated.d += srcVal.length - VERT_BARS;
+      let skip = translatedDefs[key] || 
+        !same && !forceRaw ||
+        !same && isCooked;
+      if (skip) {
         dbg && console.log(msg, '[1]skip', key);
         continue;
       }
-      let dstVal = dstDefs[key] || '||';
-      let unchanged = srcVal === dstVal;
-      let isCooked = dstVal.charAt(0) !== '|';
-      if (unchanged || !isCooked) {
-        let [meaning_1, meaning_raw, meaning_lit] = srcVal.split('|');
-        let cooked = meaning_1 && (await translateTexts([meaning_1]));
-        let raw =
-          !cooked &&
-          meaning_raw &&
-          (await translateTexts([meaning_raw]));
-        let lit =
-          meaning_lit && (await translateTexts([meaning_lit]));
-        dbg &&
-          console.log(msg, '[1]translate', {
-            srcVal,
-            dstVal,
-            cooked,
-            raw,
-            lit,
-          });
-        translatedDefs[key] =
-          `|${cooked[0] || raw[0]}|${lit && lit[0]}`;
-      } else {
-        dbg &&
-          console.log(msg, '[2]!translate', {
-            unchanged,
-            isCooked,
-            srcVal,
-            dstVal,
-          });
-      }
+
+      let [meaning_1, meaning_raw, meaning_lit] = srcVal.split('|');
+      let cooked = meaning_1 && (await translateTexts([meaning_1]));
+      let raw =
+        !cooked &&
+        meaning_raw &&
+        (await translateTexts([meaning_raw]));
+      let lit =
+        meaning_lit && (await translateTexts([meaning_lit]));
+      dbg &&
+        console.log(msg, '[1]translate', {
+          srcVal,
+          dstVal,
+          cooked,
+          raw,
+          lit,
+        });
+      translatedDefs[key] = `|${cooked[0] || raw[0]}|${lit && lit[0]}`;
     }
 
     return translatedDefs;
