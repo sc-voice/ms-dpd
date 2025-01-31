@@ -202,7 +202,7 @@ export class Translator {
     dbg > 1 &&
       console.log(msg, '[3.1]translatedDefs', translatedDefs);
     return translatedDefs;
-  }
+  } // translateSuttaRef
 
   definitionPath(lang = this.dstLang) {
     const msg = 't84.definitionPath';

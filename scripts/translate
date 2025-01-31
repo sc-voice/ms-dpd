@@ -58,7 +58,7 @@ async function translateSuttaRef(sref) {
   await trans.writeDefinitions(defPath, dstDefs);
   dbg && console.log(msg, JSON.stringify(translatedDefs, null, 2));
   console.log(msg, '[1]translated', srefShort, 
-    `(${trans.charCount} chars)`);
+    trans.charsTranslated.toString());
 }
 
 async function main() {
