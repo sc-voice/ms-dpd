@@ -112,6 +112,10 @@ export class Translator {
       forceRaw, translateTexts, dict, srcDefs, dstDefs 
     } = this;
     let { word, keys } = dict.wordDefinitionKeys(paliWord);
+    if (keys == null) {
+      dbg && console.log(msg, '[1]!definition', paliWord);
+      return translatedDefs;
+    }
     for (let i = 0; i < keys.length; i++) {
       let key = keys[i];
       let srcVal = srcDefs[key] || '||';
@@ -123,7 +127,7 @@ export class Translator {
         !same && !forceRaw ||
         !same && isCooked;
       if (skip) {
-        dbg && console.log(msg, '[1]skip', key);
+        dbg && console.log(msg, '[1]skip', key, dstVal);
         continue;
       }
 
@@ -153,7 +157,7 @@ export class Translator {
     const msg = 't8r.translateTextDefs:';
     const dbg = DBG.TRANSLATE_TEXT_DEFS;
     let text = Dictionary.normalizePattern(paliText);
-    let words = text.split(/ +/);
+    let words = text.trim().split(/ +/);
     dbg && console.log(msg, words);
     for (let i = 0; i < words.length; i++) {
       let word = words[i];
@@ -177,15 +181,16 @@ export class Translator {
       throw new Error(`${msg} pliPath? ${pliPath}`);
     }
     let segMap = JSON.parse(fs.readFileSync(pliPath));
-    let scids = scid ? [scid] : Object.keys(segMap);
+    let scids = segnum ? [scid] : Object.keys(segMap);
     dbg > 1 && console.log(msg, '[1]pliPath', pliPath);
 
     for (let i = 0; i < scids.length; i++) {
       let scid = scids[i];
       let pli = segMap[scid];
+      await this.translateTextDefs(pli, translatedDefs);
+      console.log(msg, `[2]${scid}`, this.charsTranslated.toString());
       dbg > 1 &&
         console.log(msg, '[2]translateTextDefs', { scid, pli });
-      await this.translateTextDefs(pli, translatedDefs);
     }
     dbg &&
       console.log(

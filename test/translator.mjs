@@ -53,7 +53,7 @@ const PT_DEFS = {
   Gb7: '|daughter-pt|',
 }
 
-describe('TESTTESTtranslator', () => {
+describe('translator', () => {
   it('default constructor', () => {
     let eCaught;
     try {
@@ -269,8 +269,8 @@ describe('TESTTESTtranslator', () => {
       Gb7: '|daughter-pt|',
     });
   });
-  it('translateSuttaRef()', async () => {
-    const msg = 'tt8r.translateSuttaRef';
+  it('translateSuttaRef() mn8:1.1', async () => {
+    const msg = 'tt8r.translateSuttaRef-mn8:1.1';
     const dbg = 0;
     let sref = SuttaRef.create('mn8:1.1');
     let forceRaw = true;
@@ -280,8 +280,40 @@ describe('TESTTESTtranslator', () => {
     let trans = await Translator.create({ 
       dstLang, translateTexts, forceRaw });
     let translated = await trans.translateSuttaRef(sref);
+    should(trans.charsTranslated.toString()).equal('302/400 chars');
     should(translated['GaX']).equal('|heard-fr|');
     dbg && console.log(msg, translated);
+  });
+  it('TESTTESTtranslateSuttaRef() pli-tv-pvr2.14', async () => {
+    const msg = 'tt8r.translateSuttaRef-pli-tv-pvr2.14:';
+    const dbg = 0;
+    let sref1 = SuttaRef.create('pli-tv-pvr2.14:1.1');
+    let dstLang = 'fr';
+    let createTranslator = (n) =>
+      (texts) => texts.map((t) => (t ? `${t}-fr${n}` : t));
+    let trans1 = await Translator.create({ 
+      dstLang, 
+      translateTexts: createTranslator(1),
+    });
+    let translated = await trans1.translateSuttaRef(sref1);
+    should(trans1.charsTranslated.toString()).equal('669/1046 chars');
+    should(translated['o8']).equal('|container-fr1|');
+    dbg && console.log(msg, translated);
+
+    let trans2 = await Translator.create({ 
+      dstLang, 
+      translateTexts: createTranslator(2),
+    });
+    await trans2.translateSuttaRef(sref1, translated);
+    should(translated['o8']).equal('|container-fr1|');
+    should(translated['Boe']).equal(undefined); // not in sref1
+    should(trans2.charsTranslated.toString()).equal('0/1046 chars');
+
+    let srefAll = SuttaRef.create('pli-tv-pvr2.14');
+    await trans2.translateSuttaRef(srefAll, translated);
+    should(translated['o8']).equal('|container-fr1|'); // !forceRaw
+    should(translated['Boe']).equal('|watches, protects-fr2|');
+    should(trans2.charsTranslated.toString()).equal('844/4754 chars');
   });
   it('writeDefinitions()', async () => {
     const msg = 'tt8r.writeDefinitions:';
