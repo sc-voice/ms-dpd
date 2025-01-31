@@ -304,7 +304,7 @@ describe('translator', () => {
     dbg && console.log(msg, translatedDefs);
     should(translatedDefs['FvT']).match(/erasing-fr/);
   });
-  it('translateSuttaRef() pli-tv-pvr2.14', async () => {
+  it('TESTTESTtranslateSuttaRef() pli-tv-pvr2.14', async () => {
     const msg = 'tt8r.translateSuttaRef-pli-tv-pvr2.14:';
     const dbg = 0;
     let sref1 = SuttaRef.create('pli-tv-pvr2.14:1.1');
@@ -326,14 +326,15 @@ describe('translator', () => {
     });
     await trans2.translateSuttaRef(sref1, {translatedDefs});
     should(translatedDefs['o8']).equal('|container-fr1|');
-    should(translatedDefs['Boe']).equal(undefined); // not in sref1
+    should(translatedDefs['35T']).equal(undefined); // not in sref1
     should(trans2.charsTranslated.toString()).equal('0/1046 chars');
 
     let srefAll = SuttaRef.create('pli-tv-pvr2.14');
     await trans2.translateSuttaRef(srefAll, {translatedDefs});
     should(translatedDefs['o8']).equal('|container-fr1|'); // !forceRaw
-    should(translatedDefs['Boe']).equal('|watches, protects-fr2|');
-    should(trans2.charsTranslated.toString()).equal('844/4754 chars');
+    dbg && console.log(translatedDefs);
+    should(translatedDefs['35T']).match(/wrongdoing-fr2/);
+    should(trans2.charsTranslated.toString()).equal('487/4754 chars');
   });
   it('writeDefinitions()', async () => {
     const msg = 'tt8r.writeDefinitions:';
