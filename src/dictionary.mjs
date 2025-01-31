@@ -119,7 +119,7 @@ export default class Dictionary {
   static normalizePattern(aPattern) {
     return aPattern
       .toLowerCase()
-      .replace(/[^ a-zA-zāḍīḷṁṃṅñṇṭū]/, '');
+      .replaceAll(/[^ a-zA-zāḍīḷṁṃṅñṇṭū]/g, '');
   }
 
   static unaccentedPattern(pattern) {

@@ -46,19 +46,24 @@ let Translator;
 
 async function translateSuttaRef(sref) {
   const msg = `${SCRIPT}.translateSuttaRef:`;
-  let dbg = 1;
+  let dbg = 0;
   let { sutta_uid } = sref;
   let trans = await Translator.create({dstLang});
   let defPath = trans.definitionPath();
   let srefShort = sref.toString().replace('/pli/ms','');
   dbg && console.log(msg, srefShort, defPath);
-  let translatedDefs = await trans.translateSuttaRef(sref);
-  let { charCount, dstDefs } = trans;
-  Object.assign(dstDefs, translatedDefs);
-  await trans.writeDefinitions(defPath, dstDefs);
-  dbg && console.log(msg, JSON.stringify(translatedDefs, null, 2));
-  console.log(msg, '[1]translated', srefShort, 
-    trans.charsTranslated.toString());
+
+  let translatedDefs = {};
+  let onTranslated = async (scid)=>{
+    let { charCount, dstDefs } = trans;
+    Object.assign(dstDefs, translatedDefs);
+    await trans.writeDefinitions(defPath, dstDefs);
+    dbg && console.log(msg, JSON.stringify(translatedDefs, null, 2));
+    console.log(msg, scid, trans.charsTranslated.toString());
+  }
+
+  let transOpts = {translatedDefs, onTranslated}
+  await trans.translateSuttaRef(sref, transOpts);
 }
 
 async function main() {

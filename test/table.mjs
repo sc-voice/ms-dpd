@@ -1,6 +1,6 @@
 import should from 'should';
-import Table from '../src/table.mjs';
 import { DBG } from '../src/defines.mjs';
+import Table from '../src/table.mjs';
 
 const TEST_ARRAY = [
   ['color', 'size', 'date'],

@@ -284,7 +284,27 @@ describe('translator', () => {
     should(translated['GaX']).equal('|heard-fr|');
     dbg && console.log(msg, translated);
   });
-  it('TESTTESTtranslateSuttaRef() pli-tv-pvr2.14', async () => {
+  it('TESTTESTtranslateSuttaRef() mn8:12.0', async () => {
+    const msg = 'tt8r.translateSuttaRef-mn8:12.0';
+    const dbg = 0;
+    let sref = SuttaRef.create('mn8:12.0');
+    let forceRaw = true;
+    let dstLang = 'fr';
+    let cbScid = [];
+    let onTranslated = (scid) => cbScid.push(scid);
+    let translateTexts = // mock translation
+      (texts) => texts.map((t) => (t ? `${t}-fr` : t));
+    let trans = await Translator.create({ 
+      dstLang, translateTexts, forceRaw });
+    let translatedDefs = {};
+    let transOpts = { translatedDefs, onTranslated }
+    await trans.translateSuttaRef(sref, transOpts);
+    should(trans.charsTranslated.toString()).equal('34/34 chars');
+    should.deepEqual(cbScid, [sref.scid]);
+    dbg && console.log(msg, translatedDefs);
+    should(translatedDefs['FvT']).match(/erasing-fr/);
+  });
+  it('translateSuttaRef() pli-tv-pvr2.14', async () => {
     const msg = 'tt8r.translateSuttaRef-pli-tv-pvr2.14:';
     const dbg = 0;
     let sref1 = SuttaRef.create('pli-tv-pvr2.14:1.1');
@@ -295,24 +315,24 @@ describe('translator', () => {
       dstLang, 
       translateTexts: createTranslator(1),
     });
-    let translated = await trans1.translateSuttaRef(sref1);
+    let translatedDefs = await trans1.translateSuttaRef(sref1);
     should(trans1.charsTranslated.toString()).equal('669/1046 chars');
-    should(translated['o8']).equal('|container-fr1|');
-    dbg && console.log(msg, translated);
+    should(translatedDefs['o8']).equal('|container-fr1|');
+    dbg && console.log(msg, translatedDefs);
 
     let trans2 = await Translator.create({ 
       dstLang, 
       translateTexts: createTranslator(2),
     });
-    await trans2.translateSuttaRef(sref1, translated);
-    should(translated['o8']).equal('|container-fr1|');
-    should(translated['Boe']).equal(undefined); // not in sref1
+    await trans2.translateSuttaRef(sref1, {translatedDefs});
+    should(translatedDefs['o8']).equal('|container-fr1|');
+    should(translatedDefs['Boe']).equal(undefined); // not in sref1
     should(trans2.charsTranslated.toString()).equal('0/1046 chars');
 
     let srefAll = SuttaRef.create('pli-tv-pvr2.14');
-    await trans2.translateSuttaRef(srefAll, translated);
-    should(translated['o8']).equal('|container-fr1|'); // !forceRaw
-    should(translated['Boe']).equal('|watches, protects-fr2|');
+    await trans2.translateSuttaRef(srefAll, {translatedDefs});
+    should(translatedDefs['o8']).equal('|container-fr1|'); // !forceRaw
+    should(translatedDefs['Boe']).equal('|watches, protects-fr2|');
     should(trans2.charsTranslated.toString()).equal('844/4754 chars');
   });
   it('writeDefinitions()', async () => {

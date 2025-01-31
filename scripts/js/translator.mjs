@@ -165,10 +165,17 @@ export class Translator {
     }
   }
 
-  async translateSuttaRef(sref, translatedDefs = {}) {
+  async translateSuttaRef(sref, opts={}) {
     const msg = 't8r.translateSuttaRef:';
     const dbg = DBG.TRANSLATE_SUTTA_REF;
     let { sutta_uid, segnum, scid } = sref;
+    let { charsTranslated } = this;
+    let {
+      translatedDefs = {},
+      onTranslated = (scid) => {
+        console.log(msg, scid, charsTranslated.toString());
+      },
+    } = opts;
     if (sutta_uid == null) {
       throw new Error(`${msg} sref.sutta_uid? ${sref}`);
     }
@@ -188,7 +195,7 @@ export class Translator {
       let scid = scids[i];
       let pli = segMap[scid];
       await this.translateTextDefs(pli, translatedDefs);
-      console.log(msg, `[2]${scid}`, this.charsTranslated.toString());
+      onTranslated(scid);
       dbg > 1 &&
         console.log(msg, '[2]translateTextDefs', { scid, pli });
     }
