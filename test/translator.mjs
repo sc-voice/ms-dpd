@@ -66,7 +66,7 @@ describe('translator', () => {
     }
     should(eCaught.message).match(/create\?/);
   });
-  it('TESTTESTcreate', async () => {
+  it('create', async () => {
     const msg = 'tt8r.custom-ctor';
     let dstLang = 'fr';
     let logger = new Logger();
@@ -274,16 +274,17 @@ describe('translator', () => {
       Gb7: '|daughter-pt|',
     });
   });
-  it('translateSuttaRef() mn8:1.1', async () => {
+  it('TESTTESTtranslateSuttaRef() mn8:1.1', async () => {
     const msg = 'tt8r.translateSuttaRef-mn8:1.1';
     const dbg = 0;
+    let logger = new Logger({sink: dbg ? console : null});
     let sref = SuttaRef.create('mn8:1.1');
     let forceRaw = true;
     let dstLang = 'fr';
     let translateTexts = // mock translation
       (texts) => texts.map((t) => (t ? `${t}-fr` : t));
     let trans = await Translator.create({ 
-      dstLang, translateTexts, forceRaw });
+      dstLang, translateTexts, forceRaw, logger });
     let translated = await trans.translateSuttaRef(sref);
     should(trans.charsTranslated.toString()).equal('302/400 chars');
     should(translated['GaX']).equal('|heard-fr|');
