@@ -3,11 +3,14 @@ import path from 'node:path';
 import should from 'should';
 const { dirname: __dirname } = import.meta;
 import { Translate } from '@sc-voice/node-tools';
+const { DeepLAdapter } = Translate;
+import { Text } from '@sc-voice/tools';
+const { Logger } = Text;
 import { SuttaRef } from 'scv-esm/main.mjs';
 import { Dictionary } from '../main.mjs';
 import { Translator } from '../scripts/js/translator.mjs';
 import { DBG } from '../src/defines.mjs';
-const { DeepLAdapter } = Translate;
+
 const EN_DEFS = {
   '4iU':
     '|thus; this; like this; similarly; in the same manner; just as; such|',
@@ -63,10 +66,12 @@ describe('translator', () => {
     }
     should(eCaught.message).match(/create\?/);
   });
-  it('create', async () => {
+  it('TESTTESTcreate', async () => {
     const msg = 'tt8r.custom-ctor';
     let dstLang = 'fr';
-    let trans = await Translator.create({ dstLang });
+    let logger = new Logger();
+    let trans = await Translator.create({ dstLang, logger });
+    should(trans.logger).equal(logger);
     should(trans.dstLang).equal(dstLang);
     should(typeof trans.translateTexts).equal('function');
     should(trans.srcDefs['4iV']).match(/yes!/);
@@ -307,6 +312,8 @@ describe('translator', () => {
   it('TESTTESTtranslateSuttaRef() pli-tv-pvr2.14', async () => {
     const msg = 'tt8r.translateSuttaRef-pli-tv-pvr2.14:';
     const dbg = 0;
+    let sink = dbg ? console : null;
+    let logger = new Logger({sink});
     let sref1 = SuttaRef.create('pli-tv-pvr2.14:1.1');
     let dstLang = 'fr';
     let createTranslator = (n) =>
@@ -314,6 +321,7 @@ describe('translator', () => {
     let trans1 = await Translator.create({ 
       dstLang, 
       translateTexts: createTranslator(1),
+      logger,
     });
     let translatedDefs = await trans1.translateSuttaRef(sref1);
     should(trans1.charsTranslated.toString()).equal('669/1046 chars');
@@ -323,6 +331,7 @@ describe('translator', () => {
     let trans2 = await Translator.create({ 
       dstLang, 
       translateTexts: createTranslator(2),
+      logger,
     });
     await trans2.translateSuttaRef(sref1, {translatedDefs});
     should(translatedDefs['o8']).equal('|container-fr1|');

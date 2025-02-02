@@ -1,12 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 const { dirname: __dirname } = import.meta;
-import { ScvMath, } from '@sc-voice/tools';
+import { Text, ScvMath, } from '@sc-voice/tools';
+const { Fraction } = ScvMath;
 import { Translate } from '@sc-voice/node-tools';
 import { SuidMap, SuttaRef } from 'scv-esm/main.mjs';
 import { Dictionary, HeadwordKey } from '../../main.mjs';
 import { DBG } from '../../src/defines.mjs';
-const { Fraction } = ScvMath;
 
 const { DeepLAdapter } = Translate;
 
@@ -37,6 +37,7 @@ export class Translator {
       srcLang = 'en', // DPD language (EN, RU)
       translateTexts, // function to translate String array
       forceRaw = false, // retranslate raw translated texts
+      logger = console,
     } = opts;
     if (translateTexts == null) {
       const dbg = DBG.TRANSLATE_TEXTS;
@@ -45,19 +46,19 @@ export class Translator {
           throw new Error(`${msg} dstLang?`);
         }
         dbg &&
-          console.log(msg, '[1]deeplAdapter', { srcLang, dstLang });
+          logger.log(msg, '[1]deeplAdapter', { srcLang, dstLang });
         deeplAdapter = await DeepLAdapter.create({
           authKey,
           srcLang,
           dstLang,
         });
       }
-      dbg && console.log(msg, '[2]translateTexts');
+      dbg && logger.log(msg, '[2]translateTexts');
       translateTexts = async (texts) => {
         const msg = 't8r.translateTexts';
         let translation = await deeplAdapter.translate(texts);
         dbg &&
-          console.log(msg, '[3]translation', { texts, translation });
+          logger.log(msg, '[3]translation', { texts, translation });
         return translation;
       };
     }
@@ -79,6 +80,7 @@ export class Translator {
       dict,
       charsTranslated: new Fraction(0, 0, 'chars'),
       forceRaw,
+      logger,
     });
     let fCountChars = (texts) => {
       instance.charsTranslated.n += texts.reduce(
@@ -110,11 +112,11 @@ export class Translator {
     const dbg = DBG.TRANSLATE_WORD_DEFS;
     const VERT_BARS  = 2;
     let { 
-      forceRaw, translateTexts, dict, srcDefs, dstDefs 
+      forceRaw, translateTexts, dict, srcDefs, dstDefs, logger
     } = this;
     let { word, keys } = dict.wordDefinitionKeys(paliWord);
     if (keys == null) {
-      dbg && console.log(msg, '[1]!definition', paliWord);
+      dbg && logger.log(msg, '[1]!definition', paliWord);
       return translatedDefs;
     }
     for (let i = 0; i < keys.length; i++) {
@@ -128,7 +130,7 @@ export class Translator {
         !same && !forceRaw ||
         !same && isCooked;
       if (skip) {
-        dbg && console.log(msg, '[1]skip', key, dstVal);
+        dbg && logger.log(msg, '[1]skip', key, dstVal);
         continue;
       }
 
@@ -141,7 +143,7 @@ export class Translator {
       let lit =
         meaning_lit && (await translateTexts([meaning_lit]));
       dbg &&
-        console.log(msg, '[1]translate', {
+        logger.log(msg, '[1]translate', {
           srcVal,
           dstVal,
           cooked,
@@ -157,9 +159,10 @@ export class Translator {
   async translateTextDefs(paliText, translatedDefs = {}) {
     const msg = 't8r.translateTextDefs:';
     const dbg = DBG.TRANSLATE_TEXT_DEFS;
+    let { logger } = this;
     let text = Dictionary.normalizePattern(paliText);
     let words = text.trim().split(/ +/);
-    dbg && console.log(msg, words);
+    dbg && logger.log(msg, words);
     for (let i = 0; i < words.length; i++) {
       let word = words[i];
       await this.translateWordDefs(word, translatedDefs);
@@ -170,11 +173,11 @@ export class Translator {
     const msg = 't8r.translateSuttaRef:';
     const dbg = DBG.TRANSLATE_SUTTA_REF;
     let { sutta_uid, segnum, scid } = sref;
-    let { charsTranslated } = this;
+    let { charsTranslated, logger } = this;
     let {
       translatedDefs = {},
       onTranslated = (scid) => {
-        console.log(msg, scid, charsTranslated.toString());
+        logger.log(msg, scid, charsTranslated.toString());
       },
     } = opts;
     if (sutta_uid == null) {
@@ -190,7 +193,7 @@ export class Translator {
     }
     let segMap = JSON.parse(fs.readFileSync(pliPath));
     let scids = segnum ? [scid] : Object.keys(segMap);
-    dbg > 1 && console.log(msg, '[1]pliPath', pliPath);
+    dbg > 1 && logger.log(msg, '[1]pliPath', pliPath);
 
     for (let i = 0; i < scids.length; i++) {
       let scid = scids[i];
@@ -198,17 +201,17 @@ export class Translator {
       await this.translateTextDefs(pli, translatedDefs);
       onTranslated(scid);
       dbg > 1 &&
-        console.log(msg, '[2]translateTextDefs', { scid, pli });
+        logger.log(msg, '[2]translateTextDefs', { scid, pli });
     }
     dbg &&
-      console.log(
+      logger.log(
         msg,
         '[3]translated',
         this.charsTranslated.toString(),
         sref.toString(),
       );
     dbg > 1 &&
-      console.log(msg, '[3.1]translatedDefs', translatedDefs);
+      logger.log(msg, '[3.1]translatedDefs', translatedDefs);
     return translatedDefs;
   } // translateSuttaRef
 
@@ -221,6 +224,7 @@ export class Translator {
   async writeDefinitions(fpath, map) {
     const msg = 't84.writeDefinitions';
     let dbg = DBG.WRITE_DEFINITIONS;
+    let { logger } = this;
     let decl = 'export const DEF_LANG=';
     let hwKeys = Object.keys(map).sort((a, b) => {
       let an = HeadwordKey.toNumber(a);
@@ -242,6 +246,6 @@ export class Translator {
       fs.mkdirSync(dirName, { recursive: true });
     }
     await fs.promises.writeFile(fpath, aOut.join('\n'));
-    dbg && console.error(msg, `[1]${aOut.length}`, fpath);
+    dbg && logger.error(msg, `[1]${aOut.length}`, fpath);
   }
 }
