@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import should from 'should';
 const { dirname: __dirname } = import.meta;
-import { Translate } from '@sc-voice/tools';
+import { Translate } from '@sc-voice/node-tools';
 import { SuttaRef } from 'scv-esm/main.mjs';
 import { Dictionary } from '../main.mjs';
 import { Translator } from '../scripts/js/translator.mjs';

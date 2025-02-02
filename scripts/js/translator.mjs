@@ -1,7 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 const { dirname: __dirname } = import.meta;
-import { ScvMath, Translate } from '@sc-voice/tools';
+import { ScvMath, } from '@sc-voice/tools';
+import { Translate } from '@sc-voice/node-tools';
 import { SuidMap, SuttaRef } from 'scv-esm/main.mjs';
 import { Dictionary, HeadwordKey } from '../../main.mjs';
 import { DBG } from '../../src/defines.mjs';
