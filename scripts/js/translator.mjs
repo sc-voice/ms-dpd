@@ -52,6 +52,7 @@ export class Translator {
           srcLang,
           dstLang,
         });
+        deeplAdapter.memoize();
       }
       dbg && logger.log(msg, '[2]translateTexts');
       translateTexts = async (texts) => {
