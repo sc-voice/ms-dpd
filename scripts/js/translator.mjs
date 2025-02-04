@@ -131,7 +131,7 @@ export class Translator {
         (!same && !forceRaw) || // existing raw translation
         (!same && isCooked); // existing cooked translation
       if (skip) {
-        dbg && logger.log(msg, '[1]skip', key, dstVal);
+        dbg && logger.log(msg, '[2]skip', key, dstVal);
         continue;
       }
 
@@ -143,7 +143,7 @@ export class Translator {
         (await translateTexts([meaning_raw]));
       let lit = meaning_lit && (await translateTexts([meaning_lit]));
       dbg &&
-        logger.log(msg, '[1]translate', {
+        logger.log(msg, '[3]translate', {
           srcVal,
           dstVal,
           cooked,

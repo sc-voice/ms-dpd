@@ -8205,7 +8205,7 @@ export const DEF_LANG={
  "2pE": "(comm) part of the Avīci hell where one must stay an ahaha-count in duration||",
  "2pG": "|name of a purgatory|",
  "2pH": "|immense number; 10⁷⁰ (20 aṭaṭa = 1 ahaha)|",
- "2pI": "|I|",
+ "2pI": "|Eu|",
  "2pO": "undiminishable||not to be lessened",
  "2pP": "not neglecting; not omitting; not forgetting||not causing to decrease",
  "2pQ": "having not neglected; having not omitted; having not left out||",
