@@ -25,6 +25,12 @@ DESCRIPTION
   -?, --help
     print this help text
 
+  -fr, --force-raw
+    Always translate uncooked text (false). By default, old translations
+    are preserved. Because the translator memoizes the DeepLAdapter, 
+    enabling force-raw will incur costs only if the deepl-memo 
+    cache is empty.
+
   -l, --lang LANG
     Two letter language code (required)
 
@@ -43,12 +49,13 @@ let srefs = [];
 let SuttaRef;
 let SuidMap;
 let Translator;
+let forceRaw = false;
 
 async function translateSuttaRef(sref) {
   const msg = `${SCRIPT}.translateSuttaRef:`;
   let dbg = 0;
   let { sutta_uid } = sref;
-  let trans = await Translator.create({dstLang});
+  let trans = await Translator.create({dstLang, forceRaw});
   let defPath = trans.definitionPath();
   let srefShort = sref.toString().replace('/pli/ms','');
   dbg && console.log(msg, srefShort, defPath);
@@ -81,6 +88,10 @@ async function main() {
       case '--help':
         help();
         break;
+      case '-fr':
+      case '--force-raw':
+        forceRaw = true;
+        break;
       case "--lang":
       case "-l":
         dstLang = args[++i];
@@ -104,8 +115,7 @@ async function main() {
   }
 
   dbg && console.error(msg, {
-    //NODE,DASH, 
-    DIRNAME, SCRIPT, srefs, dstLang, verbose:dbg,
+    DIRNAME, SCRIPT, srefs, dstLang, verbose:dbg, forceRaw
   });
 
   for (let i = 0; i < srefs.length; i++) {
