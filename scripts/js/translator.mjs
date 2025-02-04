@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 const { dirname: __dirname } = import.meta;
-import { Text, ScvMath, } from '@sc-voice/tools';
+import { ScvMath, Text } from '@sc-voice/tools';
 const { Fraction } = ScvMath;
 import { Translate } from '@sc-voice/node-tools';
 import { SuidMap, SuttaRef } from 'scv-esm/main.mjs';
@@ -111,10 +111,9 @@ export class Translator {
   async translateWordDefs(paliWord, translatedDefs = {}) {
     const msg = 't8r.translateWordDefs:';
     const dbg = DBG.TRANSLATE_WORD_DEFS;
-    const VERT_BARS  = 2;
-    let { 
-      forceRaw, translateTexts, dict, srcDefs, dstDefs, logger
-    } = this;
+    const VERT_BARS = 2;
+    let { forceRaw, translateTexts, dict, srcDefs, dstDefs, logger } =
+      this;
     let { word, keys } = dict.wordDefinitionKeys(paliWord);
     if (keys == null) {
       dbg && logger.log(msg, '[1]!definition', paliWord);
@@ -127,9 +126,10 @@ export class Translator {
       let same = srcVal === dstVal;
       let isCooked = dstVal.charAt(0) !== '|';
       this.charsTranslated.d += srcVal.length - VERT_BARS;
-      let skip = translatedDefs[key] || 
-        !same && !forceRaw ||
-        !same && isCooked;
+      let skip = // Don't translate if:
+        translatedDefs[key] || // we just translated it
+        (!same && !forceRaw) || // existing raw translation
+        (!same && isCooked); // existing cooked translation
       if (skip) {
         dbg && logger.log(msg, '[1]skip', key, dstVal);
         continue;
@@ -141,8 +141,7 @@ export class Translator {
         !cooked &&
         meaning_raw &&
         (await translateTexts([meaning_raw]));
-      let lit =
-        meaning_lit && (await translateTexts([meaning_lit]));
+      let lit = meaning_lit && (await translateTexts([meaning_lit]));
       dbg &&
         logger.log(msg, '[1]translate', {
           srcVal,
@@ -151,7 +150,8 @@ export class Translator {
           raw,
           lit,
         });
-      translatedDefs[key] = `|${cooked[0] || raw[0]}|${lit && lit[0]}`;
+      translatedDefs[key] =
+        `|${cooked[0] || raw[0]}|${lit && lit[0]}`;
     }
 
     return translatedDefs;
@@ -170,7 +170,7 @@ export class Translator {
     }
   }
 
-  async translateSuttaRef(sref, opts={}) {
+  async translateSuttaRef(sref, opts = {}) {
     const msg = 't8r.translateSuttaRef:';
     const dbg = DBG.TRANSLATE_SUTTA_REF;
     let { sutta_uid, segnum, scid } = sref;
@@ -211,8 +211,7 @@ export class Translator {
         this.charsTranslated.toString(),
         sref.toString(),
       );
-    dbg > 1 &&
-      logger.log(msg, '[3.1]translatedDefs', translatedDefs);
+    dbg > 1 && logger.log(msg, '[3.1]translatedDefs', translatedDefs);
     return translatedDefs;
   } // translateSuttaRef
 

@@ -11,6 +11,21 @@ import { Dictionary } from '../main.mjs';
 import { Translator } from '../scripts/js/translator.mjs';
 import { DBG } from '../src/defines.mjs';
 
+const MOCK_SRC_DEFS = {
+  '4iU': '|human-raw|human-lit',
+  '4iV': 'human-cooked|raw-human-ignored|lit',
+  'D7K': 'human-cooked|raw-human-ignored|lit',
+  'D7N': '|raw-human|lit',
+  // DYr: '|moon|', // missing actual definition
+}
+const MOCK_DST_DEFS = {
+  '4iU': '|old-deepl-translation|lit',
+  '4iV': '|old-human-translation|lit',
+  'D7K': 'human-cooked|raw-human-ignored|lit',
+  'D7N': '|raw-human|lit',
+  // DYr: '|moon|', // missing actual definition
+}
+
 const EN_DEFS = {
   '4iU':
     '|thus; this; like this; similarly; in the same manner; just as; such|',
@@ -220,7 +235,7 @@ describe('translator', () => {
       console.log(msg, '!DEEPL_TEST_API');
     }
   });
-  it('translateTextDefs() mock', async () => {
+  it('translateTextDefs() identical', async () => {
     const msg = 'tt8r.translateTextDefs:';
     let translated = {};
     let paliText = 'Evaṁ me sutaṁ.';
@@ -239,42 +254,54 @@ describe('translator', () => {
     //console.log(msg, {translated});
     should.deepEqual(translated, PT_DEFS);
   });
-  it('translateTextDefs() cooked', async () => {
+  it('TESTTESTtranslateTextDefs() raw', async () => {
     const msg = 'tt8r.translateTextDefs:';
     let translated = {};
     let paliText = 'Evaṁ me sutaṁ.';
-    let dstLang = 'pt';
     let translateTexts = // mock translation
       (texts) => texts.map((t) => (t ? `${t}-pt` : t));
     let trans = await Translator.create({
       translateTexts,
-      dstLang,
+      dstLang: 'pt',
+      dstDefs: MOCK_DST_DEFS,
+      srcDefs: MOCK_SRC_DEFS,
     });
     await trans.translateTextDefs(paliText, translated);
-    //console.log(msg, {translated});
-    should.deepEqual(translated, {
-      //'4iU': '|thus; this; like this; similarly; in the same manner; just as; such-pt|',
-      //'4iV': '|yes!; that is right!; correct!-pt|',
-      '2pI': '|I-pt|',
-      D7K: '|(gram) ma; verbal ending of the present tense 1st person plural-pt|',
-      D7N: '|(gram) letter m; 31st letter of the alphabet; nasal consonant-pt|',
-      DYr: '|moon-pt|',
-      DYs: '|(gram) √mā (measure)-pt|',
-      DpT: '|myself; me (object)-pt|',
-      DpU: '|by me-pt|',
-      DpV: '|to me; for me-pt|',
-      DpW: '|from me-pt|',
-      DpX: '|my; mine-pt|',
-      DpY: '|when I; since I-pt|',
-      GaX: '|heard-pt|',
-      GaY: '|learned-pt|heard-pt',
-      GaZ: '|what is heard; something heard-pt|heard-pt',
-      Gaa: '|learning; knowledge-pt|heard-pt',
-      Gab: '|son-pt|',
-      Gb7: '|daughter-pt|',
-    });
+
+    // Do not overwrite old-raw-translation
+    should(translated['4iU']).equal(undefined);
+    should(translated['4iV']).equal(undefined);
+
+    // Translate untranslated definition
+    should(translated['D7K']).equal('|human-cooked-pt|lit-pt');
+    should(translated['D7N']).equal('|raw-human-pt|lit-pt');
   });
-  it('TESTTESTtranslateSuttaRef() mn8:1.1', async () => {
+  it('TESTTESTtranslateTextDefs() forceRaw', async () => {
+    const msg = 'tt8r.translateTextDefs:';
+    let translated = {};
+    let paliText = 'Evaṁ me sutaṁ.';
+    let translateTexts = // mock translation
+      (texts) => texts.map((t) => (t ? `${t}-pt` : t));
+    let trans = await Translator.create({
+      translateTexts,
+      forceRaw: true, // Force translation of uncooked text
+      dstLang: 'pt',
+      dstDefs: MOCK_DST_DEFS,
+      srcDefs: MOCK_SRC_DEFS,
+    });
+    await trans.translateTextDefs(paliText, translated);
+
+    // Overwrite old-raw-translation
+    should(translated['4iU']).equal('|human-raw-pt|human-lit-pt');
+
+    // Do not overwrite cooked translation
+    should(translated['4iV']).equal('|human-cooked-pt|lit-pt');
+
+    // Translate untranslated definition
+    should(translated['D7K']).equal('|human-cooked-pt|lit-pt');
+    should(translated['D7N']).equal('|raw-human-pt|lit-pt');
+  });
+  it('translateSuttaRef() mn8:1.1', async () => {
     const msg = 'tt8r.translateSuttaRef-mn8:1.1';
     const dbg = 0;
     let logger = new Logger({sink: dbg ? console : null});
@@ -290,7 +317,7 @@ describe('translator', () => {
     should(translated['GaX']).equal('|heard-fr|');
     dbg && console.log(msg, translated);
   });
-  it('TESTTESTtranslateSuttaRef() mn8:12.0', async () => {
+  it('translateSuttaRef() mn8:12.0', async () => {
     const msg = 'tt8r.translateSuttaRef-mn8:12.0';
     const dbg = 0;
     let sref = SuttaRef.create('mn8:12.0');
@@ -310,7 +337,7 @@ describe('translator', () => {
     dbg && console.log(msg, translatedDefs);
     should(translatedDefs['FvT']).match(/erasing-fr/);
   });
-  it('TESTTESTtranslateSuttaRef() pli-tv-pvr2.14', async () => {
+  it('translateSuttaRef() pli-tv-pvr2.14', async () => {
     const msg = 'tt8r.translateSuttaRef-pli-tv-pvr2.14:';
     const dbg = 0;
     let sink = dbg ? console : null;
