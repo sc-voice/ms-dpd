@@ -1,0 +1,132 @@
+
+#!/usr/bin/bash
+SCRIPT=`basename $0`
+DIRNAME=`dirname $0`
+
+node - <<'JS' $DIRNAME $SCRIPT $*
+/////////// JAVASCRIPT BEGIN /////////////
+const fs = require('node:fs');
+const path = require('node:path');
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
+let [ NODE, DASH, DIRNAME, SCRIPT, ...args] = process.argv;
+
+const msg = `${SCRIPT}:`;
+
+function help(text) {
+  console.error(`
+NAME
+  ${SCRIPT} - Translated wiki page
+
+SYNOPSIS
+  ${SCRIPT} [OPTIONS] WIKI_URL
+
+DESCRIPTION
+  Translate the Github Wiki Markdown for the given WIKI_URL
+
+  -?, --help
+    print this help text
+
+  -l, --lang LANG
+    Two letter language code (required)
+
+  -v, --verbose
+    print more information to stderr
+
+EXAMPLES
+  scripts/${SCRIPT} -l pt https://github.com/sc-voice/ms-dpd/wiki/Case-Study:-PT
+`);
+
+  text && console.error(msg, text);
+  process.exit(0);
+}
+
+let dbg = 0;
+let dstLang;
+let DeepLAdapter;
+let TOOLS;
+let NODE_TOOLS;
+
+
+async function translateLines(lines) {
+  const msg = `${SCRIPT}.translateLines:`;
+  const AUTH_PATH = path.join(DIRNAME, '../local/deepl.auth');
+  const AUTH_KEY = fs.readFileSync(AUTH_PATH).toString().trim();
+  let dbg = 0;
+  let { DeepLAdapter } = NODE_TOOLS.Translate;
+  let { Logger } = TOOLS.Text;
+  let logger = new Logger();
+  let authKey = AUTH_KEY;
+  let dla = await DeepLAdapter.create({authKey, dstLang, logger});
+
+  dbg && console.error(msg, dstLang);
+  
+  let limit = undefined;
+  let srcLines = lines.slice(0,limit);
+  let dstLines = await dla.translate(srcLines);
+  srcLines.forEach((src,i)=>{
+    console.error(src);
+    console.log(dstLines[i]);
+  });
+}
+
+async function main() {
+  const msg = `${SCRIPT}.main:`;
+  let url;
+  TOOLS = await import('@sc-voice/tools');
+  NODE_TOOLS = await import('@sc-voice/node-tools');
+
+  for (let i = 0; i < args.length; i++) {
+    let arg = args[i];
+    switch (arg) {
+      case '-?':
+      case '--help':
+        help();
+        break;
+      case "--lang":
+      case "-l":
+        dstLang = args[++i];
+        break;
+      case "--verbose":
+      case "-v":
+        dbg = 1;
+        break;
+      default:
+        if (arg.at(0) === "-") {
+          console.error(`${msg} [ERROR] ignoring ${arg}`);
+        } else {
+          url = arg;
+        }
+        break;
+    }
+  }
+  if (url == null) {
+    help('url?');
+  }
+  if (dstLang == null) {
+    help('dstLang?');
+  }
+
+  dbg && console.error(msg, {
+    DIRNAME, SCRIPT, dstLang, verbose:dbg, url
+  });
+
+  if (!url.endsWith('.md')) {
+    url = url + '.md';
+  }
+  console.error(msg, 'URL:', url);
+  let res = await fetch(url);
+  let text = await res.text();
+  let lines = text.split('\n');
+
+  translateLines(lines);
+} // main
+(async function() {
+  try {
+    await main();
+  } catch(e) {
+    console.error(msg, e);
+  }
+})()
+
+JS
