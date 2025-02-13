@@ -750,15 +750,15 @@ typeof describe === 'function' &&
         keys: ['4iU', '4iV'],
       });
     });
-    it('TESTTESTfindDefinition() campos pt', async () => {
+    it('findDefinition() campos pt', async () => {
       const msg = 'td8y.findDefinition-campos-pt';
+      const dbg = 1;
       let lang = 'pt';
       let dict = await Dictionary.create({lang});
       let campos = dict.findDefinition('campos');
       should(campos.pattern = 'campos');
       should(campos.definition = 'definition');
       let d3F0 = campos.data.find(d=>d.key ==='3F0');
-      should(d3F0.meaning_raw).match(/campos/);
-      //console.log(msg, d3F0);
+      should(d3F0.meaning_1).match(/campos/);
     });
   });
