@@ -8,23 +8,23 @@ import { Text } from '@sc-voice/tools';
 const { Logger } = Text;
 import { SuttaRef } from 'scv-esm/main.mjs';
 import { Dictionary } from '../main.mjs';
-import { Translator } from '../scripts/js/translator.mjs';
 import { DBG } from '../src/defines.mjs';
+import { Translator } from '../src/tools/translator.mjs';
 
 const MOCK_SRC_DEFS = {
   '4iU': '|human-raw|human-lit',
   '4iV': 'human-cooked|raw-human-ignored|lit',
-  'D7K': 'human-cooked|raw-human-ignored|lit',
-  'D7N': '|raw-human|lit',
+  D7K: 'human-cooked|raw-human-ignored|lit',
+  D7N: '|raw-human|lit',
   // DYr: '|moon|', // missing actual definition
-}
+};
 const MOCK_DST_DEFS = {
   '4iU': '|old-deepl-translation|lit',
   '4iV': '|old-human-translation|lit',
-  'D7K': 'human-cooked|raw-human-ignored|lit',
-  'D7N': '|raw-human|lit',
+  D7K: 'human-cooked|raw-human-ignored|lit',
+  D7N: '|raw-human|lit',
   // DYr: '|moon|', // missing actual definition
-}
+};
 
 const EN_DEFS = {
   '4iU':
@@ -47,7 +47,7 @@ const EN_DEFS = {
   Gaa: '|learning; knowledge|heard',
   Gab: '|son|',
   Gb7: '|daughter|',
-}
+};
 const PT_DEFS = {
   '4iU':
     '|thus; this; like this; similarly; in the same manner; just as; such-pt|',
@@ -69,7 +69,7 @@ const PT_DEFS = {
   Gaa: '|learning; knowledge-pt|heard-pt',
   Gab: '|son-pt|',
   Gb7: '|daughter-pt|',
-}
+};
 
 describe('translator', () => {
   it('default constructor', () => {
@@ -101,8 +101,11 @@ describe('translator', () => {
     // dstDefs can be provided by caller
     let dstDefs = {};
     let forceRaw = true;
-    let trans2 = await Translator.create(
-      { dstLang, dstDefs, forceRaw});
+    let trans2 = await Translator.create({
+      dstLang,
+      dstDefs,
+      forceRaw,
+    });
     should(trans2.forceRaw).equal(true);
     should(trans2.dstDefs).equal(dstDefs);
   });
@@ -254,7 +257,7 @@ describe('translator', () => {
     //console.log(msg, {translated});
     should.deepEqual(translated, PT_DEFS);
   });
-  it('TESTTESTtranslateTextDefs() raw', async () => {
+  it('translateTextDefs() raw', async () => {
     const msg = 'tt8r.translateTextDefs:';
     let translated = {};
     let paliText = 'Evaṁ me sutaṁ.';
@@ -276,7 +279,7 @@ describe('translator', () => {
     should(translated['D7K']).equal('|human-cooked-pt|lit-pt');
     should(translated['D7N']).equal('|raw-human-pt|lit-pt');
   });
-  it('TESTTESTtranslateTextDefs() forceRaw', async () => {
+  it('translateTextDefs() forceRaw', async () => {
     const msg = 'tt8r.translateTextDefs:';
     let translated = {};
     let paliText = 'Evaṁ me sutaṁ.';
@@ -304,14 +307,18 @@ describe('translator', () => {
   it('translateSuttaRef() mn8:1.1', async () => {
     const msg = 'tt8r.translateSuttaRef-mn8:1.1';
     const dbg = 0;
-    let logger = new Logger({sink: dbg ? console : null});
+    let logger = new Logger({ sink: dbg ? console : null });
     let sref = SuttaRef.create('mn8:1.1');
     let forceRaw = true;
     let dstLang = 'fr';
     let translateTexts = // mock translation
       (texts) => texts.map((t) => (t ? `${t}-fr` : t));
-    let trans = await Translator.create({ 
-      dstLang, translateTexts, forceRaw, logger });
+    let trans = await Translator.create({
+      dstLang,
+      translateTexts,
+      forceRaw,
+      logger,
+    });
     let translated = await trans.translateSuttaRef(sref);
     should(trans.charsTranslated.toString()).equal('302/400 chars');
     should(translated['GaX']).equal('|heard-fr|');
@@ -327,10 +334,13 @@ describe('translator', () => {
     let onTranslated = (scid) => cbScid.push(scid);
     let translateTexts = // mock translation
       (texts) => texts.map((t) => (t ? `${t}-fr` : t));
-    let trans = await Translator.create({ 
-      dstLang, translateTexts, forceRaw });
+    let trans = await Translator.create({
+      dstLang,
+      translateTexts,
+      forceRaw,
+    });
     let translatedDefs = {};
-    let transOpts = { translatedDefs, onTranslated }
+    let transOpts = { translatedDefs, onTranslated };
     await trans.translateSuttaRef(sref, transOpts);
     should(trans.charsTranslated.toString()).equal('34/34 chars');
     should.deepEqual(cbScid, [sref.scid]);
@@ -341,13 +351,13 @@ describe('translator', () => {
     const msg = 'tt8r.translateSuttaRef-pli-tv-pvr2.14:';
     const dbg = 0;
     let sink = dbg ? console : null;
-    let logger = new Logger({sink});
+    let logger = new Logger({ sink });
     let sref1 = SuttaRef.create('pli-tv-pvr2.14:1.1');
     let dstLang = 'fr';
-    let createTranslator = (n) =>
-      (texts) => texts.map((t) => (t ? `${t}-fr${n}` : t));
-    let trans1 = await Translator.create({ 
-      dstLang, 
+    let createTranslator = (n) => (texts) =>
+      texts.map((t) => (t ? `${t}-fr${n}` : t));
+    let trans1 = await Translator.create({
+      dstLang,
       translateTexts: createTranslator(1),
       logger,
     });
@@ -356,18 +366,18 @@ describe('translator', () => {
     should(translatedDefs['o8']).equal('|container-fr1|');
     dbg && console.log(msg, translatedDefs);
 
-    let trans2 = await Translator.create({ 
-      dstLang, 
+    let trans2 = await Translator.create({
+      dstLang,
       translateTexts: createTranslator(2),
       logger,
     });
-    await trans2.translateSuttaRef(sref1, {translatedDefs});
+    await trans2.translateSuttaRef(sref1, { translatedDefs });
     should(translatedDefs['o8']).equal('|container-fr1|');
     should(translatedDefs['35T']).equal(undefined); // not in sref1
     should(trans2.charsTranslated.toString()).equal('0/1046 chars');
 
     let srefAll = SuttaRef.create('pli-tv-pvr2.14');
-    await trans2.translateSuttaRef(srefAll, {translatedDefs});
+    await trans2.translateSuttaRef(srefAll, { translatedDefs });
     should(translatedDefs['o8']).equal('|container-fr1|'); // !forceRaw
     dbg && console.log(translatedDefs);
     should(translatedDefs['35T']).match(/wrongdoing-fr2/);

@@ -160,7 +160,7 @@ async function main() {
       let json = JSON.parse( await fsp.readFile(fnMS) );
       console.error(msg, '[2]readFile', fnMS, Object.keys(json).length);
     } else {
-      let fnMS = path.join(APPDIR, 'scripts/js/ms.json');
+      let fnMS = path.join(APPDIR, 'src/tools/ms.json');
       json = JSON.parse( await fsp.readFile(fnMS) );
       console.error(msg, '[3]readFile', fnMS, Object.keys(json).length);
     }

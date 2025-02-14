@@ -1,0 +1,1176 @@
+{
+  "bilaraPaths": [
+    "root/pli/ms/sutta/mn/mn8_root-pli-ms.json",
+    "translation/en/sujato/sutta/mn/mn8_translation-en-sujato.json",
+    "translation/fr/noeismet/sutta/mn/mn8_translation-fr-noeismet.json"
+  ],
+  "author_uid": "noeismet",
+  "type": "translation",
+  "category": "sutta",
+  "sutta_uid": "mn8",
+  "lang": "fr",
+  "segMap": {
+    "mn8:0.1": {
+      "scid": "mn8:0.1",
+      "pli": "Majjhima Nikāya 8 ",
+      "fr": "Discours de Longueur Moyenne 8 ",
+      "ref": "Middle Discourses 8 ",
+      "matched": true
+    },
+    "mn8:0.2": {
+      "scid": "mn8:0.2",
+      "pli": "Sallekhasutta ",
+      "fr": "L’effacement de soi ",
+      "ref": "Self-Effacement ",
+      "matched": true
+    },
+    "mn8:1.1": {
+      "scid": "mn8:1.1",
+      "pli": "Evaṁ me sutaṁ—",
+      "fr": "Ainsi ai-je entendu. ",
+      "ref": "So I have heard. ",
+      "matched": true
+    },
+    "mn8:1.2": {
+      "scid": "mn8:1.2",
+      "pli": "ekaṁ samayaṁ bhagavā sāvatthiyaṁ viharati jetavane anāthapiṇḍikassa ārāme. ",
+      "fr": "À une époque, le Bouddha séjournait près de Sāvatthī dans le Bosquet de Jeta, au monastère d’Anāthapiṇḍika. ",
+      "ref": "At one time the Buddha was staying near Sāvatthī in Jeta’s Grove, Anāthapiṇḍika’s monastery. ",
+      "matched": true
+    },
+    "mn8:2.1": {
+      "scid": "mn8:2.1",
+      "pli": "Atha kho āyasmā mahācundo sāyanhasamayaṁ paṭisallānā vuṭṭhito yena bhagavā tenupasaṅkami; upasaṅkamitvā bhagavantaṁ abhivādetvā ekamantaṁ nisīdi. Ekamantaṁ nisinno kho āyasmā mahācundo bhagavantaṁ etadavoca: ",
+      "fr": "Vers le soir, le Vénérable Mahācunda quitta sa retraite méditative et se dirigea vers le Bouddha. Après l’avoir respectueusement salué, il prit place à ses côtés et s’adressa ainsi au Bouddha : ",
+      "ref": "Then in the late afternoon, Venerable Mahācunda came out of retreat and went to the Buddha. He bowed, sat down to one side, and said to the Buddha: ",
+      "matched": true
+    },
+    "mn8:3.1": {
+      "scid": "mn8:3.1",
+      "pli": "“yā imā, bhante, anekavihitā diṭṭhiyo loke uppajjanti—",
+      "fr": "« Vénérable, de nombreuses croyances surgissent dans le monde, ",
+      "ref": "“Sir, there are many different views that arise in the world ",
+      "matched": true
+    },
+    "mn8:3.2": {
+      "scid": "mn8:3.2",
+      "pli": "attavādapaṭisaṁyuttā vā lokavādapaṭisaṁyuttā vā—",
+      "fr": "liées à des doctrines du soi ou à des conceptions du cosmos. ",
+      "ref": "connected with theories of self or with theories of the cosmos. ",
+      "matched": true
+    },
+    "mn8:3.3": {
+      "scid": "mn8:3.3",
+      "pli": "ādimeva nu kho, bhante, bhikkhuno manasikaroto evametāsaṁ diṭṭhīnaṁ pahānaṁ hoti, evametāsaṁ diṭṭhīnaṁ paṭinissaggo hotī”ti? ",
+      "fr": "Est-ce que, dès le début, en y prêtant attention, un monastique parvient à renoncer à ces croyances, à se libérer de ces conceptions ? » ",
+      "ref": "How does a mendicant who is focusing on the starting point give up and let go of these views?” ",
+      "matched": true
+    },
+    "mn8:3.4": {
+      "scid": "mn8:3.4",
+      "pli": "“Yā imā, cunda, anekavihitā diṭṭhiyo loke uppajjanti—",
+      "fr": "« Cunda, de nombreuses croyances surgissent dans le monde, ",
+      "ref": "“Cunda, there are many different views that arise in the world ",
+      "matched": true
+    },
+    "mn8:3.5": {
+      "scid": "mn8:3.5",
+      "pli": "attavādapaṭisaṁyuttā vā lokavādapaṭisaṁyuttā vā—",
+      "fr": "liées à des doctrines du soi ou à des conceptions du cosmos. ",
+      "ref": "connected with theories of self or with theories of the cosmos. ",
+      "matched": true
+    },
+    "mn8:3.6": {
+      "scid": "mn8:3.6",
+      "pli": "yattha cetā diṭṭhiyo uppajjanti yattha ca anusenti yattha ca samudācaranti taṁ ‘netaṁ mama, nesohamasmi, na me so attā’ti—evametaṁ yathābhūtaṁ sammappaññā passato evametāsaṁ diṭṭhīnaṁ pahānaṁ hoti, evametāsaṁ diṭṭhīnaṁ paṭinissaggo hoti. ",
+      "fr": "Un monastique renonce à ces croyances et se libère de ces conceptions en percevant avec clarté, grâce à la juste sagesse, leur origine, leur fondement et leur mécanisme, en réalisant : « Ceci n’est pas à moi, je ne suis pas cela, ce n’est pas mon soi. › ",
+      "ref": "A mendicant gives up and lets go of these views by truly seeing with right wisdom where they arise, where they settle in, and where they operate as: ‘This is not mine, I am not this, this is not my self.’ ",
+      "matched": true
+    },
+    "mn8:4.1": {
+      "scid": "mn8:4.1",
+      "pli": "Ṭhānaṁ kho panetaṁ, cunda, vijjati yaṁ idhekacco bhikkhu vivicceva kāmehi vivicca akusalehi dhammehi savitakkaṁ savicāraṁ vivekajaṁ pītisukhaṁ paṭhamaṁ jhānaṁ upasampajja vihareyya. ",
+      "fr": "Il se peut qu’un monastique, détaché des plaisirs sensoriels et des états nuisibles, puisse entrer et demeurer dans la première absorption, empreinte de joie et de bien-être nés de la solitude, tout en focalisant son esprit et le maintenant engagé. ",
+      "ref": "It’s possible that a certain mendicant, quite secluded from sensual pleasures, secluded from unskillful qualities, might enter and remain in the first absorption, which has the rapture and bliss born of seclusion, while placing the mind and keeping it connected. ",
+      "matched": true
+    },
+    "mn8:4.2": {
+      "scid": "mn8:4.2",
+      "pli": "Tassa evamassa: ",
+      "fr": "Il pourrait penser ",
+      "ref": "They might think ",
+      "matched": true
+    },
+    "mn8:4.3": {
+      "scid": "mn8:4.3",
+      "pli": "‘sallekhena viharāmī’ti. ",
+      "fr": "qu’il pratique l’effacement de soi. ",
+      "ref": "they’re practicing self-effacement. ",
+      "matched": true
+    },
+    "mn8:4.4": {
+      "scid": "mn8:4.4",
+      "pli": "Na kho panete, cunda, ariyassa vinaye sallekhā vuccanti. ",
+      "fr": "Cependant, dans la discipline du Noble, cela n’est pas désigné comme ‹ l’effacement de soi › ; ",
+      "ref": "But in the training of the Noble One these are not called ‘self-effacement’; ",
+      "matched": true
+    },
+    "mn8:4.5": {
+      "scid": "mn8:4.5",
+      "pli": "Diṭṭhadhammasukhavihārā ete ariyassa vinaye vuccanti. ",
+      "fr": "cela est qualifié de ‹ méditation bienheureuse dans la vie présente ›. ",
+      "ref": "they’re called ‘blissful meditations in the present life’. ",
+      "matched": true
+    },
+    "mn8:5.1": {
+      "scid": "mn8:5.1",
+      "pli": "Ṭhānaṁ kho panetaṁ, cunda, vijjati yaṁ idhekacco bhikkhu vitakkavicārānaṁ vūpasamā ajjhattaṁ sampasādanaṁ cetaso ekodibhāvaṁ avitakkaṁ avicāraṁ samādhijaṁ pītisukhaṁ dutiyaṁ jhānaṁ upasampajja vihareyya. ",
+      "fr": "Il se peut qu’un monastique, grâce à l’apaisement du placement de l’esprit et de son maintien engagé, puisse entrer et demeurer dans la seconde absorption, empreinte de joie et de bonheur issus de la concentration, bénéficiant d’une lucidité interne et d’un esprit unifié, sans focaliser son esprit ni le maintenir engagé. ",
+      "ref": "It’s possible that some mendicant, as the placing of the mind and keeping it connected are stilled, might enter and remain in the second absorption, which has the rapture and bliss born of immersion, with internal clarity and mind at one, without placing the mind and keeping it connected. ",
+      "matched": true
+    },
+    "mn8:5.2": {
+      "scid": "mn8:5.2",
+      "pli": "Tassa evamassa: ",
+      "fr": "Il pourrait penser ",
+      "ref": "They might think ",
+      "matched": true
+    },
+    "mn8:5.3": {
+      "scid": "mn8:5.3",
+      "pli": "‘sallekhena viharāmī’ti. ",
+      "fr": "qu’il pratique l’effacement de soi. ",
+      "ref": "they’re practicing self-effacement. ",
+      "matched": true
+    },
+    "mn8:5.4": {
+      "scid": "mn8:5.4",
+      "pli": "Na kho panete, cunda, ariyassa vinaye sallekhā vuccanti. ",
+      "fr": "Cependant, dans la discipline du Noble, cela n’est pas désigné comme ‹ l’effacement de soi › ; ",
+      "ref": "But in the training of the Noble One these are not called ‘self-effacement’; ",
+      "matched": true
+    },
+    "mn8:5.5": {
+      "scid": "mn8:5.5",
+      "pli": "Diṭṭhadhammasukhavihārā ete ariyassa vinaye vuccanti. ",
+      "fr": "cela est qualifié de ‹ méditation bienheureuse dans la vie présente ›. ",
+      "ref": "they’re called ‘blissful meditations in the present life’. ",
+      "matched": true
+    },
+    "mn8:6.1": {
+      "scid": "mn8:6.1",
+      "pli": "Ṭhānaṁ kho panetaṁ, cunda, vijjati yaṁ idhekacco bhikkhu pītiyā ca virāgā upekkhako ca vihareyya, sato ca sampajāno sukhañca kāyena paṭisaṁvedeyya, yaṁ taṁ ariyā ācikkhanti: ‘upekkhako satimā sukhavihārī’ti tatiyaṁ jhānaṁ upasampajja vihareyya. ",
+      "fr": "Il se peut qu’un monastique, avec la disparition de la joie, puisse entrer et demeurer dans la troisième absorption, où il médite avec équanimité, pleinement attentif et conscient, faisant l’expérience personnelle de ce bonheur que les nobles qualifient ainsi : ‹ Équanime et attentif, on médite dans la félicité. › ",
+      "ref": "It’s possible that some mendicant, with the fading away of rapture, might enter and remain in the third absorption, where they meditate with equanimity, mindful and aware, personally experiencing the bliss of which the noble ones declare, ‘Equanimous and mindful, one meditates in bliss.’ ",
+      "matched": true
+    },
+    "mn8:6.2": {
+      "scid": "mn8:6.2",
+      "pli": "Tassa evamassa: ",
+      "fr": "Il pourrait penser ",
+      "ref": "They might think ",
+      "matched": true
+    },
+    "mn8:6.3": {
+      "scid": "mn8:6.3",
+      "pli": "‘sallekhena viharāmī’ti. ",
+      "fr": "qu’il pratique l’effacement de soi. ",
+      "ref": "they’re practicing self-effacement. ",
+      "matched": true
+    },
+    "mn8:6.4": {
+      "scid": "mn8:6.4",
+      "pli": "Na kho panete, cunda, ariyassa vinaye sallekhā vuccanti. ",
+      "fr": "Cependant, dans la discipline du Noble, cela n’est pas désigné comme ‹ l’effacement de soi › ; ",
+      "ref": "But in the training of the Noble One these are not called ‘self-effacement’; ",
+      "matched": true
+    },
+    "mn8:6.5": {
+      "scid": "mn8:6.5",
+      "pli": "Diṭṭhadhammasukhavihārā ete ariyassa vinaye vuccanti. ",
+      "fr": "cela est qualifié de ‹ méditation bienheureuse dans la vie présente ›. ",
+      "ref": "they’re called ‘blissful meditations in the present life’. ",
+      "matched": true
+    },
+    "mn8:7.1": {
+      "scid": "mn8:7.1",
+      "pli": "Ṭhānaṁ kho panetaṁ, cunda, vijjati yaṁ idhekacco bhikkhu sukhassa ca pahānā dukkhassa ca pahānā pubbeva somanassadomanassānaṁ atthaṅgamā adukkhamasukhaṁ upekkhāsatipārisuddhiṁ catutthaṁ jhānaṁ upasampajja vihareyya. ",
+      "fr": "Il se peut qu’un monastique, ayant renoncé aux sensations de plaisir et de douleur, ainsi qu’à l’état antérieur de bonheur et de tristesse, puisse entrer et demeurer dans la quatrième absorption, exempte de plaisir et de douleur, caractérisée par une parfaite équanimité et une attention pure. ",
+      "ref": "It’s possible that some mendicant, with the giving up of pleasure and pain, and the ending of former happiness and sadness, might enter and remain in the fourth absorption, without pleasure or pain, with pure equanimity and mindfulness. ",
+      "matched": true
+    },
+    "mn8:7.2": {
+      "scid": "mn8:7.2",
+      "pli": "Tassa evamassa: ",
+      "fr": "Il pourrait penser ",
+      "ref": "They might think ",
+      "matched": true
+    },
+    "mn8:7.3": {
+      "scid": "mn8:7.3",
+      "pli": "‘sallekhena viharāmī’ti. ",
+      "fr": "qu’il pratique l’effacement de soi. ",
+      "ref": "they’re practicing self-effacement. ",
+      "matched": true
+    },
+    "mn8:7.4": {
+      "scid": "mn8:7.4",
+      "pli": "Na kho panete, cunda, ariyassa vinaye sallekhā vuccanti. ",
+      "fr": "Cependant, dans la discipline du Noble, cela n’est pas désigné comme ‹ l’effacement de soi › ; ",
+      "ref": "But in the training of the Noble One these are not called ‘self-effacement’; ",
+      "matched": true
+    },
+    "mn8:7.5": {
+      "scid": "mn8:7.5",
+      "pli": "Diṭṭhadhammasukhavihārā ete ariyassa vinaye vuccanti. ",
+      "fr": "cela est qualifié de ‹ méditation bienheureuse dans la vie présente ›. ",
+      "ref": "they’re called ‘blissful meditations in the present life’. ",
+      "matched": true
+    },
+    "mn8:8.1": {
+      "scid": "mn8:8.1",
+      "pli": "Ṭhānaṁ kho panetaṁ, cunda, vijjati yaṁ idhekacco bhikkhu sabbaso rūpasaññānaṁ samatikkamā, paṭighasaññānaṁ atthaṅgamā, nānattasaññānaṁ amanasikārā, ‘ananto ākāso’ti ākāsānañcāyatanaṁ upasampajja vihareyya. ",
+      "fr": "Il se peut qu’un monastique, ayant complètement transcendé les perceptions de la forme, avec la cessation des perceptions d’opposition, ne prêtant pas attention aux perceptions de diversité, reconnaissant que ‹ l’espace est infini ›, puisse entrer et demeurer dans la sphère de l’espace infini. ",
+      "ref": "It’s possible that some mendicant, going totally beyond perceptions of form, with the ending of perceptions of impingement, not focusing on perceptions of diversity, aware that ‘space is infinite’, might enter and remain in the dimension of infinite space. ",
+      "matched": true
+    },
+    "mn8:8.2": {
+      "scid": "mn8:8.2",
+      "pli": "Tassa evamassa: ",
+      "fr": "Il pourrait penser ",
+      "ref": "They might think ",
+      "matched": true
+    },
+    "mn8:8.3": {
+      "scid": "mn8:8.3",
+      "pli": "‘sallekhena viharāmī’ti. ",
+      "fr": "qu’il pratique l’effacement de soi. ",
+      "ref": "they’re practicing self-effacement. ",
+      "matched": true
+    },
+    "mn8:8.4": {
+      "scid": "mn8:8.4",
+      "pli": "Na kho panete, cunda, ariyassa vinaye sallekhā vuccanti. ",
+      "fr": "Cependant, dans la discipline du Noble, cela n’est pas désigné comme ‹ l’effacement de soi › ; ",
+      "ref": "But in the training of the Noble One these are not called ‘self-effacement’; ",
+      "matched": true
+    },
+    "mn8:8.5": {
+      "scid": "mn8:8.5",
+      "pli": "Santā ete vihārā ariyassa vinaye vuccanti. ",
+      "fr": "cela est qualifié de ‹ méditation paisible ›. ",
+      "ref": "they’re called ‘peaceful meditations’. ",
+      "matched": true
+    },
+    "mn8:9.1": {
+      "scid": "mn8:9.1",
+      "pli": "Ṭhānaṁ kho panetaṁ, cunda, vijjati yaṁ idhekacco bhikkhu sabbaso ākāsānañcāyatanaṁ samatikkamma ‘anantaṁ viññāṇan’ti viññāṇañcāyatanaṁ upasampajja vihareyya. ",
+      "fr": "Il se peut qu’un monastique, ayant complètement transcendé la dimension de l’espace infini et reconnaissant que ‹ la conscience est infinie ›, puisse entrer et demeurer dans la dimension de la conscience infinie. ",
+      "ref": "It’s possible that some mendicant, going totally beyond the dimension of infinite space, aware that ‘consciousness is infinite’, might enter and remain in the dimension of infinite consciousness. ",
+      "matched": true
+    },
+    "mn8:9.2": {
+      "scid": "mn8:9.2",
+      "pli": "Tassa evamassa: ",
+      "fr": "Il pourrait penser ",
+      "ref": "They might think ",
+      "matched": true
+    },
+    "mn8:9.3": {
+      "scid": "mn8:9.3",
+      "pli": "‘sallekhena viharāmī’ti. ",
+      "fr": "qu’il pratique l’effacement de soi. ",
+      "ref": "they’re practicing self-effacement. ",
+      "matched": true
+    },
+    "mn8:9.4": {
+      "scid": "mn8:9.4",
+      "pli": "Na kho panete, cunda, ariyassa vinaye sallekhā vuccanti. ",
+      "fr": "Cependant, dans la discipline du Noble, cela n’est pas désigné comme ‹ l’effacement de soi › ; ",
+      "ref": "But in the training of the Noble One these are not called ‘self-effacement’; ",
+      "matched": true
+    },
+    "mn8:9.5": {
+      "scid": "mn8:9.5",
+      "pli": "Santā ete vihārā ariyassa vinaye vuccanti. ",
+      "fr": "cela est qualifié de ‹ méditation paisible ›. ",
+      "ref": "they’re called ‘peaceful meditations’. ",
+      "matched": true
+    },
+    "mn8:10.1": {
+      "scid": "mn8:10.1",
+      "pli": "Ṭhānaṁ kho panetaṁ, cunda, vijjati yaṁ idhekacco bhikkhu sabbaso viññāṇañcāyatanaṁ samatikkamma ‘natthi kiñcī’ti ākiñcaññāyatanaṁ upasampajja vihareyya. ",
+      "fr": "Il se peut qu’un monastique, ayant complètement transcendé la dimension de la conscience infinie et reconnaissant qu’ ‹ il n’y a rien du tout ›, puisse entrer et demeurer dans la dimension du néant. ",
+      "ref": "It’s possible that some mendicant, going totally beyond the dimension of infinite consciousness, aware that ‘there is nothing at all’, might enter and remain in the dimension of nothingness. ",
+      "matched": true
+    },
+    "mn8:10.2": {
+      "scid": "mn8:10.2",
+      "pli": "Tassa evamassa: ",
+      "fr": "Il pourrait penser ",
+      "ref": "They might think ",
+      "matched": true
+    },
+    "mn8:10.3": {
+      "scid": "mn8:10.3",
+      "pli": "‘sallekhena viharāmī’ti. ",
+      "fr": "qu’il pratique l’effacement de soi. ",
+      "ref": "they’re practicing self-effacement. ",
+      "matched": true
+    },
+    "mn8:10.4": {
+      "scid": "mn8:10.4",
+      "pli": "Na kho panete, cunda, ariyassa vinaye sallekhā vuccanti. ",
+      "fr": "Cependant, dans la discipline du Noble, cela n’est pas désigné comme ‹ l’effacement de soi › ; ",
+      "ref": "But in the training of the Noble One these are not called ‘self-effacement’; ",
+      "matched": true
+    },
+    "mn8:10.5": {
+      "scid": "mn8:10.5",
+      "pli": "Santā ete vihārā ariyassa vinaye vuccanti. ",
+      "fr": "cela est qualifié de ‹ méditation paisible ›. ",
+      "ref": "they’re called ‘peaceful meditations’. ",
+      "matched": true
+    },
+    "mn8:11.1": {
+      "scid": "mn8:11.1",
+      "pli": "Ṭhānaṁ kho panetaṁ, cunda, vijjati yaṁ idhekacco bhikkhu sabbaso ākiñcaññāyatanaṁ samatikkamma nevasaññānāsaññāyatanaṁ upasampajja vihareyya. ",
+      "fr": "Il se peut qu’un monastique, ayant complètement transcendé la dimension du néant, puisse entrer et demeurer dans la dimension ni de perception ni de non-perception. ",
+      "ref": "It’s possible that some mendicant, going totally beyond the dimension of nothingness, might enter and remain in the dimension of neither perception nor non-perception. ",
+      "matched": true
+    },
+    "mn8:11.2": {
+      "scid": "mn8:11.2",
+      "pli": "Tassa evamassa: ",
+      "fr": "Il pourrait penser ",
+      "ref": "They might think ",
+      "matched": true
+    },
+    "mn8:11.3": {
+      "scid": "mn8:11.3",
+      "pli": "‘sallekhena viharāmī’ti. ",
+      "fr": "qu’il pratique l’effacement de soi. ",
+      "ref": "they’re practicing self-effacement. ",
+      "matched": true
+    },
+    "mn8:11.4": {
+      "scid": "mn8:11.4",
+      "pli": "Na kho panete, cunda, ariyassa vinaye sallekhā vuccanti. ",
+      "fr": "Cependant, dans la discipline du Noble, cela n’est pas désigné comme ‹ l’effacement de soi › ; ",
+      "ref": "But in the training of the Noble One these are not called ‘self-effacement’; ",
+      "matched": true
+    },
+    "mn8:11.5": {
+      "scid": "mn8:11.5",
+      "pli": "Santā ete vihārā ariyassa vinaye vuccanti. ",
+      "fr": "cela est qualifié de ‹ méditation paisible ›. ",
+      "ref": "they’re called ‘peaceful meditations’. ",
+      "matched": true
+    },
+    "mn8:12.0": {
+      "scid": "mn8:12.0",
+      "pli": "1. Sallekhapariyāya ",
+      "fr": "1. L’effacement de soi ",
+      "ref": "1. The Exposition of Self-Effacement ",
+      "matched": true
+    },
+    "mn8:12.1": {
+      "scid": "mn8:12.1",
+      "pli": "Idha kho pana vo, cunda, sallekho karaṇīyo. ",
+      "fr": "Désormais, Cunda, tu devrais t’atteler à l’effacement de soi de chaque manière suivante. ",
+      "ref": "Now, Cunda, you should work on self-effacement in each of the following ways. ",
+      "matched": true
+    },
+    "mn8:12.2": {
+      "scid": "mn8:12.2",
+      "pli": "‘Pare vihiṁsakā bhavissanti, mayamettha avihiṁsakā bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains seront violents, cependant nous, ici, ne serons pas violents. › ",
+      "ref": "‘Others will be cruel, but here we will not be cruel.’ ",
+      "matched": true
+    },
+    "mn8:12.3": {
+      "scid": "mn8:12.3",
+      "pli": "‘Pare pāṇātipātī bhavissanti, mayamettha pāṇātipātā paṭiviratā bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains tueront des créatures vivantes, cependant nous, ici, ne tuerons pas de créatures vivantes. › ",
+      "ref": "‘Others will kill living creatures, but here we will not kill living creatures.’ ",
+      "matched": true
+    },
+    "mn8:12.4": {
+      "scid": "mn8:12.4",
+      "pli": "‘Pare adinnādāyī bhavissanti, mayamettha adinnādānā paṭiviratā bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains voleront, cependant nous, ici, ne volerons pas. › ",
+      "ref": "‘Others will steal, but here we will not steal.’ ",
+      "matched": true
+    },
+    "mn8:12.5": {
+      "scid": "mn8:12.5",
+      "pli": "‘Pare abrahmacārī bhavissanti, mayamettha brahmacārī bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains ne seront pas chastes, cependant nous, ici, serons chastes. › ",
+      "ref": "‘Others will be unchaste, but here we will not be unchaste.’ ",
+      "matched": true
+    },
+    "mn8:12.6": {
+      "scid": "mn8:12.6",
+      "pli": "‘Pare musāvādī bhavissanti, mayamettha musāvādā paṭiviratā bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains mentiront, cependant nous, ici, ne mentirons pas. › ",
+      "ref": "‘Others will lie, but here we will not lie.’ ",
+      "matched": true
+    },
+    "mn8:12.7": {
+      "scid": "mn8:12.7",
+      "pli": "‘Pare pisuṇavācā bhavissanti, mayamettha pisuṇāya vācāya paṭiviratā bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains parleront de manière à diviser, cependant nous, ici, ne parlerons pas de manière à diviser. › ",
+      "ref": "‘Others will speak divisively, but here we will not speak divisively.’ ",
+      "matched": true
+    },
+    "mn8:12.8": {
+      "scid": "mn8:12.8",
+      "pli": "‘Pare pharusavācā bhavissanti, mayamettha pharusāya vācāya paṭiviratā bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains parleront sèchement, cependant nous, ici, ne parlerons pas sèchement. › ",
+      "ref": "‘Others will speak harshly, but here we will not speak harshly.’ ",
+      "matched": true
+    },
+    "mn8:12.9": {
+      "scid": "mn8:12.9",
+      "pli": "‘Pare samphappalāpī bhavissanti, mayamettha samphappalāpā paṭiviratā bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains se livreront à des bavardages inutiles, cependant nous, ici, ne nous livrerons pas à des bavardages inutiles. › ",
+      "ref": "‘Others will talk nonsense, but here we will not talk nonsense.’ ",
+      "matched": true
+    },
+    "mn8:12.10": {
+      "scid": "mn8:12.10",
+      "pli": "‘Pare abhijjhālū bhavissanti, mayamettha anabhijjhālū bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains seront avides, cependant nous, ici, ne serons pas avides. › ",
+      "ref": "‘Others will be covetous, but here we will not be covetous.’ ",
+      "matched": true
+    },
+    "mn8:12.11": {
+      "scid": "mn8:12.11",
+      "pli": "‘Pare byāpannacittā bhavissanti, mayamettha abyāpannacittā bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains auront de la malveillance, cependant nous, ici, serons sans malveillance. › ",
+      "ref": "‘Others will have ill will, but here we will not have ill will.’ ",
+      "matched": true
+    },
+    "mn8:12.12": {
+      "scid": "mn8:12.12",
+      "pli": "‘Pare micchādiṭṭhī bhavissanti, mayamettha sammādiṭṭhī bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains auront une mauvaise conception, cependant nous, ici, aurons une bonne conception. › ",
+      "ref": "‘Others will have wrong view, but here we will have right view.’ ",
+      "matched": true
+    },
+    "mn8:12.13": {
+      "scid": "mn8:12.13",
+      "pli": "‘Pare micchāsaṅkappā bhavissanti, mayamettha sammāsaṅkappā bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains auront une mauvaise intention, cependant nous, ici, aurons une bonne intention. › ",
+      "ref": "‘Others will have wrong thought, but here we will have right thought.’ ",
+      "matched": true
+    },
+    "mn8:12.14": {
+      "scid": "mn8:12.14",
+      "pli": "‘Pare micchāvācā bhavissanti, mayamettha sammāvācā bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains auront une mauvaise façon de parler, cependant nous, ici, aurons une bonne façon de parler. › ",
+      "ref": "‘Others will have wrong speech, but here we will have right speech.’ ",
+      "matched": true
+    },
+    "mn8:12.15": {
+      "scid": "mn8:12.15",
+      "pli": "‘Pare micchākammantā bhavissanti, mayamettha sammākammantā bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains commettront de mauvaises actions, cependant nous, ici, accomplirons de bonnes actions. › ",
+      "ref": "‘Others will have wrong action, but here we will have right action.’ ",
+      "matched": true
+    },
+    "mn8:12.16": {
+      "scid": "mn8:12.16",
+      "pli": "‘Pare micchāājīvā bhavissanti, mayamettha sammāājīvā bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains auront un mauvais mode de vie, cependant nous, ici, aurons un bon mode de vie. › ",
+      "ref": "‘Others will have wrong livelihood, but here we will have right livelihood.’ ",
+      "matched": true
+    },
+    "mn8:12.17": {
+      "scid": "mn8:12.17",
+      "pli": "‘Pare micchāvāyāmā bhavissanti, mayamettha sammāvāyāmā bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains feront les mauvais efforts, cependant nous, ici, feront les bons efforts. › ",
+      "ref": "‘Others will have wrong effort, but here we will have right effort.’ ",
+      "matched": true
+    },
+    "mn8:12.18": {
+      "scid": "mn8:12.18",
+      "pli": "‘Pare micchāsatī bhavissanti, mayamettha sammāsatī bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains auront une mauvaise attention, cependant nous, ici, aurons une bonne attention. › ",
+      "ref": "‘Others will have wrong mindfulness, but here we will have right mindfulness.’ ",
+      "matched": true
+    },
+    "mn8:12.19": {
+      "scid": "mn8:12.19",
+      "pli": "‘Pare micchāsamādhi bhavissanti, mayamettha sammāsamādhī bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains auront une mauvaise concentration, cependant nous, ici, aurons une bonne concentration. › ",
+      "ref": "‘Others will have wrong immersion, but here we will have right immersion.’ ",
+      "matched": true
+    },
+    "mn8:12.20": {
+      "scid": "mn8:12.20",
+      "pli": "‘Pare micchāñāṇī bhavissanti, mayamettha sammāñāṇī bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains auront une mauvaise compréhension, cependant nous, ici, aurons une bonne compréhension. › ",
+      "ref": "‘Others will have wrong knowledge, but here we will have right knowledge.’ ",
+      "matched": true
+    },
+    "mn8:12.21": {
+      "scid": "mn8:12.21",
+      "pli": "‘Pare micchāvimuttī bhavissanti, mayamettha sammāvimuttī bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains connaîtront une fausse libération, cependant nous, ici, connaîtrons la véritable libération. › ",
+      "ref": "‘Others will have wrong freedom, but here we will have right freedom.’ ",
+      "matched": true
+    },
+    "mn8:12.22": {
+      "scid": "mn8:12.22",
+      "pli": "‘Pare thinamiddhapariyuṭṭhitā bhavissanti, mayamettha vigatathinamiddhā bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains seront accablés de torpeur et de somnolence, cependant nous, ici, serons débarrassés de la torpeur et de la somnolence. › ",
+      "ref": "‘Others will be overcome with dullness and drowsiness, but here we will be rid of dullness and drowsiness.’ ",
+      "matched": true
+    },
+    "mn8:12.23": {
+      "scid": "mn8:12.23",
+      "pli": "‘Pare uddhatā bhavissanti, mayamettha anuddhatā bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains seront agités, cependant nous, ici, ne serons pas agités. › ",
+      "ref": "‘Others will be restless, but here we will not be restless.’ ",
+      "matched": true
+    },
+    "mn8:12.24": {
+      "scid": "mn8:12.24",
+      "pli": "‘Pare vicikicchī bhavissanti, mayamettha tiṇṇavicikicchā bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains auront des doutes, cependant nous, ici, aurons surmonté le doute. › ",
+      "ref": "‘Others will have doubts, but here we will have gone beyond doubt.’ ",
+      "matched": true
+    },
+    "mn8:12.25": {
+      "scid": "mn8:12.25",
+      "pli": "‘Pare kodhanā bhavissanti, mayamettha akkodhanā bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains seront irritables, cependant nous, ici, serons sans colère. › ",
+      "ref": "‘Others will be irritable, but here we will be without anger.’ ",
+      "matched": true
+    },
+    "mn8:12.26": {
+      "scid": "mn8:12.26",
+      "pli": "‘Pare upanāhī bhavissanti, mayamettha anupanāhī bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains seront hostiles, cependant nous, ici, serons sans hostilité. › ",
+      "ref": "‘Others will be acrimonious, but here we will be without acrimony.’ ",
+      "matched": true
+    },
+    "mn8:12.27": {
+      "scid": "mn8:12.27",
+      "pli": "‘Pare makkhī bhavissanti, mayamettha amakkhī bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains seront offensants, cependant nous, ici, serons inoffensifs. › ",
+      "ref": "‘Others will be offensive, but here we will be inoffensive.’ ",
+      "matched": true
+    },
+    "mn8:12.28": {
+      "scid": "mn8:12.28",
+      "pli": "‘Pare paḷāsī bhavissanti, mayamettha apaḷāsī bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains seront méprisants, cependant nous, ici, serons sans mépris. › ",
+      "ref": "‘Others will be contemptuous, but here we will be without contempt.’ ",
+      "matched": true
+    },
+    "mn8:12.29": {
+      "scid": "mn8:12.29",
+      "pli": "‘Pare issukī bhavissanti, mayamettha anissukī bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains seront jaloux, cependant nous, ici, serons sans jalousie. › ",
+      "ref": "‘Others will be jealous, but here we will be without jealousy.’ ",
+      "matched": true
+    },
+    "mn8:12.30": {
+      "scid": "mn8:12.30",
+      "pli": "‘Pare maccharī bhavissanti, mayamettha amaccharī bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains seront avares, cependant nous, ici, serons sans avarice. › ",
+      "ref": "‘Others will be stingy, but here we will be without stinginess.’ ",
+      "matched": true
+    },
+    "mn8:12.31": {
+      "scid": "mn8:12.31",
+      "pli": "‘Pare saṭhā bhavissanti, mayamettha asaṭhā bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains seront fourbes, cependant nous, ici, ne serons pas fourbes. › ",
+      "ref": "‘Others will be devious, but here we will not be devious.’ ",
+      "matched": true
+    },
+    "mn8:12.32": {
+      "scid": "mn8:12.32",
+      "pli": "‘Pare māyāvī bhavissanti, mayamettha amāyāvī bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains seront trompeurs, cependant nous, ici, ne serons pas trompeurs. › ",
+      "ref": "‘Others will be deceitful, but here we will not be deceitful.’ ",
+      "matched": true
+    },
+    "mn8:12.33": {
+      "scid": "mn8:12.33",
+      "pli": "‘Pare thaddhā bhavissanti, mayamettha atthaddhā bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains seront obstinés, cependant nous, ici, ne serons pas obstinés. › ",
+      "ref": "‘Others will be pompous, but here we will not be pompous.’ ",
+      "matched": true
+    },
+    "mn8:12.34": {
+      "scid": "mn8:12.34",
+      "pli": "‘Pare atimānī bhavissanti, mayamettha anatimānī bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains seront arrogants, cependant nous, ici, ne serons pas arrogants. › ",
+      "ref": "‘Others will be arrogant, but here we will not be arrogant.’ ",
+      "matched": true
+    },
+    "mn8:12.35": {
+      "scid": "mn8:12.35",
+      "pli": "‘Pare dubbacā bhavissanti, mayamettha suvacā bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains seront difficiles à réprimander, cependant nous, ici, ne serons pas difficiles à réprimander. › ",
+      "ref": "‘Others will be hard to admonish, but here we will not be hard to admonish.’ ",
+      "matched": true
+    },
+    "mn8:12.36": {
+      "scid": "mn8:12.36",
+      "pli": "‘Pare pāpamittā bhavissanti, mayamettha kalyāṇamittā bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains auront de mauvais amis, cependant nous, ici, aurons de bons amis. › ",
+      "ref": "‘Others will have bad friends, but here we will have good friends.’ ",
+      "matched": true
+    },
+    "mn8:12.37": {
+      "scid": "mn8:12.37",
+      "pli": "‘Pare pamattā bhavissanti, mayamettha appamattā bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains seront négligents, cependant nous, ici, serons diligents. › ",
+      "ref": "‘Others will be negligent, but here we will be diligent.’ ",
+      "matched": true
+    },
+    "mn8:12.38": {
+      "scid": "mn8:12.38",
+      "pli": "‘Pare assaddhā bhavissanti, mayamettha saddhā bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains seront sans foi, cependant nous, ici, aurons la foi. › ",
+      "ref": "‘Others will be faithless, but here we will have faith.’ ",
+      "matched": true
+    },
+    "mn8:12.39": {
+      "scid": "mn8:12.39",
+      "pli": "‘Pare ahirikā bhavissanti, mayamettha hirimanā bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains seront sans conscience, cependant nous, ici, aurons un sens de la conscience. › ",
+      "ref": "‘Others will be conscienceless, but here we will have a sense of conscience.’ ",
+      "matched": true
+    },
+    "mn8:12.40": {
+      "scid": "mn8:12.40",
+      "pli": "‘Pare anottāpī bhavissanti, mayamettha ottāpī bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains seront imprudents, cependant nous, ici, serons prudents. › ",
+      "ref": "‘Others will be imprudent, but here we will be prudent.’ ",
+      "matched": true
+    },
+    "mn8:12.41": {
+      "scid": "mn8:12.41",
+      "pli": "‘Pare appassutā bhavissanti, mayamettha bahussutā bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains seront ignorants, cependant nous, ici, serons bien instruits. › ",
+      "ref": "‘Others will be unlearned, but here we will be well learned.’ ",
+      "matched": true
+    },
+    "mn8:12.42": {
+      "scid": "mn8:12.42",
+      "pli": "‘Pare kusītā bhavissanti, mayamettha āraddhavīriyā bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains seront paresseux, cependant nous, ici, serons énergiques. › ",
+      "ref": "‘Others will be lazy, but here we will be energetic.’ ",
+      "matched": true
+    },
+    "mn8:12.43": {
+      "scid": "mn8:12.43",
+      "pli": "‘Pare muṭṭhassatī bhavissanti, mayamettha upaṭṭhitassatī bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains seront inattentifs, cependant nous, ici, serons attentifs. › ",
+      "ref": "‘Others will be unmindful, but here we will be mindful.’ ",
+      "matched": true
+    },
+    "mn8:12.44": {
+      "scid": "mn8:12.44",
+      "pli": "‘Pare duppaññā bhavissanti, mayamettha paññāsampannā bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains seront dépourvus de sagesse, cependant nous, ici, serons accomplis en sagesse. › ",
+      "ref": "‘Others will be witless, but here we will be accomplished in wisdom.’ ",
+      "matched": true
+    },
+    "mn8:12.45": {
+      "scid": "mn8:12.45",
+      "pli": "‘Pare sandiṭṭhiparāmāsī ādhānaggāhī duppaṭinissaggī bhavissanti, mayamettha asandiṭṭhiparāmāsī anādhānaggāhī suppaṭinissaggī bhavissāmā’ti sallekho karaṇīyo. ",
+      "fr": "‹ Certains seront attachés à leurs propres croyances, les tenant fermement et refusant de les lâcher, cependant nous, ici, ne serons pas attachés à nos propres croyances, ne les tenant pas fermement, mais les lâchant facilement. › ",
+      "ref": "‘Others will be attached to their own views, holding them tight, and refusing to let go, but here we will not be attached to our own views, not holding them tight, but will let them go easily.’ ",
+      "matched": true
+    },
+    "mn8:13.0": {
+      "scid": "mn8:13.0",
+      "pli": "2. Cittupapādapariyāya ",
+      "fr": "2. Le développement mental ",
+      "ref": "2. Giving Rise to the Thought ",
+      "matched": true
+    },
+    "mn8:13.1": {
+      "scid": "mn8:13.1",
+      "pli": "Cittuppādampi kho ahaṁ, cunda, kusalesu dhammesu bahukāraṁ vadāmi, ko pana vādo kāyena vācāya anuvidhīyanāsu. ",
+      "fr": "Cunda, je dis que le simple fait de susciter la pensée de qualités vertueuses est très bénéfique, sans parler de suivre cette voie en paroles et en actes. ",
+      "ref": "Cunda, I say that even giving rise to the thought of skillful qualities is very helpful, let alone following that path in body and speech. ",
+      "matched": true
+    },
+    "mn8:13.2": {
+      "scid": "mn8:13.2",
+      "pli": "Tasmātiha, cunda, ‘pare vihiṁsakā bhavissanti, mayamettha avihiṁsakā bhavissāmā’ti cittaṁ uppādetabbaṁ. ",
+      "fr": "C’est pourquoi tu devrais susciter les pensées suivantes. ‹ Certains seront violents, cependant nous, ici, ne serons pas violents. › ",
+      "ref": "That’s why you should give rise to the following thoughts. ‘Others will be cruel, but here we will not be cruel.’ ",
+      "matched": true
+    },
+    "mn8:13.3": {
+      "scid": "mn8:13.3",
+      "pli": "‘Pare pāṇātipātī bhavissanti, mayamettha pāṇātipātā paṭiviratā bhavissāmā’ti cittaṁ uppādetabbaṁ …pe… ",
+      "fr": "‹ Certains tueront des créatures vivantes, cependant nous, ici, ne tuerons pas de créatures vivantes. › … ",
+      "ref": "‘Others will kill living creatures, but here we will not kill living creatures.’ … ",
+      "matched": true
+    },
+    "mn8:13.4": {
+      "scid": "mn8:13.4",
+      "pli": "‘pare sandiṭṭhiparāmāsī ādhānaggāhī duppaṭinissaggī bhavissanti, mayamettha asandiṭṭhiparāmāsī anādhānaggāhī suppaṭinissaggī bhavissāmā’ti cittaṁ uppādetabbaṁ. ",
+      "fr": "‹ Certains seront attachés à leurs propres croyances, les tenant fermement et refusant de les lâcher, cependant nous, ici, ne serons pas attachés à nos propres croyances, ne les tenant pas fermement, mais les lâchant facilement. › ",
+      "ref": "‘Others will be attached to their own views, holding them tight, and refusing to let go, but here we will not be attached to our own views, not holding them tight, but will let them go easily.’ ",
+      "matched": true
+    },
+    "mn8:14.0": {
+      "scid": "mn8:14.0",
+      "pli": "3. Parikkamanapariyāya ",
+      "fr": "3. Le contournement ",
+      "ref": "3. Bypassing ",
+      "matched": true
+    },
+    "mn8:14.1": {
+      "scid": "mn8:14.1",
+      "pli": "Seyyathāpi, cunda, visamo maggo assa, tassa añño samo maggo parikkamanāya; ",
+      "fr": "Cunda, suppose qu’il y ait un chemin accidenté, et à côté, un autre chemin plat pour le contourner. ",
+      "ref": "Cunda, suppose there was a rough path and another smooth path to get around it. ",
+      "matched": true
+    },
+    "mn8:14.2": {
+      "scid": "mn8:14.2",
+      "pli": "seyyathā vā pana, cunda, visamaṁ titthaṁ assa, tassa aññaṁ samaṁ titthaṁ parikkamanāya; ",
+      "fr": "Ou suppose qu’il y ait un gué accidenté, et à côté, un autre gué plat pour le contourner. ",
+      "ref": "Or suppose there was a rough ford and another smooth ford to get around it. ",
+      "matched": true
+    },
+    "mn8:14.3": {
+      "scid": "mn8:14.3",
+      "pli": "evameva kho, cunda, vihiṁsakassa purisapuggalassa avihiṁsā hoti parikkamanāya, pāṇātipātissa purisapuggalassa pāṇātipātā veramaṇī hoti parikkamanāya, adinnādāyissa purisapuggalassa adinnādānā veramaṇī hoti parikkamanāya, abrahmacārissa purisapuggalassa abrahmacariyā veramaṇī hoti parikkamanāya, musāvādissa purisapuggalassa musāvādā veramaṇī hoti parikkamanāya, pisuṇavācassa purisapuggalassa pisuṇāya vācāya veramaṇī hoti parikkamanāya, pharusavācassa purisapuggalassa pharusāya vācāya veramaṇī hoti parikkamanāya, samphappalāpissa purisapuggalassa samphappalāpā veramaṇī hoti parikkamanāya, abhijjhālussa purisapuggalassa anabhijjhā hoti parikkamanāya, byāpannacittassa purisapuggalassa abyāpādo hoti parikkamanāya. ",
+      "fr": "De même, pour une personne violente, la non-violence devient le moyen de le contourner. … ",
+      "ref": "In the same way, a cruel individual bypasses it by not being cruel. An individual who kills bypasses it by not killing. … ",
+      "matched": true
+    },
+    "mn8:14.4": {
+      "scid": "mn8:14.4",
+      "pli": "Micchādiṭṭhissa purisapuggalassa sammādiṭṭhi hoti parikkamanāya, micchāsaṅkappassa purisapuggalassa sammāsaṅkappo hoti parikkamanāya, micchāvācassa purisapuggalassa sammāvācā hoti parikkamanāya, micchākammantassa purisapuggalassa sammākammanto hoti parikkamanāya, micchāājīvassa purisapuggalassa sammāājīvo hoti parikkamanāya, micchāvāyāmassa purisapuggalassa sammāvāyāmo hoti parikkamanāya, micchāsatissa purisapuggalassa sammāsati hoti parikkamanāya, micchāsamādhissa purisapuggalassa sammāsamādhi hoti parikkamanāya, micchāñāṇissa purisapuggalassa sammāñāṇaṁ hoti parikkamanāya, micchāvimuttissa purisapuggalassa sammāvimutti hoti parikkamanāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:14.5": {
+      "scid": "mn8:14.5",
+      "pli": "Thinamiddhapariyuṭṭhitassa purisapuggalassa vigatathinamiddhatā hoti parikkamanāya, uddhatassa purisapuggalassa anuddhaccaṁ hoti parikkamanāya, vicikicchissa purisapuggalassa tiṇṇavicikicchatā hoti parikkamanāya, kodhanassa purisapuggalassa akkodho hoti parikkamanāya, upanāhissa purisapuggalassa anupanāho hoti parikkamanāya, makkhissa purisapuggalassa amakkho hoti parikkamanāya, paḷāsissa purisapuggalassa apaḷāso hoti parikkamanāya, issukissa purisapuggalassa anissukitā hoti parikkamanāya, maccharissa purisapuggalassa amacchariyaṁ hoti parikkamanāya, saṭhassa purisapuggalassa asāṭheyyaṁ hoti parikkamanāya, māyāvissa purisapuggalassa amāyā hoti parikkamanāya, thaddhassa purisapuggalassa atthaddhiyaṁ hoti parikkamanāya, atimānissa purisapuggalassa anatimāno hoti parikkamanāya, dubbacassa purisapuggalassa sovacassatā hoti parikkamanāya, pāpamittassa purisapuggalassa kalyāṇamittatā hoti parikkamanāya, pamattassa purisapuggalassa appamādo hoti parikkamanāya, assaddhassa purisapuggalassa saddhā hoti parikkamanāya, ahirikassa purisapuggalassa hirī hoti parikkamanāya, anottāpissa purisapuggalassa ottappaṁ hoti parikkamanāya, appassutassa purisapuggalassa bāhusaccaṁ hoti parikkamanāya, kusītassa purisapuggalassa vīriyārambho hoti parikkamanāya, muṭṭhassatissa purisapuggalassa upaṭṭhitassatitā hoti parikkamanāya, duppaññassa purisapuggalassa paññāsampadā hoti parikkamanāya, sandiṭṭhiparāmāsiādhānaggāhiduppaṭinissaggissa purisapuggalassa asandiṭṭhiparāmāsianādhānaggāhisuppaṭinissaggitā hoti parikkamanāya. ",
+      "fr": "Une personne attachée à ses propres croyances, les tenant fermement et refusant de les lâcher, le contourne en n’étant pas attachée à ses propres croyances, ne les tenant pas fermement, mais les lâchant facilement. ",
+      "ref": "An individual who is attached to their own views, holding them tight, and refusing to let go, gets around it by not being attached to their own views, not holding them tight, but letting them go easily. ",
+      "matched": true
+    },
+    "mn8:15.0": {
+      "scid": "mn8:15.0",
+      "pli": "4. Uparibhāgapariyāya ",
+      "fr": "4. L’ascension ",
+      "ref": "4. Going Up ",
+      "matched": true
+    },
+    "mn8:15.1": {
+      "scid": "mn8:15.1",
+      "pli": "Seyyathāpi, cunda, ye keci akusalā dhammā sabbe te adhobhāgaṅgamanīyā, ye keci kusalā dhammā sabbe te uparibhāgaṅgamanīyā; ",
+      "fr": "Cunda, toutes les qualités nuisibles mènent vers le bas, tandis que toutes les qualités bénéfiques mènent vers le haut. ",
+      "ref": "Cunda, all unskillful qualities lead downwards, while all skillful qualities lead upwards. ",
+      "matched": true
+    },
+    "mn8:15.2": {
+      "scid": "mn8:15.2",
+      "pli": "evameva kho, cunda, vihiṁsakassa purisapuggalassa avihiṁsā hoti uparibhāgāya, pāṇātipātissa purisapuggalassa pāṇātipātā veramaṇī hoti uparibhāgāya …pe… ",
+      "fr": "De même, une personne violente s’élève en n’étant pas violente. Une personne qui tue s’élève en ne tuant pas… ",
+      "ref": "In the same way, a cruel individual is led upwards by not being cruel. An individual who kills is led upwards by not killing … ",
+      "matched": true
+    },
+    "mn8:15.3": {
+      "scid": "mn8:15.3",
+      "pli": "sandiṭṭhiparāmāsiādhānaggāhiduppaṭinissaggissa purisapuggalassa asandiṭṭhiparāmāsianādhānaggāhisuppaṭinissaggitā hoti uparibhāgāya. ",
+      "fr": "Une personne attachée à ses propres croyances, les tenant fermement et refusant de les lâcher, s’élève en n’étant pas attachée à ses propres croyances, ne les tenant pas fermement, mais les lâchant facilement. ",
+      "ref": "An individual who is attached to their own views, holding them tight, and refusing to let go, is led upwards by not being attached to their own views, not holding them tight, but letting them go easily. ",
+      "matched": true
+    },
+    "mn8:16.0": {
+      "scid": "mn8:16.0",
+      "pli": "5. Parinibbānapariyāya ",
+      "fr": "5. L’extinction ",
+      "ref": "5. The Exposition by Extinguishment ",
+      "matched": true
+    },
+    "mn8:16.1": {
+      "scid": "mn8:16.1",
+      "pli": "So vata, cunda, attanā palipapalipanno paraṁ palipapalipannaṁ uddharissatīti netaṁ ṭhānaṁ vijjati. ",
+      "fr": "Si tu t’enlises dans la boue, Cunda, il est absolument impossible de tirer une autre personne de la boue. ",
+      "ref": "If you’re sinking in the mud yourself, Cunda, it is quite impossible for you to pull out someone else who is sinking in the mud. ",
+      "matched": true
+    },
+    "mn8:16.2": {
+      "scid": "mn8:16.2",
+      "pli": "So vata, cunda, attanā apalipapalipanno paraṁ palipapalipannaṁ uddharissatīti ṭhānametaṁ vijjati. ",
+      "fr": "Cependant, si tu ne t’enlises pas dans la boue, il est tout à fait possible de tirer une autre personne qui s’enlise dans la boue. ",
+      "ref": "But if you’re not sinking in the mud yourself, it is quite possible for you to pull out someone else who is sinking in the mud. ",
+      "matched": true
+    },
+    "mn8:16.3": {
+      "scid": "mn8:16.3",
+      "pli": "So vata, cunda, attanā adanto avinīto aparinibbuto paraṁ damessati vinessati parinibbāpessatīti netaṁ ṭhānaṁ vijjati. ",
+      "fr": "Si ton esprit n’est pas maîtrisé, discipliné et apaisé, il est absolument impossible d’aider une autre personne à maîtriser, discipliner et apaiser son esprit. ",
+      "ref": "If you’re not tamed, trained, and quenched yourself, it is quite impossible for you to help tame, train, and extinguish someone else. ",
+      "matched": true
+    },
+    "mn8:16.4": {
+      "scid": "mn8:16.4",
+      "pli": "So vata, cunda, attanā danto vinīto parinibbuto paraṁ damessati vinessati parinibbāpessatīti ṭhānametaṁ vijjati. ",
+      "fr": "Cependant, si ton esprit est maîtrisé, discipliné et apaisé, il est tout à fait possible d’aider une autre personne à maîtriser, discipliner et apaiser son esprit. ",
+      "ref": "But if you are tamed, trained, and quenched yourself, it is quite possible for you to help tame, train, and extinguish someone else. ",
+      "matched": true
+    },
+    "mn8:16.5": {
+      "scid": "mn8:16.5",
+      "pli": "Evameva kho, cunda, vihiṁsakassa purisapuggalassa avihiṁsā hoti parinibbānāya, pāṇātipātissa purisapuggalassa pāṇātipātā veramaṇī hoti parinibbānāya. ",
+      "fr": "De même, pour une personne violente, la non-violence conduit à l’extinction complète ; pour une personne qui tue, s’abstenir de tuer conduit à l’extinction complète. … ",
+      "ref": "In the same way, a cruel individual extinguishes it by not being cruel. An individual who kills extinguishes it by not killing. … ",
+      "matched": true
+    },
+    "mn8:16.6": {
+      "scid": "mn8:16.6",
+      "pli": "Adinnādāyissa purisapuggalassa adinnādānā veramaṇī hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.7": {
+      "scid": "mn8:16.7",
+      "pli": "Abrahmacārissa purisapuggalassa abrahmacariyā veramaṇī hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.8": {
+      "scid": "mn8:16.8",
+      "pli": "Musāvādissa purisapuggalassa musāvādā veramaṇī hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.9": {
+      "scid": "mn8:16.9",
+      "pli": "Pisuṇavācassa purisapuggalassa pisuṇāya vācāya veramaṇī hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.10": {
+      "scid": "mn8:16.10",
+      "pli": "Pharusavācassa purisapuggalassa pharusāya vācāya veramaṇī hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.11": {
+      "scid": "mn8:16.11",
+      "pli": "Samphappalāpissa purisapuggalassa samphappalāpā veramaṇī hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.12": {
+      "scid": "mn8:16.12",
+      "pli": "Abhijjhālussa purisapuggalassa anabhijjhā hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.13": {
+      "scid": "mn8:16.13",
+      "pli": "Byāpannacittassa purisapuggalassa abyāpādo hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.14": {
+      "scid": "mn8:16.14",
+      "pli": "Micchādiṭṭhissa purisapuggalassa sammādiṭṭhi hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.15": {
+      "scid": "mn8:16.15",
+      "pli": "Micchāsaṅkappassa purisapuggalassa sammāsaṅkappo hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.16": {
+      "scid": "mn8:16.16",
+      "pli": "Micchāvācassa purisapuggalassa sammāvācā hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.17": {
+      "scid": "mn8:16.17",
+      "pli": "Micchākammantassa purisapuggalassa sammākammanto hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.18": {
+      "scid": "mn8:16.18",
+      "pli": "Micchāājīvassa purisapuggalassa sammāājīvo hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.19": {
+      "scid": "mn8:16.19",
+      "pli": "Micchāvāyāmassa purisapuggalassa sammāvāyāmo hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.20": {
+      "scid": "mn8:16.20",
+      "pli": "Micchāsatissa purisapuggalassa sammāsati hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.21": {
+      "scid": "mn8:16.21",
+      "pli": "Micchāsamādhissa purisapuggalassa sammāsamādhi hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.22": {
+      "scid": "mn8:16.22",
+      "pli": "Micchāñāṇissa purisapuggalassa sammāñāṇaṁ hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.23": {
+      "scid": "mn8:16.23",
+      "pli": "Micchāvimuttissa purisapuggalassa sammāvimutti hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.24": {
+      "scid": "mn8:16.24",
+      "pli": "Thinamiddhapariyuṭṭhitassa purisapuggalassa vigatathinamiddhatā hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.25": {
+      "scid": "mn8:16.25",
+      "pli": "Uddhatassa purisapuggalassa anuddhaccaṁ hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.26": {
+      "scid": "mn8:16.26",
+      "pli": "Vicikicchissa purisapuggalassa tiṇṇavicikicchatā hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.27": {
+      "scid": "mn8:16.27",
+      "pli": "Kodhanassa purisapuggalassa akkodho hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.28": {
+      "scid": "mn8:16.28",
+      "pli": "Upanāhissa purisapuggalassa anupanāho hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.29": {
+      "scid": "mn8:16.29",
+      "pli": "Makkhissa purisapuggalassa amakkho hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.30": {
+      "scid": "mn8:16.30",
+      "pli": "Paḷāsissa purisapuggalassa apaḷāso hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.31": {
+      "scid": "mn8:16.31",
+      "pli": "Issukissa purisapuggalassa anissukitā hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.32": {
+      "scid": "mn8:16.32",
+      "pli": "Maccharissa purisapuggalassa amacchariyaṁ hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.33": {
+      "scid": "mn8:16.33",
+      "pli": "Saṭhassa purisapuggalassa asāṭheyyaṁ hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.34": {
+      "scid": "mn8:16.34",
+      "pli": "Māyāvissa purisapuggalassa amāyā hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.35": {
+      "scid": "mn8:16.35",
+      "pli": "Thaddhassa purisapuggalassa atthaddhiyaṁ hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.36": {
+      "scid": "mn8:16.36",
+      "pli": "Atimānissa purisapuggalassa anatimāno hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.37": {
+      "scid": "mn8:16.37",
+      "pli": "Dubbacassa purisapuggalassa sovacassatā hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.38": {
+      "scid": "mn8:16.38",
+      "pli": "Pāpamittassa purisapuggalassa kalyāṇamittatā hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.39": {
+      "scid": "mn8:16.39",
+      "pli": "Pamattassa purisapuggalassa appamādo hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.40": {
+      "scid": "mn8:16.40",
+      "pli": "Assaddhassa purisapuggalassa saddhā hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.41": {
+      "scid": "mn8:16.41",
+      "pli": "Ahirikassa purisapuggalassa hirī hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.42": {
+      "scid": "mn8:16.42",
+      "pli": "Anottāpissa purisapuggalassa ottappaṁ hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.43": {
+      "scid": "mn8:16.43",
+      "pli": "Appassutassa purisapuggalassa bāhusaccaṁ hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.44": {
+      "scid": "mn8:16.44",
+      "pli": "Kusītassa purisapuggalassa vīriyārambho hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.45": {
+      "scid": "mn8:16.45",
+      "pli": "Muṭṭhassatissa purisapuggalassa upaṭṭhitassatitā hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.46": {
+      "scid": "mn8:16.46",
+      "pli": "Duppaññassa purisapuggalassa paññāsampadā hoti parinibbānāya. ",
+      "ref": "",
+      "matched": true
+    },
+    "mn8:16.47": {
+      "scid": "mn8:16.47",
+      "pli": "Sandiṭṭhiparāmāsiādhānaggāhiduppaṭinissaggissa purisapuggalassa asandiṭṭhiparāmāsianādhānaggāhisuppaṭinissaggitā hoti parinibbānāya. ",
+      "fr": "Pour une personne attachée à ses propres croyances, les tenant fermement et refusant de les lâcher, se libérer de ses propres croyances, ne pas les tenir fermement et les lâcher facilement conduit à l’extinction complète. ",
+      "ref": "An individual who is attached to their own views, holding them tight, and refusing to let go, extinguishes it by not being attached to their own views, not holding them tight, but letting them go easily. ",
+      "matched": true
+    },
+    "mn8:17.1": {
+      "scid": "mn8:17.1",
+      "pli": "Iti kho, cunda, desito mayā sallekhapariyāyo, desito cittuppādapariyāyo, desito parikkamanapariyāyo, desito uparibhāgapariyāyo, desito parinibbānapariyāyo. ",
+      "fr": "Ainsi, Cunda, j’ai enseigné la méthode de l’effacement, la méthode du développement mental, la méthode du contournement, la méthode de l’ascension, la méthode de l’extinction. ",
+      "ref": "So, Cunda, I’ve taught the expositions by way of self-effacement, arising of thought, bypassing, going up, and extinguishing. ",
+      "matched": true
+    },
+    "mn8:17.2": {
+      "scid": "mn8:17.2",
+      "pli": "Yaṁ kho, cunda, satthārā karaṇīyaṁ sāvakānaṁ hitesinā anukampakena anukampaṁ upādāya, kataṁ vo taṁ mayā. ",
+      "fr": "Par compassion, j’ai accompli ce qu’un enseignant devrait faire, aspirant au meilleur pour ses disciples. ",
+      "ref": "Out of sympathy, I’ve done what a teacher should do who wants what’s best for their disciples. ",
+      "matched": true
+    },
+    "mn8:17.3": {
+      "scid": "mn8:17.3",
+      "pli": "Etāni, cunda, rukkhamūlāni, etāni suññāgārāni, jhāyatha, cunda, mā pamādattha, mā pacchāvippaṭisārino ahuvattha—ayaṁ kho amhākaṁ anusāsanī”ti. ",
+      "fr": "Voici ces racines d’arbres et ces huttes désertes. Exerce-toi à la concentration profonde, Cunda ! Évite la négligence ! Tu ne voudrais pas avoir de regret ! Voilà mon enseignement. » ",
+      "ref": "Here are these roots of trees, and here are these empty huts. Practice absorption, Cunda! Don’t be negligent! Don’t regret it later! This is my instruction.” ",
+      "matched": true
+    },
+    "mn8:17.4": {
+      "scid": "mn8:17.4",
+      "pli": "Idamavoca bhagavā. ",
+      "fr": "C’est ce que le Bouddha déclara. ",
+      "ref": "That is what the Buddha said. ",
+      "matched": true
+    },
+    "mn8:17.5": {
+      "scid": "mn8:17.5",
+      "pli": "Attamano āyasmā mahācundo bhagavato bhāsitaṁ abhinandīti. ",
+      "fr": "Satisfait, le Vénérable Mahācunda se réjouit des paroles prononcées par le Bouddha. ",
+      "ref": "Satisfied, Venerable Mahācunda approved what the Buddha said. ",
+      "matched": true
+    },
+    "mn8:17.6": {
+      "scid": "mn8:17.6",
+      "pli": "Catuttālīsapadā vuttā, ",
+      "fr": "Quarante-quatre éléments ont été exposés, ",
+      "ref": "Forty-four items have been stated, ",
+      "matched": true
+    },
+    "mn8:17.7": {
+      "scid": "mn8:17.7",
+      "pli": "sandhayo pañca desitā; ",
+      "fr": "structurés en cinq sections. ",
+      "ref": "organized into five sections. ",
+      "matched": true
+    },
+    "mn8:17.8": {
+      "scid": "mn8:17.8",
+      "pli": "Sallekho nāma suttanto, ",
+      "fr": "Ce discours est nommé « L’effacement de soi », ",
+      "ref": "“Effacement” is the name of this discourse, ",
+      "matched": true
+    },
+    "mn8:17.9": {
+      "scid": "mn8:17.9",
+      "pli": "gambhīro sāgarūpamoti. ",
+      "fr": "sa profondeur est comparable à celle de l’océan. ",
+      "ref": "which is deep as the ocean. ",
+      "matched": true
+    },
+    "mn8:17.10": {
+      "scid": "mn8:17.10",
+      "pli": "Sallekhasuttaṁ niṭṭhitaṁ aṭṭhamaṁ. ",
+      "matched": true
+    }
+  },
+  "score": 0,
+  "hyphen": "­",
+  "maxWord": 30,
+  "minWord": 5,
+  "title": "Discours de Longueur Moyenne 8\nL’effacement de soi",
+  "segsMatched": 170,
+  "langSegs": {
+    "pli": 170,
+    "fr": 127,
+    "ref": 169
+  },
+  "trilingual": true,
+  "docLang": "fr",
+  "docAuthor": "noeismet",
+  "refLang": "en",
+  "refAuthor": "sujato"
+}

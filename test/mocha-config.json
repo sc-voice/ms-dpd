@@ -3,6 +3,7 @@
   "inline-diffs": true,
   "grep": [ "TESTTEST" ],
   "watch": true,
+  "recursive": true,
   "parallel": true,
   "node-option": [
     "no-warnings=ExperimentalWarning"

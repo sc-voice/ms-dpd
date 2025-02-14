@@ -6,9 +6,9 @@ import * as url from 'node:url';
 import util from 'node:util';
 import { DBG } from '../src/defines.mjs';
 const M = 'test.SqlDpd:';
-import { default as SqlDpd } from '../scripts/js/sql-dpd.mjs';
 import { default as HeadwordKey } from '../src/headword-key.mjs';
 import * as Pali from '../src/pali.mjs';
+import { default as SqlDpd } from '../src/tools/sql-dpd.mjs';
 const DIRNAME = import.meta.dirname;
 
 let msg = M;

@@ -8,6 +8,7 @@
   "files": {
     "include": [
       "src/**/*js",
+      "tools/**/*js",
       "scripts/**/*js",
       "test/**/*js",
       "src/**/*json",

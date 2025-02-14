@@ -82,7 +82,7 @@ async function main() {
   let SCV_ESM = await import('scv-esm/main.mjs');
   SuttaRef = SCV_ESM.SuttaRef;
   SuidMap = SCV_ESM.SuidMap;
-  let TRANSLATOR = await import('./scripts/js/translator.mjs');
+  let TRANSLATOR = await import('./src/tools/translator.mjs');
   Translator = TRANSLATOR.Translator;
   TOOLS = await import('@sc-voice/tools');
 
