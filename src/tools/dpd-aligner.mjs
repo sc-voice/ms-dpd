@@ -5,17 +5,13 @@ import { Aligner, Alignment, AlignmentStatus } from './aligner.mjs';
 import { DBG } from '../defines.mjs';
 let privateCreate;
 
-export class DpdAligner extends Aligner {
+export class DpdAligner {
   constructor(opts = {}) {
     const msg = 'd9r.ctor:';
-    super(opts);
     if (!privateCreate) {
       throw new Error(`${msg} create?`);
     }
-    let { msdpd } = opts;
-    Object.assign(this, {
-      msdpd,
-    });
+    Object.assign(this, opts);
   }
 
   static async create(opts = {}) {
@@ -26,13 +22,13 @@ export class DpdAligner extends Aligner {
       lang, // 2-letter ISO language (en, fr, es, pt)
 
       // Optional
-      dbgScid, // print out info for this SCID
-      groupDecay = 0.5, // group exponential decay
-      groupSize = 1, // comparison group size
-      maxScanSize, // maximum segments to scan for alignment
-      minScanSize = 5, // minimum number of segments to scan
-      minScore = 0.1, // minimum alignment score
-      normalizeVector,
+      //dbgScid, // print out info for this SCID
+      //groupDecay = 0.5, // group exponential decay
+      //groupSize = 1, // comparison group size
+      //maxScanSize, // maximum segments to scan for alignment
+      //minScanSize = 5, // minimum number of segments to scan
+      //minScore = 0.1, // minimum alignment score
+      //normalizeVector,
       scvEndpoint = 'https://www.api.sc-voice.net/scv',
       wordSpace = WordSpace.createTfIdf(),
       msdpd,
@@ -50,19 +46,19 @@ export class DpdAligner extends Aligner {
     try {
       privateCreate = true;
       let aligner = new DpdAligner({
-        alignMethod: 'alignPali',
-        authorAligned: 'ms',
+        //alignMethod: 'alignPali',
+        //authorAligned: 'ms',
         authorLegacy,
-        dbgScid,
+        //dbgScid,
         msdpd,
-        groupDecay,
-        groupSize,
+        //groupDecay,
+        //groupSize,
         lang,
-        maxScanSize,
-        minScanSize,
-        minScore,
-        minWord: 1,
-        normalizeVector,
+        //maxScanSize,
+        //minScanSize,
+        //minScore,
+        //minWord: 1,
+        //normalizeVector,
         scvEndpoint,
         wordSpace,
       });

@@ -1,0 +1,384 @@
+#!/usr/bin/bash
+DBNAME=dpd.db
+SCRIPT=`basename $0`
+DIRNAME=`dirname $0`
+
+node - <<'JS' $DIRNAME $SCRIPT "$@" 
+const util = require('util');
+const fs = require('fs');
+const fsp = fs.promises;
+const path = require('path');
+const exec = util.promisify(require('child_process').exec);
+let [ NODE, DASH, DIRNAME, SCRIPT, ...args] = process.argv;
+const MAX_BUFFER = 10 * 1024 * 1024;
+const ALIGNER_PATH = `${DIRNAME}/../src/tools/aligner.mjs`;
+console.log({DIRNAME, ALIGNER_PATH});
+const EBT_DATA_PUB = [
+  'https://raw.githubusercontent.com/ebt-site/ebt-data',
+  'data/refs/heads/published',
+].join('/');
+const TEST_DATA = path.join(DIRNAME, '../test/data');
+const WS_MOHAN_CONFIG = JSON.parse(
+  fs.readFileSync(path.join(TEST_DATA, 'mohan-noeismet-ws.json')),
+);
+var WS_MOHAN;
+
+const msg = `${SCRIPT}:`;
+
+function help() {
+  console.error(`
+NAME
+  ${SCRIPT} - fetch legacy (HTML) document from SuttaCentral.net
+
+SYNOPSIS
+  ${SCRIPT} SUTTA_ID...
+
+ESCRIPTION
+  Fetch legacy HTML document from SuttaCentral.net
+
+  -?, --help
+    print this help text
+
+  -l, --lang LANG
+    two-letter language code (e.g., fr, de)
+
+  -aa, --author-aligned AUTHOR
+    SuttaCentral aligned author id (e.g., noeismet)
+  
+  -al, --author-legacy AUTHOR
+    SuttaCentral legacy author id (e.g., wijayaratna)
+  
+  -ds, --debug-scid SCID
+    Print out information for given SCID (e.g., "mn8:0.2")
+
+  -mb, --max-buffer MAXBUFFER
+    Maximum MB of downloaded content (default: 10)
+
+  -fa, --format-aligned
+    Format output as aligned SuttaCentral JSON document.
+    You must specify language and may need to specify an 
+    for author alignment (i.e., authorAligned).
+
+  -fl, --format-legacy 
+    Format output as legacy JSON from SuttaCentra api endpoint.
+
+  -fm, --format-mldoc
+    Format output as MLDoc from www.api.sc-voice.net api endpoint.
+
+  -os, --out-stdout
+    Send output to stdout
+
+  -od, --out-dir DIR_ROOT
+    Send output to directory DIR_ROOT (stdout)
+
+  -v, --verbose
+    print more information to stderr
+
+  SUTTA_ID...
+    Space-separated list of suttas (e.g., mn8)
+
+EXAMPLES
+  ${SCRIPT} -l fr -al wijayaratna -aa noeismet -fl mn8
+  ${SCRIPT} -l fr -al wijayaratna -aa noeismet -fa mn8
+  ${SCRIPT} -l fr -aa noeismet -fm mn8
+  ${SCRIPT} -l fr -fl mn8
+`);
+  process.exit(0);
+}
+
+function parseArgs() {
+  const msg = `${SCRIPT}.parseArgs:`;
+  // default values
+  let dbg = 0;
+  let lang;
+  let authorLegacy;
+  let authorAligned;
+  let maxBuffer = MAX_BUFFER;
+  let format = 'legacy';
+  let outType = 'stdout';
+  let outDir = './local';
+  let dbgScid;
+
+  let sutta_ids = [];
+  for (let i=0; i<args.length; i++) {
+    let arg = args[i];
+    switch (arg) {
+      case '-?':
+      case '--help':
+        help();
+        break;
+      case '-ds':
+      case '--debug-scid':
+        dbgScid = args[++i];
+        console.log(msg, {dbgScid});
+        break;
+      case '-mb':
+      case '--max-buffer':
+        maxBuffer = Number(args[++i])*1024*1024;
+        break;
+      case '-l':
+      case '--lang':
+        lang = args[++i];
+        break;
+      case '-al':
+      case '--author-legacy':
+        authorLegacy = args[++i];
+        break;
+      case '-aa':
+      case '--author-aligned':
+        authorAligned = args[++i];
+        break;
+      case '-fa':
+      case '-format-aligned':
+        format = 'aligned';
+        break;
+      case '-fl':
+      case '--format-legacy':
+        format = 'legacy';
+        break;
+      case '-fm':
+      case '--format-mldoc':
+        format = 'ml-doc';
+        break;
+      case '-os':
+      case '--out-stdout':
+        outType = 'stdout';
+        break;
+      case '-od':
+      case '--out-dir':
+        outType = 'dir';
+        outDir = args[++i];
+        break;
+      case "--verbose":
+      case "-v":
+        dbg = 1;
+        break;
+      case "--very-verbose":
+      case "-vv":
+        dbg = 2;
+        break;
+      default:
+        if (arg.at(0) === "-") {
+          console.error(`${msg} [ERROR] ignoring ${arg}`);
+          help();
+        } else {
+          sutta_ids.push(arg);
+        }
+        break;
+    }
+  }
+  if (sutta_ids.length < 1) {
+    help();
+  }
+  if (lang == null) {
+    throw new Error(`${msg} lang?`);
+  }
+  if (authorLegacy == null) {
+    switch (lang) {
+      case 'fr':
+        authorLegacy = 'wijayaratna';
+        break;
+      default:
+        throw new Error(`${msg} authorLegacy?`);
+    }
+  }
+  if (authorAligned == null) {
+    switch (lang) {
+      case 'fr':
+        authorAligned = 'noeismet';
+        break;
+      case 'de':
+        authorAligned = 'sabbamitta';
+        break;
+      default:
+        throw new Error(`${msg} authorAligned?`);
+    }
+  }
+  if (format === 'aligned') {
+    if (authorAligned == null) {
+      throw new Error(`${msg} authorAligned?`);
+    }
+  }
+
+  let result = {
+    dbg,
+    dbgScid,
+    sutta_ids,
+    lang,
+    authorLegacy,
+    authorAligned,
+    maxBuffer,
+    format,
+    outDir,
+    outType,
+  }
+  return result;
+}
+let {
+  dbg,
+  dbgScid,
+  sutta_ids,
+  lang,
+  authorLegacy,
+  authorAligned,
+  maxBuffer,
+  format,
+  outType,
+  outDir,
+} = parseArgs();
+if (sutta_ids.length===0) {
+  help();
+}
+dbg && console.error(msg, Object.assign({
+  NODE,DASH, DIRNAME, SCRIPT, sutta_ids, 
+  lang, authorLegacy, authorAligned,
+  outType, outDir, maxBuffer,
+}));
+
+async function outLegacy(outPath, json) {
+  const msg = `${SCRIPT}.outLegacy:`;
+  await fs.promises.mkdir(path.dirname(outPath), {recursive:true});
+  let output = JSON.stringify(json.translation,null,2);
+  await fs.promises.writeFile(outPath, output);
+}
+
+async function alignLegacy(aligner, legacyDoc) {
+  const msg = `${SCRIPT}.alignLegacy:`;
+  let { uid: sutta_id } = legacyDoc;
+  const { Text } = await import('@sc-voice/tools');
+  const { 
+    Aligner,
+    Alignment,
+    AlignmentStatus,
+  } = await import(ALIGNER_PATH);
+  const {
+    BilaraPath,
+    EbtDoc,
+    LegacyDoc,
+    WordSpace,
+  } = Text;
+  let mlDoc = await aligner.fetchMLDoc(sutta_id);
+  dbg && console.log(msg, '[1]', 
+    {lang, sutta_id, authorLegacy, authorAligned});
+  let alignment = aligner.createAlignment({ legacyDoc, mlDoc });
+  let ebtDoc = alignment.alignAll({dbgScid});
+  if (ebtDoc == null) {
+    console.log(msg, '[2]ERROR', alignment.history);
+  }
+  dbg && console.log(msg, '[2]ebtDoc', ebtDoc);
+  return ebtDoc;
+}
+
+async function main() {
+  const msg = `${SCRIPT}.main:`;
+  const { Text } = await import('@sc-voice/tools');
+  const { 
+    Aligner,
+    Alignment,
+    AlignmentStatus,
+  } = await import(ALIGNER_PATH);
+  const { 
+    BilaraPath,
+    EbtDoc,
+    LegacyDoc,
+    WordSpace,
+  } = Text;
+  WS_MOHAN = WS_MOHAN || new WordSpace(WS_MOHAN_CONFIG);
+  let wordSpace = WS_MOHAN;
+  let aligner = new Aligner({
+    dbgScid,
+    lang,
+    authorLegacy,
+    authorAligned,
+    wordSpace,
+  });
+
+  for (let i=0; i<sutta_ids.length; i++) {
+    let sutta_uid = sutta_ids[i];
+    let legacyDoc = await LegacyDoc.fetchLegacy({
+      sutta_uid,
+      lang,
+      author: authorLegacy,
+    });
+    console.error(msg, '[1]sutta', sutta_uid);
+    let { lines } = legacyDoc;
+    let output = 'output?';;
+    let ebtDoc;
+    switch (format) {
+      case 'aligned': {
+        ebtDoc = await alignLegacy(aligner, legacyDoc);
+        if (ebtDoc) {
+          output = ebtDoc.toBilaraString();
+        } else {
+          output = {
+            status: 'ERROR',
+            message: 'alignLegacy failed',
+            authorLegacy,
+            authorAligned,
+            sutta_uid,
+          }
+        }
+      } break;
+      case 'ml-doc':
+        output = await aligner.fetchMLDoc(sutta_uid);
+        break;
+      case 'legacy': 
+      default:
+        output = legacyDoc;
+        break;
+    }
+    switch (outType) {
+      case 'dir': {
+        switch (format) {
+          case 'ml-doc': {
+            let outFile = 
+              `${sutta_uid}-${lang}-${authorAligned}.mld.json`;
+            let outPath = path.join(outDir||'.', outFile);
+            let text = JSON.stringify(output, null, 2);
+            console.error(msg, `[2]${outPath}`, text.length);
+            await fsp.writeFile(outPath, text);
+          } break;
+          case 'aligned': {
+            if (ebtDoc == null) {
+              throw new Error(`${msg} no ebtDoc`);
+            }
+            let { bilaraPath:bp } = ebtDoc;
+            let outPath = path.join(outDir||`local/${SCRIPT}`, bp);
+            console.error(msg, '[3]outPath', outPath, bp);
+            let dirPath = path.dirname(outPath);
+            fs.mkdirSync(dirPath, {recursive:true});
+            fs.writeFileSync(outPath, output);
+          }  break;
+          case 'legacy':
+          default: {
+            let { bilaraPath } = legacyDoc;
+            let bp = BilaraPath.legacyPath(sutta_uid, lang, authorLegacy);
+            let outPath = path.join(outDir||`local/${SCRIPT}`, bp);
+            console.error(msg, '[3]outPath', outPath, bp);
+            fs.mkdirSync(outPath, {recursive:true});
+            outLegacy(outPath, output);
+          } break;
+        }
+      } break;
+      case 'stdout':
+      default:
+        dbg && console.log(msg, '[3]output', output);
+        if (typeof output === 'string') {
+          console.log(output);
+        } else {
+          console.log(JSON.stringify(output, null, 2));
+        }
+        break;
+    } break;
+  }
+}
+
+(async function() {
+  try {
+    await main();
+  } catch(e) {
+    console.error(msg, e);
+  }
+})()
+
+JS
