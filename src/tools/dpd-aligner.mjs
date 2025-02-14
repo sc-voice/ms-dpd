@@ -1,5 +1,5 @@
 import { Text } from '@sc-voice/tools';
-const { WordSpace } = Text;
+const { TfidfSpace } = Text;
 import Dictionary from '../dictionary.mjs';
 import { Aligner, Alignment, AlignmentStatus } from './aligner.mjs';
 import { DBG } from '../defines.mjs';
@@ -30,7 +30,7 @@ export class DpdAligner {
       //minScore = 0.1, // minimum alignment score
       //normalizeVector,
       scvEndpoint = 'https://www.api.sc-voice.net/scv',
-      wordSpace = WordSpace.createTfIdf(),
+      tfidfSpace,
       msdpd,
     } = opts;
     if (lang == null) {
@@ -41,6 +41,9 @@ export class DpdAligner {
     }
     if (msdpd == null) {
       msdpd = await Dictionary.create({ lang });
+    }
+    if (tfidfSpace == null) {
+      tfidfSpace = new TfidfSpace({lang});
     }
 
     try {
@@ -60,7 +63,7 @@ export class DpdAligner {
         //minWord: 1,
         //normalizeVector,
         scvEndpoint,
-        wordSpace,
+        tfidfSpace,
       });
       return aligner;
     } catch (e) {
@@ -75,7 +78,7 @@ export class DpdAligner {
     const msg = 'd9r.addCorpusSegment:';
     const dbg = DBG.D9R_ADD_CORPUS_SEGMENT;
     let { scid, pli } = seg;
-    let { wordSpace, msdpd } = this;
+    let { tfidfSpace, msdpd } = this;
     let words = pli.split(' ');
     for (let j = 0; j < words.length; j++) {
       let entry = msdpd.entryOf(words[j]);
@@ -85,7 +88,7 @@ export class DpdAligner {
           let def = msdpd.parseDefinition(definition[i]);
           let { meaning, meaning_lit } = def;
           let text = [scid, meaning, meaning_lit].join(' ').trim();
-          let res = wordSpace.addDocument(text);
+          let res = tfidfSpace.addDocument(text);
           dbg && console.log(msg, res, text);
         }
       }

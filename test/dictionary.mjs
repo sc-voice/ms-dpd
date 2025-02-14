@@ -752,11 +752,11 @@ typeof describe === 'function' &&
     });
     it('findDefinition() campos pt', async () => {
       const msg = 'td8y.findDefinition-campos-pt';
-      const dbg = 1;
+      const dbg = 0;
       let lang = 'pt';
       let dict = await Dictionary.create({ lang });
       let campos = dict.findDefinition('campos');
-      console.log(msg, campos);
+      dbg && console.log(msg, campos);
       should(campos.pattern).equal('campos');
       should(campos.method).equal('definition');
       let d3F0 = campos.data.find((d) => d.key === '3F0');

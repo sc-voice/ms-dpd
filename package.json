@@ -59,6 +59,7 @@
     "@sc-voice/ms-dpd-fr": "^2.53.0",
     "@sc-voice/ms-dpd-pt": "^2.53.0",
     "@sc-voice/ms-dpd-ru": "^2.53.0",
+    "@sc-voice/tools": "^2.4.0",
     "tmp": "^0.2.3"
   }
 }

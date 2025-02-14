@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { Text } from '@sc-voice/tools';
 import should from 'should';
-const { WordSpace } = Text;
+const { TfidfSpace } = Text;
 import { Dictionary } from '../../main.mjs';
 import { Tools } from '../../src/tools/main.mjs';
 const { DpdAligner } = Tools;
@@ -29,12 +29,12 @@ describe('TESTTESTdpd-aligner', () => {
     let authorLegacy = 'wijayaratna';
     let lang = 'fr';
     let pa = await DpdAligner.create({ lang, authorLegacy });
-    should(pa.wordSpace).instanceOf(WordSpace);
+    should(pa.tfidfSpace).instanceOf(TfidfSpace);
     should(pa.authorLegacy).equal(authorLegacy);
     should(pa.lang).equal(lang);
-    let { msdpd, wordSpace } = pa;
-    should(wordSpace).instanceOf(WordSpace);
-    should(wordSpace.minWord).equal(1);
+    let { msdpd, tfidfSpace } = pa;
+    should(tfidfSpace).instanceOf(TfidfSpace);
+    should(tfidfSpace.normalizeText).equal(TfidfSpace.normalizeFR);
     should(msdpd).instanceOf(Dictionary);
   });
   it('fetchMLDoc', async () => {
@@ -57,7 +57,7 @@ describe('TESTTESTdpd-aligner', () => {
     pa.addCorpusSegment(seg);
   });
   it('normalizeFR', () => {
-    let nfr = WordSpace.WordMapTransformer.normalizeFR;
+    let nfr = TfidfSpace.normalizeFR;
     should(nfr("d'entendu")).equal('de entendu');
   });
 });
