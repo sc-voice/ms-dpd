@@ -45,7 +45,7 @@
   "homepage": "https://github.com/sc-voice/ms-dpd#readme",
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@sc-voice/node-tools": "^1.5.0",
+    "@sc-voice/node-tools": "^2.0.0",
     "eslint": "^9.4.0",
     "json": "^11.0.0",
     "mocha": "^11.1.0",
