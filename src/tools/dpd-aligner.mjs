@@ -1,13 +1,12 @@
 import { Text } from '@sc-voice/tools';
-const { TfidfSpace } = Text;
+const { WordVector, TfidfSpace } = Text;
+import { DBG } from '../defines.mjs';
 import Dictionary from '../dictionary.mjs';
 import { Aligner, Alignment, AlignmentStatus } from './aligner.mjs';
-import { DBG } from '../defines.mjs';
 let privateCreate;
 
 export class DpdAligner {
-  constructor(opts = {}) {
-    const msg = 'd9r.ctor:';
+  constructor(opts = {}) { const msg = 'd8r.ctor:';
     if (!privateCreate) {
       throw new Error(`${msg} create?`);
     }
@@ -15,7 +14,8 @@ export class DpdAligner {
   }
 
   static async create(opts = {}) {
-    const msg = 'a0r.create:';
+    const msg = 'd0r.create:';
+    const dbg = DBG.D84_CREATE;
     let {
       // Required
       authorLegacy, // author of legacy document
@@ -29,6 +29,7 @@ export class DpdAligner {
       //minScanSize = 5, // minimum number of segments to scan
       //minScore = 0.1, // minimum alignment score
       //normalizeVector,
+      documents = [],
       scvEndpoint = 'https://www.api.sc-voice.net/scv',
       tfidfSpace,
       msdpd,
@@ -40,10 +41,14 @@ export class DpdAligner {
       throw new Error(`${msg} authorLegacy?`);
     }
     if (msdpd == null) {
+      const msStart = Date.now();
       msdpd = await Dictionary.create({ lang });
+      let elapsed = ((Date.now()-msStart)/1000).toFixed(3);
+      dbg && console.log(msg, `elapsed ${elapsed}s`);
     }
     if (tfidfSpace == null) {
-      tfidfSpace = new TfidfSpace({lang});
+      let normalizeText = DpdAligner.normalizeFR_TBD;
+      tfidfSpace = new TfidfSpace({lang, normalizeText});
     }
 
     try {
@@ -74,25 +79,54 @@ export class DpdAligner {
     }
   } // create
 
-  addCorpusSegment(seg) {
-    const msg = 'd9r.addCorpusSegment:';
-    const dbg = DBG.D9R_ADD_CORPUS_SEGMENT;
+  // move this back to @sc-voice/tools/text TfidfSpace when stable
+  static normalizeFR_TBD(s) { 
+    let sAbbr = s.toLowerCase()
+      .replace(/\bd[’']/gi, 'de ')
+      .replace(/\bl[’']/gi, 'le ')
+      .replace(/\bs[’']/gi, 's_')
+      .replace(/\bj[’']/gi, 'j_')
+      .replace(/\bm[’']/gi, 'm_')
+      .replace(/\bn[’']/gi, 'n_')
+      .replace(/\bc[’']/gi, 'c_')
+    return TfidfSpace.removeNonWords(sAbbr);
+  }
+
+  bowOfText(text) {
+    const msg = 'd8r.bowOfText:';
+    let { tfidfSpace } = this;
+    return tfidfSpace.bowOfText(text);
+  }
+
+  bowOfSegment(seg) {
+    const msg = 'd8r.bowOfSegment:';
+    const dbg = DBG.D8R_BOW_OF_SEGMENT;
     let { scid, pli } = seg;
     let { tfidfSpace, msdpd } = this;
     let words = pli.split(' ');
+    let bow = new WordVector();
+    let msStart = Date.now();
     for (let j = 0; j < words.length; j++) {
       let entry = msdpd.entryOf(words[j]);
       if (entry) {
         let { definition } = entry;
-        for (let i = 0; i < definition.length; i++) {
-          let def = msdpd.parseDefinition(definition[i]);
+        definition.reduce((a,d)=>{
+          let def = msdpd.parseDefinition(d);
           let { meaning, meaning_lit } = def;
-          let text = [scid, meaning, meaning_lit].join(' ').trim();
-          let res = tfidfSpace.addDocument(text);
-          dbg && console.log(msg, res, text);
-        }
+          let text = [
+            meaning, 
+            meaning_lit,
+          ].join(' ').trim();
+          dbg && console.log(msg, {text, def});
+          let v = tfidfSpace.bowOfText(text);
+          a.increment(v);
+          return a;
+        }, bow);
       }
     }
+    let elapsed = ((Date.now() - msStart)/1000).toFixed(3);
+    dbg>1 && console.log(msg, `elapsed ${elapsed}s`);
+    return bow;
   }
 
   async addDocumentDefinitions(suid) {
