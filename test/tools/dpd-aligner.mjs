@@ -25,39 +25,39 @@ describe('dpd-aligner', () => {
   it('default ctor', () => {
     let eCaught;
     try {
-      let pa = new DpdAligner();
+      let da = new DpdAligner();
     } catch (e) {
       eCaught = e;
     }
     should(eCaught.message).match(/create\?/);
   });
-  it('TESTTESTcreate', () => {
+  it('create', () => {
     let authorLegacy = 'wijayaratna';
     let lang = 'fr';
-    let pa = TEST_ALIGNER;
-    should(pa.tfidfSpace).instanceOf(TfidfSpace);
-    should(pa.authorLegacy).equal(authorLegacy);
-    should(pa.lang).equal(lang);
-    let { msdpd, tfidfSpace } = pa;
+    let da = TEST_ALIGNER;
+    should(da.tfidfSpace).instanceOf(TfidfSpace);
+    should(da.authorLegacy).equal(authorLegacy);
+    should(da.lang).equal(lang);
+    let { msdpd, tfidfSpace } = da;
     should(tfidfSpace).instanceOf(TfidfSpace);
     should(msdpd).instanceOf(Dictionary);
   });
   it('fetchMLDoc', async () => {
     const msg = 'tp9r.fetchMLDoc:';
-    let pa = TEST_ALIGNER;
-    let mn8 = await pa.fetchMLDoc('mn8');
+    let da = TEST_ALIGNER;
+    let mn8 = await da.fetchMLDoc('mn8');
     should(mn8.author_uid).equal('ms');
     should(mn8.lang).equal('pli');
     let seg1_1 = mn8.segMap['mn8:1.1'];
     should(seg1_1.pli).equal('Evaṁ me sutaṁ—');
   });
-  it('TESTTESTbowOfSegment', () => {
+  it('bowOfSegment', () => {
     const msg = 'tp9r.bowOfSegment:';
     const dbg = 0;
-    let pa = TEST_ALIGNER;
-    should(pa).instanceOf(DpdAligner);
+    let da = TEST_ALIGNER;
+    should(da).instanceOf(DpdAligner);
     let seg = { scid: 'mn8:1.1', pli: 'Evaṁ me sutaṁ—' };
-    let bow = pa.bowOfSegment(seg);
+    let bow = da.bowOfSegment(seg);
     should(bow).properties({
       entendu: 6, // relevant word
       le: 1, // noise word
@@ -70,10 +70,10 @@ describe('dpd-aligner', () => {
     let nfr = TfidfSpace.normalizeFR;
     should(nfr("d'entendu")).equal('de entendu');
   });
-  it('TESTTESTbowOfText()', () => {
-    let pa = TEST_ALIGNER;
+  it('bowOfText()', () => {
+    let da = TEST_ALIGNER;
     let text = "j'ai entendu que c'est vrai";
-    let bow = pa.bowOfText(text);
+    let bow = da.bowOfText(text);
     should.deepEqual(bow, new WordVector({
       entendu: 1,
       j_ai: 1,
@@ -81,5 +81,23 @@ describe('dpd-aligner', () => {
       que: 1,
       vrai: 1,
     }));
+  });
+  it('TESTTESTaddCorpusSutta()', async()=>{
+    const msg = 'td8r.addCorpusSutta:';
+    let suid = 'mn8';
+    let lang = 'fr';
+    let authorLegacy = 'wijayaratna';
+    let da = await DpdAligner.create({ lang, authorLegacy });
+    await da.addCorpusSutta(suid);
+    let { wordDocCount } = da.tfidfSpace.corpus;
+    let words = Object.keys(wordDocCount);
+    words.sort((a,b)=>wordDocCount[a] - wordDocCount[b]);
+
+    // Least distinctive words in MN8 corpus of MSDPD/FR definitions
+    should.deepEqual(words.slice(words.length-5), [
+      '(pour)', 'est', 'le', 'un', 'de',
+    ]);
+    let mostUsed = words.at(-1);
+    should(wordDocCount[mostUsed]).equal(159);
   });
 });

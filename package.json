@@ -24,7 +24,7 @@
     "schedule-action": "scripts/schedule-action",
     "test": "npm run test:verbose",
     "test:test": "mocha --config test/mocha-config.json",
-    "test:verbose": "mocha --inline-diffs",
+    "test:verbose": "mocha --inline-diffs --recursive",
     "version": "scripts/version"
   },
   "repository": {
@@ -46,6 +46,7 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@sc-voice/node-tools": "^2.0.0",
+    "@sc-voice/tools": "^2.12.0",
     "eslint": "^9.4.0",
     "json": "^11.0.0",
     "mocha": "^11.1.0",
@@ -59,7 +60,6 @@
     "@sc-voice/ms-dpd-fr": "^2.53.0",
     "@sc-voice/ms-dpd-pt": "^2.53.0",
     "@sc-voice/ms-dpd-ru": "^2.53.0",
-    "@sc-voice/tools": "^2.7.0",
     "tmp": "^0.2.3"
   }
 }

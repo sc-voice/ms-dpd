@@ -103,11 +103,12 @@ export class DpdAligner {
     const dbg = DBG.D8R_BOW_OF_SEGMENT;
     let { scid, pli } = seg;
     let { tfidfSpace, msdpd } = this;
-    let words = pli.split(' ');
+    let words = pli.trim().split(' ');
     let bow = new WordVector();
     let msStart = Date.now();
     for (let j = 0; j < words.length; j++) {
-      let entry = msdpd.entryOf(words[j]);
+      let word = words[j];
+      let entry = msdpd.entryOf(word);
       if (entry) {
         let { definition } = entry;
         definition.reduce((a,d)=>{
@@ -127,16 +128,31 @@ export class DpdAligner {
     let elapsed = ((Date.now() - msStart)/1000).toFixed(3);
     dbg>1 && console.log(msg, `elapsed ${elapsed}s`);
     return bow;
-  }
+  } // bowOfSegment
 
-  async addDocumentDefinitions(suid) {
+  async addCorpusSutta(suid) {
+    const msg = 'd8r.addCorpusSutta:';
+    const dbg = DBG.D8R_ADD_CORPUS_SUTTA;
+    let { tfidfSpace, } = this;
+    let { corpus } = tfidfSpace;
     let mld = await this.fetchMLDoc(suid);
     let { segMap } = mld;
     let scids = Object.keys(segMap);
+    scids.forEach((scid,i)=>{
+      let seg = segMap[scid];
+      let { pli } = seg;
+      let bow = this.bowOfSegment(seg);
+      let info = tfidfSpace.addCorpusDocument(scid, bow);
+      info.pli = pli;
+      dbg && console.log(msg, `[1]seg[${i}]`, scid, 
+        `${info.nWords}w`, pli);
+    });
+
+    return this;
   }
 
   async fetchMLDoc(suid, lang = 'pli', author = 'ms') {
-    const msg = 'Aligner.fetchMLDoc:';
+    const msg = 'd8r.fetchMLDoc:';
     let { scvEndpoint } = this;
     let url = [
       scvEndpoint,
