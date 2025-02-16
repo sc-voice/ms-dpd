@@ -1,5 +1,6 @@
 import { Text } from '@sc-voice/tools';
 const { WordVector, TfidfSpace } = Text;
+import { SuttaRef } from 'scv-esm/main.mjs';
 import { DBG } from '../defines.mjs';
 import Dictionary from '../dictionary.mjs';
 import { Aligner, Alignment, AlignmentStatus } from './aligner.mjs';
@@ -29,10 +30,7 @@ export class DpdAligner {
       //minScanSize = 5, // minimum number of segments to scan
       //minScore = 0.1, // minimum alignment score
       //normalizeVector,
-      documents = [],
-      scvEndpoint = 'https://www.api.sc-voice.net/scv',
       tfidfSpace,
-      msdpd,
     } = opts;
     if (lang == null) {
       throw new Error(`${msg} lang?`);
@@ -40,15 +38,17 @@ export class DpdAligner {
     if (authorLegacy == null) {
       throw new Error(`${msg} authorLegacy?`);
     }
+    if (tfidfSpace == null) {
+      let normalizeText;
+      // normalizeText = DpdAligner.normalizeFR_DEPRECATED;
+      tfidfSpace = new TfidfSpace({lang, normalizeText});
+    }
+    let msdpd;
     if (msdpd == null) {
       const msStart = Date.now();
       msdpd = await Dictionary.create({ lang });
       let elapsed = ((Date.now()-msStart)/1000).toFixed(3);
       dbg && console.log(msg, `elapsed ${elapsed}s`);
-    }
-    if (tfidfSpace == null) {
-      let normalizeText = DpdAligner.normalizeFR_TBD;
-      tfidfSpace = new TfidfSpace({lang, normalizeText});
     }
 
     try {
@@ -67,7 +67,7 @@ export class DpdAligner {
         //minScore,
         //minWord: 1,
         //normalizeVector,
-        scvEndpoint,
+        scvEndpoint: 'https://www.api.sc-voice.net/scv',
         tfidfSpace,
       });
       return aligner;
@@ -80,7 +80,7 @@ export class DpdAligner {
   } // create
 
   // move this back to @sc-voice/tools/text TfidfSpace when stable
-  static normalizeFR_TBD(s) { 
+  static normalizeFR_DEPRECATED(s) { 
     let sAbbr = s.toLowerCase()
       .replace(/\bd[’']/gi, 'de ')
       .replace(/\bl[’']/gi, 'le ')
@@ -151,15 +151,23 @@ export class DpdAligner {
     return this;
   }
 
-  async fetchMLDoc(suid, lang = 'pli', author = 'ms') {
+  async fetchMLDoc(sref) {
     const msg = 'd8r.fetchMLDoc:';
+    const dbg = DBG.D8R_FETCH_MLDOC;
+    let { sutta_uid, lang, author }  = SuttaRef.create(sref);
     let { scvEndpoint } = this;
     let url = [
       scvEndpoint,
       'search',
-      `${suid}%20-da%20${author}%20-ml1`,
+      [ 
+        [sutta_uid,lang,author].join('%2F'), 
+        '-da', author, 
+        '-ml1'
+      ].join('%20'),
+      //`${sutta_uid}%20-dl%20${lang}%20-da%20${author}%20-ml1`,
       lang,
     ].join('/');
+    dbg && console.log(msg, '[1]url', url);
     try {
       let res = await fetch(url);
       let json = await res.json();
