@@ -14,8 +14,7 @@ Creative Commons License
 
 -----------
 <details>
-<summary>EN / English</summary>
-Russian text DPD
+<summary>EN / English: Russian text DPD</summary>
 Chief translator: Devamitta Bhikkhu Translation assistance and correction suggestions: Dhammanissita Bhikkhu
 
 The preliminary text in `meaning_raw` is made with the help of AI, 
@@ -28,8 +27,7 @@ Detailed contact information can be found on the
 </details>
 
 <details>
-<summary>RU / Русский </summary>
-Русский текст DPD
+<summary>RU / Русский: Русский текст DPD</summary>
 Главный переводчик: Дэвамитта Бхиккху Помощь в переводе и предложения поправок: Дхамманиссита Бхиккху
 
 ### Инструменты и ссылки
