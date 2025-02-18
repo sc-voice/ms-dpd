@@ -46,7 +46,7 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@sc-voice/node-tools": "^2.0.0",
-    "@sc-voice/tools": "^2.13.0",
+    "@sc-voice/tools": "^2.16.0",
     "eslint": "^9.4.0",
     "json": "^11.0.0",
     "mocha": "^11.1.0",

@@ -10,16 +10,14 @@ import { Tools } from '../../src/tools/main.mjs';
 const { DpdAligner } = Tools;
 
 let TEST_ALIGNER;
+let SREF = 'mn8/fr/wijayaratna';
 
 describe('dpd-aligner', () => {
   before(async () => {
     const msg = 'td8r.before:';
     let dbg = DBG.TD8R_BEFORE;
     let msStart = Date.now();
-    TEST_ALIGNER = await DpdAligner.create({
-      lang: 'fr',
-      authorLegacy: 'wijayaratna',
-    });
+    TEST_ALIGNER = await DpdAligner.createSuttaAligner(SREF);
     let elapsed = ((Date.now() - msStart) / 1000).toFixed(3);
     dbg && console.log(msg, `${elapsed}s`);
   });
@@ -32,13 +30,15 @@ describe('dpd-aligner', () => {
     }
     should(eCaught.message).match(/create\?/);
   });
-  it('create', () => {
-    let authorLegacy = 'wijayaratna';
+  it('TESTTESTcreate', () => {
+    let author = 'wijayaratna';
     let lang = 'fr';
     let da = TEST_ALIGNER;
     should(da.tfidfSpace).instanceOf(TfidfSpace);
-    should(da.authorLegacy).equal(authorLegacy);
+    should(da.author).equal(author);
     should(da.lang).equal(lang);
+    should(da.minScanSize).equal(5);
+    should(da.maxScanSize).equal(40);
     let { msdpd, tfidfSpace } = da;
     should(tfidfSpace).instanceOf(TfidfSpace);
     should(msdpd).instanceOf(Dictionary);
@@ -86,14 +86,19 @@ describe('dpd-aligner', () => {
       }),
     );
   });
-  it('TESTTESTaddCorpusSutta()', async () => {
+  it('addCorpusSutta()', async () => {
     const msg = 'td8r.addCorpusSutta:';
-    const dbg = 0;
+    const dbg = 1;
     let suid = 'mn8';
     let lang = 'fr';
-    let authorLegacy = 'wijayaratna';
-    let da = await DpdAligner.create({ lang, authorLegacy });
+    let da = await DpdAligner.createSuttaAligner(SREF);
+    should(da.corpusIds().length).equal(0);
     await da.addCorpusSutta(suid);
+    let scids = da.corpusIds();
+    should(scids.length).equal(170);
+    should.deepEqual(scids.slice(0,3), 
+      ['mn8:0.1', 'mn8:0.2', 'mn8:1.1']);
+    should(scids.at(-1)).equal('mn8:17.10');
     let { wordDocCount } = da.tfidfSpace.corpus;
     let words = Object.keys(wordDocCount);
     words.sort((a, b) => wordDocCount[a] - wordDocCount[b]);
@@ -107,7 +112,7 @@ describe('dpd-aligner', () => {
       'de',
     ]);
     let mostUsed = words.at(-1);
-    should(wordDocCount[mostUsed]).equal(159);
+    should(wordDocCount[mostUsed]).equal(160);
 
     if (DBG.D8R_WRITE_CORPUS_MN8) {
       let { corpus } = da.tfidfSpace;
@@ -117,17 +122,15 @@ describe('dpd-aligner', () => {
 
     let { tfidfSpace:ts } = da;
     let mn8Mohan = await da.fetchMLDoc('mn8/fr/wijayaratna');
-    let scid = 'mn8:1.2';
     let mohanA = mn8Mohan.segMap['mn8:1.2'];
     let mohanB = mn8Mohan.segMap['mn8:2.1'];
-    let vMohanA = ts.tfidf(mohanA.fr);
-    let vMohanB = ts.tfidf(mohanB.fr);
-    let docInfo1_1 = ts.corpus.getDocument('mn8:1.1');
-    let v1_1 = ts.tfidfOfBow(docInfo1_1.bow);
-    let docInfo1_2 = ts.corpus.getDocument('mn8:1.2');
-    let v1_2 = ts.tfidfOfBow(docInfo1_2.bow);
-    let docInfo2_1 = ts.corpus.getDocument('mn8:2.1');
-    let v2_1 = ts.tfidfOfBow(docInfo2_1.bow);
+    let vMohanA = da.queryVector(mohanA.fr);
+    let vMohanB = da.queryVector(mohanB.fr);
+    let v1_1 = da.docVector('mn8:1.1');
+    let v1_2 = da.docVector('mn8:1.2');
+    let v2_1 = da.docVector('mn8:2.1');
+
+    console.log(v1_1.toString({precision:3}));
 
     // Match vMohanA
     let sim1_1A = v1_1.similar(vMohanA);
@@ -148,5 +151,31 @@ describe('dpd-aligner', () => {
     should(sim1_1A).above(sim1_2A).above(sim2_1A);
     // Mohan second line should align with mn8:2.1
     should(sim2_1B).above(sim1_2B).above(sim1_1B);
+  });
+  it('TESTTESTalignLegacySutta()', async()=>{
+    const msg = 'td8r.alignLegacySutta:';
+    const dbg = 1;
+    let suid = 'mn8';
+    let lang = 'fr';
+    let da = await DpdAligner.createSuttaAligner(SREF);
+    let a8t = await da.alignLegacySutta(suid);
+
+    let res1 = await a8t.next();
+    let r1v = res1.value;
+    should(res1.done).equal(false);
+    should(r1v.line).equal(1);
+    should(r1v.text).equal('8. Le déracinement');
+    dbg && console.log(msg, '[1]scan', r1v.toString());
+
+    let res2 = await a8t.next();
+    let r2v = res2.value;
+    should(res2.done).equal(false);
+    should(r2v.line).equal(2);
+    should(r2v.text).equal([
+      '<span class=\'evam\'>Ainsi ai-je entendu :</span>',
+      'une fois le Bienheureux séjournait dans le parc d’Anāthapiṇḍika,',
+      'au bois de Jeta, près de la ville de Sāvatthi.',
+    ].join(' '));
+    dbg && console.log(msg, '[2]scan', r2v.toString());
   });
 });
