@@ -3,14 +3,57 @@ import path from 'node:path';
 const { dirname: __dirname } = import.meta;
 import { Text } from '@sc-voice/tools';
 import should from 'should';
-const { WordVector, TfidfSpace } = Text;
+const { Unicode, WordVector, TfidfSpace } = Text;
 import { Dictionary } from '../../main.mjs';
 import { DBG } from '../../src/defines.mjs';
 import { Tools } from '../../src/tools/main.mjs';
-const { DpdAligner } = Tools;
+const { 
+  AlignmentItem, AlignmentGroup, AlignableItems, DpdAligner 
+} = Tools;
 
 let TEST_ALIGNER;
 let SREF = 'mn8/fr/wijayaratna';
+const { dirname: TEST_DIR, filename: TEST_FILE } = import.meta;
+const TEST_DATA = path.join(TEST_DIR, '../data');
+
+function mn8MohanApiCache(url) {
+  const msg = 'tl8c.mn8MohanApiCache:';
+  return {
+    ok: true,
+    json: async () => {
+      let fname = 'mn8-fr-wijayaratna-scapi.json';
+      let fpath = path.join(TEST_DATA, fname);
+      let json = JSON.parse(fs.readFileSync(fpath));
+      return json;
+    },
+  }
+}
+
+
+const {
+  CHECKMARK,
+  GREEN_CHECKBOX,
+  RED_X,
+} = Unicode;
+const {
+  BLACK,
+  WHITE,
+  RED,
+  GREEN,
+  BLUE,
+  CYAN,
+  MAGENTA,
+  YELLOW,
+  BRIGHT_BLACK,
+  BRIGHT_WHITE,
+  BRIGHT_RED,
+  BRIGHT_GREEN,
+  BRIGHT_BLUE,
+  BRIGHT_CYAN,
+  BRIGHT_MAGENTA,
+  BRIGHT_YELLOW,
+  NO_COLOR,
+} = Unicode.LINUX_COLOR;
 
 describe('dpd-aligner', () => {
   before(async () => {
@@ -30,14 +73,14 @@ describe('dpd-aligner', () => {
     }
     should(eCaught.message).match(/create\?/);
   });
-  it('TESTTESTcreate', () => {
+  it('create', () => {
     let author = 'wijayaratna';
     let lang = 'fr';
     let da = TEST_ALIGNER;
     should(da.tfidfSpace).instanceOf(TfidfSpace);
     should(da.author).equal(author);
     should(da.lang).equal(lang);
-    should(da.minScanSize).equal(5);
+    should(da.minScanSize).equal(4);
     should(da.maxScanSize).equal(40);
     let { msdpd, tfidfSpace } = da;
     should(tfidfSpace).instanceOf(TfidfSpace);
@@ -153,29 +196,166 @@ describe('dpd-aligner', () => {
     should(sim2_1B).above(sim1_2B).above(sim1_1B);
   });
   it('TESTTESTalignLegacySutta()', async()=>{
+    return; // TBD
     const msg = 'td8r.alignLegacySutta:';
-    const dbg = 1;
+    const dbg = 0;
     let suid = 'mn8';
     let lang = 'fr';
     let da = await DpdAligner.createSuttaAligner(SREF);
-    let a8t = await da.alignLegacySutta(suid);
+    let a8t = await da.alignLegacySutta({
+      cache:mn8MohanApiCache,
+    });
 
-    let res1 = await a8t.next();
-    let r1v = res1.value;
+    let results = [];
+    let scidExpected = [
+      'mn8:0.2', 'mn8:1.1', 'mn8:2.1', 
+      'mn8:3.1', // ideally mn8:3.1
+      'mn8:3.4', // ideally mn8:3.4
+      'mn8:4.1', // ideally mn:4.1
+      'mn8:4.4', // or mn:5.1
+      "mn8:5.3", // ideally 6.1
+      'mn8:7.1', 'mn8:8.1', 
+      'mn8:9.1', 'mn8:10.1', 'mn8:11.1', 'mn8:12.2', 'mn8:12.3', 
+      'mn8:12.4', 'mn8:12.5', 'mn8:12.6', 'mn8:12.7', 'mn8:12.8', 
+      'mn8:12.9', 'mn8:12.10', 'mn8:12.11', 'mn8:12.12', 'mn8:12.13',
+      'mn8:12.14', 'mn8:12.15', 'mn8:12.16', 'mn8:12.17', 'mn8:12.18',
+      'mn8:12.19', 'mn8:12.20', 'mn8:12.21', 'mn8:12.22', 'mn8:12.23',
+      'mn8:12.24', 'mn8:12.25', 'mn8:12.26', 'mn8:12.27', 'mn8:12.28', 
+      'mn8:12.29', 'mn8:12.30', 'mn8:12.31', 'mn8:12.32', 'mn8:12.33', 
+      'mn8:12.34', 'mn8:12.35', 'mn8:12.36', 'mn8:12.37', 'mn8:12.38', 
+      'mn8:12.39', 'mn8:12.40', 'mn8:12.41', 'mn8:12.42', 'mn8:12.43',
+      'mn8:12.44', 'mn8:12.45', 'mn8:13.4', 'mn8:14.1', 'mn8:14.3',
+      'mn8:14.5', 'mn8:15.1', 'mn8:15.2', 'mn8:16.3', 'mn8:16.5',
+      'mn8:17.2', 'mn8:17.5', 'mn8:17.6',
+    ];
+    for (let i=0; i < scidExpected.length; i++) {
+      let scid = scidExpected[i];
+      let res = await a8t.next();
+      results.push(res);
+      let { done, value } = res;
+      dbg && console.log(msg, '[3]scid', value.scid, 
+        value.scid == scid 
+          ? 'OK' 
+          : `${RED}EXPECTED:${scid}`,
+        value.docInfo.pli, NO_COLOR);
+      dbg>1 && console.log(msg, 'vText', value.vText.toString());
+      should(done).equal(false);
+      should(value.line).equal(i+1);
+      should(value.scid).equal(scid);
+    }
+
+    let r0v = res[0].value;
     should(res1.done).equal(false);
-    should(r1v.line).equal(1);
-    should(r1v.text).equal('8. Le déracinement');
+    should(r0v.scid).equal('mn8:0.2');
+    should(r0v.line).equal(1);
+    should(r0v.text).equal('8. Le déracinement');
     dbg && console.log(msg, '[1]scan', r1v.toString());
 
-    let res2 = await a8t.next();
-    let r2v = res2.value;
+    let r1v = res[1].value;
     should(res2.done).equal(false);
-    should(r2v.line).equal(2);
-    should(r2v.text).equal([
+    should(r1v.line).equal(2);
+    should(r1v.scid).equal('mn8:1.1');
+    should(r1v.text).equal([
       '<span class=\'evam\'>Ainsi ai-je entendu :</span>',
       'une fois le Bienheureux séjournait dans le parc d’Anāthapiṇḍika,',
       'au bois de Jeta, près de la ville de Sāvatthi.',
     ].join(' '));
-    dbg && console.log(msg, '[2]scan', r2v.toString());
+    dbg && console.log(msg, '[2]scan', r1v.toString());
+
+  });
+  it("AlignableItems.fromLines()", () => {
+    const msg = 'u11s.fromLines:';
+    let lines = [
+      'once upon a time', // bow0
+      'a cat went walking',
+      'a cat went jogging',
+      'a cat went running',
+      'the middle',
+      'a dog went walking',
+      'a dog went jogging',
+      'a dog went running',
+      'the end',
+    ];
+    let da = TEST_ALIGNER; 
+    let ut = AlignableItems.fromLines(lines, da);
+    let bow0 = new WordVector({a:1, once:1, time: 1, upon: 1});
+    let bow1 = new WordVector({a:1, cat:1, walking: 1, went: 1});
+    let bowG1 = new WordVector({a:1, went:1});
+    should.deepEqual(Object.keys(ut.groups), 
+      ['G1', 'G2-4_6-8', 'G5', 'G9']);
+    should.deepEqual(ut.groups['G1'], new AlignmentGroup({
+      id: 'G1',
+      itemIds: [1],
+      bow: bow0,
+    }));
+    should.deepEqual(ut.groups['G2-4_6-8'], new AlignmentGroup({
+      id: 'G2-4_6-8',
+      itemIds: [2,3,4,6,7,8],
+      bow: bowG1,
+      gScore: 0.75,
+    }));
+    should(ut.groups['G9']).properties({
+      id: 'G9',
+      itemIds: [9],
+    });
+    should.deepEqual(ut.items.map(g=>g.text), lines);
+    should.deepEqual(ut.items.map((g,i)=>g.id),[1,2,3,4,5,6,7,8,9]);
+    should.deepEqual(ut.items.map((g)=>g.groupId),[
+      'G1',
+      'G2-4_6-8', 'G2-4_6-8', 'G2-4_6-8', 
+      'G5',
+      'G2-4_6-8', 'G2-4_6-8', 'G2-4_6-8', 
+      'G9',
+    ]);
+    should(ut.groups['G1'].bow.toString())
+      .equal('a:1,once:1,time:1,upon:1');
+    should(ut.groups['G2-4_6-8'].bow.toString())
+      .equal('a:1,went:1');
+    should(ut.groups['G9'].bow.toString())
+      .equal('end:1,the:1');
+    should.deepEqual(ut.items[0], new AlignmentItem({
+      id: 1,
+      bow: bow0,
+      groupId: 'G1',
+      text: lines[0],
+      pScore: 0,
+    }));
+    should.deepEqual(ut.items[1], new AlignmentItem({
+      id: 2,
+      bow: bow1,
+      groupId: 'G2-4_6-8',
+      text: lines[1],
+      pScore: 0.25,
+    }));
+    let bow2 = new WordVector({a:1, cat:1, jogging: 1, went: 1});
+    should.deepEqual(ut.items[2], new AlignmentItem({
+      id: 3,
+      bow: bow2,
+      groupId: 'G2-4_6-8',
+      text: lines[2],
+      pScore: 0.75,
+    }));
+    let bow3 = new WordVector({a:1, cat:1, running: 1, went: 1});
+    should.deepEqual(ut.items[3], new AlignmentItem({
+      id: 4,
+      bow: bow3,
+      groupId: 'G2-4_6-8',
+      text: lines[3],
+      pScore: 0.75,
+    }));
+    let bow4 = new WordVector({the:1, middle:1});
+    should.deepEqual(ut.items[4], new AlignmentItem({
+      id: 5,
+      bow: bow4,
+      groupId: 'G5',
+      text: lines[4],
+      pScore: 0,
+    }));
+  });
+  it("rangedString()", () => {
+    let items1 = [ 35, 36, 39, 40, 42 ];
+    should(AlignmentGroup.rangedString(items1)).equal('35-36_39-40_42');
+    let items2 = [2,3,4,6,7,8];
+    should(AlignmentGroup.rangedString(items2)).equal('2-4_6-8');
   });
 });

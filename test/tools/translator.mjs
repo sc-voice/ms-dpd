@@ -7,9 +7,9 @@ const { DeepLAdapter } = Translate;
 import { Text } from '@sc-voice/tools';
 const { Logger } = Text;
 import { SuttaRef } from 'scv-esm/main.mjs';
-import { Dictionary } from '../main.mjs';
-import { DBG } from '../src/defines.mjs';
-import { Translator } from '../src/tools/translator.mjs';
+import { Dictionary } from '../../main.mjs';
+import { DBG } from '../../src/defines.mjs';
+import { Translator } from '../../src/tools/translator.mjs';
 
 const MOCK_SRC_DEFS = {
   '4iU': '|human-raw|human-lit',
@@ -398,8 +398,8 @@ describe('translator', () => {
     }
     await trans.writeDefinitions(testPath, dstDefs);
     let actual = fs.readFileSync(testPath).toString();
-    let expPath = path.join(__dirname, '..', defPath);
-    should(fs.existsSync(expPath)).equal(true);
+    let expPath = path.join(__dirname, '../..', defPath);
+    should(fs.existsSync(expPath)).equal(true, `${expPath}?`);
     let expected = fs.readFileSync(expPath).toString();
     should(actual.substring(0, 200)).equal(
       expected.substring(0, 200),
