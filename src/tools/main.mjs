@@ -1,11 +1,11 @@
 import {
-  AlignableItems,
+  Alignable,
   AlignmentGroup,
   AlignmentItem,
   DpdAligner,
 } from './dpd-aligner.mjs';
 export const Tools = {
-  AlignableItems,
+  Alignable,
   AlignmentGroup,
   AlignmentItem,
   DpdAligner,

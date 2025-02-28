@@ -1,11 +1,13 @@
+import assert from 'node:assert';
 import { ScvMath, Text } from '@sc-voice/tools';
-const { Fraction } = ScvMath;
-const { Unicode, LegacyDoc, WordVector, TfidfSpace } = Text;
+const { Interval, Fraction } = ScvMath;
+const { 
+  ColorConsole, Unicode, LegacyDoc, WordVector, TfidfSpace 
+} = Text;
 import { SuttaRef } from 'scv-esm/main.mjs';
 import { DBG } from '../defines.mjs';
 import Dictionary from '../dictionary.mjs';
 let dpdAlignerCtor;
-let alignableItemsCtor;
 
 // biome-ignore format:
 const {
@@ -17,31 +19,48 @@ const {
   BLACK, WHITE, RED, GREEN, BLUE, CYAN, MAGENTA, YELLOW,
   BRIGHT_BLACK, BRIGHT_WHITE, BRIGHT_RED, BRIGHT_GREEN,
   BRIGHT_BLUE, BRIGHT_CYAN, BRIGHT_MAGENTA, BRIGHT_YELLOW,
-  NO_COLOR,
+  NO_COLOR:NC,
 } = Unicode.LINUX_COLOR;
+const PLI_CHARS = 30;
+
+const cc = new ColorConsole();
 
 export class AlignmentItem {
   constructor(opts = {}) {
-    let { 
+    let {
       id, // line number or scid
       text, // text to align (e.g., fr)
-      bow,  // word frequency of text
+      bow, // word frequency of text
       groupId, // grouped items are template-similar across sutta
-      pScore=0, // similarity with previous item
+      pScore = 0, // similarity with previous item
     } = opts;
 
     Object.assign(this, { id, text, bow, groupId, pScore });
+  }
+
+  toString() {
+    let keys = Object.keys(this).sort((a, b) => a.localeCompare(b));
+    let entries = keys.reduce((a, k) => {
+      let v = this[k];
+      let sk = `\n  ${k}:${GREEN}`;
+      if (v instanceof WordVector) {
+        a.push(`${sk}${v.toString({})}${NC}`);
+      } else {
+        a.push(`${sk}${v}${NC}`);
+      }
+      return a;
+    }, []);
+    return `{${entries.join('')}}`;
   }
 }
 
 export class AlignmentGroup {
   constructor(opts = {}) {
-    let { 
-      id, 
-      bow, 
-      gScore,
-      itemIds = [],
-    } = opts;
+    let { id, bow, gScore, itemIds = [] } = opts;
+
+    if (gScore == null) {
+      gScore = 1;
+    }
 
     Object.assign(this, { id, bow, itemIds, gScore });
   }
@@ -52,6 +71,20 @@ export class AlignmentGroup {
     const dbg = DBG.A12P_RANGE_STRING;
     let rangeStart = null;
     let rangeLast = null;
+    let range2String = (low,high)=>{
+      let sRange = ''+low;
+      if (low !== high) {
+        sRange += '-';
+        let sHigh = high+'';
+        for (let i = 0; i < sHigh.length; i++) {
+          if (sRange[i] !== sHigh[i]) {
+            sRange += sHigh.substring(i);
+            break;
+          }
+        }
+      }
+      return sRange;
+    }
     numbers.sort((a,b)=>a-b);
     let rs = numbers.reduce((a, n) => {
       if (rangeStart == null) {
@@ -61,10 +94,8 @@ export class AlignmentGroup {
         rangeLast++;
         dbg && console.log(msg, '[2]+1', { n, rangeStart, rangeLast });
       } else {
-        let idPart = rangeStart === rangeLast
-          ? rangeStart
-          : `${rangeStart}-${rangeLast}`;
-        a += (a ? `_${idPart}` : idPart);
+        let idPart = range2String(rangeStart, rangeLast);
+        a += (a ? `.${idPart}` : idPart);
         rangeStart = rangeLast = n;
         dbg && console.log(msg, '[3]idPart',
           {n, idPart, rangeStart, rangeLast});
@@ -72,62 +103,76 @@ export class AlignmentGroup {
       return a;
     }, '');
     if (rangeStart != null) {
-      let idPart = rangeStart === rangeLast
-        ? rangeStart
-        : `${rangeStart}-${rangeLast}`;
+      let idPart = range2String(rangeStart, rangeLast);
       dbg && console.log(msg, '[5]idPart', 
         {idPart, rangeStart, rangeLast});
-      rs += rs ? `_${idPart}` : idPart;
+      rs += rs ? `.${idPart}` : idPart;
     }
     dbg && console.log(msg, '[6]rs', rs, numbers);
 
     return rs;
   }
+
+  get delta() {
+    let { itemIds } = this;
+    return itemIds.length == 1
+      ? 1
+      : itemIds[1] - itemIds[0];
+  }
 }
 
-export class AlignableItems {
+export class Alignable {
+  static #privateCtor;
   constructor(opts = {}) {
-    const msg = 'u11s.ctor:';
-    if (!alignableItemsCtor) {
-      throw new Error(`${msg} fromLines()?`);
+    const msg = 'a7e.ctor:';
+    if (!Alignable.#privateCtor) {
+      throw new Error(`${msg} fromList()?`);
     }
     Object.assign(this, opts);
   }
 
-  static fromLines(lines, aligner) {
-    const msg = 'u11s.fromLines:';
-    const dbg = DBG.U11S_FROM_LINES;
-    if (lines == null) {
-      throw new Error(`${msg} lines?`);
+  static fromList(list, tfidfSpace, opts = {}) {
+    const msg = 'a7e.fromList:';
+    const dbg = DBG.A7E_FROM_LIST;
+    if (list == null) {
+      throw new Error(`${msg} list?`);
     }
-    if (aligner == null) {
-      throw new Error(`${msg} aligner?`);
+    if (tfidfSpace == null) {
+      throw new Error(`${msg} tfidfSpace?`);
     }
-    let { tfidfSpace, groupThreshold } = aligner;
+    let {
+      groupThreshold = 0.5,
+      listText = (listItem) => listItem, // item text
+      listId = (i) => i + 1, // item id number [1..N]
+      listRef, // item id string (optional)
+    } = opts;
     let items = [];
-    for (let i = 0; i < lines.length; i++) {
-      let id = i+1; // line number
-      let text = lines[i];
+    for (let i = 0; i < list.length; i++) {
+      let id = listId(i);
+      let text = listText(list[i]);
       let bow = tfidfSpace.bowOfText(text);
-      let pScore = i>0 ? bow.similar(items[i-1].bow) : 0;
+      let pScore = i > 0 ? bow.similar(items[i - 1].bow) : 0;
       let newItem = new AlignmentItem({ id, text, bow, pScore });
-      items.push( newItem );
+      if (listRef != null) {
+        newItem.ref = listRef(i);
+      }
+      items.push(newItem);
     }
 
     try {
-      alignableItemsCtor = true;
-      let ut = new AlignableItems({
+      Alignable.#privateCtor = true;
+      let a7e = new Alignable({
         tfidfSpace,
         groupThreshold,
         items,
       });
-      ut.groupSimilar();
-      return ut;
+      a7e.groupSimilar();
+      return a7e;
     } catch (e) {
       console.error(msg, e);
       throw e;
     } finally {
-      alignableItemsCtor = false;
+      Alignable.#privateCtor = false;
     }
   }
 
@@ -145,33 +190,36 @@ export class AlignableItems {
    */
   // biome-ignore format:
   groupSimilar() {
-    const msg = 'u11s.groupSimilar:';
-    const dbg = DBG.U11S_GROUP_SIMILAR;
-    let { aligner, items, tfidfSpace: ts, groupThreshold } = this;
+    const msg = 'a7e.groupSimilar:';
+    const dbg = DBG.A7E_GROUP_SIMILAR;
+    let { items, tfidfSpace: ts, groupThreshold } = this;
     let nitems = items.length;
     const msStart = Date.now();
     for (let i = 0; i < nitems; i++) {
       let { id, bow: iBow, group: group_i } = items[i];
       if (group_i == null) {
-        items[i].group = group_i = new AlignmentGroup({
-          itemIds: [id],
-          bow: iBow,
-        });
+        let itemIds = [i+1];
+        group_i = new AlignmentGroup({itemIds});
+        items[i].group = group_i;
+        group_i.bows = [iBow]; // temporary;
       }
       for (let j = i + 1; j < nitems; j++) {
         let { bow: jBow, group: group_j } = items[j];
         if (group_j == null) {
           let gScore = iBow.similar(jBow);
           if (groupThreshold <= gScore) {
-            let ij = iBow.intersect(jBow);
-            let intersect = ij.toString();
+            let groupBows = group_i.bows;
             group_i.itemIds.push(j + 1);
-            group_i.bow = group_i.bow.intersect(jBow);
+            group_i.bows.push(jBow);
             group_i.gScore = group_i.gScore 
               ? Math.min(group_i.gScore, gScore)
               : gScore;
             items[j].group = group_i;
-            dbg>1 && console.log(msg, {i, j, gScore, intersect});
+            dbg>1 && console.log(msg, 
+              {i, j, gScore, 
+              bows: group_i.bows.length,
+              itemIds: group_i.itemIds,
+            });
           }
         }
       }
@@ -183,8 +231,23 @@ export class AlignableItems {
       item.groupId = groupId;
       delete item.group;
       group.id = groupId;
-      group.itemIds.sort();
-      ag[groupId] = group;
+      if (ag[groupId] == null) {
+        group.itemIds.sort((a,b) => a-b);
+        ag[groupId] = group;
+        if (group?.bows?.length) { 
+          // the group bow is the average of its constituent bows
+          let n = group.bows.length;
+          let bowSum = group.bows[0];
+          let mask = bowSum.oneHot();
+          for (let k = 1; k < n; k++) {
+            let kBow = group.bows[k];
+            bowSum = bowSum.add(kBow);
+            mask = mask.andOneHot(kBow);
+          }
+          group.bow = mask.multiply(bowSum).scale(1/n);
+          delete group.bows;
+        }
+      }
       return ag;
     }, {});
     if (dbg) {
@@ -203,33 +266,168 @@ export class AlignableItems {
 
     return this;
   } // groupSimilar
-} // AlignableItems
 
-class ScanResult {
+  itemGroup(item) {
+    let { groups, items } = this;
+    return groups[item.groupId];
+  }
+
+  item2GroupShadow(item) {
+    const msg = 'a7e.item2GroupShadow';
+    const dbg = DBG.A7E_ITEM_2_GROUP_SHADOW;;
+    let { items } = this;
+    let interval;
+    let { id, groupId } = item;
+    dbg>1 && cc.fyi(msg+'.1', { id, groupId });
+    for (let i = 0; !interval && i < items.length; i++) {
+      let iItem = items[i];
+      let group = this.itemGroup(iItem);
+      let { itemIds: gItemIds, delta } = group;
+      if (1 < delta) {
+        dbg>1 && cc.fyi(msg+'.2', 
+          {id:iItem.id, group:iItem.groupId, delta});
+      }
+      let gLo = gItemIds[0];
+      let gEnd = gItemIds.at(-1)+delta;
+      if (gLo <= item.id && item.id < gEnd) {
+        dbg>1 && cc.ok(msg+'+2 iItem', 
+          {id:iItem.id, group:iItem.groupId, delta});
+        for (let j = 0; j < gItemIds.length; j++) {
+          let jid = gItemIds[j];
+          let nid = jid+delta;
+          if (jid <= item.id && item.id < nid) {
+            interval = new Interval(jid, nid-1);
+            dbg && cc.ok1(msg+'+3', interval.toString());
+          } else {
+            dbg>1 && cc.fyi(msg+'.3', { id, jid, nid, delta });
+          }
+        }
+      } else {
+        let LINE_TO_INDEX = 1;
+        i = gEnd - 1 - LINE_TO_INDEX; // skip over all resolved groups
+        dbg>1 && cc.fyi(msg+'.4', {id, gLo, gEnd });
+      }
+      if (iItem === item) {
+        if (interval == null) {
+          interval = new Interval(gLo, gHi);
+          dbg && cc.ok(msg+'+4', interval.toString(), interval);
+        }
+        break;
+      }
+    }
+    if (interval == null) {
+      dbg && cc.bad(msg+'-1', item);
+    }
+
+    return interval;
+  } // item2GroupShadow
+} // Alignable
+
+export class ScanResult {
   constructor(opts = {}) {
-    Object.assign(this, opts);
+    let {
+      pliChars,
+      refItem,
+      scid,
+      scoreDpdSrc,
+      srcItem,
+      streakSize = 0,
+      vDpd,
+      vDpdSrc,
+    } = opts;
+
+    Object.assign(this, {
+      pliChars,
+      refItem,
+      srcItem,
+      scid,
+      scoreDpdSrc,
+      streakSize,
+      vDpd,
+      vDpdSrc,
+    });
+  }
+
+  start(refItem) {
+    this.streakSize = 1;
+    this.refItem = refItem;
+  }
+
+  scanSummary(refItem, status, color) {
+    if (refItem == null) {
+      refItem = this.refItem;
+    }
+    if (color == null) {
+      color = NC;
+    }
+    if (status == null) {
+      status = '0';
+    }
+    let { srcItem, streakSize, scoreDpdSrc, pliChars } = this;
+    let scid = refItem?.ref;
+    let refGrpId = refItem?.groupId;
+    let refText = refItem?.text;
+    let refInfo = `${BRIGHT_CYAN}${scid}${refGrpId}${NC}`;
+    let pliInfo = `${refText?.substring(0, pliChars)}`;
+    let srcLine = srcItem.id;
+    let srcGrpId = srcItem.groupId;
+    let srcInfo = `${CYAN}${srcLine}${srcGrpId}${NC}`;
+
+    return [srcInfo, `<${status}>`, refInfo].join('');
+  }
+
+  dbgLog(msg, dbgPos, status, refItem, color) {
+    if (refItem == null) {
+      refItem = this.refItem;
+    }
+    if (color == null) {
+      color = NC;
+    }
+    let { scoreDpdSrc, pliChars } = this;
+    let refText = refItem?.text;
+    let pliInfo = `${refText?.substring(0, pliChars)}`;
+    let scores = scoreDpdSrc.toFixed(3) + ' ';
+    let summary = this.scanSummary(refItem, status, color);
+
+    //biome-ignore format:
+    console.log([ color, msg, dbgPos, ' ',
+      scores, summary, ' ', 
+      pliInfo].join(''));
   }
 
   toString() {
-    let { vText, iScan, scid, vRef, segCursor } = this;
-    return {
-      vText: vText?.toString(),
-      scid,
-      vRef: vRef?.toString(),
-      segCursor: segCursor?.toString(),
-    };
+    const msg = 's7e.toString():';
+    const dbg = DBG.S7E_TO_STRING;
+    let keys = Object.keys(this).sort((a, b) => a.localeCompare(b));
+    let result = keys.reduce((a, k) => {
+      let v = this[k];
+      if (k === 'vDpdSrc') {
+        v = v.toString({ precision: 6 });
+      } else if (v instanceof WordVector) {
+        if (dbg < 1) {
+          return a;
+        }
+        v = v.toString();
+      } else if (k === 'segCursor') {
+        v = v?.toString();
+      }
+      a[k] = v;
+      return a;
+    }, {});
+    return result;
   }
 }
 
 export class Scanner {
-  constructor(aligner, scids) {
+  constructor(aligner, alignableSrc) {
     const msg = 's5r.ctor:';
-    let nSegs = scids.length;
+    let { items } = alignableSrc;
+    let nSegs = items.length;
     let segCursor = new Fraction(0, nSegs, 'segs');
 
     Object.assign(this, {
       aligner,
-      scids,
+      alignableSrc,
       segCursor,
     });
   }
@@ -255,6 +453,52 @@ export class Scanner {
   get streakStart() {
     return this.aligner.streakStart;
   }
+  get alignableRef() {
+    return this.aligner.alignableRef;
+  }
+
+  areGroupAlignable(srcItem, refItem) {
+    const msg = 's5r.areGroupAlignable';
+    const dbg = DBG.S5R_ARE_GROUP_ALIGNABLE || DBG.S5R_SCAN_TEXT > 2;
+    let { alignableRef, alignableSrc } = this;
+    let srcGid = srcItem.groupId;
+    let refGid = refItem.groupId;
+    let srcGrp = alignableSrc.groups[srcGid];
+    let nSrc = srcGrp.itemIds.length;
+    let refGrp = alignableRef.groups[refGid];
+    let nRef = srcGrp.itemIds.length;
+    let alignable = false;
+    let scid = refItem.ref;
+    let line = srcItem.id;
+
+    if (nSrc === nRef) {
+      let srcId = srcItem.id;
+      let srcIdx = srcGrp.itemIds.indexOf(srcId);
+      let refId = refItem.id;
+      let refIdx = refGrp.itemIds.indexOf(refId);
+      if (srcIdx === refIdx) {
+        // biome-ignore format:
+        dbg && console.log(`${BRIGHT_GREEN}${msg}@1`, 
+          `${CYAN}${srcId}${srcGrp.id}`,
+          `${BRIGHT_CYAN}${scid}${refGrp.id}`,
+          `alignable src:${srcGid} ref:${refGid} idx:${srcIdx}`,
+          NC);
+        alignable = true;
+      } else {
+        //biome-ignore format:
+        dbg && console.log(`${RED}${msg}@-1`, 
+          `${CYAN}${srcId}${srcGrp.id}`,
+          `${BRIGHT_CYAN}${scid}${refGrp.id}`,
+          `${CYAN}${scid}${refGrp.id}`, NC);
+      }
+    } else {
+      // biome-ignore format:
+      dbg && console.log(`${msg}@-2`, RED,
+          `!alignable src:${srcGid} ref:${refGid}`, NC);
+    }
+
+    return alignable;
+  }
 
   trimWords(rawText) {
     const msg = 's54.trimWords:';
@@ -271,110 +515,117 @@ export class Scanner {
   }
 
   // biome-ignore format:
-  scanItem(item) {
-    const msg = 's5r.scanItem:';
+  scanItem(srcItem) {
+    const msg = 's5r.scanItem';
     const dbg = DBG.S5R_SCAN_TEXT;
     let {
       aligner,
+      alignableRef,
+      alignableSrc,
       tfidfSpace: ts,
-      scids,
       segCursor,
       minScanSize,
       maxScanSize,
       minScore,
       maxStreak,
       streakStart,
+      pliChars,
     } = this;
-    if (!(item instanceof AlignmentItem)) {
-      throw new Error(`{$msg} AlignmentItem?`);
+    if (!(srcItem instanceof AlignmentItem)) {
+      throw new Error(`${msg} AlignmentItem?`);
     }
 
-    let { id:line } = item;
-    let text = this.trimWords(item.text);
-    let vText = ts.tfidfOfBow(item.bow);
-    let result = new ScanResult({
-      vText,
+    let { pScore, groupId:srcGrpId, id:srcLine } = srcItem;
+    let dbgTextChars = dbg>3 ? undefined : 15;
+    let srcGrp = alignableSrc.groups[srcGrpId];
+    let srcText = this.trimWords(srcItem.text);
+    let vSrc = ts.tfidfOfBow(srcItem.bow);
+    let refItems = alignableRef.items;
+    let iScanStart = segCursor.numerator;
+    let sr = new ScanResult({
+      srcItem,
+      refItem: refItems[iScanStart],
+      vSrc,
       segCursor,
-      scanScore: 0,
+      scoreDpdSrc: 0,
+      pliChars:dbgTextChars,
     });
     let scanning = (i) =>
       i < maxScanSize &&
-      (i < minScanSize || result.scanScore < minScore) &&
-      streakSize < maxStreak;
+      (i < minScanSize || sr.scoreDpdSrc < minScore) &&
+      sr.streakSize < maxStreak;
     let scid;
-    let iScanStart = segCursor.numerator;
-    dbg>1 && console.log( msg, `[0.1]text#${line}`,
-        segCursor.toString(), `${GREEN}${text}${NO_COLOR}`);
-    dbg>2 && console.log(msg, '[0.2]vText', vText);
-    let streakSize = 0;
+    let refStart = refItems[iScanStart];
+    dbg>1 && console.log(`${msg}@0.1 srcText`, sr.scanSummary(refStart),
+      `${GREEN}${srcText.substring(0,dbgTextChars)}${NC}`);
+    let streakFirst = null;
+    let streakStop = null;
     for (let iScan = 0; scanning(iScan); iScan++) {
-      scid = scids[iScanStart + iScan];
-      let docInfo = aligner.docInfo(scid);
-      let vRef = aligner.docVector(scid);
-      let scanScore = vText.similar(vRef);
-      if (dbg>2) {
-        let intersect = vRef.intersect(vText);
-        console.log( msg, '[0.3]intersect',
-          intersect.toString({ precision: 5 }));
+      let iRef = iScanStart + iScan;
+      let refItem = refItems[iRef];
+      scid = refItem.ref;
+      let refText = refItem.text;
+      let refId = refItem.id;
+      let refGrpId = refItem.groupId;
+      let refGrp = alignableRef.groups[refGrpId];
+      let vDpd = refItem.vDpd;
+      let scoreDpdSrc = vSrc.similar(vDpd);
+      let vDpdSrc = vDpd.hadamardL1(vSrc);
+      let startStreak = ()=>{
+        sr.start(refItem);
+        Object.assign(sr, { iScan, scid, scoreDpdSrc,
+          vDpd, refText, vDpdSrc});
       }
-      if (minScore <= scanScore) {
-        if (streakSize === 0) { // start a streak
-          streakSize++;
-          Object.assign(result, { docInfo, iScan, scid, scanScore,
-            streakSize, vRef, });
-          dbg>1 && console.log( msg, [
-            '[1]  ', YELLOW, line, ':', CHECKMARK, scid,
-            ' ', scanScore.toFixed(3), ' ', docInfo.pli.substring(0, 40),
-              NO_COLOR, 
-          ].join(''),);
-        } else if ( /*!vText.__lquote && */
-          result.scanScore * streakStart < scanScore
-        ) {
-          result.streakSize = streakSize = 1;
-          Object.assign(result, { docInfo, iScan, scid, scanScore,
-            streakSize, vRef, });
-          dbg>1 && console.log( msg, [
-            '[2]  ', BRIGHT_WHITE, line, ':!', scid, ' ',
-            scanScore.toFixed(3), ' ',
-            docInfo.pli.substring(0, 40), NO_COLOR,
-          ].join(''));
-        } else {
-          result.streakSize = ++streakSize;
-          dbg>1 && console.log( msg, [
-            '[3]  ', YELLOW, line, ':+', scid, ' ',
-            scanScore.toFixed(3), ' ',
-            docInfo.pli.substring(0, 40), NO_COLOR,
-          ].join(''));
+      if (dbg>3) {
+        console.log(`${msg}@0.3`, 'vDpdSrc', GREEN,
+          vDpdSrc.toString({ precision: 3 }), NC);
+      }
+      if (minScore <= scoreDpdSrc) { // new streak candidate
+        let streakMovable =
+          sr.scoreDpdSrc * streakStart < scoreDpdSrc
+        let canGrp = this.areGroupAlignable(srcItem, refItem);
+        if (sr.streakSize === 0) { // start a streak
+          let grpSize = refGrp.itemIds.at(-1) - refGrp.itemIds[0];
+          startStreak();
+          if (canGrp && grpSize>1) {
+            let lastInGroup = srcItem.id === srcGrp.itemIds.at(-1);
+            if (lastInGroup) {
+              sr.streakSize = grpSize;
+              dbg>1 && sr.dbgLog(msg, '@1.1', 
+                `${CHECKMARK}${sr.streakSize}`, refItem, YELLOW);
+              break;
+            } else {
+              dbg>1 && sr.dbgLog(msg, '@1.2', 
+                `${CHECKMARK}${sr.streakSize}`, refItem, YELLOW);
+            }
+          } else {
+            dbg>1 && sr.dbgLog(msg, '@1', 
+              `${CHECKMARK}${sr.streakSize}`, refItem, GREEN);
+          }
+        } else if (streakMovable && ( refGrp.itemIds.length === 1)) {
+          startStreak(); // move streak to new start
+          dbg>1 && sr.dbgLog(msg, '@2', '!', refItem, BRIGHT_WHITE);
+        } else { // grow streak
+          sr.streakSize++;
+          dbg>1 && sr.dbgLog(msg, '@3', sr.streakSize, refItem, GREEN);
         }
-      } else if (result.scanScore <= scanScore) {
-        dbg>2 && console.log( msg, [
-          '[0.4]', line, ':>', scid, ' ', scanScore.toFixed(3), ' ',
-          CYAN, docInfo.pli.substring(0, 40), NO_COLOR,
-        ].join(''));
-      } else {
-        dbg>2 && console.log( msg, [
-          '[0.5]', BRIGHT_BLACK, iScan, ': ', scid, ' ',
-          scanScore.toFixed(3), ' ',
-          docInfo.pli.substring(0, 40), NO_COLOR,
-        ].join(''));
+      } else if (sr.streakSize > 0) { // end of streak?
+        dbg>1 && sr.dbgLog(msg, '@4', '$', refItem);
+        break;
+      } else { // ignore segment
+        dbg>1 && sr.dbgLog(msg, '@0.5', sr.streakSize, refItem);
       }
     } // scanning
-    if (result.scanScore < minScore) {
-      dbg && console.log( msg, [ 
-        '[-1] ', RED, result.iScan, RED_X, result.scid, ' ',
-        result.scanScore.toFixed(3), ' ', scoreInfo.pli, NO_COLOR,
-      ].join(''));
+    if (sr.scoreDpdSrc < minScore) { // no alignment found
+      dbg && sr.dbgLog(msg, '@-1', RED_X, null, BRIGHT_RED);
       return null;
     }
 
-    segCursor.numerator += result.iScan + result.streakSize;
-    dbg && console.log( msg, [
-      '[4]  ', line, GREEN_CHECKBOX, result.scid, ' ',
-      result.scanScore.toFixed(3), ' ', `streak:${result.streakSize} `,
-      result.docInfo.pli,
-    ].join(''));
+    segCursor.numerator += sr.iScan + sr.streakSize;
+    dbg && sr.dbgLog(msg, '@5', `${CHECKMARK}${sr.streakSize}`, 
+      null, BRIGHT_GREEN);
 
-    return result;
+    return sr;
   }
 }
 
@@ -382,7 +633,7 @@ export class DpdAligner {
   constructor(opts = {}) {
     const msg = 'd8r.ctor:';
     if (!dpdAlignerCtor) {
-      throw new Error(`$msgcreate?`);
+      throw new Error(`${msg}create?`);
     }
     Object.assign(this, opts);
   }
@@ -393,13 +644,13 @@ export class DpdAligner {
     let { sutta_uid, lang, author } = SuttaRef.create(sref);
     // Required
     if (sutta_uid == null) {
-      throw new Error(`$msgsutta_uid?`);
+      throw new Error(`${msg}sutta_uid?`);
     }
     if (lang == null) {
-      throw new Error(`$msglang?`);
+      throw new Error(`${msg}lang?`);
     }
     if (author == null) {
-      throw new Error(`$msgauthor?`);
+      throw new Error(`${msg}author?`);
     }
     let {
       // Optional
@@ -407,7 +658,7 @@ export class DpdAligner {
       maxScanSize = 40, // maximum segments to scan for alignment
       minScanSize = 4, // minimum number of segments to scan
       maxStreak = 2, // maximum segment matches for 1 line
-      minScore = 0.1, // minimum alignment scanScore
+      minScore = 0.09, // minimum alignment scoreDpdSrc
       maxSegWords = 22, // align to truncated legacy segments
       streakStart = 1.1, // threshold to change start of streak
       idfWeight = 1.618033988749895, // sensitivity to word rarity
@@ -426,7 +677,7 @@ export class DpdAligner {
       const msStart = Date.now();
       msdpd = await Dictionary.create({ lang });
       let elapsed = ((Date.now() - msStart) / 1000).toFixed(3);
-      dbg && console.log(msg, `elapsed $elapseds`);
+      dbg && console.log(msg, `elapsed ${elapsed}s`);
     }
 
     try {
@@ -450,7 +701,7 @@ export class DpdAligner {
       });
       return aligner;
     } catch (e) {
-      console.error(`$msg$e.message`);
+      console.error(`${msg}${e.message}`);
       throw e;
     } finally {
       dpdAlignerCtor = false;
@@ -476,9 +727,7 @@ export class DpdAligner {
   async *alignLegacySutta(opts = {}) {
     const msg = 'd8r.alignLegacySutta:';
     const dbg = DBG.D8R_ALIGN_LEGACY_SUTTA;
-    let {
-      cache,
-    } = opts;
+    let { cache } = opts;
     let {
       sutta_uid,
       lang,
@@ -487,36 +736,42 @@ export class DpdAligner {
       minScanSize,
       minScore,
       tfidfSpace: ts,
+      alignableRef,
     } = this;
     let { corpus } = ts;
 
     try {
-      dbg && console.log(msg, '[1]addCorpusSutta', sutta_uid);
-      await this.addCorpusSutta(sutta_uid);
-      let scids = this.corpusIds();
-      let scanner = new Scanner(this, scids);
-      let { segCursor } = scanner;
-      let fetchOpts = Object.assign({ cache },
-        SuttaRef.create({ sutta_uid, lang, author }));
-      dbg && console.log(msg, '[2]fetchLegacy', fetchOpts);
+      if (alignableRef) {
+        dbg && console.log(msg, '[1]!addReferenceSutta', sutta_uid);
+        return alignableRef;
+      }
+      dbg && console.log(msg, '[2]addReferenceSutta', sutta_uid);
+      await this.addReferenceSutta(sutta_uid);
+      let fetchOpts = Object.assign(
+        { cache },
+        SuttaRef.create({ sutta_uid, lang, author }),
+      );
+      dbg && console.log(msg, '[3]fetchLegacy', fetchOpts);
       let legacyDoc = await LegacyDoc.fetchLegacy(fetchOpts);
       if (!(legacyDoc instanceof LegacyDoc)) {
-        throw new Error(`$msglegacyDoc?`);
+        throw new Error(`${msg}legacyDoc?`);
       }
       let { lines } = legacyDoc;
-      dbg && console.log(msg, '[3]lines', lines.length);
-      let uTexts = AlignableItems.fromLines(lines, this);
-      let { items } = uTexts;
+      dbg && console.log(msg, '[4]lines', lines.length);
+      let alignableSrc = Alignable.fromList(lines, ts, this);
+      let { items } = alignableSrc;
+      let scanner = new Scanner(this, alignableSrc);
+      let { segCursor } = scanner;
       let done = lines.length < 1;
       for (let iSrc = 0; !done; iSrc++, done = iSrc >= lines.length) {
-        let item = items[iSrc];
-        let { text } = item;
+        let srcItem = items[iSrc];
+        let { text: srcText } = srcItem;
         let line = iSrc + 1;
-        let scanRes = scanner.scanItem(item);
+        let scanRes = scanner.scanItem(srcItem);
         if (scanRes == null) {
           break;
         }
-        yield Object.assign(scanRes, { line, text });
+        yield Object.assign(scanRes, { line, srcText });
       }
     } catch (e) {
       console.error(msg, 'ERROR', e);
@@ -530,32 +785,14 @@ export class DpdAligner {
     return this.tfidfSpace.corpus;
   }
 
-  corpusIds() {
-    return Object.keys(this.corpus.docMap);
+  scids() {
+    let { alignableRef } = this;
+    return alignableRef?.items?.map((item) => item.ref);
   }
 
   queryVector(text) {
     let { tfidfSpace: ts, corpus } = this;
     return ts.tfidf(text);
-  }
-
-  docInfo(docId) {
-    return this.corpus.getDocument(docId);
-  }
-
-  docVector(docId) {
-    const msg = 'd8r.docVector:';
-    let { tfidfSpace: ts } = this;
-    let docInfo = this.docInfo(docId);
-    if (docInfo == null) {
-      throw new Error(`$msgdocId? ${docId}`);
-    }
-    let { vector, bow } = docInfo;
-    if (vector == null) {
-      vector = ts.tfidfOfBow(bow);
-      docInfo.vector = vector;
-    }
-    return vector;
   }
 
   bowOfText(text) {
@@ -589,30 +826,49 @@ export class DpdAligner {
       }
     }
     let elapsed = ((Date.now() - msStart) / 1000).toFixed(3);
-    dbg > 1 && console.log(msg, `elapsed $elapseds`);
+    dbg > 1 && console.log(msg, `elapsed ${elapsed}s`);
     return bow;
   } // bowOfSegment
 
-  async addCorpusSutta(suid) {
-    const msg = 'd8r.addCorpusSutta:';
-    const dbg = DBG.D8R_ADD_CORPUS_SUTTA;
+  async addReferenceSutta(suid) {
+    const msg = 'd8r.addReferenceSutta';
+    const dbg = DBG.D8R_ADD_REFERENCE_SUTTA;
     let { tfidfSpace } = this;
     let { corpus } = tfidfSpace;
     let mld = await this.fetchMLDoc(suid);
     let { segMap } = mld;
     let scids = Object.keys(segMap);
-    scids.forEach((scid, i) => {
-      let seg = segMap[scid];
-      let { pli } = seg;
-      let bow = this.bowOfSegment(seg);
-      let info = tfidfSpace.addCorpusDocument(scid, bow);
-      info.pli = pli;
-      dbg &&
-        console.log(msg, `[1]seg[$i]`, scid, `$info.nWordsw`, pli);
+    let alignableRef = Alignable.fromList(scids, tfidfSpace, {
+      listText: (scid) => segMap[scid].pli,
+      listRef: (i) => scids[i],
     });
+    //biome-ignore format:
+    if (dbg>1) {
+      let { groups, items } = alignableRef;
+      items.forEach((item) => {
+        let { id, ref: scid, bow, groupId, pScore, text } = item;
+        let group = groups[groupId];
+        let { gScore } = group;
+        console.log( `${msg}@1`, `${scid}#${id}`,
+          `${CYAN}${groupId} ${gScore.toFixed(2)}g`,
+          `${GREEN}${pScore.toFixed(2)}p`, 
+          NC);
+      });
+    }
+    alignableRef.items.forEach((item, i) => {
+      let { ref: scid, id, text, bow, groupId, pScore } = item;
+      let seg = segMap[scid];
+      let dpdBow = this.bowOfSegment(seg);
+      let docInfo = tfidfSpace.addCorpusDocument(scid, dpdBow);
+      item.dpdBow = dpdBow;
+      item.nWords = docInfo.nWords;
+      item.vDpd = tfidfSpace.tfidfOfBow(dpdBow);
+      dbg > 1 && console.log(msg, 'item', i, item.toString());
+    });
+    this.alignableRef = alignableRef;
 
-    return this;
-  }
+    return alignableRef;
+  } // addReferenceSutta
 
   async fetchMLDoc(sref) {
     const msg = 'd8r.fetchMLDoc:';
@@ -628,7 +884,6 @@ export class DpdAligner {
         author,
         '-ml1',
       ].join('%20'),
-      //`$sutta_uid%20-dl%20$lang%20-da%20$author%20-ml1`,
       lang,
     ].join('/');
     dbg && console.log(msg, '[1]url', url);
