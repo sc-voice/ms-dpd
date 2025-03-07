@@ -46921,7 +46921,7 @@ export const DEF_LANG={
  "FvM": "|becomes secluded|",
  "FvN": "|stolidity, seclusion|",
  "FvO": "|became secluded|",
- "FvQ": "|déraciner ; expurger ; gommer ; éradiquer ; effacer ; broyer lentement|se frotter",
+ "FvQ": "|expurger ; gommer ; éradiquer ; effacer ; broyer lentement; (déraciner?)|se frotter",
  "FvR": "|vie austère ; automortification ; ascétisme|se frotter",
  "FvS": "|self-effacement; austerity; asceticism|",
  "FvT": "|manière d'effacer ; méthode d'effacement|",
