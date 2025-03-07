@@ -8,11 +8,13 @@ import { DBG } from '../defines.mjs';
 import Dictionary from '../dictionary.mjs';
 let dpdAlignerCtor;
 
+// For more information, see MS-DPD wiki
+// https://github.com/sc-voice/ms-dpd/wiki/Case-Study:-Repetition-in-the-Tipitaka
+
 // biome-ignore format:
 const {
   GREEN_CHECKBOX, LEFT_ARROW, RIGHT_ARROW, CHECKMARK,
-  ELEMENT_OF, ELLIPSIS, WARNING, RED_X,
-  EMDASH,
+  ELEMENT_OF, ELLIPSIS, WARNING, RED_X, EMDASH,
 } = Unicode;
 // biome-ignore format:
 const {
@@ -41,7 +43,6 @@ export class AlignmentItem {
       groupId, // grouped items are template-similar across sutta
       group,
       pScore = 0, // similarity with previous item
-      rootStanza, // root stanza id Interval
     } = opts;
 
     Object.assign(this, {
@@ -52,7 +53,6 @@ export class AlignmentItem {
       group,
       groupId,
       pScore,
-      rootStanza,
     });
   }
 
@@ -60,10 +60,19 @@ export class AlignmentItem {
     let keys = Object.keys(this).sort((a, b) => a.localeCompare(b));
     let dbg = DBG.A11M_TO_STRING;
     let { id, ref, group } = this;
-    let s = ref + group.id;
+    let s = '#' + ref + group.id;
     return s;
   } // a11m.toString()
 
+  get headGroup() {
+    let { group } = this;
+    return group.head || group;
+  }
+
+  get stanza() {
+    let { id, headGroup } = this;
+    return headGroup.inferredStanza(id);
+  }
 } // AlignmentItem
 
 export class AlignmentGroup {
@@ -178,7 +187,11 @@ export class AlignmentGroup {
   toString() {
     let { id, stanzas, spanning, extent, bounds } = this;
     if (spanning) {
-      return id + EMDASH + extent.toString();
+      let s = id;
+      if (extent) {
+        s += EMDASH + extent.toString();
+      }
+      return s;
     }
     return id + ELLIPSIS + (extent || bounds);
   }
@@ -186,8 +199,9 @@ export class AlignmentGroup {
   inferredStanza(id) {
     const msg = 'a12p.inferredStanza';
     const dbg = DBG.A12P_INFERRED_STANZA;
-    let { id: gid, spanning, stanzas, extent } = this;
-    if (!extent.contains(id)) {
+    let { id: gid, head = this } = this;
+    let { stanzas, extent, spanning } = head;
+    if (!extent?.contains(id)) {
       return null;
     }
     let res = null;
@@ -198,22 +212,32 @@ export class AlignmentGroup {
         let hi = stanzas[i].lo - 1;
         if (lo <= id && id <= hi) {
           res = new Interval(lo, hi);
-          dbg && cc.ok1(msg + 1, this, 'item' + id, res);
+          dbg && cc.ok1(msg + 1, '#' + id, '^' + head, '=>', res);
         }
       }
       if (res == null) {
         let { lo } = stanzas.at(-1);
         let hi = extent?.hi || lo;
         res = new Interval(lo, hi);
-        dbg && cc.ok1(msg + 2, this, 'item' + id, res);
+        dbg && cc.ok1(msg + 2, '#' + id, '^' + head, '=>', res);
       }
     } else {
       // sparse
       res = stanzas.reduce((a, s) => (s.contains(id) ? s : a), null);
       if (res) {
-        dbg && cc.ok1(msg + 3, this, 'item' + id, res);
+        dbg && cc.ok1(msg + 3, this, '#' + id, '=>', res);
       } else {
-        cc.bad1(msg + -1, this, 'item' + id + gid, '=>', res);
+        for (let i = 1; i < stanzas.length; i++) {
+          let lo = stanzas[i - 1].hi + 1;
+          let hi = stanzas[i].lo - 1;
+          if (lo <= id && id <= hi) {
+            res = new Interval(lo, hi);
+            dbg && cc.ok1(msg + 4, '#' + id, '^' + head, '=>', res);
+          }
+        }
+        if (res == null) {
+          dbg && cc.bad1(msg + -1, this, '#' + id + gid, '=>', res);
+        }
       }
     }
 
@@ -280,7 +304,7 @@ export class Alignable {
     const dbg = DBG.A7E_FROM_LIST;
     let a7e = Alignable.fromListRaw(list, tfidfSpace, opts);
     a7e.groupSimilar();
-    a7e.addExtents();
+    a7e.addHeadGroups();
 
     return a7e;
   }
@@ -313,30 +337,39 @@ export class Alignable {
     return stanzas;
   }
 
-  addExtents() {
-    const msg = 'a7e.addExtents';
-    const dbg = DBG.A7E_ADD_EXTENTS;
+  addHeadGroups() {
+    const msg = 'a7e.addHeadGroups';
+    const dbg = DBG.A7E_ADD_HEAD_GROUPS;
 
     let { items } = this;
     let nItems = items.length;
     let { group: group0 } = items[0];
     let bPrev;
-    let bCur = group0.bounds;
+    let head = group0;
+    let bCur = head.bounds;
     let extent = bCur;
     let iExtent = 0;
     function addExtent(end) {
       for (let i = iExtent; i < end; i++) {
         let item = items[i];
         let { id, ref, group } = item;
-        dbg &&
-          cc.ok1(msg + 1, 'item' + ref + group.id, 'extent', extent);
         group.extent = extent;
+        if (group.head) {
+          if (group.head !== head) {
+            throw new Error(
+              `${msg} head! ${head} ${group.toString()}`,
+            );
+          }
+        } else {
+          group.head = head;
+        }
+        dbg && cc.ok1(msg + 1, item, '^' + head.toString());
       }
     }
     for (let i = 1; i < nItems; i++) {
       let item = items[i];
       let { id, ref, group } = item;
-      let sItem = 'item' + ref + group.id;
+      let sItem = '#' + ref + group.id;
       bPrev = bCur;
       bCur = group.bounds;
       if (extent.overlaps(bCur)) {
@@ -349,6 +382,7 @@ export class Alignable {
         addExtent(i);
         extent = bCur;
         iExtent = i;
+        head = group;
         dbg > 1 && cc.fyi(msg + 0.2, bCur, 'start', extent);
       }
     }
@@ -358,22 +392,6 @@ export class Alignable {
     } else {
       cc.bad1(msg + -1, 'items?:');
     }
-  }
-
-  // https://github.com/sc-voice/ms-dpd/wiki/Case-Study:-Repetition-in-the-Tipitaka
-  addRootStanzas() {
-    const msg = 'a7e.addRootStanzas';
-    const dbg = DBG.A7E_ADD_ROOT_STANZAS;
-    let { items } = this;
-    let nItems = items.length;
-    // TODO: This might be faster
-    for (let i = 0; i < nItems; i++) {
-      let item = items[i];
-      let rootStanza = this.itemRootStanza(item);
-      dbg && cc.fyi(msg, { id: item.id, ref: item.ref }, rootStanza);
-      item.rootStanza = rootStanza;
-    }
-    return this;
   }
 
   /* Group similar input lines having small differences.
@@ -467,63 +485,6 @@ export class Alignable {
 
     return this;
   } // groupSimilar
-
-  itemGroup(item) {
-    //const msg = 'a7e.itemGroup';
-    let { groups, items } = this;
-    let group = groups[item.groupId];
-    return group;
-  }
-
-  itemRootStanza(item) {
-    const msg = 'a7e.itemRootStanza';
-    const dbg = DBG.A7E_ITEM_ROOT_STANZA;
-    let { items } = this;
-    let root;
-    let { id, ref, groupId, group } = item;
-    let sItem = 'item' + ref + groupId;
-    dbg > 1 && cc.fyi1(msg + 0.1, 'item:', id + groupId);
-    for (let i = 0; !root && i < items.length; i++) {
-      let iItem = items[i];
-      let g1 = iItem.group;
-      let bounds1 = g1.bounds;
-      if (!bounds1.contains(id)) {
-        dbg > 1 && cc.fyi(msg + 0.2, sItem, `!${ELEMENT_OF}`, g1.id);
-        continue;
-      }
-      let maybe = g1.inferredStanza(id);
-      Assert.ok(
-        maybe?.contains(id),
-        `${msg + -1}inferredStanza(${id})?`,
-      );
-      root = maybe;
-      if (g1.spanning && id === bounds1.hi) {
-        // extend?
-        dbg && cc.ok(msg + 1, sItem, '++?', root, g1.id);
-        for (let j = 1; i + j < items.length; j++) {
-          let { id: idj, group: gj } = items[i + j];
-          let { lo: loj, hi: hij } = gj.bounds;
-          if (root.hi + 1 === hij) {
-            // extend!
-            root = new Interval(root.lo, hij);
-            dbg &&
-              cc.ok(msg + 1.1, sItem, '++!', root, { idj, loj, hij });
-          } else {
-            dbg && cc.ok1(msg + 1.2, sItem, '=>', root);
-            break;
-          }
-        } // for j items
-      } else {
-        dbg && cc.ok(msg + 2, sItem, '=>', root);
-      }
-    } // for i items
-    if (root == null) {
-      root = new Interval(id, id);
-      dbg && cc.ok1(msg + 3, sItem, root);
-    }
-
-    return root;
-  } // itemRootStanza
 } // Alignable
 
 export class ScanResult {
@@ -961,11 +922,7 @@ export class DpdAligner {
       }
       let { lines } = legacyDoc;
       dbg && console.log(msg, '[4]lines', lines.length);
-      let alignableSrc = Alignable.fromList(
-        lines,
-        ts,
-        this,
-      ).addRootStanzas();
+      let alignableSrc = Alignable.fromList(lines, ts, this);
       let { items } = alignableSrc;
       let scanner = new Scanner(this, alignableSrc);
       let { segCursor } = scanner;
@@ -1048,7 +1005,7 @@ export class DpdAligner {
     let alignableRef = Alignable.fromList(scids, tfidfSpace, {
       listText: (scid) => segMap[scid].pli,
       listRef: (i) => scids[i],
-    }).addRootStanzas();
+    });
     //biome-ignore format:
     if (dbg) {
       let { groups, items } = alignableRef;
