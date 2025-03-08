@@ -430,11 +430,10 @@ describe('dpd-aligner', () => {
     should(items1[8].groupId).equal('G4…8S2@4');
     should(items1[9].groupId).equal('G9');
 
-    should(items1[1].group.stanzas.toString()).equal('[1,1]');
-    should(items1[2].group.stanzas.toString()).equal('[2,2],[6,6]');
-    should(items1[3].group.stanzas.toString()).equal('[3,3],[7,7]');
+    should(items1[1].group.idRanges.toString()).equal('[1,1]');
+    should(items1[2].group.idRanges.toString()).equal('[2,2],[6,6]');
+    should(items1[3].group.idRanges.toString()).equal('[3,3],[7,7]');
 
-    let rootStanzas = items1.map((g, i) => g?.rootStanza);
     // Stanzas are defined by head groups.
     // https://github.com/sc-voice/ms-dpd/wiki/Case-Study:-Repetition-in-the-Tipitaka
     should(items1[1].stanza.toString()).equal('[1,1]');
@@ -617,18 +616,18 @@ describe('dpd-aligner', () => {
     should(items1[10].stanza.toString()).equal('[8,10]');
     should(items1[11].stanza.toString()).equal('[11,11]');
   });
-  it('stanzas', () => {
-    should.deepEqual(Alignable.stanzas([1, 2, 3]), [
+  it('idRanges', () => {
+    should.deepEqual(Alignable.idRanges([1, 2, 3]), [
       new Interval(1, 3),
     ]);
-    should.deepEqual(Alignable.stanzas([3, 2, 1]), [
+    should.deepEqual(Alignable.idRanges([3, 2, 1]), [
       new Interval(1, 3),
     ]);
-    should.deepEqual(Alignable.stanzas([1, 2, 3, 7, 8, 9]), [
+    should.deepEqual(Alignable.idRanges([1, 2, 3, 7, 8, 9]), [
       new Interval(1, 3),
       new Interval(7, 9),
     ]);
-    should.deepEqual(Alignable.stanzas([1, 2, 3, 5, 7, 8, 9]), [
+    should.deepEqual(Alignable.idRanges([1, 2, 3, 5, 7, 8, 9]), [
       new Interval(1, 3),
       new Interval(5, 5),
       new Interval(7, 9),

@@ -87,10 +87,10 @@ export class AlignmentGroup {
       gScore = 1;
     }
     let { 
-      id:idDefault, stanzaSize 
+      id:idDefault, idDelta 
     } = AlignmentGroup.analyzeItemIds(itemIds);
 
-    let stanzas = Alignable.stanzas(itemIds);
+    let idRanges = Alignable.idRanges(itemIds);
     let delta = 1;
 
     Object.assign(this, {
@@ -100,7 +100,7 @@ export class AlignmentGroup {
       itemIds,
       gScore,
       delta,
-      stanzas,
+      idRanges,
       extent,
     });
 
@@ -110,13 +110,13 @@ export class AlignmentGroup {
   static analyzeItemIds(itemIds) {
     const msg = 'a12p.analyzeItemIds';
     const dbg = DBG.A12P_ANALYZE_ITEM_IDS;
-    let stanzas = Alignable.stanzas(itemIds);
+    let idRanges = Alignable.idRanges(itemIds);
     let rSize; // range size
-    let stanzaSize; // distance between ranges
-    let nStanzas = stanzas.length;
+    let idDelta; // distance between ranges
+    let nRanges = idRanges.length;
     dbg>1 && cc.fyi1(msg+0.1, 'itemIds:', itemIds.join(','));
     let prevLo;
-    let ranges = stanzas.map((interval,i) => {
+    let ranges = idRanges.map((interval,i) => {
       let { lo, hi } = interval;
       let r3e = hi - lo + 1;
       if (rSize == null) {
@@ -125,16 +125,16 @@ export class AlignmentGroup {
         rSize = '?';
       }
       if (i > 0) {
-        let r3p = lo - prevLo;
-        if (stanzaSize == null) {
-          stanzaSize = r3p;
-        } else if (r3p === stanzaSize) {
+        let dlo = lo - prevLo;
+        if (idDelta == null) {
+          idDelta = dlo;
+        } else if (dlo === idDelta) {
           // skip is consistent;
         } else {
-          stanzaSize = '?';
+          idDelta = '?';
         }
       }
-      dbg>1 && cc.fyi(msg+0.2, {stanzaSize, nStanzas, lo, hi});
+      dbg>1 && cc.fyi(msg+0.2, {idDelta, nRanges, lo, hi});
       prevLo = lo;
 
       if (lo === hi) {
@@ -156,55 +156,55 @@ export class AlignmentGroup {
       return sRange;
     });
     let idSuffix;
-    if (nStanzas === 1) { // simple range
-      let { lo, hi } = stanzas[0];
+    if (nRanges === 1) { // simple range
+      let { lo, hi } = idRanges[0];
       if (lo === hi) {
-        dbg && cc.ok1(msg+1, {lo, hi, stanzaSize, nStanzas});
+        dbg && cc.ok1(msg+1, {lo, hi, idDelta, nRanges});
         idSuffix = lo;
       } else {
-        dbg && cc.ok1(msg+2, {lo, hi, stanzaSize, nStanzas});
+        dbg && cc.ok1(msg+2, {lo, hi, idDelta, nRanges});
         idSuffix = lo+ELLIPSIS+hi+'S'+(hi-lo+1)+'@1';
       }
-    } else if (Number.isFinite(rSize) && Number.isFinite(stanzaSize)) {
-      dbg && cc.ok1(msg+3, {stanzaSize, nStanzas});
-      idSuffix = ranges[0]+ELLIPSIS+stanzas.at(-1).hi+
-        'S'+nStanzas+'@'+stanzaSize;
+    } else if (Number.isFinite(rSize) && Number.isFinite(idDelta)) {
+      dbg && cc.ok1(msg+3, {idDelta, nRanges});
+      idSuffix = ranges[0]+ELLIPSIS+idRanges.at(-1).hi+
+        'S'+nRanges+'@'+idDelta;
     } else {
-      dbg && cc.ok1(msg+4, {stanzaSize, nStanzas});
+      dbg && cc.ok1(msg+4, {idDelta, nRanges});
       idSuffix = ranges.join('.');
     }
 
     return { 
       id: 'G'+idSuffix, 
-      stanzaSize,
+      idDelta,
     }
   } // analyzeItemIds
 
   get bounds() {
-    let { stanzas } = this;
-    return new Interval(stanzas[0].lo, stanzas.at(-1).hi);
+    let { idRanges } = this;
+    return new Interval(idRanges[0].lo, idRanges.at(-1).hi);
   }
 
   get spanning() {
-    return this.stanzas.reduce((a, s) => a && s.lo === s.hi, true);
+    return this.idRanges.reduce((a, s) => a && s.lo === s.hi, true);
   }
 
   overlaps(group2) {
     const msg = 'a12p.overlaps';
 
-    let { id: id1, spanning: spanning1, stanzas: stanzas1 } = this;
-    let lo1 = stanzas1[0].lo;
-    let hi1 = stanzas1.at(-1).hi;
+    let { id: id1, spanning: spanning1, idRanges: intervals1 } = this;
+    let lo1 = intervals1[0].lo;
+    let hi1 = intervals1.at(-1).hi;
     let span1 = new Interval(lo1, hi1);
     if (group2 == null) {
       throw new Error(`${msg} groups2?`);
     }
-    let { id: id2, spanning: spanning2, stanzas: stanzas2 } = group2;
-    if (stanzas2 == null) {
-      throw new Error(`${msg} ${group2.id} stanzas?`);
+    let { id: id2, spanning: spanning2, idRanges: intervals2 } = group2;
+    if (intervals2 == null) {
+      throw new Error(`${msg} ${group2.id} idRanges?`);
     }
-    let lo2 = stanzas2[0].lo;
-    let hi2 = stanzas2.at(-1).hi;
+    let lo2 = intervals2[0].lo;
+    let hi2 = intervals2.at(-1).hi;
     let span2 = new Interval(lo2, hi2);
 
     let spanOverlaps = span1.overlaps(span2);
@@ -213,10 +213,10 @@ export class AlignmentGroup {
       return spanOverlaps;
     }
 
-    for (let i = 0; i < stanzas1.length; i++) {
-      let s1 = stanzas1[i];
-      for (let j = 0; j < stanzas2.length; j++) {
-        let s2 = stanzas2[j];
+    for (let i = 0; i < intervals1.length; i++) {
+      let s1 = intervals1[i];
+      for (let j = 0; j < intervals2.length; j++) {
+        let s2 = intervals2[j];
         if (s1.overlaps(s2)) {
           cc.ok(msg + 2, 'sparse overlaps', id1, id2, s1, s2);
           return true;
@@ -229,7 +229,7 @@ export class AlignmentGroup {
   } // overlaps
 
   toString() {
-    let { id, stanzas, spanning, extent, bounds } = this;
+    let { id, idRanges, spanning, extent, bounds } = this;
     if (spanning) {
       let s = id;
       if (extent) {
@@ -244,36 +244,36 @@ export class AlignmentGroup {
     const msg = 'a12p.inferredStanza';
     const dbg = DBG.A12P_INFERRED_STANZA;
     let { id: gid, head = this } = this;
-    let { stanzas, extent, spanning } = head;
+    let { idRanges, extent, spanning } = head;
     if (!extent?.contains(id)) {
       return null;
     }
     let res = null;
     if (spanning) {
       dbg > 1 && cc.fyi(msg + 0.1, this, this);
-      for (let i = 1; i < stanzas.length; i++) {
-        let lo = stanzas[i - 1].lo;
-        let hi = stanzas[i].lo - 1;
+      for (let i = 1; i < idRanges.length; i++) {
+        let lo = idRanges[i - 1].lo;
+        let hi = idRanges[i].lo - 1;
         if (lo <= id && id <= hi) {
           res = new Interval(lo, hi);
           dbg && cc.ok1(msg + 1, '#' + id, '^' + head, '=>', res);
         }
       }
       if (res == null) {
-        let { lo } = stanzas.at(-1);
+        let { lo } = idRanges.at(-1);
         let hi = extent?.hi || lo;
         res = new Interval(lo, hi);
         dbg && cc.ok1(msg + 2, '#' + id, '^' + head, '=>', res);
       }
     } else {
       // sparse
-      res = stanzas.reduce((a, s) => (s.contains(id) ? s : a), null);
+      res = idRanges.reduce((a, s) => (s.contains(id) ? s : a), null);
       if (res) {
         dbg && cc.ok1(msg + 3, this, '#' + id, '=>', res);
       } else {
-        for (let i = 1; i < stanzas.length; i++) {
-          let lo = stanzas[i - 1].hi + 1;
-          let hi = stanzas[i].lo - 1;
+        for (let i = 1; i < idRanges.length; i++) {
+          let lo = idRanges[i - 1].hi + 1;
+          let hi = idRanges[i].lo - 1;
           if (lo <= id && id <= hi) {
             res = new Interval(lo, hi);
             dbg && cc.ok1(msg + 4, '#' + id, '^' + head, '=>', res);
@@ -353,15 +353,15 @@ export class Alignable {
     return a7e;
   }
 
-  static stanzas(itemIds) {
-    const msg = 'a7e.stanzas';
-    const dbg = DBG.A7E_STANZAS;
+  static idRanges(itemIds) {
+    const msg = 'a7e.idRanges';
+    const dbg = DBG.A7E_idRanges;
     let lo;
     let hi;
     let [...ids] = itemIds;
     ids.sort((a, b) => a - b);
     dbg && cc.fyi(msg, { itemIds, ids });
-    let stanzas = ids.reduce((a, id, i) => {
+    let idRanges = ids.reduce((a, id, i) => {
       if (i === 0) {
         lo = id;
         hi = id;
@@ -376,9 +376,9 @@ export class Alignable {
       }
       return a;
     }, []);
-    stanzas.push(new Interval(lo, hi));
+    idRanges.push(new Interval(lo, hi));
 
-    return stanzas;
+    return idRanges;
   }
 
   addHeadGroups() {
@@ -492,10 +492,10 @@ export class Alignable {
       // convert group POJO to AlignmentGroup
       let { group } = item;
       let { 
-        id:groupId, stanzaSize 
+        id:groupId, idDelta 
       } = AlignmentGroup.analyzeItemIds(group.itemIds);
       item.groupId = groupId;
-      item.stanzaSize = stanzaSize;
+      item.idDelta = idDelta;
       if (ag[groupId] == null) {
         group.itemIds.sort((a, b) => a - b);
         if (group?.bows?.length) {
@@ -518,12 +518,12 @@ export class Alignable {
     }, {});
     if (dbg) {
       Object.values(this.groups).forEach((group) => {
-        let { id, ref, bow, gScore, itemIds, stanzas } = group;
+        let { id, ref, bow, gScore, itemIds, idRanges } = group;
         //biome-ignore format:
         cc.ok1(msg + 1, B_CYAN + id,
           itemIds[0] === itemIds.at(-1) ? ref :  ref + ELLIPSIS,
           'gScore:', gScore,
-          'stanzas:', stanzas.map(s=>s.toString()).join(','),
+          'idRanges:', idRanges.map(s=>s.toString()).join(','),
           );
       });
     }
