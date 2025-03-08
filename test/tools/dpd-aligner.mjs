@@ -51,6 +51,10 @@ const {
   NO_COLOR,
 } = Unicode.LINUX_COLOR;
 
+let {
+  ELLIPSIS,
+} = Unicode;
+
 let MN8_SEGS;
 let MN8_SEG_MAP;
 
@@ -216,8 +220,9 @@ describe('dpd-aligner', () => {
     // Mohan second line should align with mn8:2.1
     should(sim2_1B).above(sim1_2B).above(sim1_1B);
   });
-  it('alignLegacySutta()', async () => {
+  it('TESTTESTalignLegacySutta()', async () => {
     const msg = 'td8r.alignLegacySutta:';
+    //cc.bad1(msg, 'TBD'); return;
     const dbg = 0;
     let suid = 'mn8';
     let lang = 'fr';
@@ -310,13 +315,13 @@ describe('dpd-aligner', () => {
         `${msg} item${id} ${groupId} AlignmentGroup?`);
     }
     should(items1[1].group?.id).equal('G1');
-    should(items1[2].group?.id).equal('G2-4.6-8');
-    should(items1[3].group?.id).equal('G2-4.6-8');
-    should(items1[4].group?.id).equal('G2-4.6-8');
+    should(items1[2].group?.id).equal('G2-4…8S2@4');
+    should(items1[3].group?.id).equal('G2-4…8S2@4');
+    should(items1[4].group?.id).equal('G2-4…8S2@4');
     should(items1[5].group?.id).equal('G5');
-    should(items1[6].group?.id).equal('G2-4.6-8');
-    should(items1[7].group?.id).equal('G2-4.6-8');
-    should(items1[8].group?.id).equal('G2-4.6-8');
+    should(items1[6].group?.id).equal('G2-4…8S2@4');
+    should(items1[7].group?.id).equal('G2-4…8S2@4');
+    should(items1[8].group?.id).equal('G2-4…8S2@4');
     should(items1[9].group?.id).equal('G9');
 
     should(items1[1].stanza.toString()).equal('[1,1]');
@@ -333,14 +338,14 @@ describe('dpd-aligner', () => {
     let bowG1 = new WordVector({ a: 1, went: 1 });
     should.deepEqual(Object.keys(al.groups), [
       'G1',
-      'G2-4.6-8',
+      'G2-4…8S2@4',
       'G5',
       'G9',
     ]);
     let groups = Object.values(al.groups);
     should.deepEqual(
       groups.map((g) => g.id),
-      ['G1', 'G2-4.6-8', 'G5', 'G9'],
+      ['G1', 'G2-4…8S2@4', 'G5', 'G9'],
     );
     should.deepEqual(
       groups.map((g) => g.itemIds),
@@ -377,13 +382,13 @@ describe('dpd-aligner', () => {
       al.items.map((g) => g.groupId),
       [
         'G1',
-        'G2-4.6-8',
-        'G2-4.6-8',
-        'G2-4.6-8',
+        'G2-4…8S2@4',
+        'G2-4…8S2@4',
+        'G2-4…8S2@4',
         'G5',
-        'G2-4.6-8',
-        'G2-4.6-8',
-        'G2-4.6-8',
+        'G2-4…8S2@4',
+        'G2-4…8S2@4',
+        'G2-4…8S2@4',
         'G9',
       ],
     );
@@ -416,13 +421,13 @@ describe('dpd-aligner', () => {
 
     let items1 = [null, ...al.items]; // 1-based
     should(items1[1].groupId).equal('G1');
-    should(items1[2].groupId).equal('G2.6');
-    should(items1[3].groupId).equal('G3.7');
-    should(items1[4].groupId).equal('G4.8');
+    should(items1[2].groupId).equal('G2…6S2@4');
+    should(items1[3].groupId).equal('G3…7S2@4');
+    should(items1[4].groupId).equal('G4…8S2@4');
     should(items1[5].groupId).equal('G5');
-    should(items1[6].groupId).equal('G2.6');
-    should(items1[7].groupId).equal('G3.7');
-    should(items1[8].groupId).equal('G4.8');
+    should(items1[6].groupId).equal('G2…6S2@4');
+    should(items1[7].groupId).equal('G3…7S2@4');
+    should(items1[8].groupId).equal('G4…8S2@4');
     should(items1[9].groupId).equal('G9');
 
     should(items1[1].group.stanzas.toString()).equal('[1,1]');
@@ -456,13 +461,26 @@ describe('dpd-aligner', () => {
     };
     let al = Alignable.fromList(scids, da, opts);
   });
-  it('rangeString()', () => {
+  it('analyzeItemIds()', () => {
     let items1 = [35, 36, 39, 40, 42, 118, 119, 120];
-    should(AlignmentGroup.rangeString(items1)).equal(
-      '35-6.39-40.42.118-20',
-    );
+    let { id:id1 } = AlignmentGroup.analyzeItemIds(items1);
+    should(id1).equal('G35-6.39-40.42.118-20'); // chaotic items
+
     let items2 = [2, 3, 4, 6, 7, 8];
-    should(AlignmentGroup.rangeString(items2)).equal('2-4.6-8');
+    let { id:id2 } = AlignmentGroup.analyzeItemIds(items2);
+    should(id2).equal('G2-4…8S2@4'); // regular items
+
+    let items3 = [15,16,20,21,25,26,30,31,35,36,40,41,45,46,50,51];
+    let { id:id3 } = AlignmentGroup.analyzeItemIds(items3);
+    should(id3).equal('G15-6…51S8@5'); // regular items
+
+    let items4 = [3, 5, 7,8,9];
+    let { id:id4 } = AlignmentGroup.analyzeItemIds(items4);
+    should(id4).equal('G3.5.7-9'); // chaotic items
+
+    let items5 = [5];
+    let { id:id5 } = AlignmentGroup.analyzeItemIds(items5);
+    should(id5).equal('G5'); // singleton
   });
   it('itemGroup', () => {
     let lines = [
@@ -480,17 +498,18 @@ describe('dpd-aligner', () => {
     let { groups, items } = al;
     should.deepEqual(Object.keys(groups), [
       'G1',
-      'G2.5',
-      'G3.6',
-      'G4.7',
+      'G2…5S2@3',
+      'G3…6S2@3',
+      'G4…7S2@3',
     ]);
-    should(items[0].group.id).equal( 'G1' );
-    should(items[1].group.id).equal( 'G2.5' );
-    should(items[2].group.id).equal( 'G3.6' );
-    should(items[3].group.id).equal( 'G4.7' );
-    should(items[4].group.id).equal( 'G2.5' );
-    should(items[5].group.id).equal( 'G3.6' );
-    should(items[6].group.id).equal( 'G4.7' );
+    let items1 = [null, ...items];
+    should(items1[1].group.id).equal( 'G1' );
+    should(items1[2].group.id).equal( 'G2…5S2@3');
+    should(items1[3].group.id).equal( 'G3…6S2@3');
+    should(items1[4].group.id).equal( 'G4…7S2@3');
+    should(items1[5].group.id).equal( 'G2…5S2@3');
+    should(items1[6].group.id).equal( 'G3…6S2@3');
+    should(items1[7].group.id).equal( 'G4…7S2@3');
   });
   it('addHeadGroups', () => {
     const msg = 'td8r.addHeadGroups';
@@ -568,22 +587,22 @@ describe('dpd-aligner', () => {
     let { groups, items } = al;
     should.deepEqual(Object.keys(groups), [
       'G1', // singleton
-      'G2.5.8', // spanning
-      'G3.6.9', // spanning
-      'G4.7.10', // spanning
+      'G2…8S3@3', // spanning
+      'G3…9S3@3', // spanning
+      'G4…10S3@3', // spanning
       'G11', // singleton
     ]);
     let items1 = [null, ...items]; // item ids are 1-based
     should(items1[1].group.id).equal( 'G1' );
-    should(items1[2].group.id).equal( 'G2.5.8' );
-    should(items1[3].group.id).equal( 'G3.6.9' );
-    should(items1[4].group.id).equal( 'G4.7.10' );
-    should(items1[5].group.id).equal( 'G2.5.8' );
-    should(items1[6].group.id).equal( 'G3.6.9' );
-    should(items1[7].group.id).equal( 'G4.7.10' );
-    should(items1[8].group.id).equal( 'G2.5.8' );
-    should(items1[9].group.id).equal( 'G3.6.9' );
-    should(items1[10].group.id).equal( 'G4.7.10' );
+    should(items1[2].group.id).equal( 'G2…8S3@3' );
+    should(items1[3].group.id).equal( 'G3…9S3@3' );
+    should(items1[4].group.id).equal( 'G4…10S3@3' );
+    should(items1[5].group.id).equal( 'G2…8S3@3' );
+    should(items1[6].group.id).equal( 'G3…9S3@3' );
+    should(items1[7].group.id).equal( 'G4…10S3@3' );
+    should(items1[8].group.id).equal( 'G2…8S3@3' );
+    should(items1[9].group.id).equal( 'G3…9S3@3' );
+    should(items1[10].group.id).equal( 'G4…10S3@3' );
     should(items1[11].group.id).equal( 'G11' );
 
     should(items1[1].stanza.toString()).equal('[1,1]');
@@ -623,13 +642,13 @@ describe('dpd-aligner', () => {
     let g5 = new AlignmentGroup({itemIds: [5]});
 
     // sparse groups are not spanning
-    should(g1_10.id).equal('G1-3.8-10');
+    should(g1_10.id).equal('G1-3…10S2@7');
     should(g1_10.spanning).equal(false);
     should(g3_9.id).equal('G3.5.7-9');
     should(g3_9.spanning).equal(false);
 
     // spanning groups only have degenerate intervals
-    should(g2_8.id).equal('G2.5.8');
+    should(g2_8.id).equal('G2…8S3@3');
     should(g2_8.spanning).equal(true);
 
     // singleton
@@ -671,7 +690,7 @@ describe('dpd-aligner', () => {
     should(g1_8.inferredStanza(9).toString()).equal('[8,10]');
     should(g1_8.inferredStanza(10).toString()).equal('[8,10]');
   });
-  it('TESTTESTa12p.inferredStanza() sparse', () => {
+  it('a12p.inferredStanza() sparse', () => {
     let itemIds = [2,3, 5, 8,9,10];
     let extent = new Interval(itemIds[0], itemIds.at(-1));
     let g2_10 = new AlignmentGroup({itemIds, extent});
