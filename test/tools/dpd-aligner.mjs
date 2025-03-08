@@ -314,15 +314,22 @@ describe('dpd-aligner', () => {
       should(group).instanceOf(AlignmentGroup, 
         `${msg} item${id} ${groupId} AlignmentGroup?`);
     }
-    should(items1[1].group?.id).equal('G1');
-    should(items1[2].group?.id).equal('G2-4…8S2@4');
-    should(items1[3].group?.id).equal('G2-4…8S2@4');
-    should(items1[4].group?.id).equal('G2-4…8S2@4');
-    should(items1[5].group?.id).equal('G5');
-    should(items1[6].group?.id).equal('G2-4…8S2@4');
-    should(items1[7].group?.id).equal('G2-4…8S2@4');
-    should(items1[8].group?.id).equal('G2-4…8S2@4');
-    should(items1[9].group?.id).equal('G9');
+    let group2 = items1[2].group;
+    should(group2.id).equal('G2-4…8S2@4');
+    should(group2.nStanzas).equal(2);
+
+    should(items1[1].group.id).equal('G1');
+    should(items1[1].group.nStanzas).equal(1);
+    should(items1[2].group).equal(group2);
+    should(items1[3].group).equal(group2);
+    should(items1[4].group).equal(group2);
+    should(items1[5].group.id).equal('G5');
+    should(items1[5].group.nStanzas).equal(1);
+    should(items1[6].group).equal(group2);
+    should(items1[7].group).equal(group2);
+    should(items1[8].group).equal(group2);
+    should(items1[9].group.id).equal('G9');
+    should(items1[9].group.nStanzas).equal(1);
 
     should(items1[1].stanza.toString()).equal('[1,1]');
     should(items1[2].stanza.toString()).equal('[2,4]');
@@ -332,6 +339,7 @@ describe('dpd-aligner', () => {
     should(items1[7].stanza.toString()).equal('[6,8]');
     should(items1[8].stanza.toString()).equal('[6,8]');
     should(items1[9].stanza.toString()).equal('[9,9]');
+
 
     let bow0 = new WordVector({ a: 1, once: 1, time: 1, upon: 1 });
     let bow1 = new WordVector({ a: 1, cat: 1, walking: 1, went: 1 });

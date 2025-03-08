@@ -87,7 +87,7 @@ export class AlignmentGroup {
       gScore = 1;
     }
     let { 
-      id:idDefault, idDelta 
+      id:idDefault, idDelta, nStanzas,
     } = AlignmentGroup.analyzeItemIds(itemIds);
 
     let idRanges = Alignable.idRanges(itemIds);
@@ -102,6 +102,7 @@ export class AlignmentGroup {
       delta,
       idRanges,
       extent,
+      nStanzas,
     });
 
     dbg && cc.ok(msg, this);
@@ -156,27 +157,30 @@ export class AlignmentGroup {
       return sRange;
     });
     let idSuffix;
+    let nStanzas = nRanges;
     if (nRanges === 1) { // simple range
       let { lo, hi } = idRanges[0];
+      nStanzas = hi - lo + 1;
       if (lo === hi) {
-        dbg && cc.ok1(msg+1, {lo, hi, idDelta, nRanges});
+        dbg && cc.ok1(msg+1, {lo, hi, idDelta, nStanzas});
         idSuffix = lo;
       } else {
-        dbg && cc.ok1(msg+2, {lo, hi, idDelta, nRanges});
-        idSuffix = lo+ELLIPSIS+hi+'S'+(hi-lo+1)+'@1';
+        dbg && cc.ok1(msg+2, {lo, hi, idDelta, nStanzas});
+        idSuffix = lo+ELLIPSIS+hi+'S'+nStanzas+'@1';
       }
     } else if (Number.isFinite(rSize) && Number.isFinite(idDelta)) {
-      dbg && cc.ok1(msg+3, {idDelta, nRanges});
+      dbg && cc.ok1(msg+3, {idDelta, nStanzas});
       idSuffix = ranges[0]+ELLIPSIS+idRanges.at(-1).hi+
-        'S'+nRanges+'@'+idDelta;
+        'S'+nStanzas+'@'+idDelta;
     } else {
-      dbg && cc.ok1(msg+4, {idDelta, nRanges});
+      dbg && cc.ok1(msg+4, {idDelta, nStanzas});
       idSuffix = ranges.join('.');
     }
 
     return { 
       id: 'G'+idSuffix, 
       idDelta,
+      nStanzas: nRanges,
     }
   } // analyzeItemIds
 
