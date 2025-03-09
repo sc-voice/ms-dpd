@@ -19,19 +19,44 @@ const {
 // biome-ignore format:
 const {
   BLACK, WHITE, RED, GREEN, BLUE, CYAN, MAGENTA, YELLOW,
-  BRIGHT_BLACK:B_BLACK, 
-  BRIGHT_WHITE:B_WHITE,
-  BRIGHT_RED:B_RED, 
-  BRIGHT_GREEN:B_GREEN,
-  BRIGHT_BLUE:B_BLUE,
-  BRIGHT_CYAN:B_CYAN, 
-  BRIGHT_MAGENTA:B_MAGENTA, 
-  BRIGHT_YELLOW:B_YELLOW,
-  NO_COLOR:NC,
+  BRIGHT_BLACK,
+  BRIGHT_WHITE,
+  BRIGHT_RED,
+  BRIGHT_GREEN,
+  BRIGHT_BLUE,
+  BRIGHT_CYAN,
+  BRIGHT_MAGENTA,
+  BRIGHT_YELLOW,
+  NO_COLOR,
+} = Unicode.LINUX_COLOR;
+const {
+  BRIGHT_BLACK: B_BLACK,
+  BRIGHT_WHITE: B_WHITE,
+  BRIGHT_RED: B_RED,
+  BRIGHT_GREEN: B_GREEN,
+  BRIGHT_BLUE: B_BLUE,
+  BRIGHT_CYAN: B_CYAN,
+  BRIGHT_MAGENTA: B_MAGENTA,
+  BRIGHT_YELLOW: B_YELLO,
+  NO_COLOR: NC,
 } = Unicode.LINUX_COLOR;
 const PLI_CHARS = 30;
 
 const cc = new ColorConsole();
+
+export class Stanza extends Interval {
+  constructor(lo, hi, group='group?', id=0) {
+    super(lo, hi);
+
+    let ref = 'S' + id + super.toString();
+
+    Object.assign(this, { id, group, ref });
+  }
+
+  toString() {
+    return this.ref;
+  }
+} // class Stanza
 
 export class AlignmentItem {
   constructor(opts = {}) {
@@ -57,10 +82,14 @@ export class AlignmentItem {
   }
 
   toString() {
-    let keys = Object.keys(this).sort((a, b) => a.localeCompare(b));
     let dbg = DBG.A11M_TO_STRING;
-    let { id, ref, group } = this;
-    let s = '#' + ref + group.id;
+    let { id, ref, group, stanza } = this;
+    let idRef = id === ref
+      ? 'I' + id
+      : 'I' + id + '.' + ref;
+    let s = stanza
+      ? idRef + stanza.ref
+      : idRef + group.id;
     return s;
   } // a11m.toString()
 
@@ -73,21 +102,21 @@ export class AlignmentItem {
     let { id, headGroup } = this;
     return headGroup.inferredStanza(id);
   }
-} // AlignmentItem
+} // class AlignmentItem
 
 export class AlignmentGroup {
   constructor(opts = {}) {
     const msg = 'a12p.ctor';
     const dbg = DBG.A12P_CTOR;
-    let { 
-      id, ref, bow, gScore, itemIds = [], extent 
-    } = opts;
+    let { id, ref, bow, gScore, itemIds = [], extent } = opts;
 
     if (gScore == null) {
       gScore = 1;
     }
-    let { 
-      id:idDefault, idDelta, nStanzas,
+    let {
+      id: idDefault,
+      idDelta,
+      nStanzas,
     } = AlignmentGroup.analyzeItemIds(itemIds);
 
     let idRanges = Alignable.idRanges(itemIds);
@@ -115,9 +144,9 @@ export class AlignmentGroup {
     let rSize; // range size
     let idDelta; // distance between ranges
     let nRanges = idRanges.length;
-    dbg>1 && cc.fyi1(msg+0.1, 'itemIds:', itemIds.join(','));
+    dbg > 1 && cc.fyi1(msg + 0.1, 'itemIds:', itemIds.join(','));
     let prevLo;
-    let ranges = idRanges.map((interval,i) => {
+    let ranges = idRanges.map((interval, i) => {
       let { lo, hi } = interval;
       let r3e = hi - lo + 1;
       if (rSize == null) {
@@ -135,7 +164,7 @@ export class AlignmentGroup {
           idDelta = '?';
         }
       }
-      dbg>1 && cc.fyi(msg+0.2, {idDelta, nRanges, lo, hi});
+      dbg > 1 && cc.fyi(msg + 0.2, { idDelta, nRanges, lo, hi });
       prevLo = lo;
 
       if (lo === hi) {
@@ -158,30 +187,37 @@ export class AlignmentGroup {
     });
     let idSuffix;
     let nStanzas = nRanges;
-    if (nRanges === 1) { // simple range
+    if (nRanges === 1) {
+      // simple range
       let { lo, hi } = idRanges[0];
       nStanzas = hi - lo + 1;
       if (lo === hi) {
-        dbg && cc.ok1(msg+1, {lo, hi, idDelta, nStanzas});
+        dbg && cc.ok1(msg + 1, { lo, hi, idDelta, nStanzas });
         idSuffix = lo;
       } else {
-        dbg && cc.ok1(msg+2, {lo, hi, idDelta, nStanzas});
-        idSuffix = lo+ELLIPSIS+hi+'S'+nStanzas+'@1';
+        dbg && cc.ok1(msg + 2, { lo, hi, idDelta, nStanzas });
+        idSuffix = lo + ELLIPSIS + hi + 'S' + nStanzas + '@1';
       }
     } else if (Number.isFinite(rSize) && Number.isFinite(idDelta)) {
-      dbg && cc.ok1(msg+3, {idDelta, nStanzas});
-      idSuffix = ranges[0]+ELLIPSIS+idRanges.at(-1).hi+
-        'S'+nStanzas+'@'+idDelta;
+      dbg && cc.ok1(msg + 3, { idDelta, nStanzas });
+      idSuffix =
+        ranges[0] +
+        ELLIPSIS +
+        idRanges.at(-1).hi +
+        'S' +
+        nStanzas +
+        '@' +
+        idDelta;
     } else {
-      dbg && cc.ok1(msg+4, {idDelta, nStanzas});
+      dbg && cc.ok1(msg + 4, { idDelta, nStanzas });
       idSuffix = ranges.join('.');
     }
 
-    return { 
-      id: 'G'+idSuffix, 
+    return {
+      id: 'G' + idSuffix,
       idDelta,
       nStanzas: nRanges,
-    }
+    };
   } // analyzeItemIds
 
   get bounds() {
@@ -190,7 +226,9 @@ export class AlignmentGroup {
   }
 
   get spanning() {
-    return this.idRanges.reduce((a, s) => a && s.lo === s.hi, true);
+    let { idRanges } = this;
+    return idRanges.length === 1 ||
+      idRanges.reduce((a, s) => a && s.lo === s.hi, true);
   }
 
   overlaps(group2) {
@@ -203,7 +241,11 @@ export class AlignmentGroup {
     if (group2 == null) {
       throw new Error(`${msg} groups2?`);
     }
-    let { id: id2, spanning: spanning2, idRanges: intervals2 } = group2;
+    let {
+      id: id2,
+      spanning: spanning2,
+      idRanges: intervals2,
+    } = group2;
     if (intervals2 == null) {
       throw new Error(`${msg} ${group2.id} idRanges?`);
     }
@@ -233,6 +275,7 @@ export class AlignmentGroup {
   } // overlaps
 
   toString() {
+    const msg = 'a12p.toString';
     let { id, idRanges, spanning, extent, bounds } = this;
     if (spanning) {
       let s = id;
@@ -242,7 +285,7 @@ export class AlignmentGroup {
       return s;
     }
     return id + ELLIPSIS + (extent || bounds);
-  }
+  } // toString
 
   inferredStanza(id) {
     const msg = 'a12p.inferredStanza';
@@ -253,45 +296,54 @@ export class AlignmentGroup {
       return null;
     }
     let res = null;
+    let nRanges = idRanges.length;
     if (spanning) {
       dbg > 1 && cc.fyi(msg + 0.1, this, this);
-      for (let i = 1; i < idRanges.length; i++) {
+      for (let i = 1; !res && i < nRanges; i++) {
         let lo = idRanges[i - 1].lo;
         let hi = idRanges[i].lo - 1;
         if (lo <= id && id <= hi) {
-          res = new Interval(lo, hi);
-          dbg && cc.ok1(msg + 1, '#' + id, '^' + head, '=>', res);
+          res = new Stanza(lo, hi, this, i);
+          dbg && cc.ok1(msg + 1.1, '#' + id + '^' + head, '=>', res);
         }
       }
       if (res == null) {
         let { lo } = idRanges.at(-1);
         let hi = extent?.hi || lo;
-        res = new Interval(lo, hi);
-        dbg && cc.ok1(msg + 2, '#' + id, '^' + head, '=>', res);
+        if (nRanges === 1) {
+          // Singleton group implies each item is a stanza
+          res = new Stanza(lo, hi, this, id - lo + 1);
+          dbg && cc.ok1(msg + 1.2, '#' + id + '^' + head, '=>', res);
+        } else {
+          res = new Stanza(lo, hi, this, nRanges);
+          dbg && cc.ok1(msg + 1.3, '#' + id + '^' + head, '=>', res);
+        }
       }
     } else {
       // sparse
-      res = idRanges.reduce((a, s) => (s.contains(id) ? s : a), null);
+      for (let i = 1; !res && i < nRanges; i++) {
+        let lo = idRanges[i - 1].lo;
+        let hi = idRanges[i].lo - 1;
+        if (lo <= id && id <= hi) {
+          res = new Stanza(lo, hi, this, i);
+          dbg && cc.ok1(msg + 2.1, '#' + id + '^' + head, '=>', res);
+        }
+      }
       if (res) {
-        dbg && cc.ok1(msg + 3, this, '#' + id, '=>', res);
+        dbg && cc.ok1(msg + 2.1, this, '#' + id, '=>', res);
       } else {
-        for (let i = 1; i < idRanges.length; i++) {
-          let lo = idRanges[i - 1].hi + 1;
-          let hi = idRanges[i].lo - 1;
-          if (lo <= id && id <= hi) {
-            res = new Interval(lo, hi);
-            dbg && cc.ok1(msg + 4, '#' + id, '^' + head, '=>', res);
-          }
-        }
-        if (res == null) {
-          dbg && cc.bad1(msg + -1, this, '#' + id + gid, '=>', res);
-        }
+        cc.fyi1(msg+0.22, {nRanges});
+        let { lo } = idRanges.at(-1);
+        let hi = extent?.hi || lo;
+        res = new Stanza(lo, hi, this, nRanges);
+        dbg && cc.ok1(msg + 2.2, '#' + id + '^' + head, '=>', res);
       }
     }
 
     return res;
   } // a12p.inferredStanza
-} // AlignmentGroup
+
+} // class AlignmentGroup
 
 export class Alignable {
   static #privateCtor;
@@ -495,9 +547,9 @@ export class Alignable {
     this.groups = items.reduce((ag, item, ig) => {
       // convert group POJO to AlignmentGroup
       let { group } = item;
-      let { 
-        id:groupId, idDelta 
-      } = AlignmentGroup.analyzeItemIds(group.itemIds);
+      let { id: groupId, idDelta } = AlignmentGroup.analyzeItemIds(
+        group.itemIds,
+      );
       item.groupId = groupId;
       item.idDelta = idDelta;
       if (ag[groupId] == null) {
@@ -536,7 +588,7 @@ export class Alignable {
 
     return this;
   } // groupSimilar
-} // Alignable
+} // class Alignable
 
 export class ScanResult {
   constructor(opts = {}) {
@@ -610,7 +662,7 @@ export class ScanResult {
       pliInfo].join(''));
   }
 
-  toString() {
+  xtoString() {
     const msg = 's7e.toString():';
     const dbg = DBG.S7E_TO_STRING;
     let keys = Object.keys(this).sort((a, b) => a.localeCompare(b));
@@ -631,7 +683,26 @@ export class ScanResult {
     }, {});
     return result;
   }
-}
+  toString(opts={}) {
+    let {
+      color = NO_COLOR,
+    } = opts;
+    let { 
+      refItem, srcItem, scoreDpdSrc, pliChars,
+    } = this;
+
+    let srcStanza = srcItem?.stanza;
+    let refStanza = refItem?.stanza;
+    let refText = refItem?.text;
+
+    return [
+      CYAN+srcItem.id+'.'+srcItem.ref+srcStanza.ref,
+      color + scoreDpdSrc.toFixed(3),
+      B_CYAN+refItem.id+'.'+refItem.ref+refStanza.ref,
+      color + refText?.substring(0, pliChars),
+    ].join(' ');
+  }
+} // class ScanResult
 
 export class Scanner {
   constructor(aligner, alignableSrc) {
@@ -841,12 +912,130 @@ export class Scanner {
     }
 
     segCursor.numerator += sr.iScan + sr.streakSize;
+    cc.ok1(msg+5, sr);
     dbg && sr.dbgLog(msg, '@5', `${CHECKMARK}${sr.streakSize}`, 
       null, B_GREEN);
 
     return sr;
-  }
-}
+  } // scanItem
+
+  xscanItem(srcItem) {
+    const msg = 's5r.xscanItem';
+    const dbg = DBG.S5R_SCAN_ITEM;
+    let {
+      aligner,
+      alignableRef,
+      alignableSrc,
+      tfidfSpace: ts,
+      segCursor,
+      minScanSize,
+      maxScanSize,
+      minScore,
+      maxStreak,
+      streakStart,
+      pliChars,
+    } = this;
+    if (!(srcItem instanceof AlignmentItem)) {
+      throw new Error(`${msg} AlignmentItem?`);
+    }
+
+    let { pScore, groupId:srcGrpId, id:srcLine } = srcItem;
+    let dbgTextChars = dbg>3 ? undefined : 15;
+    let srcGrp = alignableSrc.groups[srcGrpId];
+    let srcText = this.trimWords(srcItem.text);
+    let vSrc = ts.tfidfOfBow(srcItem.bow);
+    let refItems = alignableRef.items;
+    let iScanStart = segCursor.numerator;
+    let sr = new ScanResult({
+      srcItem,
+      refItem: refItems[iScanStart],
+      vSrc,
+      segCursor,
+      scoreDpdSrc: 0,
+      pliChars:dbgTextChars,
+    });
+    let scanning = (i) =>
+      i < maxScanSize &&
+      (i < minScanSize || sr.scoreDpdSrc < minScore) &&
+      sr.streakSize < maxStreak;
+    let scid;
+    let refStart = refItems[iScanStart];
+    dbg>1 && console.log(`${msg}@0.1 srcText`, sr.scanSummary(refStart),
+      `${GREEN}${srcText.substring(0,dbgTextChars)}${NC}`);
+    let streakFirst = null;
+    let streakStop = null;
+    dbg && cc.fyi1(msg+0.1, srcItem, srcText);
+    for (let iScan = 0; scanning(iScan); iScan++) {
+      let iRef = iScanStart + iScan;
+      let refItem = refItems[iRef];
+      scid = refItem.ref;
+      let refText = refItem.text;
+      let refId = refItem.id;
+      let refGrpId = refItem.groupId;
+      let refGrp = alignableRef.groups[refGrpId];
+      let vDpd = refItem.vDpd;
+      let scoreDpdSrc = vSrc.similar(vDpd);
+      let vDpdSrc = vDpd.hadamardL1(vSrc);
+      let startStreak = ()=>{
+        sr.start(refItem);
+        Object.assign(sr, { iScan, scid, scoreDpdSrc,
+          vDpd, refText, vDpdSrc});
+      }
+      if (dbg>3) {
+        console.log(`${msg}@0.3`, 'vDpdSrc', GREEN,
+          vDpdSrc.toString({ precision: 3 }), NC);
+      }
+      if (minScore <= scoreDpdSrc) { // new streak candidate
+        let streakMovable =
+          sr.scoreDpdSrc * streakStart < scoreDpdSrc
+        let canGrp = this.areGroupAlignable(srcItem, refItem);
+        if (sr.streakSize === 0) { // start a streak
+          let grpSize = refGrp.itemIds.at(-1) - refGrp.itemIds[0];
+          dbg && cc.fyi(msg+0.2, srcItem, 'strtStreak', refItem);
+          startStreak();
+          if (canGrp && grpSize>1) {
+            let lastInGroup = srcItem.id === srcGrp.itemIds.at(-1);
+            if (lastInGroup) {
+              sr.streakSize = grpSize;
+              dbg>1 && sr.dbgLog(msg, '@1.1', 
+                `${CHECKMARK}${sr.streakSize}`, refItem, YELLOW);
+              break;
+            } else {
+              dbg>1 && sr.dbgLog(msg, '@1.2', 
+                `${CHECKMARK}${sr.streakSize}`, refItem, YELLOW);
+            }
+          } else {
+            dbg>1 && sr.dbgLog(msg, '@1', 
+              `${CHECKMARK}${sr.streakSize}`, refItem, GREEN);
+          }
+        } else if (streakMovable && ( refGrp.itemIds.length === 1)) {
+          dbg && cc.fyi(msg+0.3, srcItem, 'moveStreak', refItem);
+          startStreak(); // move streak to new start
+          dbg>1 && sr.dbgLog(msg, '@2', '!', refItem, B_WHITE);
+        } else { // grow streak
+          dbg && cc.fyi(msg+0.4, srcItem, 'growStreak', refItem);
+          sr.streakSize++;
+          dbg>1 && sr.dbgLog(msg, '@3', sr.streakSize, refItem, GREEN);
+        }
+      } else if (sr.streakSize > 0) { // end of streak?
+        dbg>1 && sr.dbgLog(msg, '@4', '$', refItem);
+        break;
+      } else { // ignore segment
+        dbg>1 && sr.dbgLog(msg, '@0.5', sr.streakSize, refItem);
+      }
+    } // scanning
+    if (sr.scoreDpdSrc < minScore) { // no alignment found
+      dbg && sr.dbgLog(msg, '@-1', RED_X, null, B_RED);
+      return null;
+    }
+
+    segCursor.numerator += sr.iScan + sr.streakSize;
+    dbg && sr.dbgLog(msg, '@5', `${CHECKMARK}${sr.streakSize}`, 
+      null, B_GREEN);
+
+    return sr;
+  } // xscanItem
+} // class Scanner
 
 export class DpdAligner {
   constructor(opts = {}) {
@@ -961,22 +1150,22 @@ export class DpdAligner {
 
     try {
       if (alignableRef) {
-        dbg && cc.bad1(msg+-1, '!addReferenceSutta', sutta_uid);
+        dbg && cc.bad1(msg + -1, '!addReferenceSutta', sutta_uid);
         return alignableRef;
       }
-      dbg>1 && cc.fyi(msg+0.1, 'addReferenceSutta', sutta_uid);
+      dbg > 1 && cc.fyi(msg + 0.1, 'addReferenceSutta', sutta_uid);
       await this.addReferenceSutta(sutta_uid);
       let fetchOpts = Object.assign(
         { cache },
         SuttaRef.create({ sutta_uid, lang, author }),
       );
-      dbg>1 && cc.fyi(msg+0.2, 'fetchLegacy', fetchOpts);
+      dbg > 1 && cc.fyi(msg + 0.2, 'fetchLegacy', fetchOpts);
       let legacyDoc = await LegacyDoc.fetchLegacy(fetchOpts);
       if (!(legacyDoc instanceof LegacyDoc)) {
         throw new Error(`${msg}legacyDoc?`);
       }
       let { lines } = legacyDoc;
-      dbg && cc.fyi(msg+0.3, 'lines', lines.length);
+      dbg && cc.fyi(msg + 0.3, 'lines', lines.length);
       let alignableSrc = Alignable.fromList(lines, ts, this);
       let { items } = alignableSrc;
       let scanner = new Scanner(this, alignableSrc);
@@ -986,12 +1175,19 @@ export class DpdAligner {
         let srcItem = items[iSrc];
         let { text: srcText } = srcItem;
         let line = iSrc + 1;
-        dbg>1 && cc.fyi(msg+0.3, 'scanItem', srcItem);
+        dbg > 1 && cc.fyi(msg + 0.3, 'scanItem', srcItem);
         let scanRes = scanner.scanItem(srcItem);
         Object.assign(scanRes, { line, srcText });
         let { refItem } = scanRes;
-        dbg && cc.ok(msg+1, 'scanItem', 
-          '#'+line, srcText.substring(0,15), '=>', refItem);
+        dbg &&
+          cc.ok(
+            msg + 1,
+            'scanItem',
+            '#' + line,
+            srcText.substring(0, 15),
+            '=>',
+            refItem,
+          );
         if (scanRes == null) {
           break;
         }
@@ -1119,4 +1315,4 @@ export class DpdAligner {
       throw e;
     }
   }
-} // DpdAligner
+} // class DpdAligner

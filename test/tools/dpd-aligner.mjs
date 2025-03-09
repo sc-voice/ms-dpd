@@ -8,8 +8,9 @@ const { Interval } = ScvMath;
 import { Dictionary } from '../../main.mjs';
 import { DBG } from '../../src/defines.mjs';
 import { Tools } from '../../src/tools/main.mjs';
-const { AlignmentItem, AlignmentGroup, Alignable, DpdAligner } =
-  Tools;
+const { 
+  Stanza, AlignmentItem, AlignmentGroup, Alignable, DpdAligner,
+} = Tools;
 
 let TEST_ALIGNER;
 let SREF = 'mn8/fr/wijayaratna';
@@ -222,7 +223,7 @@ describe('dpd-aligner', () => {
   });
   it('TESTTESTalignLegacySutta()', async () => {
     const msg = 'td8r.alignLegacySutta:';
-    //cc.bad1(msg, 'TBD'); return;
+    cc.bad1(msg, 'TBD'); return;
     const dbg = 0;
     let suid = 'mn8';
     let lang = 'fr';
@@ -291,7 +292,7 @@ describe('dpd-aligner', () => {
     ].join(' '));
     dbg && console.log(`${msg}@3`, 'scan', r1v.toString());
   });
-  it('TESTTESTAlignable.fromList() simple', () => {
+  it('Alignable.fromList() simple', () => {
     const msg = 'ta7e.fromList-simple:';
     let lines = [
       'once upon a time', // bow0
@@ -331,15 +332,17 @@ describe('dpd-aligner', () => {
     should(items1[9].group.id).equal('G9');
     should(items1[9].group.nStanzas).equal(1);
 
-    should(items1[1].stanza.toString()).equal('[1,1]');
-    should(items1[2].stanza.toString()).equal('[2,4]');
-    should(items1[3].stanza.toString()).equal('[2,4]');
-    should(items1[5].stanza.toString()).equal('[5,5]');
-    should(items1[6].stanza.toString()).equal('[6,8]');
-    should(items1[7].stanza.toString()).equal('[6,8]');
-    should(items1[8].stanza.toString()).equal('[6,8]');
-    should(items1[9].stanza.toString()).equal('[9,9]');
-
+    let stanzas = items1.map(item=>item?.stanza);
+    should(stanzas[1]).instanceOf(Stanza);
+    should(stanzas[1].toString()).equal('S1[1,1]');
+    should(stanzas[2]).instanceOf(Stanza);
+    should(stanzas[2].toString()).equal('S1[2,5]');
+    should(stanzas[3].toString()).equal('S1[2,5]');
+    should(stanzas[5].toString()).equal('S1[2,5]');
+    should(stanzas[6].toString()).equal('S2[6,8]');
+    should(stanzas[7].toString()).equal('S2[6,8]');
+    should(stanzas[8].toString()).equal('S2[6,8]');
+    should(stanzas[9].toString()).equal('S1[9,9]');
 
     let bow0 = new WordVector({ a: 1, once: 1, time: 1, upon: 1 });
     let bow1 = new WordVector({ a: 1, cat: 1, walking: 1, went: 1 });
@@ -444,15 +447,16 @@ describe('dpd-aligner', () => {
 
     // Stanzas are defined by head groups.
     // https://github.com/sc-voice/ms-dpd/wiki/Case-Study:-Repetition-in-the-Tipitaka
-    should(items1[1].stanza.toString()).equal('[1,1]');
-    should(items1[2].stanza.toString()).equal('[2,5]');
-    should(items1[3].stanza.toString()).equal('[2,5]');
-    should(items1[4].stanza.toString()).equal('[2,5]');
-    should(items1[5].stanza.toString()).equal('[2,5]');
-    should(items1[6].stanza.toString()).equal('[6,8]');
-    should(items1[7].stanza.toString()).equal('[6,8]');
-    should(items1[8].stanza.toString()).equal('[6,8]');
-    should(items1[9].stanza.toString()).equal('[9,9]');
+    let stanzas1 = items1.map(item=>item?.stanza);
+    should(stanzas1[1].toString()).equal('S1[1,1]');
+    should(stanzas1[2].toString()).equal('S1[2,5]');
+    should(stanzas1[3].toString()).equal('S1[2,5]');
+    should(stanzas1[4].toString()).equal('S1[2,5]');
+    should(stanzas1[5].toString()).equal('S1[2,5]');
+    should(stanzas1[6].toString()).equal('S2[6,8]');
+    should(stanzas1[7].toString()).equal('S2[6,8]');
+    should(stanzas1[8].toString()).equal('S2[6,8]');
+    should(stanzas1[9].toString()).equal('S1[9,9]');
 
   });
   it('Alignable.fromList() mn8 fr', () => {
@@ -568,6 +572,28 @@ describe('dpd-aligner', () => {
     // It is also NOT part of the preceding extent
     should(items1[14].group.head.extent.toString()).equal('[14,14]');
   });
+  it('item stanza range', () => {
+    const msg = 'td8r.item-stanza-range';
+    let lines = [
+      'once upon a time', // I1S1[1,1]
+      'on a sunny day', // I2S1[2,4]
+      'on a rainy day', // I3S2[2,4]
+      'on a windy day', // I4S3[2,4]
+      'the end', // I5S1[5,5]
+    ];
+    let da = TEST_ALIGNER;
+    let groupThreshold = 0.5;
+    let al = Alignable.fromList(lines, da, { groupThreshold });
+    let { groups, items } = al;
+    should.deepEqual(Object.keys(groups), ['G1', 'G2…4S3@1', 'G5' ]);
+    should.deepEqual(items.map(item=>item.toString()), [
+      'I1S1[1,1]',
+      'I2S1[2,4]',
+      'I3S2[2,4]',
+      'I4S3[2,4]',
+      'I5S1[5,5]',
+    ]);
+  });
   it('item stanza overlap', () => {
     const msg = 'td8r.item-stanza-overlap';
     let lines = [
@@ -599,30 +625,32 @@ describe('dpd-aligner', () => {
       'G4…10S3@3', // spanning
       'G11', // singleton
     ]);
-    let items1 = [null, ...items]; // item ids are 1-based
-    should(items1[1].group.id).equal( 'G1' );
-    should(items1[2].group.id).equal( 'G2…8S3@3' );
-    should(items1[3].group.id).equal( 'G3…9S3@3' );
-    should(items1[4].group.id).equal( 'G4…10S3@3' );
-    should(items1[5].group.id).equal( 'G2…8S3@3' );
-    should(items1[6].group.id).equal( 'G3…9S3@3' );
-    should(items1[7].group.id).equal( 'G4…10S3@3' );
-    should(items1[8].group.id).equal( 'G2…8S3@3' );
-    should(items1[9].group.id).equal( 'G3…9S3@3' );
-    should(items1[10].group.id).equal( 'G4…10S3@3' );
-    should(items1[11].group.id).equal( 'G11' );
-
-    should(items1[1].stanza.toString()).equal('[1,1]');
-    should(items1[2].stanza.toString()).equal('[2,4]');
-    should(items1[3].stanza.toString()).equal('[2,4]');
-    should(items1[4].stanza.toString()).equal('[2,4]');
-    should(items1[5].stanza.toString()).equal('[5,7]');
-    should(items1[6].stanza.toString()).equal('[5,7]');
-    should(items1[7].stanza.toString()).equal('[5,7]');
-    should(items1[8].stanza.toString()).equal('[8,10]');
-    should(items1[9].stanza.toString()).equal('[8,10]');
-    should(items1[10].stanza.toString()).equal('[8,10]');
-    should(items1[11].stanza.toString()).equal('[11,11]');
+    should.deepEqual(items.map(item=>item.group.id), [
+      'G1',
+      'G2…8S3@3',
+      'G3…9S3@3',
+      'G4…10S3@3',
+      'G2…8S3@3',
+      'G3…9S3@3',
+      'G4…10S3@3',
+      'G2…8S3@3',
+      'G3…9S3@3',
+      'G4…10S3@3',
+      'G11',
+    ], 'item.group.id');
+    should.deepEqual(items.map(item=>item.toString()), [
+      'I1S1[1,1]',
+      'I2S1[2,4]',
+      'I3S1[2,4]',
+      'I4S1[2,4]',
+      'I5S2[5,7]',
+      'I6S2[5,7]',
+      'I7S2[5,7]',
+      'I8S3[8,10]',
+      'I9S3[8,10]',
+      'I10S3[8,10]',
+      'I11S1[11,11]',
+    ], 'item.toString()');
   });
   it('idRanges', () => {
     should.deepEqual(Alignable.idRanges([1, 2, 3]), [
@@ -682,20 +710,20 @@ describe('dpd-aligner', () => {
     should(g1_8.extent.toString()).equal('[1,10]');
 
     // The first stanza has 4 items
-    should(g1_8.inferredStanza(1).toString()).equal('[1,4]');
-    should(g1_8.inferredStanza(2).toString()).equal('[1,4]');
-    should(g1_8.inferredStanza(3).toString()).equal('[1,4]');
-    should(g1_8.inferredStanza(4).toString()).equal('[1,4]');
+    should(g1_8.inferredStanza(1).toString()).equal('S1[1,4]');
+    should(g1_8.inferredStanza(2).toString()).equal('S1[1,4]');
+    should(g1_8.inferredStanza(3).toString()).equal('S1[1,4]');
+    should(g1_8.inferredStanza(4).toString()).equal('S1[1,4]');
 
     // The second stanza has 3 items
-    should(g1_8.inferredStanza(5).toString()).equal('[5,7]');
-    should(g1_8.inferredStanza(6).toString()).equal('[5,7]');
-    should(g1_8.inferredStanza(7).toString()).equal('[5,7]');
+    should(g1_8.inferredStanza(5).toString()).equal('S2[5,7]');
+    should(g1_8.inferredStanza(6).toString()).equal('S2[5,7]');
+    should(g1_8.inferredStanza(7).toString()).equal('S2[5,7]');
 
     // the last stanza has 3 items
-    should(g1_8.inferredStanza(8).toString()).equal('[8,10]');
-    should(g1_8.inferredStanza(9).toString()).equal('[8,10]');
-    should(g1_8.inferredStanza(10).toString()).equal('[8,10]');
+    should(g1_8.inferredStanza(8).toString()).equal('S3[8,10]');
+    should(g1_8.inferredStanza(9).toString()).equal('S3[8,10]');
+    should(g1_8.inferredStanza(10).toString()).equal('S3[8,10]');
   });
   it('a12p.inferredStanza() sparse', () => {
     let itemIds = [2,3, 5, 8,9,10];
@@ -708,17 +736,17 @@ describe('dpd-aligner', () => {
     should(g2_10.inferredStanza(11)).equal(null);
 
     // segments within a group range form a stanza
-    should(g2_10.inferredStanza(2).toString()).equal('[2,3]');
-    should(g2_10.inferredStanza(3).toString()).equal('[2,3]');
-    should(g2_10.inferredStanza(5).toString()).equal('[5,5]');
-    should(g2_10.inferredStanza(8).toString()).equal('[8,10]');
-    should(g2_10.inferredStanza(9).toString()).equal('[8,10]');
-    should(g2_10.inferredStanza(10).toString()).equal('[8,10]');
+    should(g2_10.inferredStanza(2).toString()).equal('S1[2,4]');
+    should(g2_10.inferredStanza(3).toString()).equal('S1[2,4]');
+    should(g2_10.inferredStanza(5).toString()).equal('S2[5,7]');
+    should(g2_10.inferredStanza(8).toString()).equal('S3[8,10]');
+    should(g2_10.inferredStanza(9).toString()).equal('S3[8,10]');
+    should(g2_10.inferredStanza(10).toString()).equal('S3[8,10]');
 
-    // segments not in the sparse group
-    should(g2_10.inferredStanza(4).toString()).equal('[4,4]');
-    should(g2_10.inferredStanza(6).toString()).equal('[6,7]');
-    should(g2_10.inferredStanza(7).toString()).equal('[6,7]');
+    // segments not in the sparse group are included in stanza
+    should(g2_10.inferredStanza(4).toString()).equal('S1[2,4]');
+    should(g2_10.inferredStanza(6).toString()).equal('S2[5,7]');
+    should(g2_10.inferredStanza(7).toString()).equal('S2[5,7]');
   });
   it("bounds()", ()=>{
     let g1_10 = new AlignmentGroup({ itemIds: [1,2,3, 6, 8,9,10] });

@@ -37,6 +37,7 @@
         "noStaticOnlyClass": "off",
         "useLiteralKeys": "off",
         "noForEach": "off",
+        "noUselessThisAlias": "off",
         "noUselessSwitchCase": "off",
         "noUselessConstructor": "off"
       },
