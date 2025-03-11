@@ -14,7 +14,7 @@ let dpdAlignerCtor;
 // biome-ignore format:
 const {
   GREEN_CHECKBOX, LEFT_ARROW, RIGHT_ARROW, CHECKMARK,
-  ELEMENT_OF, ELLIPSIS, WARNING, RED_X, EMDASH,
+  ELEMENT_OF, WARNING, RED_X, EMDASH, ELLIPSIS,
 } = Unicode;
 // biome-ignore format:
 const {
@@ -42,15 +42,16 @@ const {
 } = Unicode.LINUX_COLOR;
 const PLI_CHARS = 30;
 
-const cc = new ColorConsole();
+const cc = new ColorConsole({valueColor: BRIGHT_YELLOW});
 
 export class Stanza extends Interval {
   constructor(lo, hi, group='group?', id=0) {
     super(lo, hi);
+    let nStanzas = group?.nStanzas || '?';
 
-    let ref = 'S' + id + super.toString();
+    let ref = 'S' + id + '/' + nStanzas + super.toString();
 
-    Object.assign(this, { id, group, ref });
+    Object.assign(this, { id, group, ref, nStanzas });
   }
 
   toString() {
@@ -108,11 +109,19 @@ export class AlignmentGroup {
   constructor(opts = {}) {
     const msg = 'a12p.ctor';
     const dbg = DBG.A12P_CTOR;
-    let { id, ref, bow, gScore, itemIds = [], extent } = opts;
+    let { 
+      id, // 1-based number 
+      ref,  // short descriptor
+      bow, 
+      gScore, 
+      itemIds = [], 
+      extent 
+    } = opts;
 
     if (gScore == null) {
       gScore = 1;
     }
+    dbg && cc.fyi1(msg, opts);
     let {
       id: idDefault,
       idDelta,
@@ -122,8 +131,10 @@ export class AlignmentGroup {
     let idRanges = Alignable.idRanges(itemIds);
     let delta = 1;
 
+    id = id || idDefault;
+
     Object.assign(this, {
-      id: id || idDefault,
+      id,
       ref,
       bow,
       itemIds,
@@ -134,10 +145,10 @@ export class AlignmentGroup {
       nStanzas,
     });
 
-    dbg && cc.ok(msg, this);
+    dbg && cc.ok1(msg, this, {id, nStanzas});
   }
 
-  static analyzeItemIds(itemIds) {
+  static analyzeItemIds(itemIds, itemId = itemIds[0]) {
     const msg = 'a12p.analyzeItemIds';
     const dbg = DBG.A12P_ANALYZE_ITEM_IDS;
     let idRanges = Alignable.idRanges(itemIds);
@@ -192,14 +203,14 @@ export class AlignmentGroup {
       let { lo, hi } = idRanges[0];
       nStanzas = hi - lo + 1;
       if (lo === hi) {
-        dbg && cc.ok1(msg + 1, { lo, hi, idDelta, nStanzas });
+        dbg && cc.ok1(msg + 1, { itemId, lo, hi, idDelta, nStanzas });
         idSuffix = lo;
       } else {
-        dbg && cc.ok1(msg + 2, { lo, hi, idDelta, nStanzas });
+        dbg && cc.ok1(msg + 2, { itemId, lo, hi, idDelta, nStanzas });
         idSuffix = lo + ELLIPSIS + hi + 'S' + nStanzas + '@1';
       }
     } else if (Number.isFinite(rSize) && Number.isFinite(idDelta)) {
-      dbg && cc.ok1(msg + 3, { idDelta, nStanzas });
+      dbg && cc.ok1(msg + 3, { itemId, idDelta, nStanzas });
       idSuffix =
         ranges[0] +
         ELLIPSIS +
@@ -209,14 +220,14 @@ export class AlignmentGroup {
         '@' +
         idDelta;
     } else {
-      dbg && cc.ok1(msg + 4, { idDelta, nStanzas });
+      dbg && cc.ok1(msg + 4, { itemId, idDelta, nStanzas });
       idSuffix = ranges.join('.');
     }
 
     return {
       id: 'G' + idSuffix,
       idDelta,
-      nStanzas: nRanges,
+      nStanzas,
     };
   } // analyzeItemIds
 
@@ -312,7 +323,8 @@ export class AlignmentGroup {
         let hi = extent?.hi || lo;
         if (nRanges === 1) {
           // Singleton group implies each item is a stanza
-          res = new Stanza(lo, hi, this, id - lo + 1);
+          let iStanza = id - lo + 1;
+          res = new Stanza(lo, hi, this, iStanza);
           dbg && cc.ok1(msg + 1.2, '#' + id + '^' + head, '=>', res);
         } else {
           res = new Stanza(lo, hi, this, nRanges);
@@ -332,7 +344,7 @@ export class AlignmentGroup {
       if (res) {
         dbg && cc.ok1(msg + 2.1, this, '#' + id, '=>', res);
       } else {
-        cc.fyi1(msg+0.22, {nRanges});
+        dbg>1 && cc.fyi1(msg+0.22, {nRanges});
         let { lo } = idRanges.at(-1);
         let hi = extent?.hi || lo;
         res = new Stanza(lo, hi, this, nRanges);
@@ -516,7 +528,7 @@ export class Alignable {
       let { id, ref: iRef, bow: iBow, group: group_i } = items[i];
       if (group_i == null) {
         let itemIds = [i + 1];
-        group_i = { itemIds, ref: iRef };
+        group_i = { itemId:i+1, itemIds, ref: iRef };
         dbg > 1 && cc.fyi(msg + 0.1, group_i);
         items[i].group = group_i;
         group_i.bows = [iBow]; // temporary;
@@ -544,11 +556,12 @@ export class Alignable {
         }
       }
     }
-    this.groups = items.reduce((ag, item, ig) => {
+    this.groups = items.reduce((ag, item, itemId) => {
       // convert group POJO to AlignmentGroup
       let { group } = item;
       let { id: groupId, idDelta } = AlignmentGroup.analyzeItemIds(
         group.itemIds,
+        itemId,
       );
       item.groupId = groupId;
       item.idDelta = idDelta;
@@ -662,31 +675,7 @@ export class ScanResult {
       pliInfo].join(''));
   }
 
-  xtoString() {
-    const msg = 's7e.toString():';
-    const dbg = DBG.S7E_TO_STRING;
-    let keys = Object.keys(this).sort((a, b) => a.localeCompare(b));
-    let result = keys.reduce((a, k) => {
-      let v = this[k];
-      if (k === 'vDpdSrc') {
-        v = v.toString({ precision: 6 });
-      } else if (v instanceof WordVector) {
-        if (dbg < 1) {
-          return a;
-        }
-        v = v.toString();
-      } else if (k === 'segCursor') {
-        v = v?.toString();
-      }
-      a[k] = v;
-      return a;
-    }, {});
-    return result;
-  }
   toString(opts={}) {
-    let {
-      color = NO_COLOR,
-    } = opts;
     let { 
       refItem, srcItem, scoreDpdSrc, pliChars,
     } = this;
@@ -696,12 +685,12 @@ export class ScanResult {
     let refText = refItem?.text;
 
     return [
-      CYAN+srcItem.id+'.'+srcItem.ref+srcStanza.ref,
-      color + scoreDpdSrc.toFixed(3),
-      B_CYAN+refItem.id+'.'+refItem.ref+refStanza.ref,
-      color + refText?.substring(0, pliChars),
+      cc.valueOf(scoreDpdSrc),
+      srcItem,
+      refItem,
+      refText?.substring(0, pliChars),
     ].join(' ');
-  }
+  } // s8t.toString()
 } // class ScanResult
 
 export class Scanner {
@@ -825,6 +814,7 @@ export class Scanner {
     let dbgTextChars = dbg>3 ? undefined : 15;
     let srcGrp = alignableSrc.groups[srcGrpId];
     let srcText = this.trimWords(srcItem.text);
+    let srcStanza = srcItem.stanza;
     let vSrc = ts.tfidfOfBow(srcItem.bow);
     let refItems = alignableRef.items;
     let iScanStart = segCursor.numerator;
@@ -846,12 +836,13 @@ export class Scanner {
       `${GREEN}${srcText.substring(0,dbgTextChars)}${NC}`);
     let streakFirst = null;
     let streakStop = null;
-    dbg && cc.fyi1(msg+0.1, srcItem, srcText);
+    dbg && cc.fyi(msg+0.1, srcItem, srcText);
     for (let iScan = 0; scanning(iScan); iScan++) {
       let iRef = iScanStart + iScan;
       let refItem = refItems[iRef];
       scid = refItem.ref;
       let refText = refItem.text;
+      let refStanza = refItem.stanza;
       let refId = refItem.id;
       let refGrpId = refItem.groupId;
       let refGrp = alignableRef.groups[refGrpId];
@@ -863,24 +854,32 @@ export class Scanner {
         Object.assign(sr, { iScan, scid, scoreDpdSrc,
           vDpd, refText, vDpdSrc});
       }
-      if (dbg>3) {
-        console.log(`${msg}@0.3`, 'vDpdSrc', GREEN,
-          vDpdSrc.toString({ precision: 3 }), NC);
-      }
-      if (minScore <= scoreDpdSrc) { // new streak candidate
+      if (scoreDpdSrc < minScore) {
+        if (sr.streakSize > 0) { // end of streak
+          dbg && cc.fyi(msg+0.2, 'end_streak', srcItem, refItem);
+          break;
+        } else {
+          // ignore segment
+          dbg && cc.fyi(msg+0.3, 'skip', scoreDpdSrc, srcItem, refItem);
+        } 
+      } else if (srcStanza.id > refStanza.id) {
+        dbg && cc.fyi(msg+0.35, 'catchup', srcItem, refItem);
+      } else {
+        // new streak candidate
         let streakMovable =
           sr.scoreDpdSrc * streakStart < scoreDpdSrc
         let canGrp = this.areGroupAlignable(srcItem, refItem);
         if (sr.streakSize === 0) { // start a streak
           let grpSize = refGrp.itemIds.at(-1) - refGrp.itemIds[0];
-          dbg && cc.fyi(msg+0.2, srcItem, 'strtStreak', refItem);
+          dbg && cc.fyi(msg+0.4, srcItem, 'strtStreak', refItem);
           startStreak();
           if (canGrp && grpSize>1) {
             let lastInGroup = srcItem.id === srcGrp.itemIds.at(-1);
             if (lastInGroup) {
-              sr.streakSize = grpSize;
-              dbg>1 && sr.dbgLog(msg, '@1.1', 
-                `${CHECKMARK}${sr.streakSize}`, refItem, YELLOW);
+              let ds = grpSize - sr.streakSize;
+              dbg && cc.bad1(msg+0.45, srcItem, 'grow+'+ds, 
+                refItem, refItem.group);
+              sr.streakSize += ds;
               break;
             } else {
               dbg>1 && sr.dbgLog(msg, '@1.2', 
@@ -891,19 +890,15 @@ export class Scanner {
               `${CHECKMARK}${sr.streakSize}`, refItem, GREEN);
           }
         } else if (streakMovable && ( refGrp.itemIds.length === 1)) {
-          dbg && cc.fyi(msg+0.3, srcItem, 'moveStreak', refItem);
+          dbg && cc.fyi(msg+0.5, srcItem, 'moveStreak', refItem);
           startStreak(); // move streak to new start
-          dbg>1 && sr.dbgLog(msg, '@2', '!', refItem, B_WHITE);
-        } else { // grow streak
-          dbg && cc.fyi(msg+0.4, srcItem, 'growStreak', refItem);
+        } else if (srcItem.stanza.id === refItem.stanza.id) {
+          dbg && cc.fyi1(msg+0.6, srcItem, 'growStreak', refItem);
           sr.streakSize++;
-          dbg>1 && sr.dbgLog(msg, '@3', sr.streakSize, refItem, GREEN);
+        } else { 
+          dbg && cc.bad1(msg+0.7, srcItem, 'growStreak', refItem);
+          break;
         }
-      } else if (sr.streakSize > 0) { // end of streak?
-        dbg>1 && sr.dbgLog(msg, '@4', '$', refItem);
-        break;
-      } else { // ignore segment
-        dbg>1 && sr.dbgLog(msg, '@0.5', sr.streakSize, refItem);
       }
     } // scanning
     if (sr.scoreDpdSrc < minScore) { // no alignment found
@@ -912,9 +907,7 @@ export class Scanner {
     }
 
     segCursor.numerator += sr.iScan + sr.streakSize;
-    cc.ok1(msg+5, sr);
-    dbg && sr.dbgLog(msg, '@5', `${CHECKMARK}${sr.streakSize}`, 
-      null, B_GREEN);
+    dbg && cc.ok1(msg+5, `${CHECKMARK}${sr.streakSize}`, sr);
 
     return sr;
   } // scanItem
@@ -960,11 +953,9 @@ export class Scanner {
       sr.streakSize < maxStreak;
     let scid;
     let refStart = refItems[iScanStart];
-    dbg>1 && console.log(`${msg}@0.1 srcText`, sr.scanSummary(refStart),
-      `${GREEN}${srcText.substring(0,dbgTextChars)}${NC}`);
     let streakFirst = null;
     let streakStop = null;
-    dbg && cc.fyi1(msg+0.1, srcItem, srcText);
+    dbg && cc.fyi(msg+0.1, 'FOOF', srcItem, srcText, 'hi');
     for (let iScan = 0; scanning(iScan); iScan++) {
       let iRef = iScanStart + iScan;
       let refItem = refItems[iRef];
@@ -1066,7 +1057,7 @@ export class DpdAligner {
       maxScanSize = 40, // maximum segments to scan for alignment
       minScanSize = 4, // minimum number of segments to scan
       maxStreak = 2, // maximum segment matches for 1 line
-      minScore = 0.09, // minimum alignment scoreDpdSrc
+      minScore = 0.085, // minimum alignment scoreDpdSrc
       maxSegWords = 22, // align to truncated legacy segments
       streakStart = 1.1, // threshold to change start of streak
       idfWeight = 1.618033988749895, // sensitivity to word rarity
