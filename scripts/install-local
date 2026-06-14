@@ -1,0 +1,8 @@
+#!/bin/bash
+if [ ! -d local/ebt-data ]; then
+  echo "Installing EBT repository in local/ebt-data..."
+  git clone https://github.com/ebt-site/ebt-data.git local/ebt-data
+else
+  echo "EBT repository in local/ebt-data (exists but may not e current)"
+fi
+
