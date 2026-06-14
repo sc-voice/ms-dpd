@@ -12,7 +12,7 @@ const { DeepLAdapter } = Translate;
 
 const DPD_PATH = path.join(__dirname, '../../dpd');
 const AUTH_PATH = path.join(__dirname, '../../local/deepl.auth');
-const AUTH_KEY = fs.readFileSync(AUTH_PATH).toString().trim();
+const NO_AUTH_KEY = "NO_AUTH_KEY";
 
 export class Translator {
   static #create = false;
@@ -28,7 +28,7 @@ export class Translator {
   static async create(opts = {}) {
     const msg = 't8r.create:';
     let {
-      authKey = AUTH_KEY, // local/deepl.auth
+      authKey, // local/deepl.auth
       deeplAdapter, // DeepLAdapter
       dict, // Dictionary
       dstDefs, // dstLang definition map
@@ -39,9 +39,16 @@ export class Translator {
       forceRaw = false, // retranslate raw translated texts
       logger = console,
     } = opts;
+    if (authKey == null) {
+      if (fs.existsSync(AUTH_PATH)) {
+        const AUTH_KEY = fs.readFileSync(AUTH_PATH).toString().trim();
+        authKey = AUTH_KEY;
+      }
+      authKey = NO_AUTH_KEY;
+    }
     if (translateTexts == null) {
       const dbg = DBG.TRANSLATE_TEXTS;
-      if (deeplAdapter == null) {
+      if (authKey !== NO_AUTH_KEY && deeplAdapter == null) {
         if (dstLang == null) {
           throw new Error(`${msg} dstLang?`);
         }

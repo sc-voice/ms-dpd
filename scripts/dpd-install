@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 DMY=`date +%y%m%d`
 DBNAME=dpd.db
 DPDNAME=dpd.db.$DMY
@@ -80,13 +80,14 @@ if [ -e $TARDST ]; then
   echo $SCRIPT: "tar xvf $TARDST (...)"
   pushd local > /dev/null
   rm -f $DBNAME
-  tar -xvf $TARNAME --transform "s,$DBNAME,$DPDNAME,"
+  tar -xvf $TARNAME
+  mv $DBNAME $DPDNAME
   rm $TARNAME
   ln -sf $DPDNAME $DBNAME
   popd > /dev/null
   echo "$SCRIPT: loaded DPD database"
   echo "$SCRIPT:" `ls -l local/$DPDNAME`
-else 
+else
   echo $SCRIPT: "[FAIL] $TARDST not found"
   exit -1
 fi

@@ -37,6 +37,7 @@ installation:
 ```
 cd ms-dpd
 npm install
+./scripts/install-local
 ./scripts/dpd --help
 ```
 

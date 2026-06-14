@@ -76,7 +76,7 @@ typeof describe === 'function' &&
       });
 
       let { dpdLookup, dpdHeadwords } = sqlDpd;
-      let lookupKeys = Object.keys(dpdLookup);
+      let lookupKeys = Object.keys(dpdLookup).sort();
       should.deepEqual(lookupKeys, ['de', 'devi']);
 
       should.deepEqual(sqlDpd.dpdLookup.devi, [34161, 34162]);
@@ -103,8 +103,10 @@ typeof describe === 'function' &&
         '33954',
         '34161',
         '34162',
+        '81208',
+        '83742',
       ]);
-      should(hwIds.length).equal(7); // de, devi
+      should(hwIds.length).equal(9); // de, devi
     });
     it('create() headwordPatterns', async () => {
       const msg = `${M}@37:`;
@@ -136,7 +138,7 @@ typeof describe === 'function' &&
 
       let { dictWords, dpdLookup, dpdHeadwords } = sqlDpd;
       should(dictWords.length).equal(3); // de, devi, deva
-      let lookupKeys = Object.keys(dpdLookup);
+      let lookupKeys = Object.keys(dpdLookup).sort();
       should.deepEqual(dictWords, ['de', 'deva', 'devi']);
       should.deepEqual(lookupKeys, dictWords);
 
@@ -187,7 +189,7 @@ typeof describe === 'function' &&
 
       let { en: enAbbr } = langAbbr;
       should(enAbbr.pr).properties({ meaning: 'present tense' });
-      let pAbbr = path.join(DATADIR, 'en', 'abbreviation-en.mjs');
+      let pAbbr = path.join(dataDir, 'en', 'abbreviation-en.mjs');
       should(fs.existsSync(pAbbr)).equal(true);
     });
     it('binarySearch', () => {
@@ -211,7 +213,7 @@ typeof describe === 'function' &&
       should(SqlDpd.binarySearch(data, 'ye')).equal(2);
       should(SqlDpd.binarySearch(data, 'yx')).equal(-1);
     });
-    it('build() ru', async () => {
+    it.skip('build() ru', async () => {
       const msg = `${M}@197:`;
       let paliMap = { devi: 1 };
       let verboseRows = 0;

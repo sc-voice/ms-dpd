@@ -21,6 +21,7 @@
     "dpd/ru"
   ],
   "scripts": {
+    "postinstall": "scripts/install-local",
     "schedule-action": "scripts/schedule-action",
     "test": "npm run test:verbose",
     "test:test": "mocha --config test/mocha-config.json",

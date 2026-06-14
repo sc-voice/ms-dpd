@@ -11,6 +11,7 @@ import { default as HeadwordKey } from '../../src/headword-key.mjs';
 import * as Pali from '../../src/pali.mjs';
 const VERBOSE_ROWS = 3;
 const DIRNAME = import.meta.dirname;
+const DPD_RU = false; // Russian translations supported
 
 const DPD_HEADWORD_COLS = [
   'id',
@@ -24,7 +25,7 @@ const DPD_HEADWORD_COLS = [
   'lemma_1',
 ];
 const DPD_HEADWORD_COLS_LANG = {
-  ru: [
+  ru: [ // DEPRECATED
     'T1.id',
     'T1.ru_meaning meaning_1',
     'T1.ru_meaning_raw meaning_raw',
@@ -209,7 +210,7 @@ export default class SqlDpd {
 
     await sqlDpd.#loadLookup();
     await sqlDpd.#loadHeadwords();
-    await sqlDpd.#loadHeadwordsLang('ru');
+    //await sqlDpd.#loadHeadwordsLang('ru');
     await sqlDpd.#loadAbbreviations();
 
     return sqlDpd;
@@ -356,6 +357,7 @@ export default class SqlDpd {
     return { stdout, stderr };
   }
 
+  /** @deperecated Russian table no longer exists */
   async #fetchHeadwordsLang(lang) {
     const msg = `SqlDpd.#fetchHeadwordsRU()`;
     const { dbg, rowLimit } = this;
@@ -444,6 +446,7 @@ export default class SqlDpd {
     return headwordMap;
   }
 
+  /** @deprecated Russian table no longer exists */
   async #loadHeadwordsLang(lang) {
     const msg = 'SqlDpd.#loadHeadwordsRU:';
 
@@ -582,8 +585,10 @@ export default class SqlDpd {
     );
     this.defLang = defLang;
 
-    // Write out definition lines for RU
-    const DPD_LANGS = ['ru'];
+    // Write out definition lines for DPD language tables
+    const DPD_LANGS = [
+      //'ru', // no longer exists
+    ]; 
     for (let i = 0; i < DPD_LANGS.length; i++) {
       let lang = DPD_LANGS[i];
       let dpdLangHeadwords = langHeadwords[lang];
@@ -663,18 +668,20 @@ export default class SqlDpd {
       return a;
     }, {});
     this.langAbbr.en = enAbbr;
-    let ruAbbr = rows.reduce((a, row) => {
-      let { lookup_key, abbrev } = row;
-      let json = (abbrev && JSON.parse(abbrev)) || {};
-      a[lookup_key] = {
-        abbreviation: json.ru_abbrev,
-        meaning: json.ru_meaning,
-      };
-      return a;
-    }, {});
-    dbg && console.error(msg, '[1]rows', rows.length);
-    dbg > 1 && console.error(msg, '[1.1]ruAbbr', ruAbbr);
-    this.langAbbr.ru = ruAbbr;
+    if (DPD_RU) {
+      let ruAbbr = rows.reduce((a, row) => {
+        let { lookup_key, abbrev } = row;
+        let json = (abbrev && JSON.parse(abbrev)) || {};
+        a[lookup_key] = {
+          abbreviation: json.ru_abbrev,
+          meaning: json.ru_meaning,
+        };
+        return a;
+      }, {});
+      dbg && console.error(msg, '[1]rows', rows.length);
+      dbg > 1 && console.error(msg, '[1.1]ruAbbr', ruAbbr);
+      this.langAbbr.ru = ruAbbr;
+    }
   }
 
   async #buildAbbreviations() {
